@@ -11,6 +11,7 @@ import (
 	"sort"
 	"strings"
 
+	"senspace/domain"
 	"senspace/pkg/setting"
 )
 
@@ -155,12 +156,12 @@ func EnsureReleaseStaticSnapshot(release Release) error {
 }
 
 // 在 staging 目录中构建发布快照；调用方确认成功后再激活为正式快照。
-func StageReleaseStaticSnapshot(release Release) (string, error) {
+func StageReleaseStaticSnapshot(release Release, generatedRoot ...string) (string, error) {
 	dir := ReleaseStaticStagingDir(release)
 	if err := CleanupReleaseStaticStagingDir(dir); err != nil {
 		return "", err
 	}
-	if err := buildReleaseStaticSnapshot(release, dir); err != nil {
+	if err := buildReleaseStaticSnapshot(release, dir, generatedRoot...); err != nil {
 		_ = CleanupReleaseStaticStagingDir(dir)
 		return "", err
 	}
@@ -245,13 +246,13 @@ func CleanupReleaseStaticStagingDir(stagingDir string) error {
 	)
 }
 
-func buildReleaseStaticSnapshot(release Release, dir string) error {
+func buildReleaseStaticSnapshot(release Release, dir string, generatedRoot ...string) error {
 	if err := os.MkdirAll(dir, 0755); err != nil {
 		return err
 	}
 
 	templateFiles := map[string]string{}
-	if err := copyReleaseTemplateSnapshot(dir, release, templateFiles); err != nil {
+	if err := copyReleaseTemplateSnapshot(dir, release, templateFiles, generatedRoot...); err != nil {
 		return err
 	}
 
@@ -307,7 +308,47 @@ func pruneEmptyDirs(startDir string, stopDir string) error {
 	return nil
 }
 
-func copyReleaseTemplateSnapshot(dir string, release Release, templateFiles map[string]string) error {
+func copyReleaseTemplateSnapshot(dir string, release Release, templateFiles map[string]string, generatedRoot ...string) error {
+	// 后台重建只复用已冻结版本；只有显式冻结才允许重新选择输入。
+	if len(generatedRoot) == 0 {
+		frozen := ReleaseStaticDir(release)
+		preserve, err := hasFrozenReleaseInventory(release)
+		if err != nil {
+			return err
+		}
+		if preserve {
+			var manifest ReleaseStaticManifest
+			data, err := os.ReadFile(filepath.Join(frozen, "release.json"))
+			if err != nil {
+				return err
+			}
+			if err := json.Unmarshal(data, &manifest); err != nil {
+				return err
+			}
+			for key, value := range manifest.TemplateFiles {
+				templateFiles[key] = value
+			}
+			if filepath.Clean(frozen) == filepath.Clean(dir) {
+				return nil
+			}
+			return filepath.WalkDir(frozen, func(src string, entry os.DirEntry, walkErr error) error {
+				if walkErr != nil {
+					return walkErr
+				}
+				if entry.IsDir() {
+					return nil
+				}
+				if !entry.Type().IsRegular() {
+					return fmt.Errorf("封存目录包含特殊文件：%s", src)
+				}
+				rel, err := filepath.Rel(frozen, src)
+				if err != nil {
+					return err
+				}
+				return copyFile(src, filepath.Join(dir, rel))
+			})
+		}
+	}
 	releaseSourceRoot := releasePluginSourceSnapshotRoot(release)
 	if releaseSourceRoot != "" {
 		assetMetaPath := filepath.Join(releaseSourceRoot, "asset.meta.json")
@@ -317,7 +358,7 @@ func copyReleaseTemplateSnapshot(dir string, release Release, templateFiles map[
 				return err
 			}
 			if hasCollections {
-				return copyPluginSourceReleaseSnapshot(releaseSourceRoot, dir, release, templateFiles)
+				return copyPluginSourceReleaseSnapshot(releaseSourceRoot, dir, release, templateFiles, generatedRoot...)
 			}
 		} else if err != nil && !os.IsNotExist(err) {
 			return err
@@ -331,6 +372,9 @@ func copyReleaseTemplateSnapshot(dir string, release Release, templateFiles map[
 			return err
 		}
 		if hasCollections {
+			if len(generatedRoot) > 0 {
+				return copyPluginSourceReleaseSnapshot(templateDir, dir, release, templateFiles, generatedRoot...)
+			}
 			return copyJSONTree(templateDir, dir, "", release, templateFiles)
 		}
 	} else if err != nil && !os.IsNotExist(err) {
@@ -353,9 +397,26 @@ func copyReleaseTemplateSnapshot(dir string, release Release, templateFiles map[
 		return err
 	}
 	if hasCollections {
-		return copyPluginSourceReleaseSnapshot(srcRoot, dir, release, templateFiles)
+		return copyPluginSourceReleaseSnapshot(srcRoot, dir, release, templateFiles, generatedRoot...)
 	}
 	return nil
+}
+
+// 旧库存尚无 inventory.json 时也以数据库冻结记录为准，禁止启动流程覆盖旧快照。
+func hasFrozenReleaseInventory(release Release) (bool, error) {
+	if _, err := os.Stat(filepath.Join(ReleaseStaticDir(release), "inventory.json")); err == nil {
+		return true, nil
+	} else if !os.IsNotExist(err) {
+		return false, err
+	}
+	if domain.Db == nil {
+		return false, nil
+	}
+	var count int64
+	if err := domain.Db.Model(&NFTInventoryPool{}).Where("release_id = ?", release.Id).Count(&count).Error; err != nil {
+		return false, err
+	}
+	return count > 0, nil
 }
 
 // 递归复制 JSON 模板文件，并写入发布 manifest 的模板文件索引。
@@ -399,7 +460,7 @@ func copyJSONTree(srcRoot string, dstRoot string, prefix string, release Release
 }
 
 // 从插件源码目录收集 asset.meta.json 和它引用的 JSON 模板文件。
-func copyPluginSourceReleaseSnapshot(srcRoot string, dir string, release Release, templateFiles map[string]string) error {
+func copyPluginSourceReleaseSnapshot(srcRoot string, dir string, release Release, templateFiles map[string]string, generatedRoot ...string) error {
 	if err := copyFile(filepath.Join(srcRoot, "asset.meta.json"), filepath.Join(dir, "asset.meta.json")); err != nil {
 		return err
 	}
@@ -415,6 +476,14 @@ func copyPluginSourceReleaseSnapshot(srcRoot string, dir string, release Release
 		return err
 	}
 	for _, rel := range files {
+		// 正式批次显式覆盖生成数据，禁止回退到旧发布副本。
+		if len(generatedRoot) > 0 && generatedRoot[0] != "" && strings.HasPrefix(filepath.ToSlash(rel), "generated/") {
+			if err := copyFile(filepath.Join(generatedRoot[0], strings.TrimPrefix(filepath.ToSlash(rel), "generated/")), filepath.Join(dir, rel)); err != nil {
+				return err
+			}
+			templateFiles[rel] = FactoryStaticURL("releases", release.PluginId, fmt.Sprintf("%s-%d", release.Version, release.Id), rel)
+			continue
+		}
 		if err := copyPluginSourceJSONFile(srcRoot, dir, rel, release, templateFiles); err != nil {
 			return err
 		}
@@ -522,6 +591,7 @@ func pluginTemplateFileCandidates(srcRoot string, rel string, release Release) [
 	candidates = append(candidates, filepath.Join(ReleaseStaticDir(release), rel))
 	return candidates
 }
+
 // AssetMetaHasCollections 返回 asset.meta.json 是否声明了至少一个 collection。
 func AssetMetaHasCollections(path string) (bool, error) {
 	data, err := os.ReadFile(path)

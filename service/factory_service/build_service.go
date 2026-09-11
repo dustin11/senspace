@@ -216,16 +216,18 @@ func executeReleaseBuild(release factory.Release) (factory.Release, error) {
 		return release, err
 	}
 
-	if releaseHasFactoryAssetTemplate(release) {
+	tooling, hasTooling := pluginTooling(release.PluginId)
+	// 生成器资产必须先预览批次，再通过显式冻结入口绑定；构建不自动选择最新批次。
+	if releaseHasFactoryAssetTemplate(release) && (!hasTooling || tooling.Generator == nil) {
 		var stagingDir string
 		var backupDir string
 		activatedSnapshot := false
 		if err := tx.Transaction(func(tx *gorm.DB) error {
 			_, releaseStagingDir, err := freezeReleaseAssets(tx, release)
+			stagingDir = releaseStagingDir
 			if err != nil {
 				return err
 			}
-			stagingDir = releaseStagingDir
 			if stagingDir != "" {
 				releaseBackupDir, snapshotActivated, err := activateStagedReleaseSnapshot(release, stagingDir)
 				if err != nil {

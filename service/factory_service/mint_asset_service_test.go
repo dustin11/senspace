@@ -657,6 +657,12 @@ type mintAssetServiceTestEnv struct {
 // 本地 ldev MySQL。
 func setupMintAssetServiceTest(t *testing.T) mintAssetServiceTestEnv {
 	t.Helper()
+	// 本组使用少量手写资产模板；正式生成批次另由全量集成测试覆盖。
+	originalTooling := pluginFactoryToolingRegistry["FishTank"]
+	fixtureTooling := originalTooling
+	fixtureTooling.Generator = nil
+	pluginFactoryToolingRegistry["FishTank"] = fixtureTooling
+	t.Cleanup(func() { pluginFactoryToolingRegistry["FishTank"] = originalTooling })
 
 	originalConfig := *setting.Config
 	originalDB := domain.Db

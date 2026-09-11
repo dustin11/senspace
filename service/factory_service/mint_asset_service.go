@@ -17,6 +17,7 @@ import (
 	"senspace/domain/factory"
 	"senspace/domain/task"
 	"senspace/pkg/app/security"
+	"senspace/pkg/merkle"
 	"senspace/pkg/setting"
 	"senspace/service/ds_service"
 
@@ -504,13 +505,16 @@ func MintReleaseAsset(user security.JwtUser, releaseIdRaw string, req MintAssetR
 }
 
 // 冻结当前插件发布的资产快照与库存池。
-func FreezeCurrentPluginReleaseAssets(user security.JwtUser, pluginIdRaw string) (*FreezeReleaseAssetsResponse, error) {
+func FreezeCurrentPluginReleaseAssets(user security.JwtUser, pluginIdRaw string, expectedBatch ...string) (*FreezeReleaseAssetsResponse, error) {
 	pluginId := strings.TrimSpace(pluginIdRaw)
 	if pluginId == "" {
 		return nil, newParameterError("插件ID不能为空")
 	}
 	if err := requireReleaseFreezeOperator(user, pluginId); err != nil {
 		return nil, err
+	}
+	if tooling, ok := pluginTooling(pluginId); ok && tooling.Generator != nil && (len(expectedBatch) == 0 || !batchIDPattern.MatchString(expectedBatch[0])) {
+		return nil, newParameterError("请先预览正式批次，再提交批次编号冻结")
 	}
 
 	tx, err := db()
@@ -538,11 +542,11 @@ func FreezeCurrentPluginReleaseAssets(user security.JwtUser, pluginIdRaw string)
 			return newForbiddenError("无权冻结该发布记录")
 		}
 
-		freezeResponse, releaseStagingDir, err := freezeReleaseAssets(tx, release)
+		freezeResponse, releaseStagingDir, err := freezeReleaseAssets(tx, release, expectedBatch...)
+		stagingDir = releaseStagingDir
 		if err != nil {
 			return err
 		}
-		stagingDir = releaseStagingDir
 		if stagingDir != "" {
 			releaseBackupDir, snapshotActivated, err := activateStagedReleaseSnapshot(release, stagingDir)
 			if err != nil {
@@ -1240,7 +1244,7 @@ func commitFreezeStaticSnapshot(backupDir string, activatedSnapshot bool) {
 }
 
 // 按 release 静态快照和 asset.meta.json 冻结库存。
-func freezeReleaseAssets(tx *gorm.DB, release factory.Release) (*FreezeReleaseAssetsResponse, string, error) {
+func freezeReleaseAssets(tx *gorm.DB, release factory.Release, expectedBatch ...string) (*FreezeReleaseAssetsResponse, string, error) {
 	if release.Status != factory.ReleaseStatusPublished && release.Status != factory.ReleaseStatusPaused {
 		return nil, "", newConflictError("当前发布记录不可冻结")
 	}
@@ -1254,9 +1258,9 @@ func freezeReleaseAssets(tx *gorm.DB, release factory.Release) (*FreezeReleaseAs
 		Find(&existingPools).Error; err != nil {
 		return nil, "", err
 	}
-	stagingDir, err := factory.StageReleaseStaticSnapshot(release)
+	stagingDir, err := stageReleaseGeneratorBatch(release, expectedBatch...)
 	if err != nil {
-		return nil, "", err
+		return nil, stagingDir, err
 	}
 	valueTemplate, err := loadReleaseMintTemplateFromDir(stagingDir)
 	if err != nil {
@@ -1278,9 +1282,29 @@ func freezeReleaseAssets(tx *gorm.DB, release factory.Release) (*FreezeReleaseAs
 			return nil, stagingDir, err
 		}
 		changed, changedKeys := collectionSignatureChanged(previousSignatures, currentSignatures)
+		// 尚未铸造的旧库存允许显式升级证明；历史铸造记录保留原根。
+		if !changed {
+			for _, pool := range existingPools {
+				if pool.MerkleRoot != pool.CollectionHash {
+					continue
+				}
+				hasMinted, err := releaseHasMintedRecords(tx, release, existingPools)
+				if err != nil {
+					return nil, stagingDir, err
+				}
+				if !hasMinted {
+					changed = true
+					changedKeys = append(changedKeys, "proof-version")
+				}
+				break
+			}
+		}
 		if !changed {
 			pools, err := collectReleaseInventoryPools(tx, release)
 			if err != nil {
+				return nil, stagingDir, err
+			}
+			if err := writeInventoryCommitment(stagingDir, release, pools); err != nil {
 				return nil, stagingDir, err
 			}
 			return freezeReleaseResponse(release, "unchanged", "价格模板已同步，库存结构未变动", pools), stagingDir, nil
@@ -1291,7 +1315,9 @@ func freezeReleaseAssets(tx *gorm.DB, release factory.Release) (*FreezeReleaseAs
 			return nil, stagingDir, err
 		}
 		if hasMinted {
-			_ = factory.CleanupReleaseStaticStagingDir(stagingDir)
+			if err := factory.CleanupReleaseStaticStagingDir(stagingDir); err != nil {
+				return nil, stagingDir, err
+			}
 			pools, err := collectReleaseInventoryPools(tx, release)
 			if err != nil {
 				return nil, "", err
@@ -1315,6 +1341,9 @@ func freezeReleaseAssets(tx *gorm.DB, release factory.Release) (*FreezeReleaseAs
 		return nil, stagingDir, err
 	}
 	status := "ready"
+	if err := writeInventoryCommitment(stagingDir, release, pools); err != nil {
+		return nil, stagingDir, err
+	}
 	message := "发布资产已冻结，库存池已准备完成"
 	if len(existingPools) > 0 {
 		status = "rebuilt"
@@ -1327,6 +1356,8 @@ func freezeReleaseAssets(tx *gorm.DB, release factory.Release) (*FreezeReleaseAs
 // 用于判断库存是否需要重建的签名。
 // 只包含会影响库存内容的字段，不包含价格和 mintLimit。
 type inventorySourceSignature struct {
+	// 展示名参与冻结 metadata 哈希，变更时必须重建库存。
+	Label string `json:"label"`
 	// 集合业务键。
 	CollectionKey string `json:"collectionKey"`
 	// NFT 资产类型。
@@ -1359,6 +1390,12 @@ type inventoryTierSupplySignature struct {
 func collectReleaseInventorySourceSignatures(valueTemplate assetValueTemplate, snapshotDir string) (map[string]string, error) {
 	fileHashes := map[string]string{}
 	result := make(map[string]string, len(valueTemplate.Collections))
+	seal, err := os.ReadFile(filepath.Join(snapshotDir, "generator-batch", "seal.json"))
+	if err == nil {
+		result["generator-batch"] = sha256Hex(seal)
+	} else if !os.IsNotExist(err) {
+		return nil, err
+	}
 	for _, collection := range valueTemplate.Collections {
 		collectionKey := strings.TrimSpace(collection.Key)
 		if collectionKey == "" {
@@ -1411,6 +1448,7 @@ func buildInventorySourceSignature(
 	sort.Strings(metadataHashes)
 
 	signature := inventorySourceSignature{
+		Label:          collectionDisplayName(collection),
 		AssetKind:      string(assetKind),
 		ComponentRole:  string(componentRole),
 		ParentKey:      strings.TrimSpace(collection.ParentKey),
@@ -2053,6 +2091,14 @@ func ensureCollectionInventory(tx *gorm.DB, release factory.Release, collection 
 	if len(items) == 0 {
 		return newConflictError(collectionDisplayName(collection) + " metadata item 为空")
 	}
+	leaves := make([]string, len(items))
+	for index, item := range items {
+		leaves[index] = item.LeafHash
+	}
+	root, proofs, err := merkle.Build(leaves)
+	if err != nil {
+		return err
+	}
 	now := time.Now()
 	pool := factory.NFTInventoryPool{
 		Id:             generateID(),
@@ -2065,7 +2111,7 @@ func ensureCollectionInventory(tx *gorm.DB, release factory.Release, collection 
 		TotalSupply:    int64(len(items)),
 		Status:         factory.NFTInventoryPoolStatusActive,
 		CollectionHash: hashInventoryCollection(items),
-		MerkleRoot:     hashInventoryMerkleRoot(items),
+		MerkleRoot:     root,
 		GeneratedAt:    &now,
 		FrozenAt:       &now,
 	}
@@ -2079,6 +2125,10 @@ func ensureCollectionInventory(tx *gorm.DB, release factory.Release, collection 
 	}
 	dbItems := make([]factory.NFTInventoryItem, 0, len(items))
 	for index, item := range items {
+		proofJSON, err := json.Marshal(proofs[index])
+		if err != nil {
+			return err
+		}
 		dbItems = append(dbItems, factory.NFTInventoryItem{
 			Id:            generateID(),
 			PoolId:        pool.Id,
@@ -2093,7 +2143,7 @@ func ensureCollectionInventory(tx *gorm.DB, release factory.Release, collection 
 			ShuffleIndex:  shuffleIndexes[index],
 			MetadataHash:  item.MetadataHash,
 			LeafHash:      item.LeafHash,
-			ProofJson:     "[]",
+			ProofJson:     string(proofJSON),
 			Status:        factory.NFTInventoryItemStatusAvailable,
 			MetadataUri:   factory.ItemMetadataStaticURL(release.PluginId, collectionKey, item.ItemId),
 			ProofUri:      factory.ItemProofStaticURL(release.PluginId, collectionKey, item.ItemId),
@@ -2395,11 +2445,6 @@ func hashInventoryCollection(items []inventoryMetadataItem) string {
 	return sha256Hex([]byte(strings.Join(parts, "\n")))
 }
 
-// 第一阶段使用 leaf 列表哈希作为集合 root。
-func hashInventoryMerkleRoot(items []inventoryMetadataItem) string {
-	return hashInventoryCollection(items)
-}
-
 // 计算单个 item 的 metadata hash。
 func hashItemMetadata(
 	release factory.Release,
@@ -2459,6 +2504,7 @@ func buildItemNFTMetadata(
 	attributes = appendMetadataAttribute(attributes, item, "eyeColor", "Eye Color")
 
 	properties := map[string]any{
+		"parameters":    item,
 		"pluginId":      release.PluginId,
 		"releaseId":     strconv.FormatInt(release.Id, 10),
 		"collectionKey": strings.TrimSpace(collection.Key),
@@ -2704,6 +2750,11 @@ func writeNFTMetadataAndProof(asset factory.Asset, snapshot mintedFactoryAsset) 
 		return err
 	}
 	metadataHash := sha256Hex(metadataData)
+	// WriteJSONAtomic 在文件末尾写入换行，v2 必须绑定实际文件字节。
+	frozenProof, err := buildFrozenInventoryProof(asset, sha256Hex(append(metadataData, '\n')))
+	if err != nil {
+		return err
+	}
 	if err := factory.WriteJSONAtomic(factory.MetadataStaticPath(asset.PluginId, tokenId), metadata); err != nil {
 		return err
 	}
@@ -2734,6 +2785,10 @@ func writeNFTMetadataAndProof(asset factory.Asset, snapshot mintedFactoryAsset) 
 		Leaf:          leafHash,
 		MerkleRoot:    leafHash,
 		Proof:         []string{},
+	}
+	if frozenProof != nil {
+		frozenProof.TokenID = tokenId
+		return factory.WriteJSONAtomic(factory.ProofStaticPath(asset.PluginId, tokenId), frozenProof)
 	}
 	return factory.WriteJSONAtomic(factory.ProofStaticPath(asset.PluginId, tokenId), proof)
 }

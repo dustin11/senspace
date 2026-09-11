@@ -34,7 +34,7 @@ func PublishPlugin(ctx *contextx.AppContext) {
 // @Success 200 {object} e.Error
 // @Router /api/v1/factory/plugins/{pluginId}/freeze-current [post]
 func FreezeCurrentPluginReleaseAssets(ctx *contextx.AppContext) {
-	record, err := factory_service.FreezeCurrentPluginReleaseAssets(*ctx.User, ctx.Gin.Param("pluginId"))
+	record, err := factory_service.FreezeCurrentPluginReleaseAssets(*ctx.User, ctx.Gin.Param("pluginId"), ctx.Gin.Query("batchId"))
 	panicIfFactoryError(err)
 	app.Response(ctx.Gin, e.SuccessData(record))
 }

@@ -35,21 +35,27 @@ func GenerateReleaseAssetData(user security.JwtUser, pluginIdRaw string, req Gen
 	if mode != GenerateReleaseAssetDataModeTest && mode != GenerateReleaseAssetDataModeFormal {
 		return nil, newParameterError("未知生成模式")
 	}
+	if mode == GenerateReleaseAssetDataModeFormal {
+		if err := requireReleaseFreezeOperator(user, pluginId); err != nil {
+			return nil, err
+		}
+	}
 
 	generatorDir, err := pluginAssetGeneratorDir(generator)
 	if err != nil {
 		return nil, err
 	}
+	if mode == GenerateReleaseAssetDataModeFormal {
+		return generateFormalBatch(generatorDir, req.Seed)
+	}
 	outputDir := filepath.Join(generatorDir, "generated")
 	dataDirName := generator.TestDirName
-	if mode == GenerateReleaseAssetDataModeFormal {
-		dataDirName = generator.FormalDirName
-	}
 
 	args := []string{
 		filepath.Join("dist", "cli", "generate.js"),
 		"--output-dir", outputDir,
 		"--fish-dir-name", dataDirName,
+		"--report-dir", filepath.Join(outputDir, "test-reports"),
 	}
 	if mode == GenerateReleaseAssetDataModeTest {
 		count := normalizeGenerateCount(req.Count)
@@ -104,12 +110,15 @@ func pluginAssetGeneratorDir(generator *pluginAssetGeneratorTooling) (string, er
 	return "", newConflictError("资产生成器目录不存在")
 }
 
-func runAssetGeneratorCommand(dir string, args []string) (string, string, error) {
+func runAssetGeneratorCommand(dir string, args []string, extraEnv ...string) (string, string, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Minute)
 	defer cancel()
 
 	cmd := exec.CommandContext(ctx, "node", args...)
 	cmd.Dir = dir
+	if len(extraEnv) > 0 {
+		cmd.Env = append(os.Environ(), extraEnv...)
+	}
 	var stdout bytes.Buffer
 	var stderr bytes.Buffer
 	cmd.Stdout = &stdout

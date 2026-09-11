@@ -144,6 +144,8 @@ const (
 
 // 资产生成请求。
 type GenerateReleaseAssetDataRequest struct {
+	// 正式批次种子；留空使用配置中的固定种子。
+	Seed string `json:"seed,omitempty"`
 	// 生成模式。
 	Mode GenerateReleaseAssetDataMode `json:"mode"`
 	// 只生成指定等级。
@@ -154,6 +156,10 @@ type GenerateReleaseAssetDataRequest struct {
 
 // 资产生成响应。
 type GenerateReleaseAssetDataResponse struct {
+	// 正式批次编号。
+	BatchID string `json:"batchId,omitempty"`
+	// 实际使用的种子。
+	Seed string `json:"seed,omitempty"`
 	// 实际执行的模式。
 	Mode GenerateReleaseAssetDataMode `json:"mode"`
 	// 生成结果子目录名。

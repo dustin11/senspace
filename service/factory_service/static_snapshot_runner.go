@@ -1,11 +1,14 @@
 package factory_service
 
 import (
+	"errors"
 	"os"
 	"path/filepath"
 	"strconv"
 	"time"
 
+	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 	"senspace/domain/factory"
 )
 
@@ -13,25 +16,37 @@ const timeLayoutSecond = "2006-01-02T15:04:05"
 
 // 立即重建发布静态快照。
 func rebuildReleaseStaticSnapshotNow(release factory.Release) error {
-	stageDir, err := factory.StageReleaseStaticSnapshot(release)
+	tx, err := db()
 	if err != nil {
 		return err
 	}
-
-	backupDir, err := factory.ActivateReleaseStaticSnapshot(release, stageDir)
-	if err != nil {
-		_ = factory.CleanupReleaseStaticStagingDir(stageDir)
-		return err
-	}
-
-	if err := factory.CommitActivatedReleaseStaticSnapshot(backupDir); err != nil {
-		rollbackErr := factory.RollbackActivatedReleaseStaticSnapshot(release, backupDir)
-		if rollbackErr != nil {
-			return rollbackErr
+	var stageDir, backupDir string
+	activated := false
+	// 与显式冻结共用发布行锁，避免后台任务删除正在构建的 staging。
+	err = tx.Transaction(func(tx *gorm.DB) error {
+		if err := tx.Clauses(clause.Locking{Strength: "UPDATE"}).First(&release, "id = ?", release.Id).Error; err != nil {
+			return err
 		}
-		return err
+		var err error
+		stageDir, err = factory.StageReleaseStaticSnapshot(release)
+		if err != nil {
+			return err
+		}
+		backupDir, err = factory.ActivateReleaseStaticSnapshot(release, stageDir)
+		if err != nil {
+			return err
+		}
+		activated = true
+		stageDir = ""
+		return nil
+	})
+	if err != nil {
+		if activated {
+			return errors.Join(err, factory.RollbackActivatedReleaseStaticSnapshot(release, backupDir))
+		}
+		return errors.Join(err, factory.CleanupReleaseStaticStagingDir(stageDir))
 	}
-	return nil
+	return factory.CommitActivatedReleaseStaticSnapshot(backupDir)
 }
 
 // 立即重建持有人的资产索引和组合快照。

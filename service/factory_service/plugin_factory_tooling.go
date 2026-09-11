@@ -14,8 +14,6 @@ type pluginFactoryTooling struct {
 type pluginAssetGeneratorTooling struct {
 	// 生成器目录候选列表。
 	DirCandidates []string
-	// 正式生成写入的子目录名。
-	FormalDirName string
 	// 测试生成写入的子目录名。
 	TestDirName string
 }
@@ -30,8 +28,7 @@ var pluginFactoryToolingRegistry = map[string]pluginFactoryTooling{
 				"../senspace-web/src/components/StarSky/Desktop/Plugins/FishTank/fish-generator",
 				"senspace-web/src/components/StarSky/Desktop/Plugins/FishTank/fish-generator",
 			},
-			FormalDirName: "fish",
-			TestDirName:   "fish-test",
+			TestDirName: "fish-test",
 		},
 	},
 }

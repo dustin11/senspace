@@ -48,7 +48,7 @@ type inventoryProofSnapshot struct {
 }
 
 // 从已冻结库存恢复包含证明；旧库存继续使用原协议，不隐式改写历史根。
-func buildFrozenInventoryProof(asset factory.Asset, tokenMetadataHash string) (*inventoryProofSnapshot, error) {
+func buildFrozenInventoryProof(asset factory.Asset, tokenMetadataHash string, templateItems snapshotTemplateItems) (*inventoryProofSnapshot, error) {
 	if asset.CollectionKey == "" {
 		return nil, nil
 	}
@@ -87,13 +87,9 @@ func buildFrozenInventoryProof(asset factory.Asset, tokenMetadataHash string) (*
 			continue
 		}
 		ref := resolveCollectionMetadataRef(collection, item.Tier)
-		items, err := loadMetadataRefItems(factory.ReleaseStaticDir(release), ref)
+		parameters, err := templateItems.find(factory.ReleaseStaticDir(release), ref, item.ItemId)
 		if err != nil {
 			return nil, err
-		}
-		parameters := findTemplateItemById(items, item.ItemId)
-		if parameters == nil {
-			return nil, newConflictError("冻结库存缺少原始参数")
 		}
 		return verifyInventoryProof(release, collection, ref, parameters, item, pool.MerkleRoot, asset.TokenId, tokenMetadataHash)
 	}

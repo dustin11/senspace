@@ -2707,7 +2707,7 @@ func createMintRelations(tx *gorm.DB, ownerKey string, assets []factory.Asset) e
 }
 
 // 写入单个资产静态快照。
-func writeFactoryAssetSnapshot(asset factory.Asset) error {
+func writeFactoryAssetSnapshot(asset factory.Asset, templateItems snapshotTemplateItems) error {
 	snapshot := mintedFactoryAsset{
 		Schema:        "senspace.factory.asset.v2",
 		AssetId:       strconv.FormatInt(asset.Id, 10),
@@ -2732,26 +2732,34 @@ func writeFactoryAssetSnapshot(asset factory.Asset) error {
 		MetadataUri:   asset.MetadataUri,
 		ProofUri:      asset.ProofUri,
 	}
-	if err := writeNFTMetadataAndProof(asset, snapshot); err != nil {
+	if err := writeNFTMetadataAndProof(asset, snapshot, templateItems); err != nil {
 		return err
 	}
 	return factory.WriteJSONAtomic(factory.AssetStaticPath(asset.PluginId, asset.Id), snapshot)
 }
 
 // 写入标准 NFT metadata 和当前阶段的 proof。
-func writeNFTMetadataAndProof(asset factory.Asset, snapshot mintedFactoryAsset) error {
+func writeNFTMetadataAndProof(asset factory.Asset, snapshot mintedFactoryAsset, templateItems snapshotTemplateItems) error {
 	tokenId := asset.TokenId
 	if strings.TrimSpace(tokenId) == "" {
 		tokenId = strconv.FormatInt(asset.Id, 10)
 	}
-	metadata := buildNFTMetadata(asset, snapshot)
+	var templateItem map[string]any
+	if strings.TrimSpace(asset.TemplateRef) != "" {
+		var err error
+		templateItem, err = templateItems.find(releaseStaticDirFromAsset(asset), asset.TemplateRef, asset.ItemId)
+		if err != nil {
+			return err
+		}
+	}
+	metadata := buildNFTMetadata(asset, snapshot, templateItem)
 	metadataData, err := json.MarshalIndent(metadata, "", "  ")
 	if err != nil {
 		return err
 	}
 	metadataHash := sha256Hex(metadataData)
 	// WriteJSONAtomic 在文件末尾写入换行，v2 必须绑定实际文件字节。
-	frozenProof, err := buildFrozenInventoryProof(asset, sha256Hex(append(metadataData, '\n')))
+	frozenProof, err := buildFrozenInventoryProof(asset, sha256Hex(append(metadataData, '\n')), templateItems)
 	if err != nil {
 		return err
 	}
@@ -2794,8 +2802,7 @@ func writeNFTMetadataAndProof(asset factory.Asset, snapshot mintedFactoryAsset) 
 }
 
 // 生成市场通用 NFT metadata。
-func buildNFTMetadata(asset factory.Asset, snapshot mintedFactoryAsset) nftMetadata {
-	templateItem := loadMintedAssetTemplateItem(asset)
+func buildNFTMetadata(asset factory.Asset, snapshot mintedFactoryAsset, templateItem map[string]any) nftMetadata {
 	assetId := strconv.FormatInt(asset.Id, 10)
 	name := fmt.Sprintf("%s %s", asset.PluginId, asset.ItemId)
 	if asset.CollectionKey != "" {
@@ -2877,19 +2884,6 @@ func appendMetadataAttribute(attributes []nftMetadataAttribute, item map[string]
 		return attributes
 	}
 	return append(attributes, nftMetadataAttribute{TraitType: traitType, Value: value})
-}
-
-// 读取已铸造资产对应的模板项，用于补充 metadata traits。
-func loadMintedAssetTemplateItem(asset factory.Asset) map[string]any {
-	templateFile, refField, err := parseAssetRef(asset.TemplateRef)
-	if err != nil {
-		return nil
-	}
-	items, err := loadTemplateItems(filepath.Join(releaseStaticDirFromAsset(asset), templateFile), refField)
-	if err != nil {
-		return nil
-	}
-	return findTemplateItemById(items, asset.ItemId)
 }
 
 // 读取根节点为数组的模板文件。

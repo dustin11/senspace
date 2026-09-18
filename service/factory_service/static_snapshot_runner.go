@@ -103,8 +103,9 @@ func stageOwnerFactorySnapshots(
 		UpdatedAt: now,
 		Assets:    make([]ownerFactoryAssetEntry, 0, len(assets)),
 	}
+	templateItems := make(snapshotTemplateItems)
 	for _, asset := range assets {
-		if err := writeFactoryAssetSnapshot(asset); err != nil {
+		if err := writeFactoryAssetSnapshot(asset, templateItems); err != nil {
 			_ = os.RemoveAll(stageDir)
 			return "", err
 		}

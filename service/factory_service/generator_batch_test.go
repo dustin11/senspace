@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"os"
 	"path/filepath"
+	"strconv"
+	"strings"
 	"testing"
 
 	"senspace/domain/factory"
@@ -13,6 +15,30 @@ import (
 
 	"github.com/stretchr/testify/require"
 )
+
+// 后端启动的实际 Node 进程使用全量预算，不依赖服务环境的默认堆上限。
+func TestGeneratorCommandHeapBudget(t *testing.T) {
+	t.Setenv("NODE_OPTIONS", "--max-old-space-size=128")
+	stdout, stderr, err := runAssetGeneratorCommand(t.TempDir(), []string{"-e", "process.stdout.write(String(require('v8').getHeapStatistics().heap_size_limit))"})
+	require.NoError(t, err, stderr)
+	limit, err := strconv.ParseInt(strings.TrimSpace(stdout), 10, 64)
+	require.NoError(t, err)
+	require.GreaterOrEqual(t, limit, int64(6144)*1024*1024)
+	require.Less(t, limit, int64(6400)*1024*1024)
+}
+
+// 模拟 Node 的失败输出，不实际耗尽测试机内存；普通脚本错误继续保留 stderr。
+func TestGeneratorCommandFailure(t *testing.T) {
+	_, stderr, err := runAssetGeneratorCommand(t.TempDir(), []string{"-e", "process.stderr.write('FATAL ERROR: JavaScript heap out of memory'); process.exit(1)"})
+	require.Contains(t, stderr, "heap out of memory")
+	var serviceErr *ServiceError
+	require.ErrorAs(t, err, &serviceErr)
+	require.Equal(t, ErrorKindConflict, serviceErr.Kind)
+	require.Contains(t, serviceErr.Message, "内存不足")
+	_, stderr, err = runAssetGeneratorCommand(t.TempDir(), []string{"-e", "process.stderr.write('invalid fixture'); process.exit(2)"})
+	require.Error(t, err)
+	require.Equal(t, "invalid fixture", stderr)
+}
 
 // 不连接数据库，校验正式接口权限、跨进程锁和批次文件完整性。
 func TestGeneratorBatchGuards(t *testing.T) {

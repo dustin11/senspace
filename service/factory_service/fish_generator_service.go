@@ -3,7 +3,7 @@ package factory_service
 import (
 	"bytes"
 	"context"
-	"fmt"
+	"log"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -114,7 +114,8 @@ func runAssetGeneratorCommand(dir string, args []string, extraEnv ...string) (st
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Minute)
 	defer cancel()
 
-	cmd := exec.CommandContext(ctx, "node", args...)
+	// 全量配方与独立审计均按已验证的 6GiB 堆预算执行；命令行参数优先于宿主 NODE_OPTIONS。
+	cmd := exec.CommandContext(ctx, "node", append([]string{"--max-old-space-size=6144"}, args...)...)
 	cmd.Dir = dir
 	if len(extraEnv) > 0 {
 		cmd.Env = append(os.Environ(), extraEnv...)
@@ -125,7 +126,12 @@ func runAssetGeneratorCommand(dir string, args []string, extraEnv ...string) (st
 	cmd.Stderr = &stderr
 	err := cmd.Run()
 	if ctx.Err() == context.DeadlineExceeded {
-		return stdout.String(), stderr.String(), fmt.Errorf("生成数据超时")
+		log.Printf("资产生成器执行超时 (%s): %s: %v", dir, stderr.String(), err)
+		return stdout.String(), stderr.String(), newConflictError("资产生成或校验超时（5分钟），请检查服务负载后重试")
+	}
+	if err != nil && strings.Contains(stderr.String(), "heap out of memory") {
+		log.Printf("资产生成器内存不足 (%s): %s: %v", dir, stderr.String(), err)
+		return stdout.String(), stderr.String(), newConflictError("资产生成器内存不足，请检查服务器内存配置后重试")
 	}
 	return stdout.String(), stderr.String(), err
 }

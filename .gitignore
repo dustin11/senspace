@@ -41,3 +41,6 @@ go.work.sum
 
 *.js
 *.ts
+
+audioanalysis/
+/cmd/

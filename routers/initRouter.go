@@ -44,8 +44,8 @@ func SetupRouter() *gin.Engine {
 
 	corsCfg := cors.Config{
 		AllowMethods:     []string{"GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"},
-		AllowHeaders:     []string{"Origin", "Content-Type", "Accept", "Authorization", "X-Plugin-Share-Token"},
-		ExposeHeaders:    []string{"Content-Length"},
+		AllowHeaders:     []string{"Origin", "Content-Type", "Accept", "Authorization", "X-Plugin-Share-Token", "If-None-Match"},
+		ExposeHeaders:    []string{"Content-Length", "ETag"},
 		AllowCredentials: true,           // 必须启用，浏览器才能发送/接收带凭证的跨域 Cookie
 		MaxAge:           12 * time.Hour, // 预检请求的缓存时间
 	}

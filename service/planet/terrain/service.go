@@ -28,7 +28,7 @@ import (
 
 const (
 	// 当前支持的地形状态结构版本。
-	currentSchemaVersion = 8
+	currentSchemaVersion = 9
 	// 单个地形状态允许的最大字节数。
 	maxStateBytes = 2 * 1024 * 1024
 	// 单个星球允许的平台记录上限。
@@ -68,6 +68,7 @@ const (
 
 // 允许发布的地形物件预设。
 var terrainObjectPresetIds = map[string]struct{}{
+	"shape-box": {}, "shape-wedge": {}, "shape-corner": {}, "shape-frustum": {}, "shape-prism": {}, "shape-pipe": {}, "shape-arc": {}, "shape-dome": {}, "shape-capsule": {}, "shape-extrude": {}, "shape-sweep": {}, "shape-lathe": {}, "shape-roof": {}, "shape-mesh": {},
 	"cypress":           {},
 	"shrub":             {},
 	"grass-clump":       {},
@@ -196,6 +197,8 @@ type terrainObject struct {
 	VariantSeed       int64                     `json:"variantSeed"`
 	Interaction       *terrainObjectInteraction `json:"interaction,omitempty"`
 	SurfaceAttachment *terrainSurfaceAnchor     `json:"surfaceAttachment,omitempty"`
+	// 参数化形状源数据，随预制体一起保存。
+	Shape *terrainShape `json:"shape,omitempty"`
 }
 
 // terrainAssembly 保存一组物件的稳定编辑关系。
@@ -216,6 +219,8 @@ type terrainPrefabPart struct {
 	Interaction           *terrainObjectInteraction `json:"interaction,omitempty"`
 	SurfaceHostPartIndex  *int                      `json:"surfaceHostPartIndex,omitempty"`
 	SurfaceLocalTransform *terrainTransform         `json:"surfaceLocalTransform,omitempty"`
+	// 参数化形状源数据，随预制体一起保存。
+	Shape *terrainShape `json:"shape,omitempty"`
 }
 
 // terrainPrefabVegetationPatch 保存相对具体预制体宿主部件的网格锚点。
@@ -599,6 +604,9 @@ func validateState(state json.RawMessage) (json.RawMessage, error) {
 		if !validTerrainTransform(object.Transform) {
 			return nil, bizerr.Parameter("地形物件变换无效")
 		}
+		if err := validateTerrainShape(object.PresetId, object.Shape); err != nil {
+			return nil, err
+		}
 		if err := validateTerrainObjectInteraction(object.PresetId, object.Interaction); err != nil {
 			return nil, err
 		}
@@ -740,6 +748,9 @@ func validateTerrainPrefabPart(part terrainPrefabPart, partCount int, parts []te
 	}
 	if !validTerrainTransform(part.Transform) {
 		return bizerr.Parameter("地形预制体部件变换无效")
+	}
+	if err := validateTerrainShape(part.PresetId, part.Shape); err != nil {
+		return err
 	}
 	if err := validateTerrainObjectInteraction(part.PresetId, part.Interaction); err != nil {
 		return err

@@ -68,7 +68,7 @@ const (
 
 // 允许发布的地形物件预设。
 var terrainObjectPresetIds = map[string]struct{}{
-	"shape-box": {}, "shape-wedge": {}, "shape-corner": {}, "shape-frustum": {}, "shape-prism": {}, "shape-pipe": {}, "shape-arc": {}, "shape-dome": {}, "shape-capsule": {}, "shape-extrude": {}, "shape-sweep": {}, "shape-lathe": {}, "shape-roof": {}, "shape-mesh": {},
+	"shape-box": {}, "shape-wedge": {}, "shape-corner": {}, "shape-frustum": {}, "shape-prism": {}, "shape-pipe": {}, "shape-arc": {}, "shape-dome": {}, "shape-capsule": {}, "shape-extrude": {}, "shape-sweep": {}, "shape-lathe": {}, "shape-loft": {}, "shape-roof": {}, "shape-mesh": {},
 	"cypress":           {},
 	"shrub":             {},
 	"grass-clump":       {},

@@ -44,6 +44,15 @@ type terrainShapeImport struct {
 	Base64 string `json:"base64"`
 }
 
+// 放样截面，宽度和深度为半尺寸，中心可沿 XZ 偏移。
+type terrainShapeSection struct {
+	Y       float64 `json:"y"`       // 截面高度。
+	Width   float64 `json:"width"`   // 截面半宽。
+	Depth   float64 `json:"depth"`   // 截面半深。
+	OffsetX float64 `json:"offsetX"` // 中心横向偏移。
+	OffsetZ float64 `json:"offsetZ"` // 中心纵深偏移。
+}
+
 // 形状源定义与有界高级造型描述。
 type terrainShape struct {
 	RoomID       string                 `json:"roomId,omitempty"`
@@ -59,6 +68,7 @@ type terrainShape struct {
 	Profile      [][]float64            `json:"profile,omitempty"`
 	Holes        [][][]float64          `json:"holes,omitempty"`
 	Path         [][]float64            `json:"path,omitempty"`
+	Sections     []terrainShapeSection  `json:"sections,omitempty"`
 	Style        terrainShapeStyle      `json:"style"`
 	Decorative   bool                   `json:"decorative,omitempty"`
 	Mesh         *terrainShapeMesh      `json:"mesh,omitempty"`
@@ -91,6 +101,7 @@ var shapeColorPattern = regexp.MustCompile(`^#[0-9a-fA-F]{6}$`)
 
 // 参数范围与前端生成器一致；未列出的字段拒绝进入存档。
 var shapeParameterRanges = map[string][2]float64{
+	"ridge": {0, 10}, "roundness": {1, 4}, "mirror": {0, 1},
 	"width": {.005, 100}, "height": {.005, 100}, "depth": {.005, 100}, "radius": {.005, 100},
 	"topWidth": {.005, 100}, "topDepth": {.005, 100}, "topRadius": {0, 50}, "offset": {-20, 20},
 	"bevel": {0, 10}, "smooth": {1, 5}, "top": {0, 1}, "sides": {3, 64}, "wall": {0, 10},
@@ -102,8 +113,9 @@ var shapeParameterKeys = map[string]string{
 	"shape-box": "width height depth bevel smooth", "shape-wedge": "width height depth top", "shape-corner": "width height depth",
 	"shape-frustum": "width height depth topWidth topDepth offset", "shape-prism": "radius height topRadius sides",
 	"shape-pipe": "radius height wall sides square", "shape-arc": "radius tube wall start arc left right",
-	"shape-dome": "radius cut wall", "shape-capsule": "radius height", "shape-extrude": "depth bevel",
-	"shape-sweep": "radius wall square aspect", "shape-lathe": "arc", "shape-roof": "width depth height eave corner thickness curve", "shape-mesh": "",
+	"shape-dome": "radius cut wall sides", "shape-capsule": "radius height sides", "shape-extrude": "depth bevel ridge mirror",
+	"shape-loft":  "sides roundness arc start smooth mirror",
+	"shape-sweep": "radius wall square aspect", "shape-lathe": "arc start aspect sides", "shape-roof": "width depth height eave corner thickness curve", "shape-mesh": "",
 }
 
 // 检查固定维度控制点，不允许 NaN、越界和无限细分。
@@ -181,6 +193,35 @@ func validateTerrainShapeDepth(id string, shape *terrainShape, depth int) error 
 			return bizerr.Parameter("GLB源文件无效")
 		}
 	}
+	// 新增可选参数与前端默认值一致，已有形状文档无需重写。
+	if shape.Parameters != nil {
+		if id == "shape-extrude" || id == "shape-loft" {
+			if _, exists := shape.Parameters["mirror"]; !exists {
+				shape.Parameters["mirror"] = 0
+			}
+		}
+		if id == "shape-extrude" {
+			if _, exists := shape.Parameters["ridge"]; !exists {
+				shape.Parameters["ridge"] = 0
+			}
+		}
+		if id == "shape-lathe" {
+			if _, exists := shape.Parameters["start"]; !exists {
+				shape.Parameters["start"] = 0
+			}
+			if _, exists := shape.Parameters["aspect"]; !exists {
+				shape.Parameters["aspect"] = 1
+			}
+		}
+		if id == "shape-dome" || id == "shape-capsule" || id == "shape-lathe" {
+			if _, exists := shape.Parameters["sides"]; !exists {
+				shape.Parameters["sides"] = 32
+			}
+			if shape.Parameters["sides"] < 6 {
+				return bizerr.Parameter("环向细分至少为6")
+			}
+		}
+	}
 	allowed := strings.Fields(keys)
 	if len(shape.Parameters) != len(allowed) {
 		return bizerr.Parameter("形状参数不完整")
@@ -188,7 +229,15 @@ func validateTerrainShapeDepth(id string, shape *terrainShape, depth int) error 
 	for _, key := range allowed {
 		value, ok := shape.Parameters[key]
 		bounds := shapeParameterRanges[key]
-		if !ok || math.IsNaN(value) || math.IsInf(value, 0) || value < bounds[0] || value > bounds[1] || ((key == "sides" || key == "smooth") && math.Trunc(value) != value) {
+		if id == "shape-loft" {
+			if key == "sides" {
+				bounds = [2]float64{4, 32}
+			}
+			if key == "smooth" {
+				bounds = [2]float64{0, 1}
+			}
+		}
+		if !ok || math.IsNaN(value) || math.IsInf(value, 0) || value < bounds[0] || value > bounds[1] || ((key == "sides" || key == "smooth" || key == "mirror") && math.Trunc(value) != value) {
 			return bizerr.Parameter("形状参数超出范围: " + key)
 		}
 	}
@@ -226,6 +275,15 @@ func validateTerrainShapeDepth(id string, shape *terrainShape, depth int) error 
 	if (id == "shape-sweep" || shape.Path != nil) && !validShapePoints(shape.Path, 3, 2) {
 		return bizerr.Parameter("形状路径无效")
 	}
+	if id == "shape-loft" && p["roundness"] == 1 &&
+		(math.Floor(p["start"]/90)+1)*90 >= p["start"]+p["arc"] {
+		return bizerr.Parameter("菱形截面弧段须跨过至少一个角点，不能退化为直线")
+	}
+	if id == "shape-loft" || shape.Sections != nil {
+		if err := validateShapeSections(shape.Sections); err != nil {
+			return err
+		}
+	}
 	if len(shape.Holes) > 16 {
 		return bizerr.Parameter("形状孔洞过多")
 	}
@@ -237,6 +295,18 @@ func validateTerrainShapeDepth(id string, shape *terrainShape, depth int) error 
 	if id == "shape-extrude" {
 		if err := validateShapePolygon(shape.Profile, shape.Holes); err != nil {
 			return err
+		}
+		if p["ridge"] > 0 {
+			positive, negative := false, false
+			for i, a := range shape.Profile {
+				b, c := shape.Profile[(i+1)%len(shape.Profile)], shape.Profile[(i+2)%len(shape.Profile)]
+				turn := (b[0]-a[0])*(c[1]-b[1]) - (b[1]-a[1])*(c[0]-b[0])
+				positive = positive || turn > 1e-8
+				negative = negative || turn < -1e-8
+			}
+			if p["bevel"] > 0 || len(shape.Holes) > 0 || (positive && negative) {
+				return bizerr.Parameter("棱脊体需要无孔凸轮廓，且不能同时使用倒角")
+			}
 		}
 	}
 	if id == "shape-sweep" {
@@ -333,6 +403,33 @@ func validateShapeRig(rig *terrainShapeRig) error {
 		if key.Time < 0 || key.Time > 120 || key.Value < rig.Min || key.Value > rig.Max || (i > 0 && key.Time <= rig.Keys[i-1].Time) {
 			return invalid()
 		}
+	}
+	return nil
+}
+
+// 截面有界且高度递增，仅首尾允许同时归零为尖端，防止翻面和无体积几何。
+func validateShapeSections(sections []terrainShapeSection) error {
+	if len(sections) < 2 || len(sections) > 32 {
+		return bizerr.Parameter("放样截面需要2–32层")
+	}
+	hasVolume := false
+	for i, section := range sections {
+		for _, value := range []float64{section.Y, section.Width, section.Depth, section.OffsetX, section.OffsetZ} {
+			if math.IsNaN(value) || math.IsInf(value, 0) || math.Abs(value) > 100 {
+				return bizerr.Parameter("放样截面数值无效")
+			}
+		}
+		if section.Width < 0 || section.Depth < 0 || (i > 0 && section.Y <= sections[i-1].Y) {
+			return bizerr.Parameter("截面须按高度递增，半宽半深不能为负")
+		}
+		if (section.Width == 0 || section.Depth == 0) &&
+			(section.Width != 0 || section.Depth != 0 || (i > 0 && i < len(sections)-1)) {
+			return bizerr.Parameter("仅首尾截面可同时归零为尖端")
+		}
+		hasVolume = hasVolume || section.Width > 0
+	}
+	if !hasVolume {
+		return bizerr.Parameter("放样体至少需要一个非零截面")
 	}
 	return nil
 }

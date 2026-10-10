@@ -62,15 +62,27 @@ type dockerPluginBuildExecutor struct{}
 
 // runtimeManifestFile 表示插件运行产物清单。
 type runtimeManifestFile struct {
-	PluginId             string                      `json:"pluginId"`
-	Version              string                      `json:"version"`
-	ReleaseId            string                      `json:"releaseId"`
-	BundleHash           string                      `json:"bundleHash"`
-	Integrity            string                      `json:"integrity"`
-	SandboxEntry         string                      `json:"sandboxEntry"`
-	StaticAssets         []string                    `json:"staticAssets,omitempty"`
-	ExternalDependencies []runtimeManifestDependency `json:"externalDependencies"`
-	BundledDependencies  []runtimeManifestDependency `json:"bundledDependencies"`
+	PluginId     string   `json:"pluginId"`
+	Version      string   `json:"version"`
+	ReleaseId    string   `json:"releaseId"`
+	BundleHash   string   `json:"bundleHash"`
+	Integrity    string   `json:"integrity"`
+	SandboxEntry string   `json:"sandboxEntry"`
+	StaticAssets []string `json:"staticAssets,omitempty"`
+	// 按内容摘要索引的预生成显示缓存。
+	DisplayArtifacts     map[string]runtimeDisplayArtifact `json:"displayArtifacts,omitempty"`
+	ExternalDependencies []runtimeManifestDependency       `json:"externalDependencies"`
+	BundledDependencies  []runtimeManifestDependency       `json:"bundledDependencies"`
+}
+
+// 预生成显示产物的位置与完整性。
+type runtimeDisplayArtifact struct {
+	// 构建目录内的相对位置。
+	URL string `json:"url"`
+	// 文件内容摘要。
+	SHA256 string `json:"sha256"`
+	// 文件字节数。
+	Bytes int64 `json:"bytes"`
 }
 
 type runtimeManifestDependency struct {
@@ -446,6 +458,9 @@ func readRuntimeBuildResult(outputDir string, req PluginBuildRequest) (*PluginBu
 	if err := validateRuntimeManifest(manifest, req, actualBundleHash, actualIntegrity); err != nil {
 		return nil, err
 	}
+	if err := validateRuntimeDisplayArtifacts(outputDir, manifest.DisplayArtifacts); err != nil {
+		return nil, err
+	}
 
 	result.BundleHash = actualBundleHash
 	result.Integrity = actualIntegrity
@@ -453,6 +468,50 @@ func readRuntimeBuildResult(outputDir string, req PluginBuildRequest) (*PluginBu
 	result.BundledDependencies = dependencyNames(manifest.BundledDependencies)
 
 	return result, nil
+}
+
+// 校验预生成产物的相对位置、大小与摘要，同一文件只读取一次。
+func validateRuntimeDisplayArtifacts(outputDir string, artifacts map[string]runtimeDisplayArtifact) error {
+	if artifacts != nil && len(artifacts) == 0 {
+		return fmt.Errorf("运行清单 displayArtifacts 不能为空")
+	}
+	if len(artifacts) > 0 {
+		info, err := os.Lstat(filepath.Join(outputDir, "display"))
+		if err != nil || !info.IsDir() || info.Mode()&os.ModeSymlink != 0 {
+			return fmt.Errorf("运行清单 displayArtifacts 目录非法")
+		}
+	}
+	verified := make(map[string]runtimeDisplayArtifact)
+	for key, artifact := range artifacts {
+		keyBytes, keyErr := hex.DecodeString(key)
+		hashBytes, hashErr := hex.DecodeString(artifact.SHA256)
+		if keyErr != nil || len(keyBytes) != sha256.Size || key != strings.ToLower(key) ||
+			hashErr != nil || len(hashBytes) != sha256.Size || artifact.SHA256 != strings.ToLower(artifact.SHA256) ||
+			artifact.URL != "display/display-"+artifact.SHA256+".json" || artifact.Bytes <= 0 || artifact.Bytes > 32*1024*1024 {
+			return fmt.Errorf("运行清单 displayArtifacts 身份非法")
+		}
+		if previous, ok := verified[artifact.URL]; ok {
+			if previous != artifact {
+				return fmt.Errorf("运行清单 displayArtifacts 文件信息冲突")
+			}
+			continue
+		}
+		artifactPath := filepath.Join(outputDir, filepath.FromSlash(artifact.URL))
+		info, err := os.Lstat(artifactPath)
+		if err != nil || !info.Mode().IsRegular() || info.Size() != artifact.Bytes {
+			return fmt.Errorf("运行清单 displayArtifacts 文件大小校验失败: %s", artifact.URL)
+		}
+		content, err := os.ReadFile(artifactPath)
+		if err != nil {
+			return fmt.Errorf("读取显示产物失败: %w", err)
+		}
+		digest := sha256.Sum256(content)
+		if hex.EncodeToString(digest[:]) != artifact.SHA256 {
+			return fmt.Errorf("运行清单 displayArtifacts 摘要校验失败: %s", artifact.URL)
+		}
+		verified[artifact.URL] = artifact
+	}
+	return nil
 }
 
 // 解析沙箱运行入口路径，并限制它只能落在当前 release 运行目录内。

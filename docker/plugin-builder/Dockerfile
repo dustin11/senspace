@@ -11,6 +11,7 @@ RUN npm config set registry "${NPM_REGISTRY}" \
     && npm install --omit=dev
 
 COPY build-plugin.mjs ./
+COPY display-prebuilder.mjs ./
 
 RUN addgroup -S app && adduser -S app -G app
 USER app

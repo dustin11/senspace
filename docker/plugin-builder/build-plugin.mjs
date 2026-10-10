@@ -2,6 +2,7 @@ import { build } from 'esbuild';
 import crypto from 'node:crypto';
 import fs from 'node:fs/promises';
 import path from 'node:path';
+import { pathToFileURL, fileURLToPath } from 'node:url';
 
 const externalDependencies = [
   'three',
@@ -312,6 +313,52 @@ async function loadManifest(srcDir) {
   return readJSON(path.join(srcDir, 'manifest.json'));
 }
 
+// 构建容器先静态发现接口；没有接口的插件不在 Node 中执行入口。
+async function prebuildPluginDisplay(entry, outDir) {
+  const helper = fileURLToPath(new URL('./display-prebuilder.mjs', import.meta.url));
+  const sdk = await import(pathToFileURL(helper).href);
+  const exportName = sdk.findPluginPrebuildExport(entry);
+  if (!exportName) return undefined;
+  const sdkNamespaces = {
+    three: 'pluginThree',
+    '@senspace/plugin-core': 'pluginCore',
+    '@senspace/plugin-workbench': 'pluginWorkbench',
+    '@senspace/plugin-framework/sandbox': 'pluginSandbox',
+  };
+  const temporary = await fs.mkdtemp(path.join(outDir, '.display-build-'));
+  try {
+    const modulePath = path.join(temporary, 'entry.mjs');
+    await build({ stdin: {
+      contents: `export { ${exportName} as default } from ${JSON.stringify(entry)};`,
+      resolveDir: path.dirname(entry), loader: 'ts',
+    }, outfile: modulePath, bundle: true, platform: 'node', format: 'esm', target: 'node22',
+      plugins: [{ name: 'display-builder-sdk', setup(builder) {
+        builder.onResolve({ filter: /^@senspace\/plugin-framework$/ }, () => ({ path: helper, external: true }));
+        builder.onResolve({ filter: /^(three|@senspace\/plugin-(core|workbench|framework\/sandbox))$/ }, args => ({
+          path: args.path, namespace: 'display-sdk',
+        }));
+        builder.onResolve({ filter: /.*/, namespace: 'display-sdk' }, args =>
+          args.path === helper ? { path: helper, external: true } : undefined);
+        // 所有 SDK 和 Three.js 引用同一份宿主模块，保持构造器与缓存格式一致。
+        builder.onLoad({ filter: /.*/, namespace: 'display-sdk' }, args => {
+          const name = sdkNamespaces[args.path];
+          const exports = Object.keys(sdk[name]).filter(key => /^[A-Za-z_$][\w$]*$/.test(key) && key !== 'default');
+          return { contents: `import { ${name} as sdk } from ${JSON.stringify(helper)};\n` +
+            exports.map(key => `export const ${key} = sdk[${JSON.stringify(key)}];`).join('\n'), loader: 'js' };
+        });
+      } }] });
+    const { default: builder } = await import(pathToFileURL(modulePath).href);
+    const { artifacts } = await sdk.buildPluginDisplay(builder);
+    const catalog = {};
+    await fs.mkdir(path.join(outDir, 'display'), { recursive: true });
+    for (const { filename, text, sha256, bytes, keys } of artifacts) {
+      await fs.writeFile(path.join(outDir, 'display', filename), text, 'utf8');
+      for (const key of keys) catalog[key] ??= { url: `display/${filename}`, sha256, bytes };
+    }
+    return catalog;
+  } finally { await fs.rm(temporary, { recursive: true, force: true }); }
+}
+
 async function main() {
   const args = parseArgs(process.argv.slice(2));
   const srcDir = args.src;
@@ -402,6 +449,7 @@ async function main() {
 
   const runtimeDependencies = collectRuntimeDependencies(sandboxBuildResult.metafile);
   await copyPluginStaticAssets(srcDir, outDir, staticAssets);
+  const displayArtifacts = await prebuildPluginDisplay(entryFile, outDir);
   const runtimeManifest = {
     pluginId,
     version,
@@ -410,6 +458,7 @@ async function main() {
     integrity,
     sandboxEntry,
     staticAssets,
+    ...(displayArtifacts ? { displayArtifacts } : {}),
     externalDependencies: runtimeDependencies.externalDependencies,
     bundledDependencies: runtimeDependencies.bundledDependencies,
   };

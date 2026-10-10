@@ -2,4 +2,5 @@ FROM senspace/plugin-builder:latest
 
 USER root
 COPY --chmod=0644 build-plugin.mjs /builder/build-plugin.mjs
+COPY --chmod=0644 display-prebuilder.mjs /builder/display-prebuilder.mjs
 USER app

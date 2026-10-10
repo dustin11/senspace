@@ -113,6 +113,8 @@ type templateItemMatch struct {
 type normalizedPluginOptions struct {
 	Raw  string
 	Data map[string]any
+	// 铸造等级单独进入资产 metadata，不保存在可修改参数中。
+	Tier string
 }
 
 // 静态目录中的单个 NFT 快照。
@@ -373,6 +375,15 @@ func MintReleaseAsset(user security.JwtUser, releaseIdRaw string, req MintAssetR
 
 		var createdAssets []factory.Asset
 		for _, selected := range mintSelection.Items {
+			tier := selected.Tier
+			if !hasValueTemplate {
+				tier = pluginOptions.Tier
+				if tier == "" {
+					tier = "common"
+				}
+			} else if pluginOptions.Tier != "" && pluginOptions.Tier != tier {
+				return newParameterError("资产等级必须与铸造库存一致")
+			}
 			assetId := generateID()
 			tokenId := strconv.FormatInt(assetId, 10)
 			asset := factory.Asset{
@@ -389,7 +400,7 @@ func MintReleaseAsset(user security.JwtUser, releaseIdRaw string, req MintAssetR
 				ItemId:        selected.ItemId,
 				ItemIndex:     selected.ItemIndex,
 				PluginOptions: pluginOptions.Raw,
-				Tier:          selected.Tier,
+				Tier:          tier,
 				TraitHash:     selected.TraitHash,
 				OwnerAddress:  walletAddress,
 				OwnerKey:      ownerKey,
@@ -2949,10 +2960,20 @@ func normalizePluginOptions(input map[string]any) (normalizedPluginOptions, erro
 	if err := json.Unmarshal(data, &normalized); err != nil {
 		return normalizedPluginOptions{}, newParameterError("插件属性参数格式错误")
 	}
+	tier := ""
+	if value, exists := normalized["tier"]; exists {
+		var ok bool
+		tier, ok = value.(string)
+		if !ok || (tier != "common" && tier != "rare" && tier != "epic" && tier != "legendary") {
+			return normalizedPluginOptions{}, newParameterError("插件 tier 必须是 common、rare、epic 或 legendary")
+		}
+		delete(normalized, "tier")
+	}
 	if len(normalized) == 0 {
 		return normalizedPluginOptions{
 			Raw:  "{}",
 			Data: nil,
+			Tier: tier,
 		}, nil
 	}
 	normalizedData, err := json.Marshal(normalized)
@@ -2962,6 +2983,7 @@ func normalizePluginOptions(input map[string]any) (normalizedPluginOptions, erro
 	return normalizedPluginOptions{
 		Raw:  string(normalizedData),
 		Data: normalized,
+		Tier: tier,
 	}, nil
 }
 

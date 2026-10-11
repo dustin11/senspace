@@ -485,9 +485,10 @@ func validateRuntimeDisplayArtifacts(outputDir string, artifacts map[string]runt
 	for key, artifact := range artifacts {
 		keyBytes, keyErr := hex.DecodeString(key)
 		hashBytes, hashErr := hex.DecodeString(artifact.SHA256)
+		artifactBase := "display/display-" + artifact.SHA256
 		if keyErr != nil || len(keyBytes) != sha256.Size || key != strings.ToLower(key) ||
 			hashErr != nil || len(hashBytes) != sha256.Size || artifact.SHA256 != strings.ToLower(artifact.SHA256) ||
-			artifact.URL != "display/display-"+artifact.SHA256+".json" || artifact.Bytes <= 0 || artifact.Bytes > 32*1024*1024 {
+			(artifact.URL != artifactBase+".json" && artifact.URL != artifactBase+".bin") || artifact.Bytes <= 0 || artifact.Bytes > 32*1024*1024 {
 			return fmt.Errorf("运行清单 displayArtifacts 身份非法")
 		}
 		if previous, ok := verified[artifact.URL]; ok {

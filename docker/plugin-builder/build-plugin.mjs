@@ -351,8 +351,8 @@ async function prebuildPluginDisplay(entry, outDir) {
     const { artifacts } = await sdk.buildPluginDisplay(builder);
     const catalog = {};
     await fs.mkdir(path.join(outDir, 'display'), { recursive: true });
-    for (const { filename, text, sha256, bytes, keys } of artifacts) {
-      await fs.writeFile(path.join(outDir, 'display', filename), text, 'utf8');
+    for (const { filename, payload, sha256, bytes, keys } of artifacts) {
+      await fs.writeFile(path.join(outDir, 'display', filename), payload);
       for (const key of keys) catalog[key] ??= { url: `display/${filename}`, sha256, bytes };
     }
     return catalog;

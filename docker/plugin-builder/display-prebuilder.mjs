@@ -12380,8 +12380,8 @@ ${lanes.join("\n")}
               return emptyFileSystemEntries;
             }
           }
-          function readDirectory(path2, extensions, excludes, includes, depth) {
-            return matchFiles(path2, extensions, excludes, includes, useCaseSensitiveFileNames2, process.cwd(), depth, getAccessibleFileSystemEntries, realpath);
+          function readDirectory(path2, extensions2, excludes, includes, depth) {
+            return matchFiles(path2, extensions2, excludes, includes, useCaseSensitiveFileNames2, process.cwd(), depth, getAccessibleFileSystemEntries, realpath);
           }
           function fileSystemEntryExists(path2, entryKind) {
             const stat = statSync2(path2);
@@ -12502,8 +12502,8 @@ ${lanes.join("\n")}
       function fileExtensionIs(path2, extension) {
         return path2.length > extension.length && endsWith(path2, extension);
       }
-      function fileExtensionIsOneOf(path2, extensions) {
-        for (const extension of extensions) {
+      function fileExtensionIsOneOf(path2, extensions2) {
+        for (const extension of extensions2) {
           if (fileExtensionIs(path2, extension)) {
             return true;
           }
@@ -12574,13 +12574,13 @@ ${lanes.join("\n")}
         path2 = removeTrailingDirectorySeparator(path2);
         return path2.slice(0, Math.max(rootLength, path2.lastIndexOf(directorySeparator)));
       }
-      function getBaseFileName(path2, extensions, ignoreCase) {
+      function getBaseFileName(path2, extensions2, ignoreCase) {
         path2 = normalizeSlashes(path2);
         const rootLength = getRootLength(path2);
         if (rootLength === path2.length) return "";
         path2 = removeTrailingDirectorySeparator(path2);
         const name = path2.slice(Math.max(getRootLength(path2), path2.lastIndexOf(directorySeparator) + 1));
-        const extension = extensions !== void 0 && ignoreCase !== void 0 ? getAnyExtensionFromPath(name, extensions, ignoreCase) : void 0;
+        const extension = extensions2 !== void 0 && ignoreCase !== void 0 ? getAnyExtensionFromPath(name, extensions2, ignoreCase) : void 0;
         return extension ? name.slice(0, name.length - extension.length) : name;
       }
       function tryGetExtensionFromPath(path2, extension, stringEqualityComparer) {
@@ -12592,19 +12592,19 @@ ${lanes.join("\n")}
           }
         }
       }
-      function getAnyExtensionFromPathWorker(path2, extensions, stringEqualityComparer) {
-        if (typeof extensions === "string") {
-          return tryGetExtensionFromPath(path2, extensions, stringEqualityComparer) || "";
+      function getAnyExtensionFromPathWorker(path2, extensions2, stringEqualityComparer) {
+        if (typeof extensions2 === "string") {
+          return tryGetExtensionFromPath(path2, extensions2, stringEqualityComparer) || "";
         }
-        for (const extension of extensions) {
+        for (const extension of extensions2) {
           const result = tryGetExtensionFromPath(path2, extension, stringEqualityComparer);
           if (result) return result;
         }
         return "";
       }
-      function getAnyExtensionFromPath(path2, extensions, ignoreCase) {
-        if (extensions) {
-          return getAnyExtensionFromPathWorker(removeTrailingDirectorySeparator(path2), extensions, ignoreCase ? equateStringsCaseInsensitive : equateStringsCaseSensitive);
+      function getAnyExtensionFromPath(path2, extensions2, ignoreCase) {
+        if (extensions2) {
+          return getAnyExtensionFromPathWorker(removeTrailingDirectorySeparator(path2), extensions2, ignoreCase ? equateStringsCaseInsensitive : equateStringsCaseSensitive);
         }
         const baseFileName = getBaseFileName(path2);
         const extensionIndex = baseFileName.lastIndexOf(".");
@@ -12795,8 +12795,8 @@ ${lanes.join("\n")}
       function ensurePathIsNonModuleName(path2) {
         return !pathIsAbsolute(path2) && !pathIsRelative(path2) ? "./" + path2 : path2;
       }
-      function changeAnyExtension(path2, ext, extensions, ignoreCase) {
-        const pathext = extensions !== void 0 && ignoreCase !== void 0 ? getAnyExtensionFromPath(path2, extensions, ignoreCase) : getAnyExtensionFromPath(path2);
+      function changeAnyExtension(path2, ext, extensions2, ignoreCase) {
+        const pathext = extensions2 !== void 0 && ignoreCase !== void 0 ? getAnyExtensionFromPath(path2, extensions2, ignoreCase) : getAnyExtensionFromPath(path2);
         return pathext ? path2.slice(0, path2.length - pathext.length) + (startsWith(ext, ".") ? ext : "." + ext) : path2;
       }
       function changeFullExtension(path2, newExtension) {
@@ -26496,7 +26496,7 @@ ${lanes.join("\n")}
       function getRegexFromPattern(pattern, useCaseSensitiveFileNames2) {
         return new RegExp(pattern, useCaseSensitiveFileNames2 ? "" : "i");
       }
-      function matchFiles(path2, extensions, excludes, includes, useCaseSensitiveFileNames2, currentDirectory, depth, getFileSystemEntries, realpath) {
+      function matchFiles(path2, extensions2, excludes, includes, useCaseSensitiveFileNames2, currentDirectory, depth, getFileSystemEntries, realpath) {
         path2 = normalizePath(path2);
         currentDirectory = normalizePath(currentDirectory);
         const patterns = getFileMatcherPatterns(path2, excludes, includes, useCaseSensitiveFileNames2, currentDirectory);
@@ -26518,7 +26518,7 @@ ${lanes.join("\n")}
           for (const current of toSorted(files, compareStringsCaseSensitive)) {
             const name = combinePaths(path22, current);
             const absoluteName = combinePaths(absolutePath, current);
-            if (extensions && !fileExtensionIsOneOf(name, extensions)) continue;
+            if (extensions2 && !fileExtensionIsOneOf(name, extensions2)) continue;
             if (excludeRegex && excludeRegex.test(absoluteName)) continue;
             if (!includeFileRegexes) {
               results[0].push(name);
@@ -26684,11 +26684,11 @@ ${lanes.join("\n")}
         }
         const builtins = needJsExtensions ? allSupportedExtensions : supportedTSExtensions;
         const flatBuiltins = flatten2(builtins);
-        const extensions = [
+        const extensions2 = [
           ...builtins,
           ...mapDefined(extraFileExtensions, (x) => x.scriptKind === 7 || needJsExtensions && isJSLike(x.scriptKind) && !flatBuiltins.includes(x.extension) ? [x.extension] : void 0)
         ];
-        return extensions;
+        return extensions2;
       }
       function getSupportedExtensionsWithJsonIfResolveJsonModule(options, supportedExtensions) {
         if (!options || !getResolveJsonModule(options)) return supportedExtensions;
@@ -50599,8 +50599,8 @@ ${lanes.join("\n")}
         }
         return void 0;
       }
-      function hasFileWithHigherPriorityExtension(file, literalFiles, wildcardFiles, extensions, keyMapper) {
-        const extensionGroup = forEach(extensions, (group2) => fileExtensionIsOneOf(file, group2) ? group2 : void 0);
+      function hasFileWithHigherPriorityExtension(file, literalFiles, wildcardFiles, extensions2, keyMapper) {
+        const extensionGroup = forEach(extensions2, (group2) => fileExtensionIsOneOf(file, group2) ? group2 : void 0);
         if (!extensionGroup) {
           return false;
         }
@@ -50630,8 +50630,8 @@ ${lanes.join("\n")}
         }
         return false;
       }
-      function removeWildcardFilesWithLowerPriorityExtension(file, wildcardFiles, extensions, keyMapper) {
-        const extensionGroup = forEach(extensions, (group2) => fileExtensionIsOneOf(file, group2) ? group2 : void 0);
+      function removeWildcardFilesWithLowerPriorityExtension(file, wildcardFiles, extensions2, keyMapper) {
+        const extensionGroup = forEach(extensions2, (group2) => fileExtensionIsOneOf(file, group2) ? group2 : void 0);
         if (!extensionGroup) {
           return;
         }
@@ -50717,20 +50717,20 @@ ${lanes.join("\n")}
           return { path: r.path, ext: r.extension, resolvedUsingTsExtension: r.resolvedUsingTsExtension };
         }
       }
-      function formatExtensions(extensions) {
+      function formatExtensions(extensions2) {
         const result = [];
-        if (extensions & 1) result.push("TypeScript");
-        if (extensions & 2) result.push("JavaScript");
-        if (extensions & 4) result.push("Declaration");
-        if (extensions & 8) result.push("JSON");
+        if (extensions2 & 1) result.push("TypeScript");
+        if (extensions2 & 2) result.push("JavaScript");
+        if (extensions2 & 4) result.push("Declaration");
+        if (extensions2 & 8) result.push("JSON");
         return result.join(", ");
       }
-      function extensionsToExtensionsArray(extensions) {
+      function extensionsToExtensionsArray(extensions2) {
         const result = [];
-        if (extensions & 1) result.push(...supportedTSImplementationExtensions);
-        if (extensions & 2) result.push(...supportedJSExtensionsFlat);
-        if (extensions & 4) result.push(...supportedDeclarationExtensions);
-        if (extensions & 8) result.push(
+        if (extensions2 & 1) result.push(...supportedTSImplementationExtensions);
+        if (extensions2 & 2) result.push(...supportedJSExtensionsFlat);
+        if (extensions2 & 4) result.push(...supportedDeclarationExtensions);
+        if (extensions2 & 8) result.push(
           ".json"
           /* Json */
         );
@@ -51616,16 +51616,16 @@ ${lanes.join("\n")}
         }
         return result;
       }
-      function tryLoadModuleUsingOptionalResolutionSettings(extensions, moduleName, containingDirectory, loader, state) {
-        const resolved = tryLoadModuleUsingPathsIfEligible(extensions, moduleName, loader, state);
+      function tryLoadModuleUsingOptionalResolutionSettings(extensions2, moduleName, containingDirectory, loader, state) {
+        const resolved = tryLoadModuleUsingPathsIfEligible(extensions2, moduleName, loader, state);
         if (resolved) return resolved.value;
         if (!isExternalModuleNameRelative(moduleName)) {
-          return tryLoadModuleUsingBaseUrl(extensions, moduleName, loader, state);
+          return tryLoadModuleUsingBaseUrl(extensions2, moduleName, loader, state);
         } else {
-          return tryLoadModuleUsingRootDirs(extensions, moduleName, containingDirectory, loader, state);
+          return tryLoadModuleUsingRootDirs(extensions2, moduleName, containingDirectory, loader, state);
         }
       }
-      function tryLoadModuleUsingPathsIfEligible(extensions, moduleName, loader, state) {
+      function tryLoadModuleUsingPathsIfEligible(extensions2, moduleName, loader, state) {
         const { baseUrl, paths } = state.compilerOptions;
         if (paths && !pathIsRelative(moduleName)) {
           if (state.traceEnabled) {
@@ -51637,7 +51637,7 @@ ${lanes.join("\n")}
           const baseDirectory = getPathsBasePath(state.compilerOptions, state.host);
           const pathPatterns = tryParsePatterns(paths);
           return tryLoadModuleUsingPaths(
-            extensions,
+            extensions2,
             moduleName,
             baseDirectory,
             paths,
@@ -51649,7 +51649,7 @@ ${lanes.join("\n")}
           );
         }
       }
-      function tryLoadModuleUsingRootDirs(extensions, moduleName, containingDirectory, loader, state) {
+      function tryLoadModuleUsingRootDirs(extensions2, moduleName, containingDirectory, loader, state) {
         if (!state.compilerOptions.rootDirs) {
           return void 0;
         }
@@ -51681,7 +51681,7 @@ ${lanes.join("\n")}
           if (state.traceEnabled) {
             trace(state.host, Diagnostics.Loading_0_from_the_root_dir_1_candidate_location_2, suffix, matchedNormalizedPrefix, candidate);
           }
-          const resolvedFileName = loader(extensions, candidate, !directoryProbablyExists(containingDirectory, state.host), state);
+          const resolvedFileName = loader(extensions2, candidate, !directoryProbablyExists(containingDirectory, state.host), state);
           if (resolvedFileName) {
             return resolvedFileName;
           }
@@ -51697,7 +51697,7 @@ ${lanes.join("\n")}
               trace(state.host, Diagnostics.Loading_0_from_the_root_dir_1_candidate_location_2, suffix, rootDir, candidate2);
             }
             const baseDirectory = getDirectoryPath(candidate2);
-            const resolvedFileName2 = loader(extensions, candidate2, !directoryProbablyExists(baseDirectory, state.host), state);
+            const resolvedFileName2 = loader(extensions2, candidate2, !directoryProbablyExists(baseDirectory, state.host), state);
             if (resolvedFileName2) {
               return resolvedFileName2;
             }
@@ -51708,7 +51708,7 @@ ${lanes.join("\n")}
         }
         return void 0;
       }
-      function tryLoadModuleUsingBaseUrl(extensions, moduleName, loader, state) {
+      function tryLoadModuleUsingBaseUrl(extensions2, moduleName, loader, state) {
         const { baseUrl } = state.compilerOptions;
         if (!baseUrl) {
           return void 0;
@@ -51720,7 +51720,7 @@ ${lanes.join("\n")}
         if (state.traceEnabled) {
           trace(state.host, Diagnostics.Resolving_module_name_0_relative_to_base_url_1_2, moduleName, baseUrl, candidate);
         }
-        return loader(extensions, candidate, !directoryProbablyExists(getDirectoryPath(candidate), state.host), state);
+        return loader(extensions2, candidate, !directoryProbablyExists(getDirectoryPath(candidate), state.host), state);
       }
       function resolveJSModule(moduleName, initialDir, host) {
         const { resolvedModule, failedLookupLocations } = tryResolveJSModuleWorker(moduleName, initialDir, host);
@@ -51772,9 +51772,9 @@ ${lanes.join("\n")}
       function nodeNextModuleNameResolverWorker(features, moduleName, containingFile, compilerOptions, host, cache, redirectedReference, resolutionMode, conditions) {
         const containingDirectory = getDirectoryPath(containingFile);
         const esmMode = resolutionMode === 99 ? 32 : 0;
-        let extensions = compilerOptions.noDtsResolution ? 3 : 1 | 2 | 4;
+        let extensions2 = compilerOptions.noDtsResolution ? 3 : 1 | 2 | 4;
         if (getResolveJsonModule(compilerOptions)) {
-          extensions |= 8;
+          extensions2 |= 8;
         }
         return nodeModuleNameResolverWorker(
           features | esmMode,
@@ -51783,7 +51783,7 @@ ${lanes.join("\n")}
           compilerOptions,
           host,
           cache,
-          extensions,
+          extensions2,
           /*isConfigLookup*/
           false,
           redirectedReference,
@@ -51810,9 +51810,9 @@ ${lanes.join("\n")}
       }
       function bundlerModuleNameResolver(moduleName, containingFile, compilerOptions, host, cache, redirectedReference, conditions) {
         const containingDirectory = getDirectoryPath(containingFile);
-        let extensions = compilerOptions.noDtsResolution ? 3 : 1 | 2 | 4;
+        let extensions2 = compilerOptions.noDtsResolution ? 3 : 1 | 2 | 4;
         if (getResolveJsonModule(compilerOptions)) {
-          extensions |= 8;
+          extensions2 |= 8;
         }
         return nodeModuleNameResolverWorker(
           getNodeResolutionFeatures(compilerOptions),
@@ -51821,7 +51821,7 @@ ${lanes.join("\n")}
           compilerOptions,
           host,
           cache,
-          extensions,
+          extensions2,
           /*isConfigLookup*/
           false,
           redirectedReference,
@@ -51829,16 +51829,16 @@ ${lanes.join("\n")}
         );
       }
       function nodeModuleNameResolver(moduleName, containingFile, compilerOptions, host, cache, redirectedReference, conditions, isConfigLookup) {
-        let extensions;
+        let extensions2;
         if (isConfigLookup) {
-          extensions = 8;
+          extensions2 = 8;
         } else if (compilerOptions.noDtsResolution) {
-          extensions = 3;
-          if (getResolveJsonModule(compilerOptions)) extensions |= 8;
+          extensions2 = 3;
+          if (getResolveJsonModule(compilerOptions)) extensions2 |= 8;
         } else {
-          extensions = getResolveJsonModule(compilerOptions) ? 1 | 2 | 4 | 8 : 1 | 2 | 4;
+          extensions2 = getResolveJsonModule(compilerOptions) ? 1 | 2 | 4 | 8 : 1 | 2 | 4;
         }
-        return nodeModuleNameResolverWorker(conditions ? 30 : 0, moduleName, getDirectoryPath(containingFile), compilerOptions, host, cache, extensions, !!isConfigLookup, redirectedReference, conditions);
+        return nodeModuleNameResolverWorker(conditions ? 30 : 0, moduleName, getDirectoryPath(containingFile), compilerOptions, host, cache, extensions2, !!isConfigLookup, redirectedReference, conditions);
       }
       function nodeNextJsonConfigResolver(moduleName, containingFile, host) {
         return nodeModuleNameResolverWorker(
@@ -51861,7 +51861,7 @@ ${lanes.join("\n")}
           void 0
         );
       }
-      function nodeModuleNameResolverWorker(features, moduleName, containingDirectory, compilerOptions, host, cache, extensions, isConfigLookup, redirectedReference, conditions) {
+      function nodeModuleNameResolverWorker(features, moduleName, containingDirectory, compilerOptions, host, cache, extensions2, isConfigLookup, redirectedReference, conditions) {
         var _a, _b, _c, _d, _e;
         const traceEnabled = isTraceEnabled(compilerOptions, host);
         const failedLookupLocations = [];
@@ -51893,15 +51893,15 @@ ${lanes.join("\n")}
         }
         let result;
         if (moduleResolution === 2) {
-          const priorityExtensions = extensions & (1 | 4);
-          const secondaryExtensions = extensions & ~(1 | 4);
+          const priorityExtensions = extensions2 & (1 | 4);
+          const secondaryExtensions = extensions2 & ~(1 | 4);
           result = priorityExtensions && tryResolve(priorityExtensions, state) || secondaryExtensions && tryResolve(secondaryExtensions, state) || void 0;
         } else {
-          result = tryResolve(extensions, state);
+          result = tryResolve(extensions2, state);
         }
         let alternateResult;
         if (state.resolvedPackageDirectory && !isConfigLookup && !isExternalModuleNameRelative(moduleName)) {
-          const wantedTypesButGotJs = (result == null ? void 0 : result.value) && extensions & (1 | 4) && !extensionIsOk(1 | 4, result.value.resolved.extension);
+          const wantedTypesButGotJs = (result == null ? void 0 : result.value) && extensions2 & (1 | 4) && !extensionIsOk(1 | 4, result.value.resolved.extension);
           if (((_a = result == null ? void 0 : result.value) == null ? void 0 : _a.isExternalLibraryImport) && wantedTypesButGotJs && features & 8 && (conditions == null ? void 0 : conditions.includes("import"))) {
             traceIfEnabled(state, Diagnostics.Resolution_of_non_relative_name_failed_trying_with_modern_Node_resolution_features_disabled_to_see_if_npm_library_needs_configuration_update);
             const diagnosticState = {
@@ -51909,7 +51909,7 @@ ${lanes.join("\n")}
               features: state.features & ~8,
               reportDiagnostic: noop
             };
-            const diagnosticResult = tryResolve(extensions & (1 | 4), diagnosticState);
+            const diagnosticResult = tryResolve(extensions2 & (1 | 4), diagnosticState);
             if ((_b = diagnosticResult == null ? void 0 : diagnosticResult.value) == null ? void 0 : _b.isExternalLibraryImport) {
               alternateResult = diagnosticResult.value.resolved.path;
             }
@@ -51927,7 +51927,7 @@ ${lanes.join("\n")}
               conditions: getConditions(diagnosticsCompilerOptions),
               reportDiagnostic: noop
             };
-            const diagnosticResult = tryResolve(extensions & (1 | 4), diagnosticState);
+            const diagnosticResult = tryResolve(extensions2 & (1 | 4), diagnosticState);
             if ((_c = diagnosticResult == null ? void 0 : diagnosticResult.value) == null ? void 0 : _c.isExternalLibraryImport) {
               alternateResult = diagnosticResult.value.resolved.path;
             }
@@ -51944,7 +51944,7 @@ ${lanes.join("\n")}
           cache,
           alternateResult
         );
-        function tryResolve(extensions2, state2) {
+        function tryResolve(extensions22, state2) {
           const loader = (extensions3, candidate, onlyRecordFailures, state3) => nodeLoadModuleByRelativeName(
             extensions3,
             candidate,
@@ -51953,41 +51953,41 @@ ${lanes.join("\n")}
             /*considerPackageJson*/
             true
           );
-          const resolved = tryLoadModuleUsingOptionalResolutionSettings(extensions2, moduleName, containingDirectory, loader, state2);
+          const resolved = tryLoadModuleUsingOptionalResolutionSettings(extensions22, moduleName, containingDirectory, loader, state2);
           if (resolved) {
             return toSearchResult({ resolved, isExternalLibraryImport: pathContainsNodeModules(resolved.path) });
           }
           if (!isExternalModuleNameRelative(moduleName)) {
             if (features & 2 && startsWith(moduleName, "#")) {
-              const resolved3 = loadModuleFromImports(extensions2, moduleName, containingDirectory, state2, cache, redirectedReference);
+              const resolved3 = loadModuleFromImports(extensions22, moduleName, containingDirectory, state2, cache, redirectedReference);
               if (resolved3) {
                 return resolved3.value && { value: { resolved: resolved3.value, isExternalLibraryImport: false } };
               }
             }
             if (features & 4) {
-              const resolved3 = loadModuleFromSelfNameReference(extensions2, moduleName, containingDirectory, state2, cache, redirectedReference);
+              const resolved3 = loadModuleFromSelfNameReference(extensions22, moduleName, containingDirectory, state2, cache, redirectedReference);
               if (resolved3) {
                 return resolved3.value && { value: { resolved: resolved3.value, isExternalLibraryImport: false } };
               }
             }
             if (moduleName.includes(":")) {
               if (traceEnabled) {
-                trace(host, Diagnostics.Skipping_module_0_that_looks_like_an_absolute_URI_target_file_types_Colon_1, moduleName, formatExtensions(extensions2));
+                trace(host, Diagnostics.Skipping_module_0_that_looks_like_an_absolute_URI_target_file_types_Colon_1, moduleName, formatExtensions(extensions22));
               }
               return void 0;
             }
             if (traceEnabled) {
-              trace(host, Diagnostics.Loading_module_0_from_node_modules_folder_target_file_types_Colon_1, moduleName, formatExtensions(extensions2));
+              trace(host, Diagnostics.Loading_module_0_from_node_modules_folder_target_file_types_Colon_1, moduleName, formatExtensions(extensions22));
             }
-            let resolved2 = loadModuleFromNearestNodeModulesDirectory(extensions2, moduleName, containingDirectory, state2, cache, redirectedReference);
-            if (extensions2 & 4) {
+            let resolved2 = loadModuleFromNearestNodeModulesDirectory(extensions22, moduleName, containingDirectory, state2, cache, redirectedReference);
+            if (extensions22 & 4) {
               resolved2 ?? (resolved2 = resolveFromTypeRoot(moduleName, state2));
             }
             return resolved2 && { value: resolved2.value && { resolved: resolved2.value, isExternalLibraryImport: true } };
           } else {
             const { path: candidate, parts } = normalizePathForCJSResolution(containingDirectory, moduleName);
             const resolved2 = nodeLoadModuleByRelativeName(
-              extensions2,
+              extensions22,
               candidate,
               /*onlyRecordFailures*/
               false,
@@ -52016,9 +52016,9 @@ ${lanes.join("\n")}
         }
         return real;
       }
-      function nodeLoadModuleByRelativeName(extensions, candidate, onlyRecordFailures, state, considerPackageJson) {
+      function nodeLoadModuleByRelativeName(extensions2, candidate, onlyRecordFailures, state, considerPackageJson) {
         if (state.traceEnabled) {
-          trace(state.host, Diagnostics.Loading_module_as_file_Slash_folder_candidate_module_location_0_target_file_types_Colon_1, candidate, formatExtensions(extensions));
+          trace(state.host, Diagnostics.Loading_module_as_file_Slash_folder_candidate_module_location_0_target_file_types_Colon_1, candidate, formatExtensions(extensions2));
         }
         if (!hasTrailingDirectorySeparator(candidate)) {
           if (!onlyRecordFailures) {
@@ -52030,7 +52030,7 @@ ${lanes.join("\n")}
               onlyRecordFailures = true;
             }
           }
-          const resolvedFromFile = loadModuleFromFile(extensions, candidate, onlyRecordFailures, state);
+          const resolvedFromFile = loadModuleFromFile(extensions2, candidate, onlyRecordFailures, state);
           if (resolvedFromFile) {
             const packageDirectory = considerPackageJson ? parseNodeModuleFromPath(resolvedFromFile.path) : void 0;
             const packageInfo = packageDirectory ? getPackageJsonInfo(
@@ -52052,7 +52052,7 @@ ${lanes.join("\n")}
           }
         }
         if (!(state.features & 32)) {
-          return loadNodeModuleFromDirectory(extensions, candidate, onlyRecordFailures, state, considerPackageJson);
+          return loadNodeModuleFromDirectory(extensions2, candidate, onlyRecordFailures, state, considerPackageJson);
         }
         return void 0;
       }
@@ -52077,22 +52077,22 @@ ${lanes.join("\n")}
         const nextSeparatorIndex = path2.indexOf(directorySeparator, prevSeparatorIndex + 1);
         return nextSeparatorIndex === -1 ? isFolder ? path2.length : prevSeparatorIndex : nextSeparatorIndex;
       }
-      function loadModuleFromFileNoPackageId(extensions, candidate, onlyRecordFailures, state) {
-        return noPackageId(loadModuleFromFile(extensions, candidate, onlyRecordFailures, state));
+      function loadModuleFromFileNoPackageId(extensions2, candidate, onlyRecordFailures, state) {
+        return noPackageId(loadModuleFromFile(extensions2, candidate, onlyRecordFailures, state));
       }
-      function loadModuleFromFile(extensions, candidate, onlyRecordFailures, state) {
-        const resolvedByReplacingExtension = loadModuleFromFileNoImplicitExtensions(extensions, candidate, onlyRecordFailures, state);
+      function loadModuleFromFile(extensions2, candidate, onlyRecordFailures, state) {
+        const resolvedByReplacingExtension = loadModuleFromFileNoImplicitExtensions(extensions2, candidate, onlyRecordFailures, state);
         if (resolvedByReplacingExtension) {
           return resolvedByReplacingExtension;
         }
         if (!(state.features & 32)) {
-          const resolvedByAddingExtension = tryAddingExtensions(candidate, extensions, "", onlyRecordFailures, state);
+          const resolvedByAddingExtension = tryAddingExtensions(candidate, extensions2, "", onlyRecordFailures, state);
           if (resolvedByAddingExtension) {
             return resolvedByAddingExtension;
           }
         }
       }
-      function loadModuleFromFileNoImplicitExtensions(extensions, candidate, onlyRecordFailures, state) {
+      function loadModuleFromFileNoImplicitExtensions(extensions2, candidate, onlyRecordFailures, state) {
         const filename = getBaseFileName(candidate);
         if (!filename.includes(".")) {
           return void 0;
@@ -52105,15 +52105,15 @@ ${lanes.join("\n")}
         if (state.traceEnabled) {
           trace(state.host, Diagnostics.File_name_0_has_a_1_extension_stripping_it, candidate, extension);
         }
-        return tryAddingExtensions(extensionless, extensions, extension, onlyRecordFailures, state);
+        return tryAddingExtensions(extensionless, extensions2, extension, onlyRecordFailures, state);
       }
-      function loadFileNameFromPackageJsonField(extensions, candidate, packageJsonValue, onlyRecordFailures, state) {
-        if (extensions & 1 && fileExtensionIsOneOf(candidate, supportedTSImplementationExtensions) || extensions & 4 && fileExtensionIsOneOf(candidate, supportedDeclarationExtensions)) {
+      function loadFileNameFromPackageJsonField(extensions2, candidate, packageJsonValue, onlyRecordFailures, state) {
+        if (extensions2 & 1 && fileExtensionIsOneOf(candidate, supportedTSImplementationExtensions) || extensions2 & 4 && fileExtensionIsOneOf(candidate, supportedDeclarationExtensions)) {
           const result = tryFile(candidate, onlyRecordFailures, state);
           const ext = tryExtractTSExtension(candidate);
           return result !== void 0 ? { path: candidate, ext, resolvedUsingTsExtension: packageJsonValue ? !endsWith(packageJsonValue, ext) : void 0 } : void 0;
         }
-        if (state.isConfigLookup && extensions === 8 && fileExtensionIs(
+        if (state.isConfigLookup && extensions2 === 8 && fileExtensionIs(
           candidate,
           ".json"
           /* Json */
@@ -52121,9 +52121,9 @@ ${lanes.join("\n")}
           const result = tryFile(candidate, onlyRecordFailures, state);
           return result !== void 0 ? { path: candidate, ext: ".json", resolvedUsingTsExtension: void 0 } : void 0;
         }
-        return loadModuleFromFileNoImplicitExtensions(extensions, candidate, onlyRecordFailures, state);
+        return loadModuleFromFileNoImplicitExtensions(extensions2, candidate, onlyRecordFailures, state);
       }
-      function tryAddingExtensions(candidate, extensions, originalExtension, onlyRecordFailures, state) {
+      function tryAddingExtensions(candidate, extensions2, originalExtension, onlyRecordFailures, state) {
         if (!onlyRecordFailures) {
           const directory = getDirectoryPath(candidate);
           if (directory) {
@@ -52134,41 +52134,41 @@ ${lanes.join("\n")}
           case ".mjs":
           case ".mts":
           case ".d.mts":
-            return extensions & 1 && tryExtension(
+            return extensions2 & 1 && tryExtension(
               ".mts",
               originalExtension === ".mts" || originalExtension === ".d.mts"
               /* Dmts */
-            ) || extensions & 4 && tryExtension(
+            ) || extensions2 & 4 && tryExtension(
               ".d.mts",
               originalExtension === ".mts" || originalExtension === ".d.mts"
               /* Dmts */
-            ) || extensions & 2 && tryExtension(
+            ) || extensions2 & 2 && tryExtension(
               ".mjs"
               /* Mjs */
             ) || void 0;
           case ".cjs":
           case ".cts":
           case ".d.cts":
-            return extensions & 1 && tryExtension(
+            return extensions2 & 1 && tryExtension(
               ".cts",
               originalExtension === ".cts" || originalExtension === ".d.cts"
               /* Dcts */
-            ) || extensions & 4 && tryExtension(
+            ) || extensions2 & 4 && tryExtension(
               ".d.cts",
               originalExtension === ".cts" || originalExtension === ".d.cts"
               /* Dcts */
-            ) || extensions & 2 && tryExtension(
+            ) || extensions2 & 2 && tryExtension(
               ".cjs"
               /* Cjs */
             ) || void 0;
           case ".json":
-            return extensions & 4 && tryExtension(".d.json.ts") || extensions & 8 && tryExtension(
+            return extensions2 & 4 && tryExtension(".d.json.ts") || extensions2 & 8 && tryExtension(
               ".json"
               /* Json */
             ) || void 0;
           case ".tsx":
           case ".jsx":
-            return extensions & 1 && (tryExtension(
+            return extensions2 & 1 && (tryExtension(
               ".tsx",
               originalExtension === ".tsx"
               /* Tsx */
@@ -52176,11 +52176,11 @@ ${lanes.join("\n")}
               ".ts",
               originalExtension === ".tsx"
               /* Tsx */
-            )) || extensions & 4 && tryExtension(
+            )) || extensions2 & 4 && tryExtension(
               ".d.ts",
               originalExtension === ".tsx"
               /* Tsx */
-            ) || extensions & 2 && (tryExtension(
+            ) || extensions2 & 2 && (tryExtension(
               ".jsx"
               /* Jsx */
             ) || tryExtension(
@@ -52191,7 +52191,7 @@ ${lanes.join("\n")}
           case ".d.ts":
           case ".js":
           case "":
-            return extensions & 1 && (tryExtension(
+            return extensions2 & 1 && (tryExtension(
               ".ts",
               originalExtension === ".ts" || originalExtension === ".d.ts"
               /* Dts */
@@ -52199,11 +52199,11 @@ ${lanes.join("\n")}
               ".tsx",
               originalExtension === ".ts" || originalExtension === ".d.ts"
               /* Dts */
-            )) || extensions & 4 && tryExtension(
+            )) || extensions2 & 4 && tryExtension(
               ".d.ts",
               originalExtension === ".ts" || originalExtension === ".d.ts"
               /* Dts */
-            ) || extensions & 2 && (tryExtension(
+            ) || extensions2 & 2 && (tryExtension(
               ".js"
               /* Js */
             ) || tryExtension(
@@ -52214,7 +52214,7 @@ ${lanes.join("\n")}
               /* Json */
             ) || void 0;
           default:
-            return extensions & 4 && !isDeclarationFileName(candidate + originalExtension) && tryExtension(`.d${originalExtension}.ts`) || void 0;
+            return extensions2 & 4 && !isDeclarationFileName(candidate + originalExtension) && tryExtension(`.d${originalExtension}.ts`) || void 0;
         }
         function tryExtension(ext, resolvedUsingTsExtension) {
           const path2 = tryFile(candidate + ext, onlyRecordFailures, state);
@@ -52247,22 +52247,22 @@ ${lanes.join("\n")}
         (_a = state.failedLookupLocations) == null ? void 0 : _a.push(fileName);
         return void 0;
       }
-      function loadNodeModuleFromDirectory(extensions, candidate, onlyRecordFailures, state, considerPackageJson = true) {
+      function loadNodeModuleFromDirectory(extensions2, candidate, onlyRecordFailures, state, considerPackageJson = true) {
         const packageInfo = considerPackageJson ? getPackageJsonInfo(candidate, onlyRecordFailures, state) : void 0;
-        return withPackageId(packageInfo, loadNodeModuleFromDirectoryWorker(extensions, candidate, onlyRecordFailures, state, packageInfo), state);
+        return withPackageId(packageInfo, loadNodeModuleFromDirectoryWorker(extensions2, candidate, onlyRecordFailures, state, packageInfo), state);
       }
       function getEntrypointsFromPackageJsonInfo(packageJsonInfo, options, host, cache, resolveJs) {
         if (!resolveJs && packageJsonInfo.contents.resolvedEntrypoints !== void 0) {
           return packageJsonInfo.contents.resolvedEntrypoints;
         }
         let entrypoints;
-        const extensions = 1 | 4 | (resolveJs ? 2 : 0);
+        const extensions2 = 1 | 4 | (resolveJs ? 2 : 0);
         const features = getNodeResolutionFeatures(options);
         const loadPackageJsonMainState = getTemporaryModuleResolutionState(cache == null ? void 0 : cache.getPackageJsonInfoCache(), host, options);
         loadPackageJsonMainState.conditions = getConditions(options);
         loadPackageJsonMainState.requestContainingDirectory = packageJsonInfo.packageDirectory;
         const mainResolution = loadNodeModuleFromDirectoryWorker(
-          extensions,
+          extensions2,
           packageJsonInfo.packageDirectory,
           /*onlyRecordFailures*/
           false,
@@ -52289,7 +52289,7 @@ ${lanes.join("\n")}
               packageJsonInfo,
               packageJsonInfo.contents.packageJsonContent.exports,
               loadPackageJsonExportsState,
-              extensions
+              extensions2
             );
             if (exportResolutions) {
               for (const resolution of exportResolutions) {
@@ -52300,7 +52300,7 @@ ${lanes.join("\n")}
         }
         return packageJsonInfo.contents.resolvedEntrypoints = entrypoints || false;
       }
-      function loadEntrypointsFromExportMap(scope, exports2, state, extensions) {
+      function loadEntrypointsFromExportMap(scope, exports2, state, extensions2) {
         let entrypoints;
         if (isArray(exports2)) {
           for (const target of exports2) {
@@ -52323,7 +52323,7 @@ ${lanes.join("\n")}
               }
               state.host.readDirectory(
                 scope.packageDirectory,
-                extensionsToExtensionsArray(extensions),
+                extensionsToExtensionsArray(extensions2),
                 /*excludes*/
                 void 0,
                 [
@@ -52344,7 +52344,7 @@ ${lanes.join("\n")}
               const resolvedTarget = combinePaths(scope.packageDirectory, target);
               const finalPath = getNormalizedAbsolutePath(resolvedTarget, (_b = (_a = state.host).getCurrentDirectory) == null ? void 0 : _b.call(_a));
               const result = loadFileNameFromPackageJsonField(
-                extensions,
+                extensions2,
                 finalPath,
                 target,
                 /*onlyRecordFailures*/
@@ -52478,19 +52478,19 @@ ${lanes.join("\n")}
           (_f = state.failedLookupLocations) == null ? void 0 : _f.push(packageJsonPath);
         }
       }
-      function loadNodeModuleFromDirectoryWorker(extensions, candidate, onlyRecordFailures, state, packageJson) {
+      function loadNodeModuleFromDirectoryWorker(extensions2, candidate, onlyRecordFailures, state, packageJson) {
         const versionPaths = packageJson && getVersionPathsOfPackageJsonInfo(packageJson, state);
         let packageFile;
         if (packageJson && arePathsEqual(packageJson == null ? void 0 : packageJson.packageDirectory, candidate, state.host)) {
           if (state.isConfigLookup) {
             packageFile = readPackageJsonTSConfigField(packageJson.contents.packageJsonContent, packageJson.packageDirectory, state);
           } else {
-            packageFile = extensions & 4 && readPackageJsonTypesFields(packageJson.contents.packageJsonContent, packageJson.packageDirectory, state) || extensions & (3 | 4) && readPackageJsonMainField(packageJson.contents.packageJsonContent, packageJson.packageDirectory, state) || void 0;
+            packageFile = extensions2 & 4 && readPackageJsonTypesFields(packageJson.contents.packageJsonContent, packageJson.packageDirectory, state) || extensions2 & (3 | 4) && readPackageJsonMainField(packageJson.contents.packageJsonContent, packageJson.packageDirectory, state) || void 0;
           }
         }
-        const loader = (extensions2, candidate2, onlyRecordFailures2, state2) => {
+        const loader = (extensions22, candidate2, onlyRecordFailures2, state2) => {
           const fromFile = loadFileNameFromPackageJsonField(
-            extensions2,
+            extensions22,
             candidate2,
             /*packageJsonValue*/
             void 0,
@@ -52500,7 +52500,7 @@ ${lanes.join("\n")}
           if (fromFile) {
             return noPackageId(fromFile);
           }
-          const expandedExtensions = extensions2 === 4 ? 1 | 4 : extensions2;
+          const expandedExtensions = extensions22 === 4 ? 1 | 4 : extensions22;
           const features = state2.features;
           const candidateIsFromPackageJsonField = state2.candidateIsFromPackageJsonField;
           state2.candidateIsFromPackageJsonField = true;
@@ -52533,19 +52533,19 @@ ${lanes.join("\n")}
             trace(state.host, Diagnostics.package_json_has_a_typesVersions_entry_0_that_matches_compiler_version_1_looking_for_a_pattern_to_match_module_name_2, versionPaths.version, version, moduleName);
           }
           const pathPatterns = tryParsePatterns(versionPaths.paths);
-          const result = tryLoadModuleUsingPaths(extensions, moduleName, candidate, versionPaths.paths, pathPatterns, loader, onlyRecordFailuresForPackageFile || onlyRecordFailuresForIndex, state);
+          const result = tryLoadModuleUsingPaths(extensions2, moduleName, candidate, versionPaths.paths, pathPatterns, loader, onlyRecordFailuresForPackageFile || onlyRecordFailuresForIndex, state);
           if (result) {
             return removeIgnoredPackageId(result.value);
           }
         }
-        const packageFileResult = packageFile && removeIgnoredPackageId(loader(extensions, packageFile, onlyRecordFailuresForPackageFile, state));
+        const packageFileResult = packageFile && removeIgnoredPackageId(loader(extensions2, packageFile, onlyRecordFailuresForPackageFile, state));
         if (packageFileResult) return packageFileResult;
         if (!(state.features & 32)) {
-          return loadModuleFromFile(extensions, indexPath, onlyRecordFailuresForIndex, state);
+          return loadModuleFromFile(extensions2, indexPath, onlyRecordFailuresForIndex, state);
         }
       }
-      function extensionIsOk(extensions, extension) {
-        return extensions & 2 && (extension === ".js" || extension === ".jsx" || extension === ".mjs" || extension === ".cjs") || extensions & 1 && (extension === ".ts" || extension === ".tsx" || extension === ".mts" || extension === ".cts") || extensions & 4 && (extension === ".d.ts" || extension === ".d.mts" || extension === ".d.cts") || extensions & 8 && extension === ".json" || false;
+      function extensionIsOk(extensions2, extension) {
+        return extensions2 & 2 && (extension === ".js" || extension === ".jsx" || extension === ".mjs" || extension === ".cjs") || extensions2 & 1 && (extension === ".ts" || extension === ".tsx" || extension === ".mts" || extension === ".cts") || extensions2 & 4 && (extension === ".d.ts" || extension === ".d.mts" || extension === ".d.cts") || extensions2 & 8 && extension === ".json" || false;
       }
       function parsePackageName(moduleName) {
         let idx = moduleName.indexOf(directorySeparator);
@@ -52560,7 +52560,7 @@ ${lanes.join("\n")}
       function noKeyStartsWithDot(obj) {
         return !some(getOwnKeys(obj), (k) => startsWith(k, "."));
       }
-      function loadModuleFromSelfNameReference(extensions, moduleName, directory, state, cache, redirectedReference) {
+      function loadModuleFromSelfNameReference(extensions2, moduleName, directory, state, cache, redirectedReference) {
         var _a, _b;
         const directoryPath = getNormalizedAbsolutePath(directory, (_b = (_a = state.host).getCurrentDirectory) == null ? void 0 : _b.call(_a));
         const scope = getPackageScopeForPath(directoryPath, state);
@@ -52578,13 +52578,13 @@ ${lanes.join("\n")}
         const trailingParts = parts.slice(nameParts.length);
         const subpath = !length(trailingParts) ? "." : `.${directorySeparator}${trailingParts.join(directorySeparator)}`;
         if (getAllowJSCompilerOption(state.compilerOptions) && !pathContainsNodeModules(directory)) {
-          return loadModuleFromExports(scope, extensions, subpath, state, cache, redirectedReference);
+          return loadModuleFromExports(scope, extensions2, subpath, state, cache, redirectedReference);
         }
-        const priorityExtensions = extensions & (1 | 4);
-        const secondaryExtensions = extensions & ~(1 | 4);
+        const priorityExtensions = extensions2 & (1 | 4);
+        const secondaryExtensions = extensions2 & ~(1 | 4);
         return loadModuleFromExports(scope, priorityExtensions, subpath, state, cache, redirectedReference) || loadModuleFromExports(scope, secondaryExtensions, subpath, state, cache, redirectedReference);
       }
-      function loadModuleFromExports(scope, extensions, subpath, state, cache, redirectedReference) {
+      function loadModuleFromExports(scope, extensions2, subpath, state, cache, redirectedReference) {
         if (!scope.contents.packageJsonContent.exports) {
           return void 0;
         }
@@ -52597,7 +52597,7 @@ ${lanes.join("\n")}
           }
           if (mainExport) {
             const loadModuleFromTargetExportOrImport = getLoadModuleFromTargetExportOrImport(
-              extensions,
+              extensions2,
               state,
               cache,
               redirectedReference,
@@ -52625,7 +52625,7 @@ ${lanes.join("\n")}
             );
           }
           const result = loadModuleFromExportsOrImports(
-            extensions,
+            extensions2,
             state,
             cache,
             redirectedReference,
@@ -52647,7 +52647,7 @@ ${lanes.join("\n")}
           void 0
         );
       }
-      function loadModuleFromImports(extensions, moduleName, directory, state, cache, redirectedReference) {
+      function loadModuleFromImports(extensions2, moduleName, directory, state, cache, redirectedReference) {
         var _a, _b;
         if (moduleName === "#" || startsWith(moduleName, "#/")) {
           if (state.traceEnabled) {
@@ -52679,7 +52679,7 @@ ${lanes.join("\n")}
           );
         }
         const result = loadModuleFromExportsOrImports(
-          extensions,
+          extensions2,
           state,
           cache,
           redirectedReference,
@@ -52713,8 +52713,8 @@ ${lanes.join("\n")}
         if (b.length > a.length) return 1;
         return 0;
       }
-      function loadModuleFromExportsOrImports(extensions, state, cache, redirectedReference, moduleName, lookupTable, scope, isImports) {
-        const loadModuleFromTargetExportOrImport = getLoadModuleFromTargetExportOrImport(extensions, state, cache, redirectedReference, moduleName, scope, isImports);
+      function loadModuleFromExportsOrImports(extensions2, state, cache, redirectedReference, moduleName, lookupTable, scope, isImports) {
+        const loadModuleFromTargetExportOrImport = getLoadModuleFromTargetExportOrImport(extensions2, state, cache, redirectedReference, moduleName, scope, isImports);
         if (!endsWith(moduleName, directorySeparator) && !moduleName.includes("*") && hasProperty(lookupTable, moduleName)) {
           const target = lookupTable[moduleName];
           return loadModuleFromTargetExportOrImport(
@@ -52772,7 +52772,7 @@ ${lanes.join("\n")}
         const firstStar = patternKey.indexOf("*");
         return firstStar !== -1 && firstStar === patternKey.lastIndexOf("*");
       }
-      function getLoadModuleFromTargetExportOrImport(extensions, state, cache, redirectedReference, moduleName, scope, isImports) {
+      function getLoadModuleFromTargetExportOrImport(extensions2, state, cache, redirectedReference, moduleName, scope, isImports) {
         return loadModuleFromTargetExportOrImport;
         function loadModuleFromTargetExportOrImport(target, subpath, pattern, key) {
           var _a, _b;
@@ -52798,7 +52798,7 @@ ${lanes.join("\n")}
                   state.compilerOptions,
                   state.host,
                   cache,
-                  extensions,
+                  extensions2,
                   /*isConfigLookup*/
                   false,
                   redirectedReference,
@@ -52853,7 +52853,7 @@ ${lanes.join("\n")}
             const inputLink = tryLoadInputFileForPath(finalPath, subpath, combinePaths(scope.packageDirectory, "package.json"), isImports);
             if (inputLink) return inputLink;
             return toSearchResult(withPackageId(scope, loadFileNameFromPackageJsonField(
-              extensions,
+              extensions2,
               finalPath,
               target,
               /*onlyRecordFailures*/
@@ -52971,11 +52971,11 @@ ${lanes.join("\n")}
                       if (fileExtensionIs(possibleInputBase, ext)) {
                         const inputExts = getPossibleOriginalInputExtensionForExtension(possibleInputBase);
                         for (const possibleExt of inputExts) {
-                          if (!extensionIsOk(extensions, possibleExt)) continue;
+                          if (!extensionIsOk(extensions2, possibleExt)) continue;
                           const possibleInputWithInputExtension = changeAnyExtension(possibleInputBase, possibleExt, ext, !useCaseSensitiveFileNames(state));
                           if (state.host.fileExists(possibleInputWithInputExtension)) {
                             return toSearchResult(withPackageId(scope, loadFileNameFromPackageJsonField(
-                              extensions,
+                              extensions2,
                               possibleInputWithInputExtension,
                               /*packageJsonValue*/
                               void 0,
@@ -53014,9 +53014,9 @@ ${lanes.join("\n")}
         if (!range) return false;
         return range.test(version);
       }
-      function loadModuleFromNearestNodeModulesDirectory(extensions, moduleName, directory, state, cache, redirectedReference) {
+      function loadModuleFromNearestNodeModulesDirectory(extensions2, moduleName, directory, state, cache, redirectedReference) {
         return loadModuleFromNearestNodeModulesDirectoryWorker(
-          extensions,
+          extensions2,
           moduleName,
           directory,
           state,
@@ -53040,10 +53040,10 @@ ${lanes.join("\n")}
           void 0
         );
       }
-      function loadModuleFromNearestNodeModulesDirectoryWorker(extensions, moduleName, directory, state, typesScopeOnly, cache, redirectedReference) {
+      function loadModuleFromNearestNodeModulesDirectoryWorker(extensions2, moduleName, directory, state, typesScopeOnly, cache, redirectedReference) {
         const mode = state.features === 0 ? void 0 : state.features & 32 || state.conditions.includes("import") ? 99 : 1;
-        const priorityExtensions = extensions & (1 | 4);
-        const secondaryExtensions = extensions & ~(1 | 4);
+        const priorityExtensions = extensions2 & (1 | 4);
+        const secondaryExtensions = extensions2 & ~(1 | 4);
         if (priorityExtensions) {
           traceIfEnabled(state, Diagnostics.Searching_all_ancestor_node_modules_directories_for_preferred_extensions_Colon_0, formatExtensions(priorityExtensions));
           const result = lookup(priorityExtensions);
@@ -53053,7 +53053,7 @@ ${lanes.join("\n")}
           traceIfEnabled(state, Diagnostics.Searching_all_ancestor_node_modules_directories_for_fallback_extensions_Colon_0, formatExtensions(secondaryExtensions));
           return lookup(secondaryExtensions);
         }
-        function lookup(extensions2) {
+        function lookup(extensions22) {
           return forEachAncestorDirectoryStoppingAtGlobalCache(
             state.host,
             normalizeSlashes(directory),
@@ -53063,7 +53063,7 @@ ${lanes.join("\n")}
                 if (resolutionFromCache) {
                   return resolutionFromCache;
                 }
-                return toSearchResult(loadModuleFromImmediateNodeModulesDirectory(extensions2, moduleName, ancestorDirectory, state, typesScopeOnly, cache, redirectedReference));
+                return toSearchResult(loadModuleFromImmediateNodeModulesDirectory(extensions22, moduleName, ancestorDirectory, state, typesScopeOnly, cache, redirectedReference));
               }
             }
           );
@@ -53078,19 +53078,19 @@ ${lanes.join("\n")}
           if (ancestorDirectory === globalCache) return false;
         }) || void 0;
       }
-      function loadModuleFromImmediateNodeModulesDirectory(extensions, moduleName, directory, state, typesScopeOnly, cache, redirectedReference) {
+      function loadModuleFromImmediateNodeModulesDirectory(extensions2, moduleName, directory, state, typesScopeOnly, cache, redirectedReference) {
         const nodeModulesFolder = combinePaths(directory, "node_modules");
         const nodeModulesFolderExists = directoryProbablyExists(nodeModulesFolder, state.host);
         if (!nodeModulesFolderExists && state.traceEnabled) {
           trace(state.host, Diagnostics.Directory_0_does_not_exist_skipping_all_lookups_in_it, nodeModulesFolder);
         }
         if (!typesScopeOnly) {
-          const packageResult = loadModuleFromSpecificNodeModulesDirectory(extensions, moduleName, nodeModulesFolder, nodeModulesFolderExists, state, cache, redirectedReference);
+          const packageResult = loadModuleFromSpecificNodeModulesDirectory(extensions2, moduleName, nodeModulesFolder, nodeModulesFolderExists, state, cache, redirectedReference);
           if (packageResult) {
             return packageResult;
           }
         }
-        if (extensions & 4) {
+        if (extensions2 & 4) {
           const nodeModulesAtTypes2 = combinePaths(nodeModulesFolder, "@types");
           let nodeModulesAtTypesExists = nodeModulesFolderExists;
           if (nodeModulesFolderExists && !directoryProbablyExists(nodeModulesAtTypes2, state.host)) {
@@ -53102,7 +53102,7 @@ ${lanes.join("\n")}
           return loadModuleFromSpecificNodeModulesDirectory(4, mangleScopedPackageNameWithTrace(moduleName, state), nodeModulesAtTypes2, nodeModulesAtTypesExists, state, cache, redirectedReference);
         }
       }
-      function loadModuleFromSpecificNodeModulesDirectory(extensions, moduleName, nodeModulesDirectory, nodeModulesDirectoryExists, state, cache, redirectedReference) {
+      function loadModuleFromSpecificNodeModulesDirectory(extensions2, moduleName, nodeModulesDirectory, nodeModulesDirectoryExists, state, cache, redirectedReference) {
         var _a, _b;
         const candidate = normalizePath(combinePaths(nodeModulesDirectory, moduleName));
         const { packageName, rest } = parsePackageName(moduleName);
@@ -53110,12 +53110,12 @@ ${lanes.join("\n")}
         let rootPackageInfo;
         let packageInfo = getPackageJsonInfo(candidate, !nodeModulesDirectoryExists, state);
         if (rest !== "" && packageInfo && (!(state.features & 8) || !hasProperty(((_a = rootPackageInfo = getPackageJsonInfo(packageDirectory, !nodeModulesDirectoryExists, state)) == null ? void 0 : _a.contents.packageJsonContent) ?? emptyArray, "exports"))) {
-          const fromFile = loadModuleFromFile(extensions, candidate, !nodeModulesDirectoryExists, state);
+          const fromFile = loadModuleFromFile(extensions2, candidate, !nodeModulesDirectoryExists, state);
           if (fromFile) {
             return noPackageId(fromFile);
           }
           const fromDirectory = loadNodeModuleFromDirectoryWorker(
-            extensions,
+            extensions2,
             candidate,
             !nodeModulesDirectoryExists,
             state,
@@ -53123,16 +53123,16 @@ ${lanes.join("\n")}
           );
           return withPackageId(packageInfo, fromDirectory, state);
         }
-        const loader = (extensions2, candidate2, onlyRecordFailures, state2) => {
-          let pathAndExtension = (rest || !(state2.features & 32)) && loadModuleFromFile(extensions2, candidate2, onlyRecordFailures, state2) || loadNodeModuleFromDirectoryWorker(
-            extensions2,
+        const loader = (extensions22, candidate2, onlyRecordFailures, state2) => {
+          let pathAndExtension = (rest || !(state2.features & 32)) && loadModuleFromFile(extensions22, candidate2, onlyRecordFailures, state2) || loadNodeModuleFromDirectoryWorker(
+            extensions22,
             candidate2,
             onlyRecordFailures,
             state2,
             packageInfo
           );
           if (!pathAndExtension && !rest && packageInfo && (packageInfo.contents.packageJsonContent.exports === void 0 || packageInfo.contents.packageJsonContent.exports === null) && state2.features & 32) {
-            pathAndExtension = loadModuleFromFile(extensions2, combinePaths(candidate2, "index.js"), onlyRecordFailures, state2);
+            pathAndExtension = loadModuleFromFile(extensions22, combinePaths(candidate2, "index.js"), onlyRecordFailures, state2);
           }
           return withPackageId(packageInfo, pathAndExtension, state2);
         };
@@ -53143,7 +53143,7 @@ ${lanes.join("\n")}
           state.resolvedPackageDirectory = true;
         }
         if (packageInfo && packageInfo.contents.packageJsonContent.exports && state.features & 8) {
-          return (_b = loadModuleFromExports(packageInfo, extensions, combinePaths(".", rest), state, cache, redirectedReference)) == null ? void 0 : _b.value;
+          return (_b = loadModuleFromExports(packageInfo, extensions2, combinePaths(".", rest), state, cache, redirectedReference)) == null ? void 0 : _b.value;
         }
         const versionPaths = rest !== "" && packageInfo ? getVersionPathsOfPackageJsonInfo(packageInfo, state) : void 0;
         if (versionPaths) {
@@ -53152,14 +53152,14 @@ ${lanes.join("\n")}
           }
           const packageDirectoryExists = nodeModulesDirectoryExists && directoryProbablyExists(packageDirectory, state.host);
           const pathPatterns = tryParsePatterns(versionPaths.paths);
-          const fromPaths = tryLoadModuleUsingPaths(extensions, rest, packageDirectory, versionPaths.paths, pathPatterns, loader, !packageDirectoryExists, state);
+          const fromPaths = tryLoadModuleUsingPaths(extensions2, rest, packageDirectory, versionPaths.paths, pathPatterns, loader, !packageDirectoryExists, state);
           if (fromPaths) {
             return fromPaths.value;
           }
         }
-        return loader(extensions, candidate, !nodeModulesDirectoryExists, state);
+        return loader(extensions2, candidate, !nodeModulesDirectoryExists, state);
       }
-      function tryLoadModuleUsingPaths(extensions, moduleName, baseDirectory, paths, pathPatterns, loader, onlyRecordFailures, state) {
+      function tryLoadModuleUsingPaths(extensions2, moduleName, baseDirectory, paths, pathPatterns, loader, onlyRecordFailures, state) {
         const matchedPattern = matchPatternOrExact(pathPatterns, moduleName);
         if (matchedPattern) {
           const matchedStar = isString(matchedPattern) ? void 0 : matchedText(matchedPattern, moduleName);
@@ -53180,7 +53180,7 @@ ${lanes.join("\n")}
                 return noPackageId({ path: path22, ext: extension, resolvedUsingTsExtension: void 0 });
               }
             }
-            return loader(extensions, candidate, onlyRecordFailures || !directoryProbablyExists(getDirectoryPath(candidate), state.host), state);
+            return loader(extensions2, candidate, onlyRecordFailures || !directoryProbablyExists(getDirectoryPath(candidate), state.host), state);
           });
           return { value: resolved };
         }
@@ -53268,8 +53268,8 @@ ${lanes.join("\n")}
           state,
           cache
         );
-        function tryResolve(extensions) {
-          const resolvedUsingSettings = tryLoadModuleUsingOptionalResolutionSettings(extensions, moduleName, containingDirectory, loadModuleFromFileNoPackageId, state);
+        function tryResolve(extensions2) {
+          const resolvedUsingSettings = tryLoadModuleUsingOptionalResolutionSettings(extensions2, moduleName, containingDirectory, loadModuleFromFileNoPackageId, state);
           if (resolvedUsingSettings) {
             return { value: resolvedUsingSettings };
           }
@@ -53292,7 +53292,7 @@ ${lanes.join("\n")}
                 }
                 const searchName = normalizePath(combinePaths(directory, moduleName));
                 return toSearchResult(loadModuleFromFileNoPackageId(
-                  extensions,
+                  extensions2,
                   searchName,
                   /*onlyRecordFailures*/
                   false,
@@ -53301,15 +53301,15 @@ ${lanes.join("\n")}
               }
             );
             if (resolved2) return resolved2;
-            if (extensions & (1 | 4)) {
+            if (extensions2 & (1 | 4)) {
               let resolved3 = loadModuleFromNearestNodeModulesDirectoryTypesScope(moduleName, containingDirectory, state);
-              if (extensions & 4) resolved3 ?? (resolved3 = resolveFromTypeRoot(moduleName, state));
+              if (extensions2 & 4) resolved3 ?? (resolved3 = resolveFromTypeRoot(moduleName, state));
               return resolved3;
             }
           } else {
             const candidate = normalizePath(combinePaths(containingDirectory, moduleName));
             return toSearchResult(loadModuleFromFileNoPackageId(
-              extensions,
+              extensions2,
               candidate,
               /*onlyRecordFailures*/
               false,
@@ -57876,13 +57876,13 @@ ${lanes.join("\n")}
       }
       function tryGetAnyFileFromPath(host, path2) {
         if (!host.fileExists) return;
-        const extensions = flatten2(getSupportedExtensions({ allowJs: true }, [{ extension: "node", isMixedContent: false }, {
+        const extensions2 = flatten2(getSupportedExtensions({ allowJs: true }, [{ extension: "node", isMixedContent: false }, {
           extension: "json",
           isMixedContent: false,
           scriptKind: 6
           /* JSON */
         }]));
-        for (const e of extensions) {
+        for (const e of extensions2) {
           const fullPath = path2 + e;
           if (host.fileExists(fullPath)) {
             return fullPath;
@@ -138339,14 +138339,14 @@ ${lanes.join("\n")}
           }
           return host.getDirectories(rootDir);
         }
-        function readDirectory(rootDir, extensions, excludes, includes, depth) {
+        function readDirectory(rootDir, extensions2, excludes, includes, depth) {
           const rootDirPath = toPath3(rootDir);
           const rootResult = tryReadDirectory2(rootDir, rootDirPath);
           let rootSymLinkResult;
           if (rootResult !== void 0) {
-            return matchFiles(rootDir, extensions, excludes, includes, useCaseSensitiveFileNames2, currentDirectory, depth, getFileSystemEntries, realpath);
+            return matchFiles(rootDir, extensions2, excludes, includes, useCaseSensitiveFileNames2, currentDirectory, depth, getFileSystemEntries, realpath);
           }
-          return host.readDirectory(rootDir, extensions, excludes, includes, depth);
+          return host.readDirectory(rootDir, extensions2, excludes, includes, depth);
           function getFileSystemEntries(dir) {
             const path2 = toPath3(dir);
             if (path2 === rootDirPath) {
@@ -138849,7 +138849,7 @@ ${lanes.join("\n")}
           getEnvironmentVariable: (name) => system.getEnvironmentVariable ? system.getEnvironmentVariable(name) : "",
           getDirectories: (path2) => system.getDirectories(path2),
           realpath,
-          readDirectory: (path2, extensions, include, exclude, depth) => system.readDirectory(path2, extensions, include, exclude, depth),
+          readDirectory: (path2, extensions2, include, exclude, depth) => system.readDirectory(path2, extensions2, include, exclude, depth),
           createDirectory: (d) => system.createDirectory(d),
           createHash: maybeBind(system, system.createHash)
         };
@@ -142557,9 +142557,9 @@ ${lanes.join("\n")}
       function parseConfigHostFromCompilerHostLike(host, directoryStructureHost = host) {
         return {
           fileExists: (f) => directoryStructureHost.fileExists(f),
-          readDirectory(root, extensions, excludes, includes, depth) {
+          readDirectory(root, extensions2, excludes, includes, depth) {
             Debug.assertIsDefined(directoryStructureHost.readDirectory, "'CompilerHost.readDirectory' must be implemented to correctly process 'projectReferences'");
-            return directoryStructureHost.readDirectory(root, extensions, excludes, includes, depth);
+            return directoryStructureHost.readDirectory(root, extensions2, excludes, includes, depth);
           },
           readFile: (f) => directoryStructureHost.readFile(f),
           directoryExists: maybeBind(directoryStructureHost, directoryStructureHost.directoryExists),
@@ -146597,7 +146597,7 @@ ${lanes.join("\n")}
           readFile: (path2, encoding) => system.readFile(path2, encoding),
           directoryExists: (path2) => system.directoryExists(path2),
           getDirectories: (path2) => system.getDirectories(path2),
-          readDirectory: (path2, extensions, exclude, include, depth) => system.readDirectory(path2, extensions, exclude, include, depth),
+          readDirectory: (path2, extensions2, exclude, include, depth) => system.readDirectory(path2, extensions2, exclude, include, depth),
           realpath: maybeBind(system, system.realpath),
           getEnvironmentVariable: maybeBind(system, system.getEnvironmentVariable),
           trace: (s) => system.write(s + system.newLine),
@@ -154661,8 +154661,8 @@ ${lanes.join("\n")}
       function tryGetDirectories(host, directoryName) {
         return tryIOAndConsumeErrors(host, host.getDirectories, directoryName) || [];
       }
-      function tryReadDirectory(host, path2, extensions, exclude, include) {
-        return tryIOAndConsumeErrors(host, host.readDirectory, path2, extensions, exclude, include) || emptyArray;
+      function tryReadDirectory(host, path2, extensions2, exclude, include) {
+        return tryIOAndConsumeErrors(host, host.readDirectory, path2, extensions2, exclude, include) || emptyArray;
       }
       function tryFileExists(host, path2) {
         return tryIOAndConsumeErrors(host, host.fileExists, path2);
@@ -166386,9 +166386,9 @@ ${newComment.split("\n").map((c) => ` * ${c}`).join("\n")}
             getDirectories: (path2) => {
               return host.getDirectories ? host.getDirectories(path2) : [];
             },
-            readDirectory: (path2, extensions, exclude, include, depth) => {
+            readDirectory: (path2, extensions2, exclude, include, depth) => {
               Debug.checkDefined(host.readDirectory, "'LanguageServiceHost.readDirectory' must be implemented to correctly process 'projectReferences'");
-              return host.readDirectory(path2, extensions, exclude, include, depth);
+              return host.readDirectory(path2, extensions2, exclude, include, depth);
             },
             onReleaseOldSourceFile,
             onReleaseParsedCommandLine,
@@ -185368,9 +185368,9 @@ ${newComment.split("\n").map((c) => ` * ${c}`).join("\n")}
           if (!name.startsWith("*.") || name.includes("/")) return;
           return name.slice(1);
         });
-        const extensions = [...getSupportedExtensions(compilerOptions), ambientModulesExtensions];
+        const extensions2 = [...getSupportedExtensions(compilerOptions), ambientModulesExtensions];
         const moduleResolution = getEmitModuleResolutionKind(compilerOptions);
-        return moduleResolutionUsesNodeModules(moduleResolution) ? getSupportedExtensionsWithJsonIfResolveJsonModule(compilerOptions, extensions) : extensions;
+        return moduleResolutionUsesNodeModules(moduleResolution) ? getSupportedExtensionsWithJsonIfResolveJsonModule(compilerOptions, extensions2) : extensions2;
       }
       function getBaseDirectoriesFromRootDirs(rootDirs, basePath, scriptDirectory, ignoreCase) {
         rootDirs = rootDirs.map((rootDirectory) => ensureTrailingDirectorySeparator(normalizePath(isRootedDiskPath(rootDirectory) ? rootDirectory : combinePaths(basePath, rootDirectory))));
@@ -203105,8 +203105,8 @@ ${options.prefix}` : "\n" : options.prefix
         useCaseSensitiveFileNames() {
           return this.projectService.host.useCaseSensitiveFileNames;
         }
-        readDirectory(path2, extensions, exclude, include, depth) {
-          return this.directoryStructureHost.readDirectory(path2, extensions, exclude, include, depth);
+        readDirectory(path2, extensions2, exclude, include, depth) {
+          return this.directoryStructureHost.readDirectory(path2, extensions2, exclude, include, depth);
         }
         readFile(fileName) {
           return this.projectService.host.readFile(fileName);
@@ -226853,11 +226853,11 @@ var ShaderMaterial = class extends Material {
     data.fragmentShader = this.fragmentShader;
     data.lights = this.lights;
     data.clipping = this.clipping;
-    const extensions = {};
+    const extensions2 = {};
     for (const key in this.extensions) {
-      if (this.extensions[key] === true) extensions[key] = true;
+      if (this.extensions[key] === true) extensions2[key] = true;
     }
-    if (Object.keys(extensions).length > 0) data.extensions = extensions;
+    if (Object.keys(extensions2).length > 0) data.extensions = extensions2;
     return data;
   }
 };
@@ -247387,7 +247387,7 @@ function WebGLBindingStates(gl, attributes) {
     disableUnusedAttributes
   };
 }
-function WebGLBufferRenderer(gl, extensions, info) {
+function WebGLBufferRenderer(gl, extensions2, info) {
   let mode;
   function setMode(value) {
     mode = value;
@@ -247403,7 +247403,7 @@ function WebGLBufferRenderer(gl, extensions, info) {
   }
   function renderMultiDraw(starts, counts, drawCount) {
     if (drawCount === 0) return;
-    const extension = extensions.get("WEBGL_multi_draw");
+    const extension = extensions2.get("WEBGL_multi_draw");
     extension.multiDrawArraysWEBGL(mode, starts, 0, counts, 0, drawCount);
     let elementCount = 0;
     for (let i = 0; i < drawCount; i++) {
@@ -247413,7 +247413,7 @@ function WebGLBufferRenderer(gl, extensions, info) {
   }
   function renderMultiDrawInstances(starts, counts, drawCount, primcount) {
     if (drawCount === 0) return;
-    const extension = extensions.get("WEBGL_multi_draw");
+    const extension = extensions2.get("WEBGL_multi_draw");
     if (extension === null) {
       for (let i = 0; i < starts.length; i++) {
         renderInstances(starts[i], counts[i], primcount[i]);
@@ -247433,12 +247433,12 @@ function WebGLBufferRenderer(gl, extensions, info) {
   this.renderMultiDraw = renderMultiDraw;
   this.renderMultiDrawInstances = renderMultiDrawInstances;
 }
-function WebGLCapabilities(gl, extensions, parameters, utils) {
+function WebGLCapabilities(gl, extensions2, parameters, utils) {
   let maxAnisotropy;
   function getMaxAnisotropy() {
     if (maxAnisotropy !== void 0) return maxAnisotropy;
-    if (extensions.has("EXT_texture_filter_anisotropic") === true) {
-      const extension = extensions.get("EXT_texture_filter_anisotropic");
+    if (extensions2.has("EXT_texture_filter_anisotropic") === true) {
+      const extension = extensions2.get("EXT_texture_filter_anisotropic");
       maxAnisotropy = gl.getParameter(extension.MAX_TEXTURE_MAX_ANISOTROPY_EXT);
     } else {
       maxAnisotropy = 0;
@@ -247452,7 +247452,7 @@ function WebGLCapabilities(gl, extensions, parameters, utils) {
     return true;
   }
   function textureTypeReadable(textureType) {
-    const halfFloatSupportedByExt = textureType === HalfFloatType && (extensions.has("EXT_color_buffer_half_float") || extensions.has("EXT_color_buffer_float"));
+    const halfFloatSupportedByExt = textureType === HalfFloatType && (extensions2.has("EXT_color_buffer_half_float") || extensions2.has("EXT_color_buffer_float"));
     if (textureType !== UnsignedByteType && utils.convert(textureType) !== gl.getParameter(gl.IMPLEMENTATION_COLOR_READ_TYPE) && // Edge and Chrome Mac < 52 (#9513)
     textureType !== FloatType && !halfFloatSupportedByExt) {
       return false;
@@ -247480,7 +247480,7 @@ function WebGLCapabilities(gl, extensions, parameters, utils) {
     precision = maxPrecision;
   }
   const logarithmicDepthBuffer = parameters.logarithmicDepthBuffer === true;
-  const reversedDepthBuffer = parameters.reversedDepthBuffer === true && extensions.has("EXT_clip_control");
+  const reversedDepthBuffer = parameters.reversedDepthBuffer === true && extensions2.has("EXT_clip_control");
   const maxTextures = gl.getParameter(gl.MAX_TEXTURE_IMAGE_UNITS);
   const maxVertexTextures = gl.getParameter(gl.MAX_VERTEX_TEXTURE_IMAGE_UNITS);
   const maxTextureSize = gl.getParameter(gl.MAX_TEXTURE_SIZE);
@@ -248391,10 +248391,10 @@ function WebGLCubeUVMaps(renderer) {
   };
 }
 function WebGLExtensions(gl) {
-  const extensions = {};
+  const extensions2 = {};
   function getExtension(name) {
-    if (extensions[name] !== void 0) {
-      return extensions[name];
+    if (extensions2[name] !== void 0) {
+      return extensions2[name];
     }
     let extension;
     switch (name) {
@@ -248413,7 +248413,7 @@ function WebGLExtensions(gl) {
       default:
         extension = gl.getExtension(name);
     }
-    extensions[name] = extension;
+    extensions2[name] = extension;
     return extension;
   }
   return {
@@ -248526,7 +248526,7 @@ function WebGLGeometries(gl, attributes, info, bindingStates) {
     getWireframeAttribute
   };
 }
-function WebGLIndexedBufferRenderer(gl, extensions, info) {
+function WebGLIndexedBufferRenderer(gl, extensions2, info) {
   let mode;
   function setMode(value) {
     mode = value;
@@ -248547,7 +248547,7 @@ function WebGLIndexedBufferRenderer(gl, extensions, info) {
   }
   function renderMultiDraw(starts, counts, drawCount) {
     if (drawCount === 0) return;
-    const extension = extensions.get("WEBGL_multi_draw");
+    const extension = extensions2.get("WEBGL_multi_draw");
     extension.multiDrawElementsWEBGL(mode, counts, 0, type, starts, 0, drawCount);
     let elementCount = 0;
     for (let i = 0; i < drawCount; i++) {
@@ -248557,7 +248557,7 @@ function WebGLIndexedBufferRenderer(gl, extensions, info) {
   }
   function renderMultiDrawInstances(starts, counts, drawCount, primcount) {
     if (drawCount === 0) return;
-    const extension = extensions.get("WEBGL_multi_draw");
+    const extension = extensions2.get("WEBGL_multi_draw");
     if (extension === null) {
       for (let i = 0; i < starts.length; i++) {
         renderInstances(starts[i] / bytesPerElement, counts[i], primcount[i]);
@@ -250128,7 +250128,7 @@ var WebGLShaderStage = class {
     this.usedTimes = 0;
   }
 };
-function WebGLPrograms(renderer, cubemaps, cubeuvmaps, extensions, capabilities, bindingStates, clipping) {
+function WebGLPrograms(renderer, cubemaps, cubeuvmaps, extensions2, capabilities, bindingStates, clipping) {
   const _programLayers = new Layers();
   const _customShaders = new WebGLShaderCache();
   const _activeChannels = /* @__PURE__ */ new Set();
@@ -250362,9 +250362,9 @@ function WebGLPrograms(renderer, cubemaps, cubeuvmaps, extensions, capabilities,
       useDepthPacking: material.depthPacking >= 0,
       depthPacking: material.depthPacking || 0,
       index0AttributeName: material.index0AttributeName,
-      extensionClipCullDistance: HAS_EXTENSIONS && material.extensions.clipCullDistance === true && extensions.has("WEBGL_clip_cull_distance"),
-      extensionMultiDraw: (HAS_EXTENSIONS && material.extensions.multiDraw === true || IS_BATCHEDMESH) && extensions.has("WEBGL_multi_draw"),
-      rendererExtensionParallelShaderCompile: extensions.has("KHR_parallel_shader_compile"),
+      extensionClipCullDistance: HAS_EXTENSIONS && material.extensions.clipCullDistance === true && extensions2.has("WEBGL_clip_cull_distance"),
+      extensionMultiDraw: (HAS_EXTENSIONS && material.extensions.multiDraw === true || IS_BATCHEDMESH) && extensions2.has("WEBGL_multi_draw"),
+      rendererExtensionParallelShaderCompile: extensions2.has("KHR_parallel_shader_compile"),
       customProgramCacheKey: material.customProgramCacheKey()
     };
     parameters.vertexUv1s = _activeChannels.has(1);
@@ -250863,7 +250863,7 @@ var nextVersion = 0;
 function shadowCastingAndTexturingLightsFirst(lightA, lightB) {
   return (lightB.castShadow ? 2 : 0) - (lightA.castShadow ? 2 : 0) + (lightB.map ? 1 : 0) - (lightA.map ? 1 : 0);
 }
-function WebGLLights(extensions) {
+function WebGLLights(extensions2) {
   const cache = new UniformsCache();
   const shadowCache = ShadowUniformsCache();
   const state = {
@@ -251021,7 +251021,7 @@ function WebGLLights(extensions) {
       }
     }
     if (rectAreaLength > 0) {
-      if (extensions.has("OES_texture_float_linear") === true) {
+      if (extensions2.has("OES_texture_float_linear") === true) {
         state.rectAreaLTC1 = UniformsLib.LTC_FLOAT_1;
         state.rectAreaLTC2 = UniformsLib.LTC_FLOAT_2;
       } else {
@@ -251121,8 +251121,8 @@ function WebGLLights(extensions) {
     state
   };
 }
-function WebGLRenderState(extensions) {
-  const lights = new WebGLLights(extensions);
+function WebGLRenderState(extensions2) {
+  const lights = new WebGLLights(extensions2);
   const lightsArray = [];
   const shadowsArray = [];
   function init(camera) {
@@ -251158,17 +251158,17 @@ function WebGLRenderState(extensions) {
     pushShadow
   };
 }
-function WebGLRenderStates(extensions) {
+function WebGLRenderStates(extensions2) {
   let renderStates = /* @__PURE__ */ new WeakMap();
   function get(scene, renderCallDepth = 0) {
     const renderStateArray = renderStates.get(scene);
     let renderState;
     if (renderStateArray === void 0) {
-      renderState = new WebGLRenderState(extensions);
+      renderState = new WebGLRenderState(extensions2);
       renderStates.set(scene, [renderState]);
     } else {
       if (renderCallDepth >= renderStateArray.length) {
-        renderState = new WebGLRenderState(extensions);
+        renderState = new WebGLRenderState(extensions2);
         renderStateArray.push(renderState);
       } else {
         renderState = renderStateArray[renderCallDepth];
@@ -251423,7 +251423,7 @@ var reversedFuncs = {
   [NotEqualDepth]: EqualDepth,
   [GreaterEqualDepth]: LessEqualDepth
 };
-function WebGLState(gl, extensions) {
+function WebGLState(gl, extensions2) {
   function ColorBuffer() {
     let locked = false;
     const color = new Vector4();
@@ -251467,7 +251467,7 @@ function WebGLState(gl, extensions) {
     return {
       setReversed: function(reversed) {
         if (currentReversed !== reversed) {
-          const ext = extensions.get("EXT_clip_control");
+          const ext = extensions2.get("EXT_clip_control");
           if (reversed) {
             ext.clipControlEXT(ext.LOWER_LEFT_EXT, ext.ZERO_TO_ONE_EXT);
           } else {
@@ -252173,8 +252173,8 @@ function WebGLState(gl, extensions) {
     reset
   };
 }
-function WebGLTextures(_gl, extensions, state, properties, capabilities, utils, info) {
-  const multisampledRTTExt = extensions.has("WEBGL_multisampled_render_to_texture") ? extensions.get("WEBGL_multisampled_render_to_texture") : null;
+function WebGLTextures(_gl, extensions2, state, properties, capabilities, utils, info) {
+  const multisampledRTTExt = extensions2.has("WEBGL_multisampled_render_to_texture") ? extensions2.get("WEBGL_multisampled_render_to_texture") : null;
   const supportsInvalidateFramebuffer = typeof navigator === "undefined" ? false : /OculusBrowser/g.test(navigator.userAgent);
   const _imageDimensions = new Vector2();
   const _videoTextures = /* @__PURE__ */ new WeakMap();
@@ -252291,7 +252291,7 @@ function WebGLTextures(_gl, extensions, state, properties, capabilities, utils, 
       if (glType === _gl.UNSIGNED_SHORT_5_5_5_1) internalFormat = _gl.RGB5_A1;
     }
     if (internalFormat === _gl.R16F || internalFormat === _gl.R32F || internalFormat === _gl.RG16F || internalFormat === _gl.RG32F || internalFormat === _gl.RGBA16F || internalFormat === _gl.RGBA32F) {
-      extensions.get("EXT_color_buffer_float");
+      extensions2.get("EXT_color_buffer_float");
     }
     return internalFormat;
   }
@@ -252503,7 +252503,7 @@ function WebGLTextures(_gl, extensions, state, properties, capabilities, utils, 
     [NotEqualCompare]: _gl.NOTEQUAL
   };
   function setTextureParameters(textureType, texture) {
-    if (texture.type === FloatType && extensions.has("OES_texture_float_linear") === false && (texture.magFilter === LinearFilter || texture.magFilter === LinearMipmapNearestFilter || texture.magFilter === NearestMipmapLinearFilter || texture.magFilter === LinearMipmapLinearFilter || texture.minFilter === LinearFilter || texture.minFilter === LinearMipmapNearestFilter || texture.minFilter === NearestMipmapLinearFilter || texture.minFilter === LinearMipmapLinearFilter)) {
+    if (texture.type === FloatType && extensions2.has("OES_texture_float_linear") === false && (texture.magFilter === LinearFilter || texture.magFilter === LinearMipmapNearestFilter || texture.magFilter === NearestMipmapLinearFilter || texture.magFilter === LinearMipmapLinearFilter || texture.minFilter === LinearFilter || texture.minFilter === LinearMipmapNearestFilter || texture.minFilter === NearestMipmapLinearFilter || texture.minFilter === LinearMipmapLinearFilter)) {
       console.warn("THREE.WebGLRenderer: Unable to use linear filtering with floating point textures. OES_texture_float_linear not supported on this device.");
     }
     _gl.texParameteri(textureType, _gl.TEXTURE_WRAP_S, wrappingToGL[texture.wrapS]);
@@ -252517,12 +252517,12 @@ function WebGLTextures(_gl, extensions, state, properties, capabilities, utils, 
       _gl.texParameteri(textureType, _gl.TEXTURE_COMPARE_MODE, _gl.COMPARE_REF_TO_TEXTURE);
       _gl.texParameteri(textureType, _gl.TEXTURE_COMPARE_FUNC, compareToGL[texture.compareFunction]);
     }
-    if (extensions.has("EXT_texture_filter_anisotropic") === true) {
+    if (extensions2.has("EXT_texture_filter_anisotropic") === true) {
       if (texture.magFilter === NearestFilter) return;
       if (texture.minFilter !== NearestMipmapLinearFilter && texture.minFilter !== LinearMipmapLinearFilter) return;
-      if (texture.type === FloatType && extensions.has("OES_texture_float_linear") === false) return;
+      if (texture.type === FloatType && extensions2.has("OES_texture_float_linear") === false) return;
       if (texture.anisotropy > 1 || properties.get(texture).__currentAnisotropy) {
-        const extension = extensions.get("EXT_texture_filter_anisotropic");
+        const extension = extensions2.get("EXT_texture_filter_anisotropic");
         _gl.texParameterf(textureType, extension.TEXTURE_MAX_ANISOTROPY_EXT, Math.min(texture.anisotropy, capabilities.getMaxAnisotropy()));
         properties.get(texture).__currentAnisotropy = texture.anisotropy;
       }
@@ -253330,7 +253330,7 @@ function WebGLTextures(_gl, extensions, state, properties, capabilities, utils, 
   }
   function useMultisampledRTT(renderTarget) {
     const renderTargetProperties = properties.get(renderTarget);
-    return renderTarget.samples > 0 && extensions.has("WEBGL_multisampled_render_to_texture") === true && renderTargetProperties.__useRenderToTexture !== false;
+    return renderTarget.samples > 0 && extensions2.has("WEBGL_multisampled_render_to_texture") === true && renderTargetProperties.__useRenderToTexture !== false;
   }
   function updateVideoTexture(texture) {
     const frame = info.render.frame;
@@ -253382,7 +253382,7 @@ function WebGLTextures(_gl, extensions, state, properties, capabilities, utils, 
   this.setupFrameBufferTexture = setupFrameBufferTexture;
   this.useMultisampledRTT = useMultisampledRTT;
 }
-function WebGLUtils(gl, extensions) {
+function WebGLUtils(gl, extensions2) {
   function convert(p, colorSpace = NoColorSpace) {
     let extension;
     const transfer = ColorManagement.getTransfer(colorSpace);
@@ -253410,7 +253410,7 @@ function WebGLUtils(gl, extensions) {
     if (p === RGBAIntegerFormat) return gl.RGBA_INTEGER;
     if (p === RGB_S3TC_DXT1_Format || p === RGBA_S3TC_DXT1_Format || p === RGBA_S3TC_DXT3_Format || p === RGBA_S3TC_DXT5_Format) {
       if (transfer === SRGBTransfer) {
-        extension = extensions.get("WEBGL_compressed_texture_s3tc_srgb");
+        extension = extensions2.get("WEBGL_compressed_texture_s3tc_srgb");
         if (extension !== null) {
           if (p === RGB_S3TC_DXT1_Format) return extension.COMPRESSED_SRGB_S3TC_DXT1_EXT;
           if (p === RGBA_S3TC_DXT1_Format) return extension.COMPRESSED_SRGB_ALPHA_S3TC_DXT1_EXT;
@@ -253420,7 +253420,7 @@ function WebGLUtils(gl, extensions) {
           return null;
         }
       } else {
-        extension = extensions.get("WEBGL_compressed_texture_s3tc");
+        extension = extensions2.get("WEBGL_compressed_texture_s3tc");
         if (extension !== null) {
           if (p === RGB_S3TC_DXT1_Format) return extension.COMPRESSED_RGB_S3TC_DXT1_EXT;
           if (p === RGBA_S3TC_DXT1_Format) return extension.COMPRESSED_RGBA_S3TC_DXT1_EXT;
@@ -253432,7 +253432,7 @@ function WebGLUtils(gl, extensions) {
       }
     }
     if (p === RGB_PVRTC_4BPPV1_Format || p === RGB_PVRTC_2BPPV1_Format || p === RGBA_PVRTC_4BPPV1_Format || p === RGBA_PVRTC_2BPPV1_Format) {
-      extension = extensions.get("WEBGL_compressed_texture_pvrtc");
+      extension = extensions2.get("WEBGL_compressed_texture_pvrtc");
       if (extension !== null) {
         if (p === RGB_PVRTC_4BPPV1_Format) return extension.COMPRESSED_RGB_PVRTC_4BPPV1_IMG;
         if (p === RGB_PVRTC_2BPPV1_Format) return extension.COMPRESSED_RGB_PVRTC_2BPPV1_IMG;
@@ -253443,7 +253443,7 @@ function WebGLUtils(gl, extensions) {
       }
     }
     if (p === RGB_ETC1_Format || p === RGB_ETC2_Format || p === RGBA_ETC2_EAC_Format) {
-      extension = extensions.get("WEBGL_compressed_texture_etc");
+      extension = extensions2.get("WEBGL_compressed_texture_etc");
       if (extension !== null) {
         if (p === RGB_ETC1_Format || p === RGB_ETC2_Format) return transfer === SRGBTransfer ? extension.COMPRESSED_SRGB8_ETC2 : extension.COMPRESSED_RGB8_ETC2;
         if (p === RGBA_ETC2_EAC_Format) return transfer === SRGBTransfer ? extension.COMPRESSED_SRGB8_ALPHA8_ETC2_EAC : extension.COMPRESSED_RGBA8_ETC2_EAC;
@@ -253452,7 +253452,7 @@ function WebGLUtils(gl, extensions) {
       }
     }
     if (p === RGBA_ASTC_4x4_Format || p === RGBA_ASTC_5x4_Format || p === RGBA_ASTC_5x5_Format || p === RGBA_ASTC_6x5_Format || p === RGBA_ASTC_6x6_Format || p === RGBA_ASTC_8x5_Format || p === RGBA_ASTC_8x6_Format || p === RGBA_ASTC_8x8_Format || p === RGBA_ASTC_10x5_Format || p === RGBA_ASTC_10x6_Format || p === RGBA_ASTC_10x8_Format || p === RGBA_ASTC_10x10_Format || p === RGBA_ASTC_12x10_Format || p === RGBA_ASTC_12x12_Format) {
-      extension = extensions.get("WEBGL_compressed_texture_astc");
+      extension = extensions2.get("WEBGL_compressed_texture_astc");
       if (extension !== null) {
         if (p === RGBA_ASTC_4x4_Format) return transfer === SRGBTransfer ? extension.COMPRESSED_SRGB8_ALPHA8_ASTC_4x4_KHR : extension.COMPRESSED_RGBA_ASTC_4x4_KHR;
         if (p === RGBA_ASTC_5x4_Format) return transfer === SRGBTransfer ? extension.COMPRESSED_SRGB8_ALPHA8_ASTC_5x4_KHR : extension.COMPRESSED_RGBA_ASTC_5x4_KHR;
@@ -253473,7 +253473,7 @@ function WebGLUtils(gl, extensions) {
       }
     }
     if (p === RGBA_BPTC_Format || p === RGB_BPTC_SIGNED_Format || p === RGB_BPTC_UNSIGNED_Format) {
-      extension = extensions.get("EXT_texture_compression_bptc");
+      extension = extensions2.get("EXT_texture_compression_bptc");
       if (extension !== null) {
         if (p === RGBA_BPTC_Format) return transfer === SRGBTransfer ? extension.COMPRESSED_SRGB_ALPHA_BPTC_UNORM_EXT : extension.COMPRESSED_RGBA_BPTC_UNORM_EXT;
         if (p === RGB_BPTC_SIGNED_Format) return extension.COMPRESSED_RGB_BPTC_SIGNED_FLOAT_EXT;
@@ -253483,7 +253483,7 @@ function WebGLUtils(gl, extensions) {
       }
     }
     if (p === RED_RGTC1_Format || p === SIGNED_RED_RGTC1_Format || p === RED_GREEN_RGTC2_Format || p === SIGNED_RED_GREEN_RGTC2_Format) {
-      extension = extensions.get("EXT_texture_compression_rgtc");
+      extension = extensions2.get("EXT_texture_compression_rgtc");
       if (extension !== null) {
         if (p === RED_RGTC1_Format) return extension.COMPRESSED_RED_RGTC1_EXT;
         if (p === SIGNED_RED_RGTC1_Format) return extension.COMPRESSED_SIGNED_RED_RGTC1_EXT;
@@ -254721,23 +254721,23 @@ var WebGLRenderer = class {
       console.error("THREE.WebGLRenderer: " + error.message);
       throw error;
     }
-    let extensions, capabilities, state, info;
+    let extensions2, capabilities, state, info;
     let properties, textures, cubemaps, cubeuvmaps, attributes, geometries, objects;
     let programCache, materials, renderLists, renderStates, clipping, shadowMap;
     let background, morphtargets, bufferRenderer, indexedBufferRenderer;
     let utils, bindingStates, uniformsGroups;
     function initGLContext() {
-      extensions = new WebGLExtensions(_gl);
-      extensions.init();
-      utils = new WebGLUtils(_gl, extensions);
-      capabilities = new WebGLCapabilities(_gl, extensions, parameters, utils);
-      state = new WebGLState(_gl, extensions);
+      extensions2 = new WebGLExtensions(_gl);
+      extensions2.init();
+      utils = new WebGLUtils(_gl, extensions2);
+      capabilities = new WebGLCapabilities(_gl, extensions2, parameters, utils);
+      state = new WebGLState(_gl, extensions2);
       if (capabilities.reversedDepthBuffer && reversedDepthBuffer) {
         state.buffers.depth.setReversed(true);
       }
       info = new WebGLInfo(_gl);
       properties = new WebGLProperties();
-      textures = new WebGLTextures(_gl, extensions, state, properties, capabilities, utils, info);
+      textures = new WebGLTextures(_gl, extensions2, state, properties, capabilities, utils, info);
       cubemaps = new WebGLCubeMaps(_this);
       cubeuvmaps = new WebGLCubeUVMaps(_this);
       attributes = new WebGLAttributes(_gl);
@@ -254746,18 +254746,18 @@ var WebGLRenderer = class {
       objects = new WebGLObjects(_gl, geometries, attributes, info);
       morphtargets = new WebGLMorphtargets(_gl, capabilities, textures);
       clipping = new WebGLClipping(properties);
-      programCache = new WebGLPrograms(_this, cubemaps, cubeuvmaps, extensions, capabilities, bindingStates, clipping);
+      programCache = new WebGLPrograms(_this, cubemaps, cubeuvmaps, extensions2, capabilities, bindingStates, clipping);
       materials = new WebGLMaterials(_this, properties);
       renderLists = new WebGLRenderLists();
-      renderStates = new WebGLRenderStates(extensions);
+      renderStates = new WebGLRenderStates(extensions2);
       background = new WebGLBackground(_this, cubemaps, cubeuvmaps, state, objects, _alpha, premultipliedAlpha);
       shadowMap = new WebGLShadowMap(_this, objects, capabilities);
       uniformsGroups = new WebGLUniformsGroups(_gl, info, capabilities, state);
-      bufferRenderer = new WebGLBufferRenderer(_gl, extensions, info);
-      indexedBufferRenderer = new WebGLIndexedBufferRenderer(_gl, extensions, info);
+      bufferRenderer = new WebGLBufferRenderer(_gl, extensions2, info);
+      indexedBufferRenderer = new WebGLIndexedBufferRenderer(_gl, extensions2, info);
       info.programs = programCache.programs;
       _this.capabilities = capabilities;
-      _this.extensions = extensions;
+      _this.extensions = extensions2;
       _this.properties = properties;
       _this.renderLists = renderLists;
       _this.shadowMap = shadowMap;
@@ -254774,11 +254774,11 @@ var WebGLRenderer = class {
       return _gl.getContextAttributes();
     };
     this.forceContextLoss = function() {
-      const extension = extensions.get("WEBGL_lose_context");
+      const extension = extensions2.get("WEBGL_lose_context");
       if (extension) extension.loseContext();
     };
     this.forceContextRestore = function() {
-      const extension = extensions.get("WEBGL_lose_context");
+      const extension = extensions2.get("WEBGL_lose_context");
       if (extension) extension.restoreContext();
     };
     this.getPixelRatio = function() {
@@ -255045,7 +255045,7 @@ var WebGLRenderer = class {
           warnOnce("THREE.WebGLRenderer: renderMultiDrawInstances has been deprecated and will be removed in r184. Append to renderMultiDraw arguments and use indirection.");
           renderer.renderMultiDrawInstances(object._multiDrawStarts, object._multiDrawCounts, object._multiDrawCount, object._multiDrawInstances);
         } else {
-          if (!extensions.get("WEBGL_multi_draw")) {
+          if (!extensions2.get("WEBGL_multi_draw")) {
             const starts = object._multiDrawStarts;
             const counts = object._multiDrawCounts;
             const drawCount2 = object._multiDrawCount;
@@ -255145,7 +255145,7 @@ var WebGLRenderer = class {
           }
           setTimeout(checkMaterialsReady, 10);
         }
-        if (extensions.get("KHR_parallel_shader_compile") !== null) {
+        if (extensions2.get("KHR_parallel_shader_compile") !== null) {
           checkMaterialsReady();
         } else {
           setTimeout(checkMaterialsReady, 10);
@@ -255340,7 +255340,7 @@ var WebGLRenderer = class {
       if (currentRenderState.state.transmissionRenderTarget[camera.id] === void 0) {
         currentRenderState.state.transmissionRenderTarget[camera.id] = new WebGLRenderTarget(1, 1, {
           generateMipmaps: true,
-          type: extensions.has("EXT_color_buffer_half_float") || extensions.has("EXT_color_buffer_float") ? HalfFloatType : UnsignedByteType,
+          type: extensions2.has("EXT_color_buffer_half_float") || extensions2.has("EXT_color_buffer_float") ? HalfFloatType : UnsignedByteType,
           minFilter: LinearMipmapLinearFilter,
           samples: 4,
           stencilBuffer: stencil,
@@ -255370,7 +255370,7 @@ var WebGLRenderer = class {
       renderObjects(opaqueObjects, scene, camera);
       textures.updateMultisampleRenderTarget(transmissionRenderTarget);
       textures.updateRenderTargetMipmap(transmissionRenderTarget);
-      if (extensions.has("WEBGL_multisampled_render_to_texture") === false) {
+      if (extensions2.has("WEBGL_multisampled_render_to_texture") === false) {
         let renderTargetNeedsUpdate = false;
         for (let i = 0, l = transmissiveObjects.length; i < l; i++) {
           const renderItem = transmissiveObjects[i];
@@ -263147,8 +263147,7 @@ async function resolveMediaAssetEntries(entries, assetManager, options = {}) {
           url: resolvedUrl
         });
         continue;
-      } catch (error) {
-        options.onResolveError?.(entry, error);
+      } catch {
       }
     }
     if (allowRenderablePreviewUrl(entry.url)) {
@@ -268116,1174 +268115,1064 @@ import { createHash } from "node:crypto";
 // src/components/StarSky/shared/performance/builtinGeometryArtifacts.generated.json
 var builtinGeometryArtifacts_generated_default = {
   "00cd2010b5e94f8c0cdeba5cf32306adbedd2ebb258443bca521b234721a17d0": {
-    url: "/plugin-builtins/display-0bbbd6fdd5b2b1c4fb7174b13f413457c14182420dfbf52ebdc65903b296dfb2.json",
-    sha256: "0bbbd6fdd5b2b1c4fb7174b13f413457c14182420dfbf52ebdc65903b296dfb2",
-    bytes: 702328
+    url: "/plugin-builtins/display-d2bbb0fa64f2d0cdade4eae765c7cc25741e3219ef9760fa5bf1ac39c79f7ccc.bin",
+    sha256: "d2bbb0fa64f2d0cdade4eae765c7cc25741e3219ef9760fa5bf1ac39c79f7ccc",
+    bytes: 603987
   },
   "0115f4c3c3cc2b634b9ef15f56ff86dedd41fcb70bb28d5eabd6a81e2038fb09": {
-    url: "/plugin-builtins/display-0bbbd6fdd5b2b1c4fb7174b13f413457c14182420dfbf52ebdc65903b296dfb2.json",
-    sha256: "0bbbd6fdd5b2b1c4fb7174b13f413457c14182420dfbf52ebdc65903b296dfb2",
-    bytes: 702328
+    url: "/plugin-builtins/display-d2bbb0fa64f2d0cdade4eae765c7cc25741e3219ef9760fa5bf1ac39c79f7ccc.bin",
+    sha256: "d2bbb0fa64f2d0cdade4eae765c7cc25741e3219ef9760fa5bf1ac39c79f7ccc",
+    bytes: 603987
+  },
+  "017dc158921cd1d86877ed616ed164244263bd4510456d54acc8e2b797651c9d": {
+    url: "/plugin-builtins/display-a572c0bd5c6966993839f5a3af307c299e40e100c1c9a780cd064afd00541671.bin",
+    sha256: "a572c0bd5c6966993839f5a3af307c299e40e100c1c9a780cd064afd00541671",
+    bytes: 93731
   },
   "027af73db7bad49037551895bbf0b61371274574b7a0033613b18a3137d02586": {
-    url: "/plugin-builtins/display-b8055b5a11340e880efca703e62a99437abc98be0b5aaec079155a006239f532.json",
-    sha256: "b8055b5a11340e880efca703e62a99437abc98be0b5aaec079155a006239f532",
-    bytes: 206041
+    url: "/plugin-builtins/display-8f31fe0e3f8f52fdbde54fc20f5ed5562e61dfed3f7858eef38ba130b8d8bc6a.bin",
+    sha256: "8f31fe0e3f8f52fdbde54fc20f5ed5562e61dfed3f7858eef38ba130b8d8bc6a",
+    bytes: 208478
   },
   "03b3515cdbeae67e8e66240c61f91edf245718b7d4289d7ba7ddfe2551d5730a": {
-    url: "/plugin-builtins/display-b720639e94b457ac088c4954dae15eabe46a054c9a142f2133cb6dda43e58b6a.json",
-    sha256: "b720639e94b457ac088c4954dae15eabe46a054c9a142f2133cb6dda43e58b6a",
-    bytes: 633413
+    url: "/plugin-builtins/display-c367099bbf87f58d638526ef31389b2412d6f77637f9d1221ad14fcbc2f57971.bin",
+    sha256: "c367099bbf87f58d638526ef31389b2412d6f77637f9d1221ad14fcbc2f57971",
+    bytes: 580803
   },
   "03e30f325b949b1afc538b70c8412777458e162d2242eee1e102bcf4c6a6d165": {
-    url: "/plugin-builtins/display-b720639e94b457ac088c4954dae15eabe46a054c9a142f2133cb6dda43e58b6a.json",
-    sha256: "b720639e94b457ac088c4954dae15eabe46a054c9a142f2133cb6dda43e58b6a",
-    bytes: 633413
+    url: "/plugin-builtins/display-c367099bbf87f58d638526ef31389b2412d6f77637f9d1221ad14fcbc2f57971.bin",
+    sha256: "c367099bbf87f58d638526ef31389b2412d6f77637f9d1221ad14fcbc2f57971",
+    bytes: 580803
   },
   "041c27a3fc79176ed36464e1df4d4a1ef3796cf2d2fd018702a908797258e844": {
-    url: "/plugin-builtins/display-b720639e94b457ac088c4954dae15eabe46a054c9a142f2133cb6dda43e58b6a.json",
-    sha256: "b720639e94b457ac088c4954dae15eabe46a054c9a142f2133cb6dda43e58b6a",
-    bytes: 633413
+    url: "/plugin-builtins/display-c367099bbf87f58d638526ef31389b2412d6f77637f9d1221ad14fcbc2f57971.bin",
+    sha256: "c367099bbf87f58d638526ef31389b2412d6f77637f9d1221ad14fcbc2f57971",
+    bytes: 580803
   },
-  "048747e5e380d3045dd30d169a1116b3db7442e9ff51c39b160682a4f566a5ba": {
-    url: "/plugin-builtins/display-ac8e4fa148b79079d20797c07508931a637d6f6fefe2513bc1f302c351e9ee47.json",
-    sha256: "ac8e4fa148b79079d20797c07508931a637d6f6fefe2513bc1f302c351e9ee47",
-    bytes: 511491
+  "04dcb805bd49eda12f3c5e315c44e115db937b23745607caa20d4deffc92ab98": {
+    url: "/plugin-builtins/display-23673a241e14a187c82e85785f2244ca4a8bd4fe929bc6433b54a6cebc7adce6.bin",
+    sha256: "23673a241e14a187c82e85785f2244ca4a8bd4fe929bc6433b54a6cebc7adce6",
+    bytes: 463313
   },
   "06db354f463022f459664856a3cf89aaf3db3b5416f792b43e3d82ecb7a776d2": {
-    url: "/plugin-builtins/display-0bbbd6fdd5b2b1c4fb7174b13f413457c14182420dfbf52ebdc65903b296dfb2.json",
-    sha256: "0bbbd6fdd5b2b1c4fb7174b13f413457c14182420dfbf52ebdc65903b296dfb2",
-    bytes: 702328
+    url: "/plugin-builtins/display-d2bbb0fa64f2d0cdade4eae765c7cc25741e3219ef9760fa5bf1ac39c79f7ccc.bin",
+    sha256: "d2bbb0fa64f2d0cdade4eae765c7cc25741e3219ef9760fa5bf1ac39c79f7ccc",
+    bytes: 603987
   },
   "0706b4a29a6e53b31dec75378f6177aa9102987c229be43e64ca3bc62a2a60a4": {
-    url: "/plugin-builtins/display-dc750c717473b1c636f1edc14492cbb127fc531fd8b978666ecac0ef6f499b27.json",
-    sha256: "dc750c717473b1c636f1edc14492cbb127fc531fd8b978666ecac0ef6f499b27",
-    bytes: 276052
+    url: "/plugin-builtins/display-516ed82fc6d954f5687b56c976cfd00ccddcf00b80f737f89b0d50ec7af27892.bin",
+    sha256: "516ed82fc6d954f5687b56c976cfd00ccddcf00b80f737f89b0d50ec7af27892",
+    bytes: 219509
   },
   "07245328248b15d48d5a7b71a8c61da00873a9d046517196549844449df85bd9": {
-    url: "/plugin-builtins/display-b720639e94b457ac088c4954dae15eabe46a054c9a142f2133cb6dda43e58b6a.json",
-    sha256: "b720639e94b457ac088c4954dae15eabe46a054c9a142f2133cb6dda43e58b6a",
-    bytes: 633413
-  },
-  "076161382b70bdb557c9a46c424664d96ae4c1430cc416565d2edb4a01b919c0": {
-    url: "/plugin-builtins/display-04d08a651a8881ab27e6e1c3eb6164d0bf71d2bdac5b9df81020e2e3c05a80cb.json",
-    sha256: "04d08a651a8881ab27e6e1c3eb6164d0bf71d2bdac5b9df81020e2e3c05a80cb",
-    bytes: 167941
+    url: "/plugin-builtins/display-c367099bbf87f58d638526ef31389b2412d6f77637f9d1221ad14fcbc2f57971.bin",
+    sha256: "c367099bbf87f58d638526ef31389b2412d6f77637f9d1221ad14fcbc2f57971",
+    bytes: 580803
   },
   "076c9615806edf4c50632daa5bc1388527a60131b838cf0df95b740f2d393502": {
-    url: "/plugin-builtins/display-dc750c717473b1c636f1edc14492cbb127fc531fd8b978666ecac0ef6f499b27.json",
-    sha256: "dc750c717473b1c636f1edc14492cbb127fc531fd8b978666ecac0ef6f499b27",
-    bytes: 276052
+    url: "/plugin-builtins/display-516ed82fc6d954f5687b56c976cfd00ccddcf00b80f737f89b0d50ec7af27892.bin",
+    sha256: "516ed82fc6d954f5687b56c976cfd00ccddcf00b80f737f89b0d50ec7af27892",
+    bytes: 219509
   },
   "0917c5a95bdc6637e4857e0e3c7a3864a9fc3916745b0e2607cbe968a1b1d9d2": {
-    url: "/plugin-builtins/display-b720639e94b457ac088c4954dae15eabe46a054c9a142f2133cb6dda43e58b6a.json",
-    sha256: "b720639e94b457ac088c4954dae15eabe46a054c9a142f2133cb6dda43e58b6a",
-    bytes: 633413
-  },
-  "0ad1b26c013d87d45de92da8b941dda72a2b55655cd450fb788642dabfee01d0": {
-    url: "/plugin-builtins/display-b8055b5a11340e880efca703e62a99437abc98be0b5aaec079155a006239f532.json",
-    sha256: "b8055b5a11340e880efca703e62a99437abc98be0b5aaec079155a006239f532",
-    bytes: 206041
+    url: "/plugin-builtins/display-c367099bbf87f58d638526ef31389b2412d6f77637f9d1221ad14fcbc2f57971.bin",
+    sha256: "c367099bbf87f58d638526ef31389b2412d6f77637f9d1221ad14fcbc2f57971",
+    bytes: 580803
   },
   "0b6198a629f433029b7de9552ea5b552de849e30c7fefcc62a376fd78ae54f51": {
-    url: "/plugin-builtins/display-b720639e94b457ac088c4954dae15eabe46a054c9a142f2133cb6dda43e58b6a.json",
-    sha256: "b720639e94b457ac088c4954dae15eabe46a054c9a142f2133cb6dda43e58b6a",
-    bytes: 633413
+    url: "/plugin-builtins/display-c367099bbf87f58d638526ef31389b2412d6f77637f9d1221ad14fcbc2f57971.bin",
+    sha256: "c367099bbf87f58d638526ef31389b2412d6f77637f9d1221ad14fcbc2f57971",
+    bytes: 580803
   },
   "0b71ac52ddb28e041701b88c306175a3d8c37681280a183e575cbbcc5de07e28": {
-    url: "/plugin-builtins/display-b720639e94b457ac088c4954dae15eabe46a054c9a142f2133cb6dda43e58b6a.json",
-    sha256: "b720639e94b457ac088c4954dae15eabe46a054c9a142f2133cb6dda43e58b6a",
-    bytes: 633413
+    url: "/plugin-builtins/display-c367099bbf87f58d638526ef31389b2412d6f77637f9d1221ad14fcbc2f57971.bin",
+    sha256: "c367099bbf87f58d638526ef31389b2412d6f77637f9d1221ad14fcbc2f57971",
+    bytes: 580803
   },
   "0d655d284b007cbad7c7353e5e8953aa0242a9be523f0456a0c9ce9f30137888": {
-    url: "/plugin-builtins/display-dc750c717473b1c636f1edc14492cbb127fc531fd8b978666ecac0ef6f499b27.json",
-    sha256: "dc750c717473b1c636f1edc14492cbb127fc531fd8b978666ecac0ef6f499b27",
-    bytes: 276052
-  },
-  "0dc248eae2af80c26fed05d03b28c9a6843751edeca28e0e168949017723a8e3": {
-    url: "/plugin-builtins/display-ac8e4fa148b79079d20797c07508931a637d6f6fefe2513bc1f302c351e9ee47.json",
-    sha256: "ac8e4fa148b79079d20797c07508931a637d6f6fefe2513bc1f302c351e9ee47",
-    bytes: 511491
+    url: "/plugin-builtins/display-516ed82fc6d954f5687b56c976cfd00ccddcf00b80f737f89b0d50ec7af27892.bin",
+    sha256: "516ed82fc6d954f5687b56c976cfd00ccddcf00b80f737f89b0d50ec7af27892",
+    bytes: 219509
   },
   "0edf61416a407b23b72f89b4d1c82440414a3a12ed19f82f2365f1e45477ac9a": {
-    url: "/plugin-builtins/display-641fc2795038945ca78fb589d90af8e3149cf359426847fcc98781fc1d560711.json",
-    sha256: "641fc2795038945ca78fb589d90af8e3149cf359426847fcc98781fc1d560711",
-    bytes: 77690
+    url: "/plugin-builtins/display-a572c0bd5c6966993839f5a3af307c299e40e100c1c9a780cd064afd00541671.bin",
+    sha256: "a572c0bd5c6966993839f5a3af307c299e40e100c1c9a780cd064afd00541671",
+    bytes: 93731
   },
-  "0f4460e3fa07faeca8df87b92b352f3d7fdeba5230c268728bd62795d5ddaab9": {
-    url: "/plugin-builtins/display-04d08a651a8881ab27e6e1c3eb6164d0bf71d2bdac5b9df81020e2e3c05a80cb.json",
-    sha256: "04d08a651a8881ab27e6e1c3eb6164d0bf71d2bdac5b9df81020e2e3c05a80cb",
-    bytes: 167941
+  "106271acc0168efba1d359d3485e21686b46f59b918cb7bc8b89285bd98cbe1e": {
+    url: "/plugin-builtins/display-8f31fe0e3f8f52fdbde54fc20f5ed5562e61dfed3f7858eef38ba130b8d8bc6a.bin",
+    sha256: "8f31fe0e3f8f52fdbde54fc20f5ed5562e61dfed3f7858eef38ba130b8d8bc6a",
+    bytes: 208478
   },
   "10f7fa40f04cd059902fbb72061951c8095f53fa1a4b3124810359db90b313d2": {
-    url: "/plugin-builtins/display-0bbbd6fdd5b2b1c4fb7174b13f413457c14182420dfbf52ebdc65903b296dfb2.json",
-    sha256: "0bbbd6fdd5b2b1c4fb7174b13f413457c14182420dfbf52ebdc65903b296dfb2",
-    bytes: 702328
+    url: "/plugin-builtins/display-d2bbb0fa64f2d0cdade4eae765c7cc25741e3219ef9760fa5bf1ac39c79f7ccc.bin",
+    sha256: "d2bbb0fa64f2d0cdade4eae765c7cc25741e3219ef9760fa5bf1ac39c79f7ccc",
+    bytes: 603987
+  },
+  "1100563fc2497dd47e5c270b6d80c01f31eddb4f3f0b4389d5c47ee9c817eb88": {
+    url: "/plugin-builtins/display-600bb64d89d3785d09b3af0d153d75098348404816844eb6617f49b12e42ec5c.bin",
+    sha256: "600bb64d89d3785d09b3af0d153d75098348404816844eb6617f49b12e42ec5c",
+    bytes: 182793
   },
   "11652610be3b86a3c140810d44fe6270ab7052a4d67dfacc02a3254e63d10dd7": {
-    url: "/plugin-builtins/display-0bbbd6fdd5b2b1c4fb7174b13f413457c14182420dfbf52ebdc65903b296dfb2.json",
-    sha256: "0bbbd6fdd5b2b1c4fb7174b13f413457c14182420dfbf52ebdc65903b296dfb2",
-    bytes: 702328
+    url: "/plugin-builtins/display-d2bbb0fa64f2d0cdade4eae765c7cc25741e3219ef9760fa5bf1ac39c79f7ccc.bin",
+    sha256: "d2bbb0fa64f2d0cdade4eae765c7cc25741e3219ef9760fa5bf1ac39c79f7ccc",
+    bytes: 603987
   },
   "116ece005b7f3ea59b437d5a09af17df400691a2ea0e9f55bdc6cdc63f3f3b29": {
-    url: "/plugin-builtins/display-b720639e94b457ac088c4954dae15eabe46a054c9a142f2133cb6dda43e58b6a.json",
-    sha256: "b720639e94b457ac088c4954dae15eabe46a054c9a142f2133cb6dda43e58b6a",
-    bytes: 633413
+    url: "/plugin-builtins/display-c367099bbf87f58d638526ef31389b2412d6f77637f9d1221ad14fcbc2f57971.bin",
+    sha256: "c367099bbf87f58d638526ef31389b2412d6f77637f9d1221ad14fcbc2f57971",
+    bytes: 580803
   },
-  "11b9085aec404adf151159e73124337de4fb6f13e1677797bade6e3c461472a2": {
-    url: "/plugin-builtins/display-04d08a651a8881ab27e6e1c3eb6164d0bf71d2bdac5b9df81020e2e3c05a80cb.json",
-    sha256: "04d08a651a8881ab27e6e1c3eb6164d0bf71d2bdac5b9df81020e2e3c05a80cb",
-    bytes: 167941
+  "1192284226501c9ff2c11c5c5d8483035e23ee8246e1107297d8ca3bff30f290": {
+    url: "/plugin-builtins/display-23673a241e14a187c82e85785f2244ca4a8bd4fe929bc6433b54a6cebc7adce6.bin",
+    sha256: "23673a241e14a187c82e85785f2244ca4a8bd4fe929bc6433b54a6cebc7adce6",
+    bytes: 463313
   },
   "158fe9a8b903a0ea042206efad377533dc1a72eb76414ca57bb56ec33c046cc8": {
-    url: "/plugin-builtins/display-b720639e94b457ac088c4954dae15eabe46a054c9a142f2133cb6dda43e58b6a.json",
-    sha256: "b720639e94b457ac088c4954dae15eabe46a054c9a142f2133cb6dda43e58b6a",
-    bytes: 633413
+    url: "/plugin-builtins/display-c367099bbf87f58d638526ef31389b2412d6f77637f9d1221ad14fcbc2f57971.bin",
+    sha256: "c367099bbf87f58d638526ef31389b2412d6f77637f9d1221ad14fcbc2f57971",
+    bytes: 580803
   },
   "1664a93293d726821fb49806f32535d01ae9e58f77af5deefeeff353b2a5b1f6": {
-    url: "/plugin-builtins/display-b720639e94b457ac088c4954dae15eabe46a054c9a142f2133cb6dda43e58b6a.json",
-    sha256: "b720639e94b457ac088c4954dae15eabe46a054c9a142f2133cb6dda43e58b6a",
-    bytes: 633413
-  },
-  "1797a96e7e9dcd4c28b50b3ea5926cd692ba553ba927a7ac2e68dcf188b0ff16": {
-    url: "/plugin-builtins/display-04d08a651a8881ab27e6e1c3eb6164d0bf71d2bdac5b9df81020e2e3c05a80cb.json",
-    sha256: "04d08a651a8881ab27e6e1c3eb6164d0bf71d2bdac5b9df81020e2e3c05a80cb",
-    bytes: 167941
+    url: "/plugin-builtins/display-c367099bbf87f58d638526ef31389b2412d6f77637f9d1221ad14fcbc2f57971.bin",
+    sha256: "c367099bbf87f58d638526ef31389b2412d6f77637f9d1221ad14fcbc2f57971",
+    bytes: 580803
   },
   "1849457f88a3994f561c2726b879c16d515644f1e4415fa78736aaeca20920ed": {
-    url: "/plugin-builtins/display-b720639e94b457ac088c4954dae15eabe46a054c9a142f2133cb6dda43e58b6a.json",
-    sha256: "b720639e94b457ac088c4954dae15eabe46a054c9a142f2133cb6dda43e58b6a",
-    bytes: 633413
+    url: "/plugin-builtins/display-c367099bbf87f58d638526ef31389b2412d6f77637f9d1221ad14fcbc2f57971.bin",
+    sha256: "c367099bbf87f58d638526ef31389b2412d6f77637f9d1221ad14fcbc2f57971",
+    bytes: 580803
   },
   "1872d6d56f571d8b658fa8fb9cd3142fecbca64feeb394f2ba4dd07665c785b4": {
-    url: "/plugin-builtins/display-dc750c717473b1c636f1edc14492cbb127fc531fd8b978666ecac0ef6f499b27.json",
-    sha256: "dc750c717473b1c636f1edc14492cbb127fc531fd8b978666ecac0ef6f499b27",
-    bytes: 276052
+    url: "/plugin-builtins/display-516ed82fc6d954f5687b56c976cfd00ccddcf00b80f737f89b0d50ec7af27892.bin",
+    sha256: "516ed82fc6d954f5687b56c976cfd00ccddcf00b80f737f89b0d50ec7af27892",
+    bytes: 219509
   },
   "189101653346188281c1e0a6af1673fe95920a745267a436875764ce743d9d85": {
-    url: "/plugin-builtins/display-0bbbd6fdd5b2b1c4fb7174b13f413457c14182420dfbf52ebdc65903b296dfb2.json",
-    sha256: "0bbbd6fdd5b2b1c4fb7174b13f413457c14182420dfbf52ebdc65903b296dfb2",
-    bytes: 702328
-  },
-  "19f5115ab87c08b5e68023d89e5498dce3eafdd19a8b6fd3e9134e0a8fc9f41f": {
-    url: "/plugin-builtins/display-b8055b5a11340e880efca703e62a99437abc98be0b5aaec079155a006239f532.json",
-    sha256: "b8055b5a11340e880efca703e62a99437abc98be0b5aaec079155a006239f532",
-    bytes: 206041
+    url: "/plugin-builtins/display-d2bbb0fa64f2d0cdade4eae765c7cc25741e3219ef9760fa5bf1ac39c79f7ccc.bin",
+    sha256: "d2bbb0fa64f2d0cdade4eae765c7cc25741e3219ef9760fa5bf1ac39c79f7ccc",
+    bytes: 603987
   },
   "1adebe625644480591a7baa5e67b5e81344fb3d722f668b542751583d2f76fe2": {
-    url: "/plugin-builtins/display-b720639e94b457ac088c4954dae15eabe46a054c9a142f2133cb6dda43e58b6a.json",
-    sha256: "b720639e94b457ac088c4954dae15eabe46a054c9a142f2133cb6dda43e58b6a",
-    bytes: 633413
+    url: "/plugin-builtins/display-c367099bbf87f58d638526ef31389b2412d6f77637f9d1221ad14fcbc2f57971.bin",
+    sha256: "c367099bbf87f58d638526ef31389b2412d6f77637f9d1221ad14fcbc2f57971",
+    bytes: 580803
   },
   "1b446db05b5460c98b7db92ad45795ad44499ae5da33063e7ee30d66bb1800e6": {
-    url: "/plugin-builtins/display-0bbbd6fdd5b2b1c4fb7174b13f413457c14182420dfbf52ebdc65903b296dfb2.json",
-    sha256: "0bbbd6fdd5b2b1c4fb7174b13f413457c14182420dfbf52ebdc65903b296dfb2",
-    bytes: 702328
+    url: "/plugin-builtins/display-d2bbb0fa64f2d0cdade4eae765c7cc25741e3219ef9760fa5bf1ac39c79f7ccc.bin",
+    sha256: "d2bbb0fa64f2d0cdade4eae765c7cc25741e3219ef9760fa5bf1ac39c79f7ccc",
+    bytes: 603987
   },
   "1bd6bc3333caa442061a1644a12a97822ce93613beaeb0547417dd9a781b521b": {
-    url: "/plugin-builtins/display-0bbbd6fdd5b2b1c4fb7174b13f413457c14182420dfbf52ebdc65903b296dfb2.json",
-    sha256: "0bbbd6fdd5b2b1c4fb7174b13f413457c14182420dfbf52ebdc65903b296dfb2",
-    bytes: 702328
+    url: "/plugin-builtins/display-d2bbb0fa64f2d0cdade4eae765c7cc25741e3219ef9760fa5bf1ac39c79f7ccc.bin",
+    sha256: "d2bbb0fa64f2d0cdade4eae765c7cc25741e3219ef9760fa5bf1ac39c79f7ccc",
+    bytes: 603987
   },
   "1bd9bf4c5ff8e17e514ca8f9858fd5905eef67679e12fde51dff628b940f602a": {
-    url: "/plugin-builtins/display-b720639e94b457ac088c4954dae15eabe46a054c9a142f2133cb6dda43e58b6a.json",
-    sha256: "b720639e94b457ac088c4954dae15eabe46a054c9a142f2133cb6dda43e58b6a",
-    bytes: 633413
-  },
-  "1ea2cf95fc1f2d0eefdcc9ae194548ad1f7164104f7da03c837d8a7fc0c9c1da": {
-    url: "/plugin-builtins/display-04d08a651a8881ab27e6e1c3eb6164d0bf71d2bdac5b9df81020e2e3c05a80cb.json",
-    sha256: "04d08a651a8881ab27e6e1c3eb6164d0bf71d2bdac5b9df81020e2e3c05a80cb",
-    bytes: 167941
+    url: "/plugin-builtins/display-c367099bbf87f58d638526ef31389b2412d6f77637f9d1221ad14fcbc2f57971.bin",
+    sha256: "c367099bbf87f58d638526ef31389b2412d6f77637f9d1221ad14fcbc2f57971",
+    bytes: 580803
   },
   "1ecc84dc79bbf8cd8dc050daf853fc231835a731eed1afa3f4ad52175fd08f0e": {
-    url: "/plugin-builtins/display-0bbbd6fdd5b2b1c4fb7174b13f413457c14182420dfbf52ebdc65903b296dfb2.json",
-    sha256: "0bbbd6fdd5b2b1c4fb7174b13f413457c14182420dfbf52ebdc65903b296dfb2",
-    bytes: 702328
+    url: "/plugin-builtins/display-d2bbb0fa64f2d0cdade4eae765c7cc25741e3219ef9760fa5bf1ac39c79f7ccc.bin",
+    sha256: "d2bbb0fa64f2d0cdade4eae765c7cc25741e3219ef9760fa5bf1ac39c79f7ccc",
+    bytes: 603987
+  },
+  "20ec00add92b9e622d51893f5288eedb8b41fc5d616d9d5e872c0d05935e707b": {
+    url: "/plugin-builtins/display-600bb64d89d3785d09b3af0d153d75098348404816844eb6617f49b12e42ec5c.bin",
+    sha256: "600bb64d89d3785d09b3af0d153d75098348404816844eb6617f49b12e42ec5c",
+    bytes: 182793
   },
   "214f567504ba4cddd1f438f8dc0c1817a3b90e451c0ab1343ffd2f531e5e3010": {
-    url: "/plugin-builtins/display-a4dd75d9ff3d7b10fc0fe4c0b96cbd4ef535f85eeb2c5da6c8df1dd582d3d6d9.json",
-    sha256: "a4dd75d9ff3d7b10fc0fe4c0b96cbd4ef535f85eeb2c5da6c8df1dd582d3d6d9",
-    bytes: 84985
-  },
-  "240335f5bfc89c461e164cfd8841ebff973775ec66431c2c4aacb462c9f587f5": {
-    url: "/plugin-builtins/display-641fc2795038945ca78fb589d90af8e3149cf359426847fcc98781fc1d560711.json",
-    sha256: "641fc2795038945ca78fb589d90af8e3149cf359426847fcc98781fc1d560711",
-    bytes: 77690
+    url: "/plugin-builtins/display-3cae2b18f3a87a7d7460fa1893e2583571d1d97098b7a73e197f76bfd70729cf.bin",
+    sha256: "3cae2b18f3a87a7d7460fa1893e2583571d1d97098b7a73e197f76bfd70729cf",
+    bytes: 77773
   },
   "241db05c860888c307908c73abb9a4c6dd78034afdcebebcf1239110d84e8dcb": {
-    url: "/plugin-builtins/display-b720639e94b457ac088c4954dae15eabe46a054c9a142f2133cb6dda43e58b6a.json",
-    sha256: "b720639e94b457ac088c4954dae15eabe46a054c9a142f2133cb6dda43e58b6a",
-    bytes: 633413
-  },
-  "243637c3e4c3610f8576b1978934aaa9fd1b49d14b56d7f5da92c49244659dad": {
-    url: "/plugin-builtins/display-ac8e4fa148b79079d20797c07508931a637d6f6fefe2513bc1f302c351e9ee47.json",
-    sha256: "ac8e4fa148b79079d20797c07508931a637d6f6fefe2513bc1f302c351e9ee47",
-    bytes: 511491
-  },
-  "25e08c7f7404bb4282923611a37052abdb3ae1c8126d8aad21c9912615d38361": {
-    url: "/plugin-builtins/display-04d08a651a8881ab27e6e1c3eb6164d0bf71d2bdac5b9df81020e2e3c05a80cb.json",
-    sha256: "04d08a651a8881ab27e6e1c3eb6164d0bf71d2bdac5b9df81020e2e3c05a80cb",
-    bytes: 167941
+    url: "/plugin-builtins/display-c367099bbf87f58d638526ef31389b2412d6f77637f9d1221ad14fcbc2f57971.bin",
+    sha256: "c367099bbf87f58d638526ef31389b2412d6f77637f9d1221ad14fcbc2f57971",
+    bytes: 580803
   },
   "271d99099fc9cfb7a57770fe0e208dd946db389b508fe1cf41a3d81234792b6c": {
-    url: "/plugin-builtins/display-b720639e94b457ac088c4954dae15eabe46a054c9a142f2133cb6dda43e58b6a.json",
-    sha256: "b720639e94b457ac088c4954dae15eabe46a054c9a142f2133cb6dda43e58b6a",
-    bytes: 633413
+    url: "/plugin-builtins/display-c367099bbf87f58d638526ef31389b2412d6f77637f9d1221ad14fcbc2f57971.bin",
+    sha256: "c367099bbf87f58d638526ef31389b2412d6f77637f9d1221ad14fcbc2f57971",
+    bytes: 580803
   },
   "279c637ceeaf667c377cd51ff7ee6a146958d026b227eaac6fd225d1ca0af114": {
-    url: "/plugin-builtins/display-b720639e94b457ac088c4954dae15eabe46a054c9a142f2133cb6dda43e58b6a.json",
-    sha256: "b720639e94b457ac088c4954dae15eabe46a054c9a142f2133cb6dda43e58b6a",
-    bytes: 633413
+    url: "/plugin-builtins/display-c367099bbf87f58d638526ef31389b2412d6f77637f9d1221ad14fcbc2f57971.bin",
+    sha256: "c367099bbf87f58d638526ef31389b2412d6f77637f9d1221ad14fcbc2f57971",
+    bytes: 580803
   },
   "2916a5e45ae9950bbc0fbfc4b6538bf5fc4229ee8c5282442caa2f6fcd0ff912": {
-    url: "/plugin-builtins/display-dc750c717473b1c636f1edc14492cbb127fc531fd8b978666ecac0ef6f499b27.json",
-    sha256: "dc750c717473b1c636f1edc14492cbb127fc531fd8b978666ecac0ef6f499b27",
-    bytes: 276052
+    url: "/plugin-builtins/display-516ed82fc6d954f5687b56c976cfd00ccddcf00b80f737f89b0d50ec7af27892.bin",
+    sha256: "516ed82fc6d954f5687b56c976cfd00ccddcf00b80f737f89b0d50ec7af27892",
+    bytes: 219509
   },
   "29ed55a370d3c1a24e2c4ae10c2d788a2da5b171a3751b7baac98445e4943919": {
-    url: "/plugin-builtins/display-0bbbd6fdd5b2b1c4fb7174b13f413457c14182420dfbf52ebdc65903b296dfb2.json",
-    sha256: "0bbbd6fdd5b2b1c4fb7174b13f413457c14182420dfbf52ebdc65903b296dfb2",
-    bytes: 702328
+    url: "/plugin-builtins/display-d2bbb0fa64f2d0cdade4eae765c7cc25741e3219ef9760fa5bf1ac39c79f7ccc.bin",
+    sha256: "d2bbb0fa64f2d0cdade4eae765c7cc25741e3219ef9760fa5bf1ac39c79f7ccc",
+    bytes: 603987
   },
   "2aa28508d2396ea433be3cd8c400324d37e62d10519c76dfab043e49e7089bb1": {
-    url: "/plugin-builtins/display-b720639e94b457ac088c4954dae15eabe46a054c9a142f2133cb6dda43e58b6a.json",
-    sha256: "b720639e94b457ac088c4954dae15eabe46a054c9a142f2133cb6dda43e58b6a",
-    bytes: 633413
+    url: "/plugin-builtins/display-c367099bbf87f58d638526ef31389b2412d6f77637f9d1221ad14fcbc2f57971.bin",
+    sha256: "c367099bbf87f58d638526ef31389b2412d6f77637f9d1221ad14fcbc2f57971",
+    bytes: 580803
   },
   "2b8eb273e2efb7bf88e2bd03ed73356349630e60c1e9bd877eb7ba4823d7c673": {
-    url: "/plugin-builtins/display-641fc2795038945ca78fb589d90af8e3149cf359426847fcc98781fc1d560711.json",
-    sha256: "641fc2795038945ca78fb589d90af8e3149cf359426847fcc98781fc1d560711",
-    bytes: 77690
+    url: "/plugin-builtins/display-a572c0bd5c6966993839f5a3af307c299e40e100c1c9a780cd064afd00541671.bin",
+    sha256: "a572c0bd5c6966993839f5a3af307c299e40e100c1c9a780cd064afd00541671",
+    bytes: 93731
   },
   "2e95981edca328e2dcaefc6c5dc499e095beb59f4c072fb58a02d89e72503c49": {
-    url: "/plugin-builtins/display-0bbbd6fdd5b2b1c4fb7174b13f413457c14182420dfbf52ebdc65903b296dfb2.json",
-    sha256: "0bbbd6fdd5b2b1c4fb7174b13f413457c14182420dfbf52ebdc65903b296dfb2",
-    bytes: 702328
+    url: "/plugin-builtins/display-d2bbb0fa64f2d0cdade4eae765c7cc25741e3219ef9760fa5bf1ac39c79f7ccc.bin",
+    sha256: "d2bbb0fa64f2d0cdade4eae765c7cc25741e3219ef9760fa5bf1ac39c79f7ccc",
+    bytes: 603987
   },
   "2e98d1d157a68858f7780e36d5b8d373ae2674e0ced62b7d71270c5d26cbf889": {
-    url: "/plugin-builtins/display-b720639e94b457ac088c4954dae15eabe46a054c9a142f2133cb6dda43e58b6a.json",
-    sha256: "b720639e94b457ac088c4954dae15eabe46a054c9a142f2133cb6dda43e58b6a",
-    bytes: 633413
+    url: "/plugin-builtins/display-c367099bbf87f58d638526ef31389b2412d6f77637f9d1221ad14fcbc2f57971.bin",
+    sha256: "c367099bbf87f58d638526ef31389b2412d6f77637f9d1221ad14fcbc2f57971",
+    bytes: 580803
   },
   "2e9d0be04cca851839ddc4d0a081c9cfd4532380576b298519f6c66138328e4c": {
-    url: "/plugin-builtins/display-641fc2795038945ca78fb589d90af8e3149cf359426847fcc98781fc1d560711.json",
-    sha256: "641fc2795038945ca78fb589d90af8e3149cf359426847fcc98781fc1d560711",
-    bytes: 77690
+    url: "/plugin-builtins/display-a572c0bd5c6966993839f5a3af307c299e40e100c1c9a780cd064afd00541671.bin",
+    sha256: "a572c0bd5c6966993839f5a3af307c299e40e100c1c9a780cd064afd00541671",
+    bytes: 93731
   },
   "2f44e1d82daf9d32ec2a074ea3fdcd9a68fc1dc35180a91708f0e8dd31d29625": {
-    url: "/plugin-builtins/display-0bbbd6fdd5b2b1c4fb7174b13f413457c14182420dfbf52ebdc65903b296dfb2.json",
-    sha256: "0bbbd6fdd5b2b1c4fb7174b13f413457c14182420dfbf52ebdc65903b296dfb2",
-    bytes: 702328
+    url: "/plugin-builtins/display-d2bbb0fa64f2d0cdade4eae765c7cc25741e3219ef9760fa5bf1ac39c79f7ccc.bin",
+    sha256: "d2bbb0fa64f2d0cdade4eae765c7cc25741e3219ef9760fa5bf1ac39c79f7ccc",
+    bytes: 603987
   },
   "2fee27dd4f6392e50ac8af4bfdcdaf2f974d06f0a1270f74f4948ebd203bec78": {
-    url: "/plugin-builtins/display-0bbbd6fdd5b2b1c4fb7174b13f413457c14182420dfbf52ebdc65903b296dfb2.json",
-    sha256: "0bbbd6fdd5b2b1c4fb7174b13f413457c14182420dfbf52ebdc65903b296dfb2",
-    bytes: 702328
+    url: "/plugin-builtins/display-d2bbb0fa64f2d0cdade4eae765c7cc25741e3219ef9760fa5bf1ac39c79f7ccc.bin",
+    sha256: "d2bbb0fa64f2d0cdade4eae765c7cc25741e3219ef9760fa5bf1ac39c79f7ccc",
+    bytes: 603987
   },
   "301134e875d436bfc8e11b06931022a09f8e8218129a7dd5d6c5f3dda96068ae": {
-    url: "/plugin-builtins/display-0bbbd6fdd5b2b1c4fb7174b13f413457c14182420dfbf52ebdc65903b296dfb2.json",
-    sha256: "0bbbd6fdd5b2b1c4fb7174b13f413457c14182420dfbf52ebdc65903b296dfb2",
-    bytes: 702328
+    url: "/plugin-builtins/display-d2bbb0fa64f2d0cdade4eae765c7cc25741e3219ef9760fa5bf1ac39c79f7ccc.bin",
+    sha256: "d2bbb0fa64f2d0cdade4eae765c7cc25741e3219ef9760fa5bf1ac39c79f7ccc",
+    bytes: 603987
   },
   "305fed7ceffb6606102e2a9cc50b203cdc55659e5f8654cc0e415367375ed259": {
-    url: "/plugin-builtins/display-0bbbd6fdd5b2b1c4fb7174b13f413457c14182420dfbf52ebdc65903b296dfb2.json",
-    sha256: "0bbbd6fdd5b2b1c4fb7174b13f413457c14182420dfbf52ebdc65903b296dfb2",
-    bytes: 702328
-  },
-  "308f7840c63fbff819619fbcf07812103177222d5306a7b5fe673d989152d365": {
-    url: "/plugin-builtins/display-b8055b5a11340e880efca703e62a99437abc98be0b5aaec079155a006239f532.json",
-    sha256: "b8055b5a11340e880efca703e62a99437abc98be0b5aaec079155a006239f532",
-    bytes: 206041
+    url: "/plugin-builtins/display-d2bbb0fa64f2d0cdade4eae765c7cc25741e3219ef9760fa5bf1ac39c79f7ccc.bin",
+    sha256: "d2bbb0fa64f2d0cdade4eae765c7cc25741e3219ef9760fa5bf1ac39c79f7ccc",
+    bytes: 603987
   },
   "30a65d6decd7f327bb9f7d9524f5ae95f070df7d4fa956eff3cc4538afa65dc4": {
-    url: "/plugin-builtins/display-b720639e94b457ac088c4954dae15eabe46a054c9a142f2133cb6dda43e58b6a.json",
-    sha256: "b720639e94b457ac088c4954dae15eabe46a054c9a142f2133cb6dda43e58b6a",
-    bytes: 633413
+    url: "/plugin-builtins/display-c367099bbf87f58d638526ef31389b2412d6f77637f9d1221ad14fcbc2f57971.bin",
+    sha256: "c367099bbf87f58d638526ef31389b2412d6f77637f9d1221ad14fcbc2f57971",
+    bytes: 580803
   },
   "31b18ba6da71669500adadae494232fc816b636502bb15bbb520051735f3e9a4": {
-    url: "/plugin-builtins/display-0bbbd6fdd5b2b1c4fb7174b13f413457c14182420dfbf52ebdc65903b296dfb2.json",
-    sha256: "0bbbd6fdd5b2b1c4fb7174b13f413457c14182420dfbf52ebdc65903b296dfb2",
-    bytes: 702328
-  },
-  "327446475e3f11c91a03ebea63d715902b688ece331ee283fcff30be90359111": {
-    url: "/plugin-builtins/display-b8055b5a11340e880efca703e62a99437abc98be0b5aaec079155a006239f532.json",
-    sha256: "b8055b5a11340e880efca703e62a99437abc98be0b5aaec079155a006239f532",
-    bytes: 206041
+    url: "/plugin-builtins/display-d2bbb0fa64f2d0cdade4eae765c7cc25741e3219ef9760fa5bf1ac39c79f7ccc.bin",
+    sha256: "d2bbb0fa64f2d0cdade4eae765c7cc25741e3219ef9760fa5bf1ac39c79f7ccc",
+    bytes: 603987
   },
   "330c54dc53669def61b523452e29245b669f83664ebdf171c497372d686c1a4f": {
-    url: "/plugin-builtins/display-0bbbd6fdd5b2b1c4fb7174b13f413457c14182420dfbf52ebdc65903b296dfb2.json",
-    sha256: "0bbbd6fdd5b2b1c4fb7174b13f413457c14182420dfbf52ebdc65903b296dfb2",
-    bytes: 702328
+    url: "/plugin-builtins/display-d2bbb0fa64f2d0cdade4eae765c7cc25741e3219ef9760fa5bf1ac39c79f7ccc.bin",
+    sha256: "d2bbb0fa64f2d0cdade4eae765c7cc25741e3219ef9760fa5bf1ac39c79f7ccc",
+    bytes: 603987
   },
   "33c09d35659f4132fae15865a0ed948b95979af582be01d53f6704d1175e02bb": {
-    url: "/plugin-builtins/display-0bbbd6fdd5b2b1c4fb7174b13f413457c14182420dfbf52ebdc65903b296dfb2.json",
-    sha256: "0bbbd6fdd5b2b1c4fb7174b13f413457c14182420dfbf52ebdc65903b296dfb2",
-    bytes: 702328
+    url: "/plugin-builtins/display-d2bbb0fa64f2d0cdade4eae765c7cc25741e3219ef9760fa5bf1ac39c79f7ccc.bin",
+    sha256: "d2bbb0fa64f2d0cdade4eae765c7cc25741e3219ef9760fa5bf1ac39c79f7ccc",
+    bytes: 603987
   },
   "344bb07f45bbd9ba30a3a774126ceda5b1a6022c206994002d3a382bbd5011b2": {
-    url: "/plugin-builtins/display-0bbbd6fdd5b2b1c4fb7174b13f413457c14182420dfbf52ebdc65903b296dfb2.json",
-    sha256: "0bbbd6fdd5b2b1c4fb7174b13f413457c14182420dfbf52ebdc65903b296dfb2",
-    bytes: 702328
+    url: "/plugin-builtins/display-d2bbb0fa64f2d0cdade4eae765c7cc25741e3219ef9760fa5bf1ac39c79f7ccc.bin",
+    sha256: "d2bbb0fa64f2d0cdade4eae765c7cc25741e3219ef9760fa5bf1ac39c79f7ccc",
+    bytes: 603987
   },
-  "35678cc57224c57a314f8c66c1a4492c5d27ec1d9c2e3cae58fd3596dcddecc5": {
-    url: "/plugin-builtins/display-ac8e4fa148b79079d20797c07508931a637d6f6fefe2513bc1f302c351e9ee47.json",
-    sha256: "ac8e4fa148b79079d20797c07508931a637d6f6fefe2513bc1f302c351e9ee47",
-    bytes: 511491
+  "345285d583616b87e11bcc3e3fc8611249688c4519b86efc3d04320e18129304": {
+    url: "/plugin-builtins/display-8f31fe0e3f8f52fdbde54fc20f5ed5562e61dfed3f7858eef38ba130b8d8bc6a.bin",
+    sha256: "8f31fe0e3f8f52fdbde54fc20f5ed5562e61dfed3f7858eef38ba130b8d8bc6a",
+    bytes: 208478
   },
   "35f1f2d1aef5bfe247883aeff707d075699f785f3d6f957e3c9ddf9bfb019d22": {
-    url: "/plugin-builtins/display-b720639e94b457ac088c4954dae15eabe46a054c9a142f2133cb6dda43e58b6a.json",
-    sha256: "b720639e94b457ac088c4954dae15eabe46a054c9a142f2133cb6dda43e58b6a",
-    bytes: 633413
+    url: "/plugin-builtins/display-c367099bbf87f58d638526ef31389b2412d6f77637f9d1221ad14fcbc2f57971.bin",
+    sha256: "c367099bbf87f58d638526ef31389b2412d6f77637f9d1221ad14fcbc2f57971",
+    bytes: 580803
   },
   "375160929952a22679a18e5e17a2304ca8721baee492a40bcd4dc3555f5bc327": {
-    url: "/plugin-builtins/display-dc750c717473b1c636f1edc14492cbb127fc531fd8b978666ecac0ef6f499b27.json",
-    sha256: "dc750c717473b1c636f1edc14492cbb127fc531fd8b978666ecac0ef6f499b27",
-    bytes: 276052
-  },
-  "3a365a460b0596fda72fadfd98d6b470fae01ed1be468d63c0597000c67f5658": {
-    url: "/plugin-builtins/display-b8055b5a11340e880efca703e62a99437abc98be0b5aaec079155a006239f532.json",
-    sha256: "b8055b5a11340e880efca703e62a99437abc98be0b5aaec079155a006239f532",
-    bytes: 206041
+    url: "/plugin-builtins/display-516ed82fc6d954f5687b56c976cfd00ccddcf00b80f737f89b0d50ec7af27892.bin",
+    sha256: "516ed82fc6d954f5687b56c976cfd00ccddcf00b80f737f89b0d50ec7af27892",
+    bytes: 219509
   },
   "3b85d76078a04e79fd5a020ce7c715644e20f24ab76d8c77a344aba89c38a758": {
-    url: "/plugin-builtins/display-b720639e94b457ac088c4954dae15eabe46a054c9a142f2133cb6dda43e58b6a.json",
-    sha256: "b720639e94b457ac088c4954dae15eabe46a054c9a142f2133cb6dda43e58b6a",
-    bytes: 633413
+    url: "/plugin-builtins/display-c367099bbf87f58d638526ef31389b2412d6f77637f9d1221ad14fcbc2f57971.bin",
+    sha256: "c367099bbf87f58d638526ef31389b2412d6f77637f9d1221ad14fcbc2f57971",
+    bytes: 580803
   },
   "3ee86d02758792dd0ea47eb9f405edf36dea97ca6e2ea6cb3e847ca65a66f137": {
-    url: "/plugin-builtins/display-b720639e94b457ac088c4954dae15eabe46a054c9a142f2133cb6dda43e58b6a.json",
-    sha256: "b720639e94b457ac088c4954dae15eabe46a054c9a142f2133cb6dda43e58b6a",
-    bytes: 633413
-  },
-  "3efedeaf9f9fec4b1a35de555746a3d31411a71420b14bdc33012b3646134a08": {
-    url: "/plugin-builtins/display-04d08a651a8881ab27e6e1c3eb6164d0bf71d2bdac5b9df81020e2e3c05a80cb.json",
-    sha256: "04d08a651a8881ab27e6e1c3eb6164d0bf71d2bdac5b9df81020e2e3c05a80cb",
-    bytes: 167941
+    url: "/plugin-builtins/display-c367099bbf87f58d638526ef31389b2412d6f77637f9d1221ad14fcbc2f57971.bin",
+    sha256: "c367099bbf87f58d638526ef31389b2412d6f77637f9d1221ad14fcbc2f57971",
+    bytes: 580803
   },
   "3f0d8e467529d4a27fd2871b1dab47293a66abdd768e874cdf3548853c90d2cb": {
-    url: "/plugin-builtins/display-0bbbd6fdd5b2b1c4fb7174b13f413457c14182420dfbf52ebdc65903b296dfb2.json",
-    sha256: "0bbbd6fdd5b2b1c4fb7174b13f413457c14182420dfbf52ebdc65903b296dfb2",
-    bytes: 702328
+    url: "/plugin-builtins/display-d2bbb0fa64f2d0cdade4eae765c7cc25741e3219ef9760fa5bf1ac39c79f7ccc.bin",
+    sha256: "d2bbb0fa64f2d0cdade4eae765c7cc25741e3219ef9760fa5bf1ac39c79f7ccc",
+    bytes: 603987
   },
   "3f1eb4202d410b5953ce4d96f0199edf14903d1125e90a0c8c452a2dbe36d6d5": {
-    url: "/plugin-builtins/display-dc750c717473b1c636f1edc14492cbb127fc531fd8b978666ecac0ef6f499b27.json",
-    sha256: "dc750c717473b1c636f1edc14492cbb127fc531fd8b978666ecac0ef6f499b27",
-    bytes: 276052
+    url: "/plugin-builtins/display-516ed82fc6d954f5687b56c976cfd00ccddcf00b80f737f89b0d50ec7af27892.bin",
+    sha256: "516ed82fc6d954f5687b56c976cfd00ccddcf00b80f737f89b0d50ec7af27892",
+    bytes: 219509
   },
   "3f74d5b8065ebaf7e060e3c82b65e259562b5415053a833ba7a97df387283ba7": {
-    url: "/plugin-builtins/display-b720639e94b457ac088c4954dae15eabe46a054c9a142f2133cb6dda43e58b6a.json",
-    sha256: "b720639e94b457ac088c4954dae15eabe46a054c9a142f2133cb6dda43e58b6a",
-    bytes: 633413
+    url: "/plugin-builtins/display-c367099bbf87f58d638526ef31389b2412d6f77637f9d1221ad14fcbc2f57971.bin",
+    sha256: "c367099bbf87f58d638526ef31389b2412d6f77637f9d1221ad14fcbc2f57971",
+    bytes: 580803
+  },
+  "3f82bc27f6fa7e83696a7371dfe9a8f6f1d13337fe2a3018d875fca4670cf00a": {
+    url: "/plugin-builtins/display-8f31fe0e3f8f52fdbde54fc20f5ed5562e61dfed3f7858eef38ba130b8d8bc6a.bin",
+    sha256: "8f31fe0e3f8f52fdbde54fc20f5ed5562e61dfed3f7858eef38ba130b8d8bc6a",
+    bytes: 208478
   },
   "405f726232d65bbbb9731239ffdaa09d2e61e71042a8a1ba91e600182727eda0": {
-    url: "/plugin-builtins/display-0bbbd6fdd5b2b1c4fb7174b13f413457c14182420dfbf52ebdc65903b296dfb2.json",
-    sha256: "0bbbd6fdd5b2b1c4fb7174b13f413457c14182420dfbf52ebdc65903b296dfb2",
-    bytes: 702328
+    url: "/plugin-builtins/display-d2bbb0fa64f2d0cdade4eae765c7cc25741e3219ef9760fa5bf1ac39c79f7ccc.bin",
+    sha256: "d2bbb0fa64f2d0cdade4eae765c7cc25741e3219ef9760fa5bf1ac39c79f7ccc",
+    bytes: 603987
   },
   "4203b70de3f8d0ec9108973d46b39464f9bdbcc59875f14b26c8b3e0ee3b8260": {
-    url: "/plugin-builtins/display-b720639e94b457ac088c4954dae15eabe46a054c9a142f2133cb6dda43e58b6a.json",
-    sha256: "b720639e94b457ac088c4954dae15eabe46a054c9a142f2133cb6dda43e58b6a",
-    bytes: 633413
-  },
-  "422862ac1ca931b460bb5a3f52bc93eb5ec02e4630d7e2ddc2ab622c4d76af82": {
-    url: "/plugin-builtins/display-b8055b5a11340e880efca703e62a99437abc98be0b5aaec079155a006239f532.json",
-    sha256: "b8055b5a11340e880efca703e62a99437abc98be0b5aaec079155a006239f532",
-    bytes: 206041
+    url: "/plugin-builtins/display-c367099bbf87f58d638526ef31389b2412d6f77637f9d1221ad14fcbc2f57971.bin",
+    sha256: "c367099bbf87f58d638526ef31389b2412d6f77637f9d1221ad14fcbc2f57971",
+    bytes: 580803
   },
   "42d4c5da69393dc09486f0aa6326452f9d597f877a21a1fd4505eeeb29b28dc8": {
-    url: "/plugin-builtins/display-b720639e94b457ac088c4954dae15eabe46a054c9a142f2133cb6dda43e58b6a.json",
-    sha256: "b720639e94b457ac088c4954dae15eabe46a054c9a142f2133cb6dda43e58b6a",
-    bytes: 633413
+    url: "/plugin-builtins/display-c367099bbf87f58d638526ef31389b2412d6f77637f9d1221ad14fcbc2f57971.bin",
+    sha256: "c367099bbf87f58d638526ef31389b2412d6f77637f9d1221ad14fcbc2f57971",
+    bytes: 580803
   },
   "42f3ed1f7eea8a7c7de45499313ed58769d1d7914d7da764d920f14fe007bf20": {
-    url: "/plugin-builtins/display-0bbbd6fdd5b2b1c4fb7174b13f413457c14182420dfbf52ebdc65903b296dfb2.json",
-    sha256: "0bbbd6fdd5b2b1c4fb7174b13f413457c14182420dfbf52ebdc65903b296dfb2",
-    bytes: 702328
+    url: "/plugin-builtins/display-d2bbb0fa64f2d0cdade4eae765c7cc25741e3219ef9760fa5bf1ac39c79f7ccc.bin",
+    sha256: "d2bbb0fa64f2d0cdade4eae765c7cc25741e3219ef9760fa5bf1ac39c79f7ccc",
+    bytes: 603987
   },
   "4381719e9fedcdcae1b9a70686be4584101ffb206c24500b19cbd92667a38f9d": {
-    url: "/plugin-builtins/display-0bbbd6fdd5b2b1c4fb7174b13f413457c14182420dfbf52ebdc65903b296dfb2.json",
-    sha256: "0bbbd6fdd5b2b1c4fb7174b13f413457c14182420dfbf52ebdc65903b296dfb2",
-    bytes: 702328
+    url: "/plugin-builtins/display-d2bbb0fa64f2d0cdade4eae765c7cc25741e3219ef9760fa5bf1ac39c79f7ccc.bin",
+    sha256: "d2bbb0fa64f2d0cdade4eae765c7cc25741e3219ef9760fa5bf1ac39c79f7ccc",
+    bytes: 603987
   },
-  "4520bbef7064a754651235e33ce94307bad607a654c319668f29bfa39ae3b69b": {
-    url: "/plugin-builtins/display-ac8e4fa148b79079d20797c07508931a637d6f6fefe2513bc1f302c351e9ee47.json",
-    sha256: "ac8e4fa148b79079d20797c07508931a637d6f6fefe2513bc1f302c351e9ee47",
-    bytes: 511491
+  "4442c9ec4589450b3e1cae4e80820e22844fcc7699a62e1806a12102eabf1395": {
+    url: "/plugin-builtins/display-8f31fe0e3f8f52fdbde54fc20f5ed5562e61dfed3f7858eef38ba130b8d8bc6a.bin",
+    sha256: "8f31fe0e3f8f52fdbde54fc20f5ed5562e61dfed3f7858eef38ba130b8d8bc6a",
+    bytes: 208478
   },
   "45d5191619b3fcfa227a670f04b8c486ac7cf65d7df74e08bb5eedbeb271d1e8": {
-    url: "/plugin-builtins/display-dc750c717473b1c636f1edc14492cbb127fc531fd8b978666ecac0ef6f499b27.json",
-    sha256: "dc750c717473b1c636f1edc14492cbb127fc531fd8b978666ecac0ef6f499b27",
-    bytes: 276052
+    url: "/plugin-builtins/display-516ed82fc6d954f5687b56c976cfd00ccddcf00b80f737f89b0d50ec7af27892.bin",
+    sha256: "516ed82fc6d954f5687b56c976cfd00ccddcf00b80f737f89b0d50ec7af27892",
+    bytes: 219509
   },
   "475ce756b758d625fbf85ed34c3003baea725f21a9f7dd633306c40336401943": {
-    url: "/plugin-builtins/display-dc750c717473b1c636f1edc14492cbb127fc531fd8b978666ecac0ef6f499b27.json",
-    sha256: "dc750c717473b1c636f1edc14492cbb127fc531fd8b978666ecac0ef6f499b27",
-    bytes: 276052
+    url: "/plugin-builtins/display-516ed82fc6d954f5687b56c976cfd00ccddcf00b80f737f89b0d50ec7af27892.bin",
+    sha256: "516ed82fc6d954f5687b56c976cfd00ccddcf00b80f737f89b0d50ec7af27892",
+    bytes: 219509
   },
   "47fc4517576b2d899448a4ba8e65885f3bfc90a8befb2f1263a8fb0b659d4aaa": {
-    url: "/plugin-builtins/display-b720639e94b457ac088c4954dae15eabe46a054c9a142f2133cb6dda43e58b6a.json",
-    sha256: "b720639e94b457ac088c4954dae15eabe46a054c9a142f2133cb6dda43e58b6a",
-    bytes: 633413
-  },
-  "4816ad7a99daebaf6d7c9991cfbd0c1bf4a23ef4c0a91274a883f5ceda1a67aa": {
-    url: "/plugin-builtins/display-b8055b5a11340e880efca703e62a99437abc98be0b5aaec079155a006239f532.json",
-    sha256: "b8055b5a11340e880efca703e62a99437abc98be0b5aaec079155a006239f532",
-    bytes: 206041
+    url: "/plugin-builtins/display-c367099bbf87f58d638526ef31389b2412d6f77637f9d1221ad14fcbc2f57971.bin",
+    sha256: "c367099bbf87f58d638526ef31389b2412d6f77637f9d1221ad14fcbc2f57971",
+    bytes: 580803
   },
   "487094f8b9c2ea69563ecb197c2a5a1db47e81f7f927202450646ba600f3b60f": {
-    url: "/plugin-builtins/display-a4dd75d9ff3d7b10fc0fe4c0b96cbd4ef535f85eeb2c5da6c8df1dd582d3d6d9.json",
-    sha256: "a4dd75d9ff3d7b10fc0fe4c0b96cbd4ef535f85eeb2c5da6c8df1dd582d3d6d9",
-    bytes: 84985
+    url: "/plugin-builtins/display-3cae2b18f3a87a7d7460fa1893e2583571d1d97098b7a73e197f76bfd70729cf.bin",
+    sha256: "3cae2b18f3a87a7d7460fa1893e2583571d1d97098b7a73e197f76bfd70729cf",
+    bytes: 77773
   },
   "498a565e77ed7b0a5a6aff1eac3855b447b36939d99e3a0d301c197f205c5d8b": {
-    url: "/plugin-builtins/display-b720639e94b457ac088c4954dae15eabe46a054c9a142f2133cb6dda43e58b6a.json",
-    sha256: "b720639e94b457ac088c4954dae15eabe46a054c9a142f2133cb6dda43e58b6a",
-    bytes: 633413
+    url: "/plugin-builtins/display-c367099bbf87f58d638526ef31389b2412d6f77637f9d1221ad14fcbc2f57971.bin",
+    sha256: "c367099bbf87f58d638526ef31389b2412d6f77637f9d1221ad14fcbc2f57971",
+    bytes: 580803
   },
   "4a5f561126c7412fe3f2795236571feee448647d0e1ea8eafccbb5fecc6892cb": {
-    url: "/plugin-builtins/display-0bbbd6fdd5b2b1c4fb7174b13f413457c14182420dfbf52ebdc65903b296dfb2.json",
-    sha256: "0bbbd6fdd5b2b1c4fb7174b13f413457c14182420dfbf52ebdc65903b296dfb2",
-    bytes: 702328
+    url: "/plugin-builtins/display-d2bbb0fa64f2d0cdade4eae765c7cc25741e3219ef9760fa5bf1ac39c79f7ccc.bin",
+    sha256: "d2bbb0fa64f2d0cdade4eae765c7cc25741e3219ef9760fa5bf1ac39c79f7ccc",
+    bytes: 603987
   },
   "4b0ba0f465d6dc01496c95b2b7d716d80938c3c270e7957516471a83cbf575bf": {
-    url: "/plugin-builtins/display-b720639e94b457ac088c4954dae15eabe46a054c9a142f2133cb6dda43e58b6a.json",
-    sha256: "b720639e94b457ac088c4954dae15eabe46a054c9a142f2133cb6dda43e58b6a",
-    bytes: 633413
+    url: "/plugin-builtins/display-c367099bbf87f58d638526ef31389b2412d6f77637f9d1221ad14fcbc2f57971.bin",
+    sha256: "c367099bbf87f58d638526ef31389b2412d6f77637f9d1221ad14fcbc2f57971",
+    bytes: 580803
+  },
+  "4cc5f6611293e09a874e3e87c11029da14d06f59f1b6c520df31260905150f47": {
+    url: "/plugin-builtins/display-600bb64d89d3785d09b3af0d153d75098348404816844eb6617f49b12e42ec5c.bin",
+    sha256: "600bb64d89d3785d09b3af0d153d75098348404816844eb6617f49b12e42ec5c",
+    bytes: 182793
   },
   "4e073f90057c6683cdac9e1cffdb7ecfa3e54930393393980a6e5811367f3880": {
-    url: "/plugin-builtins/display-dc750c717473b1c636f1edc14492cbb127fc531fd8b978666ecac0ef6f499b27.json",
-    sha256: "dc750c717473b1c636f1edc14492cbb127fc531fd8b978666ecac0ef6f499b27",
-    bytes: 276052
+    url: "/plugin-builtins/display-516ed82fc6d954f5687b56c976cfd00ccddcf00b80f737f89b0d50ec7af27892.bin",
+    sha256: "516ed82fc6d954f5687b56c976cfd00ccddcf00b80f737f89b0d50ec7af27892",
+    bytes: 219509
+  },
+  "4ea6863df8f55611e441c0942f4440e055486436c3b93732473e3b0c9a149cf1": {
+    url: "/plugin-builtins/display-23673a241e14a187c82e85785f2244ca4a8bd4fe929bc6433b54a6cebc7adce6.bin",
+    sha256: "23673a241e14a187c82e85785f2244ca4a8bd4fe929bc6433b54a6cebc7adce6",
+    bytes: 463313
   },
   "4fd9d88a1d3a2ed2c9efbbfd2866bb0cabdc39474d126d37fa35e5bda4e84afb": {
-    url: "/plugin-builtins/display-0bbbd6fdd5b2b1c4fb7174b13f413457c14182420dfbf52ebdc65903b296dfb2.json",
-    sha256: "0bbbd6fdd5b2b1c4fb7174b13f413457c14182420dfbf52ebdc65903b296dfb2",
-    bytes: 702328
-  },
-  "50cf7b7fd661fc1be55e9ed0bcb6468a865dee26122a0e4e20036c8c7d9c7049": {
-    url: "/plugin-builtins/display-ac8e4fa148b79079d20797c07508931a637d6f6fefe2513bc1f302c351e9ee47.json",
-    sha256: "ac8e4fa148b79079d20797c07508931a637d6f6fefe2513bc1f302c351e9ee47",
-    bytes: 511491
-  },
-  "51a2b12a7e69f8b43666716e2c6c6ba795ccaf48b43343f671876c1e3e8438bf": {
-    url: "/plugin-builtins/display-641fc2795038945ca78fb589d90af8e3149cf359426847fcc98781fc1d560711.json",
-    sha256: "641fc2795038945ca78fb589d90af8e3149cf359426847fcc98781fc1d560711",
-    bytes: 77690
+    url: "/plugin-builtins/display-d2bbb0fa64f2d0cdade4eae765c7cc25741e3219ef9760fa5bf1ac39c79f7ccc.bin",
+    sha256: "d2bbb0fa64f2d0cdade4eae765c7cc25741e3219ef9760fa5bf1ac39c79f7ccc",
+    bytes: 603987
   },
   "520645d362fb98c52c73df8e7433f694c329d7ec05322eb16e4ad2a42be6a5c8": {
-    url: "/plugin-builtins/display-dc750c717473b1c636f1edc14492cbb127fc531fd8b978666ecac0ef6f499b27.json",
-    sha256: "dc750c717473b1c636f1edc14492cbb127fc531fd8b978666ecac0ef6f499b27",
-    bytes: 276052
+    url: "/plugin-builtins/display-516ed82fc6d954f5687b56c976cfd00ccddcf00b80f737f89b0d50ec7af27892.bin",
+    sha256: "516ed82fc6d954f5687b56c976cfd00ccddcf00b80f737f89b0d50ec7af27892",
+    bytes: 219509
   },
   "525f44e68a28753bd32e6a3c3528924665adaaeb9d3e021e0557a59da79fa523": {
-    url: "/plugin-builtins/display-b720639e94b457ac088c4954dae15eabe46a054c9a142f2133cb6dda43e58b6a.json",
-    sha256: "b720639e94b457ac088c4954dae15eabe46a054c9a142f2133cb6dda43e58b6a",
-    bytes: 633413
+    url: "/plugin-builtins/display-c367099bbf87f58d638526ef31389b2412d6f77637f9d1221ad14fcbc2f57971.bin",
+    sha256: "c367099bbf87f58d638526ef31389b2412d6f77637f9d1221ad14fcbc2f57971",
+    bytes: 580803
   },
   "5417ec2643fa083e675c48acbc0735db91a3b5de6483c1a7cbde07e52b17f4fd": {
-    url: "/plugin-builtins/display-dc750c717473b1c636f1edc14492cbb127fc531fd8b978666ecac0ef6f499b27.json",
-    sha256: "dc750c717473b1c636f1edc14492cbb127fc531fd8b978666ecac0ef6f499b27",
-    bytes: 276052
+    url: "/plugin-builtins/display-516ed82fc6d954f5687b56c976cfd00ccddcf00b80f737f89b0d50ec7af27892.bin",
+    sha256: "516ed82fc6d954f5687b56c976cfd00ccddcf00b80f737f89b0d50ec7af27892",
+    bytes: 219509
+  },
+  "551ced5c7b65f316ec40ca10912b85157715e48c03d19a8bb140f8648cb52d80": {
+    url: "/plugin-builtins/display-23673a241e14a187c82e85785f2244ca4a8bd4fe929bc6433b54a6cebc7adce6.bin",
+    sha256: "23673a241e14a187c82e85785f2244ca4a8bd4fe929bc6433b54a6cebc7adce6",
+    bytes: 463313
   },
   "55921afe26c67bccd45b6e58baccd363b051dab9fd114cb2dfc1e94bbd3d4ff2": {
-    url: "/plugin-builtins/display-a4dd75d9ff3d7b10fc0fe4c0b96cbd4ef535f85eeb2c5da6c8df1dd582d3d6d9.json",
-    sha256: "a4dd75d9ff3d7b10fc0fe4c0b96cbd4ef535f85eeb2c5da6c8df1dd582d3d6d9",
-    bytes: 84985
+    url: "/plugin-builtins/display-3cae2b18f3a87a7d7460fa1893e2583571d1d97098b7a73e197f76bfd70729cf.bin",
+    sha256: "3cae2b18f3a87a7d7460fa1893e2583571d1d97098b7a73e197f76bfd70729cf",
+    bytes: 77773
   },
   "55b38602df81381893811dd737b757e96f98f64b0bb7cca53225298d115e0415": {
-    url: "/plugin-builtins/display-0bbbd6fdd5b2b1c4fb7174b13f413457c14182420dfbf52ebdc65903b296dfb2.json",
-    sha256: "0bbbd6fdd5b2b1c4fb7174b13f413457c14182420dfbf52ebdc65903b296dfb2",
-    bytes: 702328
+    url: "/plugin-builtins/display-d2bbb0fa64f2d0cdade4eae765c7cc25741e3219ef9760fa5bf1ac39c79f7ccc.bin",
+    sha256: "d2bbb0fa64f2d0cdade4eae765c7cc25741e3219ef9760fa5bf1ac39c79f7ccc",
+    bytes: 603987
   },
   "569677532ab637137ccebece0626ccfe733d4af4bb512ff9d32d4fe839e51352": {
-    url: "/plugin-builtins/display-dc750c717473b1c636f1edc14492cbb127fc531fd8b978666ecac0ef6f499b27.json",
-    sha256: "dc750c717473b1c636f1edc14492cbb127fc531fd8b978666ecac0ef6f499b27",
-    bytes: 276052
-  },
-  "579adc629a0e6017be441358b2af45de03ca1fe2bbc550b894e620da03765d48": {
-    url: "/plugin-builtins/display-b8055b5a11340e880efca703e62a99437abc98be0b5aaec079155a006239f532.json",
-    sha256: "b8055b5a11340e880efca703e62a99437abc98be0b5aaec079155a006239f532",
-    bytes: 206041
+    url: "/plugin-builtins/display-516ed82fc6d954f5687b56c976cfd00ccddcf00b80f737f89b0d50ec7af27892.bin",
+    sha256: "516ed82fc6d954f5687b56c976cfd00ccddcf00b80f737f89b0d50ec7af27892",
+    bytes: 219509
   },
   "5815f06cf8e969c287ae5e1f87dfd12130e0b50f167f310a23d4f2620d6d88b4": {
-    url: "/plugin-builtins/display-b720639e94b457ac088c4954dae15eabe46a054c9a142f2133cb6dda43e58b6a.json",
-    sha256: "b720639e94b457ac088c4954dae15eabe46a054c9a142f2133cb6dda43e58b6a",
-    bytes: 633413
-  },
-  "599681ec900aa5ab2535e5c07d1ba55427a7ad5d90b6d6b951ef98a44cdd3ab7": {
-    url: "/plugin-builtins/display-b8055b5a11340e880efca703e62a99437abc98be0b5aaec079155a006239f532.json",
-    sha256: "b8055b5a11340e880efca703e62a99437abc98be0b5aaec079155a006239f532",
-    bytes: 206041
+    url: "/plugin-builtins/display-c367099bbf87f58d638526ef31389b2412d6f77637f9d1221ad14fcbc2f57971.bin",
+    sha256: "c367099bbf87f58d638526ef31389b2412d6f77637f9d1221ad14fcbc2f57971",
+    bytes: 580803
   },
   "59e9005d64ca709afe85fcadafbebe84fbf8a1c60977679749b7788f71bcbc2b": {
-    url: "/plugin-builtins/display-b720639e94b457ac088c4954dae15eabe46a054c9a142f2133cb6dda43e58b6a.json",
-    sha256: "b720639e94b457ac088c4954dae15eabe46a054c9a142f2133cb6dda43e58b6a",
-    bytes: 633413
+    url: "/plugin-builtins/display-c367099bbf87f58d638526ef31389b2412d6f77637f9d1221ad14fcbc2f57971.bin",
+    sha256: "c367099bbf87f58d638526ef31389b2412d6f77637f9d1221ad14fcbc2f57971",
+    bytes: 580803
   },
   "5aed020b905dd36f07e79af9644956d1889567daa432855044da7a476f2ca9d2": {
-    url: "/plugin-builtins/display-dc750c717473b1c636f1edc14492cbb127fc531fd8b978666ecac0ef6f499b27.json",
-    sha256: "dc750c717473b1c636f1edc14492cbb127fc531fd8b978666ecac0ef6f499b27",
-    bytes: 276052
-  },
-  "5d23a6ee43ef75e4c7d16e73647cedcc7017fd7ad01a04c80f9187ddb0e8ef72": {
-    url: "/plugin-builtins/display-ac8e4fa148b79079d20797c07508931a637d6f6fefe2513bc1f302c351e9ee47.json",
-    sha256: "ac8e4fa148b79079d20797c07508931a637d6f6fefe2513bc1f302c351e9ee47",
-    bytes: 511491
+    url: "/plugin-builtins/display-516ed82fc6d954f5687b56c976cfd00ccddcf00b80f737f89b0d50ec7af27892.bin",
+    sha256: "516ed82fc6d954f5687b56c976cfd00ccddcf00b80f737f89b0d50ec7af27892",
+    bytes: 219509
   },
   "5d665957ec9e0eea84b2f0d59f16e5b5240a818344b18bb48b3c947763eb2ea4": {
-    url: "/plugin-builtins/display-b720639e94b457ac088c4954dae15eabe46a054c9a142f2133cb6dda43e58b6a.json",
-    sha256: "b720639e94b457ac088c4954dae15eabe46a054c9a142f2133cb6dda43e58b6a",
-    bytes: 633413
+    url: "/plugin-builtins/display-c367099bbf87f58d638526ef31389b2412d6f77637f9d1221ad14fcbc2f57971.bin",
+    sha256: "c367099bbf87f58d638526ef31389b2412d6f77637f9d1221ad14fcbc2f57971",
+    bytes: 580803
   },
   "5d749699aac8e466f081559a3ba73125f92392bb644057b219579464ef6d3393": {
-    url: "/plugin-builtins/display-a4dd75d9ff3d7b10fc0fe4c0b96cbd4ef535f85eeb2c5da6c8df1dd582d3d6d9.json",
-    sha256: "a4dd75d9ff3d7b10fc0fe4c0b96cbd4ef535f85eeb2c5da6c8df1dd582d3d6d9",
-    bytes: 84985
+    url: "/plugin-builtins/display-3cae2b18f3a87a7d7460fa1893e2583571d1d97098b7a73e197f76bfd70729cf.bin",
+    sha256: "3cae2b18f3a87a7d7460fa1893e2583571d1d97098b7a73e197f76bfd70729cf",
+    bytes: 77773
   },
   "5d9a1703f1b0a991a0f3a29599d136fc7dfbaf140f9cdabce3d969a2ce7ce7e4": {
-    url: "/plugin-builtins/display-b720639e94b457ac088c4954dae15eabe46a054c9a142f2133cb6dda43e58b6a.json",
-    sha256: "b720639e94b457ac088c4954dae15eabe46a054c9a142f2133cb6dda43e58b6a",
-    bytes: 633413
+    url: "/plugin-builtins/display-c367099bbf87f58d638526ef31389b2412d6f77637f9d1221ad14fcbc2f57971.bin",
+    sha256: "c367099bbf87f58d638526ef31389b2412d6f77637f9d1221ad14fcbc2f57971",
+    bytes: 580803
   },
   "5e0a7b0f292318ab95055b3a5a0c5928aea83afaa94e6f9a3fa2848243004a4b": {
-    url: "/plugin-builtins/display-641fc2795038945ca78fb589d90af8e3149cf359426847fcc98781fc1d560711.json",
-    sha256: "641fc2795038945ca78fb589d90af8e3149cf359426847fcc98781fc1d560711",
-    bytes: 77690
+    url: "/plugin-builtins/display-a572c0bd5c6966993839f5a3af307c299e40e100c1c9a780cd064afd00541671.bin",
+    sha256: "a572c0bd5c6966993839f5a3af307c299e40e100c1c9a780cd064afd00541671",
+    bytes: 93731
   },
   "618a4dee843c02bbbdf4b712a737db764070d514698a62bd95cd495778659fc8": {
-    url: "/plugin-builtins/display-dc750c717473b1c636f1edc14492cbb127fc531fd8b978666ecac0ef6f499b27.json",
-    sha256: "dc750c717473b1c636f1edc14492cbb127fc531fd8b978666ecac0ef6f499b27",
-    bytes: 276052
+    url: "/plugin-builtins/display-516ed82fc6d954f5687b56c976cfd00ccddcf00b80f737f89b0d50ec7af27892.bin",
+    sha256: "516ed82fc6d954f5687b56c976cfd00ccddcf00b80f737f89b0d50ec7af27892",
+    bytes: 219509
   },
   "61aa9ed71304b92f4cbd897edaf75e1fa302ec401361aa51dd06192f392a8bf8": {
-    url: "/plugin-builtins/display-0bbbd6fdd5b2b1c4fb7174b13f413457c14182420dfbf52ebdc65903b296dfb2.json",
-    sha256: "0bbbd6fdd5b2b1c4fb7174b13f413457c14182420dfbf52ebdc65903b296dfb2",
-    bytes: 702328
+    url: "/plugin-builtins/display-d2bbb0fa64f2d0cdade4eae765c7cc25741e3219ef9760fa5bf1ac39c79f7ccc.bin",
+    sha256: "d2bbb0fa64f2d0cdade4eae765c7cc25741e3219ef9760fa5bf1ac39c79f7ccc",
+    bytes: 603987
   },
   "61c6418d52ee20899ebcacc84b23a10b35038802c9abc691b56ba75dd293954b": {
-    url: "/plugin-builtins/display-0bbbd6fdd5b2b1c4fb7174b13f413457c14182420dfbf52ebdc65903b296dfb2.json",
-    sha256: "0bbbd6fdd5b2b1c4fb7174b13f413457c14182420dfbf52ebdc65903b296dfb2",
-    bytes: 702328
-  },
-  "62259efd6eefdbe9345c5c11889adcb445ce4f1cb8a31f5991fd27d715774bbf": {
-    url: "/plugin-builtins/display-b8055b5a11340e880efca703e62a99437abc98be0b5aaec079155a006239f532.json",
-    sha256: "b8055b5a11340e880efca703e62a99437abc98be0b5aaec079155a006239f532",
-    bytes: 206041
+    url: "/plugin-builtins/display-d2bbb0fa64f2d0cdade4eae765c7cc25741e3219ef9760fa5bf1ac39c79f7ccc.bin",
+    sha256: "d2bbb0fa64f2d0cdade4eae765c7cc25741e3219ef9760fa5bf1ac39c79f7ccc",
+    bytes: 603987
   },
   "624c798fa86b0dadeb5480afc3b171c5a2dd433924002702e8350b9101d5c9ba": {
-    url: "/plugin-builtins/display-a4dd75d9ff3d7b10fc0fe4c0b96cbd4ef535f85eeb2c5da6c8df1dd582d3d6d9.json",
-    sha256: "a4dd75d9ff3d7b10fc0fe4c0b96cbd4ef535f85eeb2c5da6c8df1dd582d3d6d9",
-    bytes: 84985
+    url: "/plugin-builtins/display-3cae2b18f3a87a7d7460fa1893e2583571d1d97098b7a73e197f76bfd70729cf.bin",
+    sha256: "3cae2b18f3a87a7d7460fa1893e2583571d1d97098b7a73e197f76bfd70729cf",
+    bytes: 77773
   },
   "64a7268212e08c128d64b90648bdd5c1204cf09ffc7c8bce2f34bb9b93950f37": {
-    url: "/plugin-builtins/display-b720639e94b457ac088c4954dae15eabe46a054c9a142f2133cb6dda43e58b6a.json",
-    sha256: "b720639e94b457ac088c4954dae15eabe46a054c9a142f2133cb6dda43e58b6a",
-    bytes: 633413
+    url: "/plugin-builtins/display-c367099bbf87f58d638526ef31389b2412d6f77637f9d1221ad14fcbc2f57971.bin",
+    sha256: "c367099bbf87f58d638526ef31389b2412d6f77637f9d1221ad14fcbc2f57971",
+    bytes: 580803
+  },
+  "650d7a311b50a9d4e05ab15e9c0e07349c84cefa7e7ccf0c2053310aefab6a79": {
+    url: "/plugin-builtins/display-8f31fe0e3f8f52fdbde54fc20f5ed5562e61dfed3f7858eef38ba130b8d8bc6a.bin",
+    sha256: "8f31fe0e3f8f52fdbde54fc20f5ed5562e61dfed3f7858eef38ba130b8d8bc6a",
+    bytes: 208478
+  },
+  "6721ccce3126587184109a385f820245e5cf59b58a2b01d931ee66a6e826ec1f": {
+    url: "/plugin-builtins/display-8f31fe0e3f8f52fdbde54fc20f5ed5562e61dfed3f7858eef38ba130b8d8bc6a.bin",
+    sha256: "8f31fe0e3f8f52fdbde54fc20f5ed5562e61dfed3f7858eef38ba130b8d8bc6a",
+    bytes: 208478
   },
   "6746ecec3137bcc6323adc6568bb10d59ec8e080aa5669c68a5aa8c09fc3f68b": {
-    url: "/plugin-builtins/display-b720639e94b457ac088c4954dae15eabe46a054c9a142f2133cb6dda43e58b6a.json",
-    sha256: "b720639e94b457ac088c4954dae15eabe46a054c9a142f2133cb6dda43e58b6a",
-    bytes: 633413
+    url: "/plugin-builtins/display-c367099bbf87f58d638526ef31389b2412d6f77637f9d1221ad14fcbc2f57971.bin",
+    sha256: "c367099bbf87f58d638526ef31389b2412d6f77637f9d1221ad14fcbc2f57971",
+    bytes: 580803
   },
   "6c3cd8d943acaedeec3c1e5fa2c49e0a0a219a0300a222b679fb86445fdc2c6a": {
-    url: "/plugin-builtins/display-0bbbd6fdd5b2b1c4fb7174b13f413457c14182420dfbf52ebdc65903b296dfb2.json",
-    sha256: "0bbbd6fdd5b2b1c4fb7174b13f413457c14182420dfbf52ebdc65903b296dfb2",
-    bytes: 702328
-  },
-  "6e9c5c5e8712462dd3cd3ef4ee0d1d62126422268dc6304a5208e652d6b08c6a": {
-    url: "/plugin-builtins/display-04d08a651a8881ab27e6e1c3eb6164d0bf71d2bdac5b9df81020e2e3c05a80cb.json",
-    sha256: "04d08a651a8881ab27e6e1c3eb6164d0bf71d2bdac5b9df81020e2e3c05a80cb",
-    bytes: 167941
+    url: "/plugin-builtins/display-d2bbb0fa64f2d0cdade4eae765c7cc25741e3219ef9760fa5bf1ac39c79f7ccc.bin",
+    sha256: "d2bbb0fa64f2d0cdade4eae765c7cc25741e3219ef9760fa5bf1ac39c79f7ccc",
+    bytes: 603987
   },
   "70756a5fecb09e1311175feaa52ba3b52af826f54bc7133cc6d6ad7de880a93c": {
-    url: "/plugin-builtins/display-b720639e94b457ac088c4954dae15eabe46a054c9a142f2133cb6dda43e58b6a.json",
-    sha256: "b720639e94b457ac088c4954dae15eabe46a054c9a142f2133cb6dda43e58b6a",
-    bytes: 633413
+    url: "/plugin-builtins/display-c367099bbf87f58d638526ef31389b2412d6f77637f9d1221ad14fcbc2f57971.bin",
+    sha256: "c367099bbf87f58d638526ef31389b2412d6f77637f9d1221ad14fcbc2f57971",
+    bytes: 580803
   },
   "709cfdee65194dfc9dafe6f6102c583373ffed6afdd512648e48732a73be184f": {
-    url: "/plugin-builtins/display-b720639e94b457ac088c4954dae15eabe46a054c9a142f2133cb6dda43e58b6a.json",
-    sha256: "b720639e94b457ac088c4954dae15eabe46a054c9a142f2133cb6dda43e58b6a",
-    bytes: 633413
+    url: "/plugin-builtins/display-c367099bbf87f58d638526ef31389b2412d6f77637f9d1221ad14fcbc2f57971.bin",
+    sha256: "c367099bbf87f58d638526ef31389b2412d6f77637f9d1221ad14fcbc2f57971",
+    bytes: 580803
   },
   "71bfdb53f55a2d5e6d3de07c765acf05dc1804e808744e47bebaf4b99bbb2008": {
-    url: "/plugin-builtins/display-dc750c717473b1c636f1edc14492cbb127fc531fd8b978666ecac0ef6f499b27.json",
-    sha256: "dc750c717473b1c636f1edc14492cbb127fc531fd8b978666ecac0ef6f499b27",
-    bytes: 276052
+    url: "/plugin-builtins/display-516ed82fc6d954f5687b56c976cfd00ccddcf00b80f737f89b0d50ec7af27892.bin",
+    sha256: "516ed82fc6d954f5687b56c976cfd00ccddcf00b80f737f89b0d50ec7af27892",
+    bytes: 219509
   },
   "729908bb4e9bad4667220ffc91d6a1dbc4372df9f70941ece39685ffeaa479e4": {
-    url: "/plugin-builtins/display-0bbbd6fdd5b2b1c4fb7174b13f413457c14182420dfbf52ebdc65903b296dfb2.json",
-    sha256: "0bbbd6fdd5b2b1c4fb7174b13f413457c14182420dfbf52ebdc65903b296dfb2",
-    bytes: 702328
+    url: "/plugin-builtins/display-d2bbb0fa64f2d0cdade4eae765c7cc25741e3219ef9760fa5bf1ac39c79f7ccc.bin",
+    sha256: "d2bbb0fa64f2d0cdade4eae765c7cc25741e3219ef9760fa5bf1ac39c79f7ccc",
+    bytes: 603987
   },
-  "74195fd1d12bf52f7f00d2162d3afca34fd121e4ed9b7493ac96027cb7319b2c": {
-    url: "/plugin-builtins/display-641fc2795038945ca78fb589d90af8e3149cf359426847fcc98781fc1d560711.json",
-    sha256: "641fc2795038945ca78fb589d90af8e3149cf359426847fcc98781fc1d560711",
-    bytes: 77690
+  "73a25654d917ac9b5e0dab5cb506ecc643071a5394c1ff3aa964eafae17359ac": {
+    url: "/plugin-builtins/display-8f31fe0e3f8f52fdbde54fc20f5ed5562e61dfed3f7858eef38ba130b8d8bc6a.bin",
+    sha256: "8f31fe0e3f8f52fdbde54fc20f5ed5562e61dfed3f7858eef38ba130b8d8bc6a",
+    bytes: 208478
+  },
+  "743567551b35b6322e55ccf712cec7c492e1e276e9d365484b2c5ec3d493862e": {
+    url: "/plugin-builtins/display-23673a241e14a187c82e85785f2244ca4a8bd4fe929bc6433b54a6cebc7adce6.bin",
+    sha256: "23673a241e14a187c82e85785f2244ca4a8bd4fe929bc6433b54a6cebc7adce6",
+    bytes: 463313
   },
   "747770e7d03bc22a47462b8277cccd5017e198e4e1033331ea374e3e4e0b8f93": {
-    url: "/plugin-builtins/display-b720639e94b457ac088c4954dae15eabe46a054c9a142f2133cb6dda43e58b6a.json",
-    sha256: "b720639e94b457ac088c4954dae15eabe46a054c9a142f2133cb6dda43e58b6a",
-    bytes: 633413
+    url: "/plugin-builtins/display-c367099bbf87f58d638526ef31389b2412d6f77637f9d1221ad14fcbc2f57971.bin",
+    sha256: "c367099bbf87f58d638526ef31389b2412d6f77637f9d1221ad14fcbc2f57971",
+    bytes: 580803
   },
   "74b29d03987725616a150867f0faea40d6fb45c1255abc213e8536ba60362ba0": {
-    url: "/plugin-builtins/display-dc750c717473b1c636f1edc14492cbb127fc531fd8b978666ecac0ef6f499b27.json",
-    sha256: "dc750c717473b1c636f1edc14492cbb127fc531fd8b978666ecac0ef6f499b27",
-    bytes: 276052
+    url: "/plugin-builtins/display-516ed82fc6d954f5687b56c976cfd00ccddcf00b80f737f89b0d50ec7af27892.bin",
+    sha256: "516ed82fc6d954f5687b56c976cfd00ccddcf00b80f737f89b0d50ec7af27892",
+    bytes: 219509
   },
   "750952397afc00ee4c5d32bac73dae6bf24823407d6058c1103bfe4ca4bff1d8": {
-    url: "/plugin-builtins/display-0bbbd6fdd5b2b1c4fb7174b13f413457c14182420dfbf52ebdc65903b296dfb2.json",
-    sha256: "0bbbd6fdd5b2b1c4fb7174b13f413457c14182420dfbf52ebdc65903b296dfb2",
-    bytes: 702328
-  },
-  "767f97afdb65cf8315a47ef1481ec040d182bd55e874c31d9af5a1b4acf9c191": {
-    url: "/plugin-builtins/display-641fc2795038945ca78fb589d90af8e3149cf359426847fcc98781fc1d560711.json",
-    sha256: "641fc2795038945ca78fb589d90af8e3149cf359426847fcc98781fc1d560711",
-    bytes: 77690
+    url: "/plugin-builtins/display-d2bbb0fa64f2d0cdade4eae765c7cc25741e3219ef9760fa5bf1ac39c79f7ccc.bin",
+    sha256: "d2bbb0fa64f2d0cdade4eae765c7cc25741e3219ef9760fa5bf1ac39c79f7ccc",
+    bytes: 603987
   },
   "791f693ba470a459dfd6143bab559b76528d0f5a0a931234769ea696ee49de1d": {
-    url: "/plugin-builtins/display-b720639e94b457ac088c4954dae15eabe46a054c9a142f2133cb6dda43e58b6a.json",
-    sha256: "b720639e94b457ac088c4954dae15eabe46a054c9a142f2133cb6dda43e58b6a",
-    bytes: 633413
-  },
-  "798dfbd4524f148747d7c9e2066b2b206d68440beb450a5f58b585bb9e0823e8": {
-    url: "/plugin-builtins/display-ac8e4fa148b79079d20797c07508931a637d6f6fefe2513bc1f302c351e9ee47.json",
-    sha256: "ac8e4fa148b79079d20797c07508931a637d6f6fefe2513bc1f302c351e9ee47",
-    bytes: 511491
-  },
-  "7a3bd5d50d30968e6fe8ecc1793bbbf1b85d1eef0abbde6a5f7ca823a4cbb537": {
-    url: "/plugin-builtins/display-ac8e4fa148b79079d20797c07508931a637d6f6fefe2513bc1f302c351e9ee47.json",
-    sha256: "ac8e4fa148b79079d20797c07508931a637d6f6fefe2513bc1f302c351e9ee47",
-    bytes: 511491
+    url: "/plugin-builtins/display-c367099bbf87f58d638526ef31389b2412d6f77637f9d1221ad14fcbc2f57971.bin",
+    sha256: "c367099bbf87f58d638526ef31389b2412d6f77637f9d1221ad14fcbc2f57971",
+    bytes: 580803
   },
   "7a6e3384e961bacdc8e2f3062e67990b592dab83f9e35d9823ad8e39607e3926": {
-    url: "/plugin-builtins/display-dc750c717473b1c636f1edc14492cbb127fc531fd8b978666ecac0ef6f499b27.json",
-    sha256: "dc750c717473b1c636f1edc14492cbb127fc531fd8b978666ecac0ef6f499b27",
-    bytes: 276052
-  },
-  "7a807c4ca67dda84d54b6c938e765d0c45b7641e9c5dde299a4aa60b8685d204": {
-    url: "/plugin-builtins/display-b8055b5a11340e880efca703e62a99437abc98be0b5aaec079155a006239f532.json",
-    sha256: "b8055b5a11340e880efca703e62a99437abc98be0b5aaec079155a006239f532",
-    bytes: 206041
+    url: "/plugin-builtins/display-516ed82fc6d954f5687b56c976cfd00ccddcf00b80f737f89b0d50ec7af27892.bin",
+    sha256: "516ed82fc6d954f5687b56c976cfd00ccddcf00b80f737f89b0d50ec7af27892",
+    bytes: 219509
   },
   "7d400a65663b66824429eff9a1dad8f7f218b9dffa2eeb107a17ca2df37c8053": {
-    url: "/plugin-builtins/display-b720639e94b457ac088c4954dae15eabe46a054c9a142f2133cb6dda43e58b6a.json",
-    sha256: "b720639e94b457ac088c4954dae15eabe46a054c9a142f2133cb6dda43e58b6a",
-    bytes: 633413
+    url: "/plugin-builtins/display-c367099bbf87f58d638526ef31389b2412d6f77637f9d1221ad14fcbc2f57971.bin",
+    sha256: "c367099bbf87f58d638526ef31389b2412d6f77637f9d1221ad14fcbc2f57971",
+    bytes: 580803
   },
-  "80d079a2dc934929043e53e0b471c5bc2f4aa952e10c56f7b847f9f61f03b135": {
-    url: "/plugin-builtins/display-ac8e4fa148b79079d20797c07508931a637d6f6fefe2513bc1f302c351e9ee47.json",
-    sha256: "ac8e4fa148b79079d20797c07508931a637d6f6fefe2513bc1f302c351e9ee47",
-    bytes: 511491
+  "80d7e7b17990d5c9da6be496eb6fbe909011e9bffebe4a92c9a12aa90117ef4a": {
+    url: "/plugin-builtins/display-8f31fe0e3f8f52fdbde54fc20f5ed5562e61dfed3f7858eef38ba130b8d8bc6a.bin",
+    sha256: "8f31fe0e3f8f52fdbde54fc20f5ed5562e61dfed3f7858eef38ba130b8d8bc6a",
+    bytes: 208478
   },
   "80dc67a60ce6cce8f4d1a4be20698f234a43cc91621c252e2e5af9a17633dc69": {
-    url: "/plugin-builtins/display-a4dd75d9ff3d7b10fc0fe4c0b96cbd4ef535f85eeb2c5da6c8df1dd582d3d6d9.json",
-    sha256: "a4dd75d9ff3d7b10fc0fe4c0b96cbd4ef535f85eeb2c5da6c8df1dd582d3d6d9",
-    bytes: 84985
-  },
-  "81dfb36d80f08c2ee8cc44b44df4aa4fe0fe0d414489f278d4d8f444722381b3": {
-    url: "/plugin-builtins/display-b8055b5a11340e880efca703e62a99437abc98be0b5aaec079155a006239f532.json",
-    sha256: "b8055b5a11340e880efca703e62a99437abc98be0b5aaec079155a006239f532",
-    bytes: 206041
+    url: "/plugin-builtins/display-3cae2b18f3a87a7d7460fa1893e2583571d1d97098b7a73e197f76bfd70729cf.bin",
+    sha256: "3cae2b18f3a87a7d7460fa1893e2583571d1d97098b7a73e197f76bfd70729cf",
+    bytes: 77773
   },
   "822ec2e6cba7ed32166f940c774974ded527f1b065e9bed10115c404f255be04": {
-    url: "/plugin-builtins/display-b720639e94b457ac088c4954dae15eabe46a054c9a142f2133cb6dda43e58b6a.json",
-    sha256: "b720639e94b457ac088c4954dae15eabe46a054c9a142f2133cb6dda43e58b6a",
-    bytes: 633413
-  },
-  "82833909358850b76d9c417ffda92e9af461c72d4a3cc6690f4cc0db565f4dde": {
-    url: "/plugin-builtins/display-b8055b5a11340e880efca703e62a99437abc98be0b5aaec079155a006239f532.json",
-    sha256: "b8055b5a11340e880efca703e62a99437abc98be0b5aaec079155a006239f532",
-    bytes: 206041
+    url: "/plugin-builtins/display-c367099bbf87f58d638526ef31389b2412d6f77637f9d1221ad14fcbc2f57971.bin",
+    sha256: "c367099bbf87f58d638526ef31389b2412d6f77637f9d1221ad14fcbc2f57971",
+    bytes: 580803
   },
   "828f9f3577f1e39032186639e16970f6302a188f9baf40de588db9ceea0465ab": {
-    url: "/plugin-builtins/display-b720639e94b457ac088c4954dae15eabe46a054c9a142f2133cb6dda43e58b6a.json",
-    sha256: "b720639e94b457ac088c4954dae15eabe46a054c9a142f2133cb6dda43e58b6a",
-    bytes: 633413
+    url: "/plugin-builtins/display-c367099bbf87f58d638526ef31389b2412d6f77637f9d1221ad14fcbc2f57971.bin",
+    sha256: "c367099bbf87f58d638526ef31389b2412d6f77637f9d1221ad14fcbc2f57971",
+    bytes: 580803
   },
   "8356dcb03d9aa83bcb4c18027c45dfb14c2c368cdd865884cc505327d86b6ac4": {
-    url: "/plugin-builtins/display-0bbbd6fdd5b2b1c4fb7174b13f413457c14182420dfbf52ebdc65903b296dfb2.json",
-    sha256: "0bbbd6fdd5b2b1c4fb7174b13f413457c14182420dfbf52ebdc65903b296dfb2",
-    bytes: 702328
+    url: "/plugin-builtins/display-d2bbb0fa64f2d0cdade4eae765c7cc25741e3219ef9760fa5bf1ac39c79f7ccc.bin",
+    sha256: "d2bbb0fa64f2d0cdade4eae765c7cc25741e3219ef9760fa5bf1ac39c79f7ccc",
+    bytes: 603987
   },
-  "83b04f2e8b434e2a46cc409258b77b20c8ac816a596ef26752a11abc6440d955": {
-    url: "/plugin-builtins/display-ac8e4fa148b79079d20797c07508931a637d6f6fefe2513bc1f302c351e9ee47.json",
-    sha256: "ac8e4fa148b79079d20797c07508931a637d6f6fefe2513bc1f302c351e9ee47",
-    bytes: 511491
+  "86e00278b837c90980d858e64aa2422e1c79a6323e806b76f540c2d748e140ea": {
+    url: "/plugin-builtins/display-a572c0bd5c6966993839f5a3af307c299e40e100c1c9a780cd064afd00541671.bin",
+    sha256: "a572c0bd5c6966993839f5a3af307c299e40e100c1c9a780cd064afd00541671",
+    bytes: 93731
   },
   "8700316fe5532060a87a566aac2c44ba1fa02cb32d835aea774d7c80b2ae6f1a": {
-    url: "/plugin-builtins/display-b720639e94b457ac088c4954dae15eabe46a054c9a142f2133cb6dda43e58b6a.json",
-    sha256: "b720639e94b457ac088c4954dae15eabe46a054c9a142f2133cb6dda43e58b6a",
-    bytes: 633413
+    url: "/plugin-builtins/display-c367099bbf87f58d638526ef31389b2412d6f77637f9d1221ad14fcbc2f57971.bin",
+    sha256: "c367099bbf87f58d638526ef31389b2412d6f77637f9d1221ad14fcbc2f57971",
+    bytes: 580803
   },
   "87513360b0e24305d763b0c2f1b96147eadd65bda5d188ea401a91e2fc73435a": {
-    url: "/plugin-builtins/display-0bbbd6fdd5b2b1c4fb7174b13f413457c14182420dfbf52ebdc65903b296dfb2.json",
-    sha256: "0bbbd6fdd5b2b1c4fb7174b13f413457c14182420dfbf52ebdc65903b296dfb2",
-    bytes: 702328
+    url: "/plugin-builtins/display-d2bbb0fa64f2d0cdade4eae765c7cc25741e3219ef9760fa5bf1ac39c79f7ccc.bin",
+    sha256: "d2bbb0fa64f2d0cdade4eae765c7cc25741e3219ef9760fa5bf1ac39c79f7ccc",
+    bytes: 603987
   },
-  "8d10a25ae48c5589a7ca925a6488e624256873daae24d6d2e84f70cc16bbf148": {
-    url: "/plugin-builtins/display-641fc2795038945ca78fb589d90af8e3149cf359426847fcc98781fc1d560711.json",
-    sha256: "641fc2795038945ca78fb589d90af8e3149cf359426847fcc98781fc1d560711",
-    bytes: 77690
+  "8a90b4b7551025345e45158b3ec26890dc5c1a645614a70e4dadaa3797940b65": {
+    url: "/plugin-builtins/display-8f31fe0e3f8f52fdbde54fc20f5ed5562e61dfed3f7858eef38ba130b8d8bc6a.bin",
+    sha256: "8f31fe0e3f8f52fdbde54fc20f5ed5562e61dfed3f7858eef38ba130b8d8bc6a",
+    bytes: 208478
   },
   "8dae932788846a66cf36381aee39b3a12a26c1824010a6e95c1c18d76f313ded": {
-    url: "/plugin-builtins/display-b720639e94b457ac088c4954dae15eabe46a054c9a142f2133cb6dda43e58b6a.json",
-    sha256: "b720639e94b457ac088c4954dae15eabe46a054c9a142f2133cb6dda43e58b6a",
-    bytes: 633413
+    url: "/plugin-builtins/display-c367099bbf87f58d638526ef31389b2412d6f77637f9d1221ad14fcbc2f57971.bin",
+    sha256: "c367099bbf87f58d638526ef31389b2412d6f77637f9d1221ad14fcbc2f57971",
+    bytes: 580803
+  },
+  "8f8b09df9262e4e417486e324197af8f0389c4a95d4273f0e050f76c427d2b91": {
+    url: "/plugin-builtins/display-8f31fe0e3f8f52fdbde54fc20f5ed5562e61dfed3f7858eef38ba130b8d8bc6a.bin",
+    sha256: "8f31fe0e3f8f52fdbde54fc20f5ed5562e61dfed3f7858eef38ba130b8d8bc6a",
+    bytes: 208478
   },
   "903015c52e3e901c06fe9478d78a6083e9cf4be0deb853ffadd6d6e8259c6953": {
-    url: "/plugin-builtins/display-04d08a651a8881ab27e6e1c3eb6164d0bf71d2bdac5b9df81020e2e3c05a80cb.json",
-    sha256: "04d08a651a8881ab27e6e1c3eb6164d0bf71d2bdac5b9df81020e2e3c05a80cb",
-    bytes: 167941
+    url: "/plugin-builtins/display-600bb64d89d3785d09b3af0d153d75098348404816844eb6617f49b12e42ec5c.bin",
+    sha256: "600bb64d89d3785d09b3af0d153d75098348404816844eb6617f49b12e42ec5c",
+    bytes: 182793
   },
   "90adbea1ed1ecaba257c501a8145b70eb755b3cd5528c9a801f11883370608a9": {
-    url: "/plugin-builtins/display-b720639e94b457ac088c4954dae15eabe46a054c9a142f2133cb6dda43e58b6a.json",
-    sha256: "b720639e94b457ac088c4954dae15eabe46a054c9a142f2133cb6dda43e58b6a",
-    bytes: 633413
+    url: "/plugin-builtins/display-c367099bbf87f58d638526ef31389b2412d6f77637f9d1221ad14fcbc2f57971.bin",
+    sha256: "c367099bbf87f58d638526ef31389b2412d6f77637f9d1221ad14fcbc2f57971",
+    bytes: 580803
   },
   "90ff19911b88db2d95a61c9f632f082becf1cf12faed9ec2757c1aa2e99585c9": {
-    url: "/plugin-builtins/display-b720639e94b457ac088c4954dae15eabe46a054c9a142f2133cb6dda43e58b6a.json",
-    sha256: "b720639e94b457ac088c4954dae15eabe46a054c9a142f2133cb6dda43e58b6a",
-    bytes: 633413
+    url: "/plugin-builtins/display-c367099bbf87f58d638526ef31389b2412d6f77637f9d1221ad14fcbc2f57971.bin",
+    sha256: "c367099bbf87f58d638526ef31389b2412d6f77637f9d1221ad14fcbc2f57971",
+    bytes: 580803
   },
   "91bd2e16d4e5bde4253ce99c4d116e14b29c37ea62b51ae1fec4fb3bff6e6e66": {
-    url: "/plugin-builtins/display-ac8e4fa148b79079d20797c07508931a637d6f6fefe2513bc1f302c351e9ee47.json",
-    sha256: "ac8e4fa148b79079d20797c07508931a637d6f6fefe2513bc1f302c351e9ee47",
-    bytes: 511491
+    url: "/plugin-builtins/display-23673a241e14a187c82e85785f2244ca4a8bd4fe929bc6433b54a6cebc7adce6.bin",
+    sha256: "23673a241e14a187c82e85785f2244ca4a8bd4fe929bc6433b54a6cebc7adce6",
+    bytes: 463313
   },
   "9399c7d41ca5031f2355d688ab95f64dfdf13bbd23c63d77855e72dad1c39965": {
-    url: "/plugin-builtins/display-0bbbd6fdd5b2b1c4fb7174b13f413457c14182420dfbf52ebdc65903b296dfb2.json",
-    sha256: "0bbbd6fdd5b2b1c4fb7174b13f413457c14182420dfbf52ebdc65903b296dfb2",
-    bytes: 702328
+    url: "/plugin-builtins/display-d2bbb0fa64f2d0cdade4eae765c7cc25741e3219ef9760fa5bf1ac39c79f7ccc.bin",
+    sha256: "d2bbb0fa64f2d0cdade4eae765c7cc25741e3219ef9760fa5bf1ac39c79f7ccc",
+    bytes: 603987
   },
   "93aa8dee41d3c1d5c19be704880cf13a604fc8fb8681741aff012edc0800e717": {
-    url: "/plugin-builtins/display-dc750c717473b1c636f1edc14492cbb127fc531fd8b978666ecac0ef6f499b27.json",
-    sha256: "dc750c717473b1c636f1edc14492cbb127fc531fd8b978666ecac0ef6f499b27",
-    bytes: 276052
+    url: "/plugin-builtins/display-516ed82fc6d954f5687b56c976cfd00ccddcf00b80f737f89b0d50ec7af27892.bin",
+    sha256: "516ed82fc6d954f5687b56c976cfd00ccddcf00b80f737f89b0d50ec7af27892",
+    bytes: 219509
   },
   "94095f1ad530b7230065c5a5380a11220bcbeeceded956f14997d3c488013d4d": {
-    url: "/plugin-builtins/display-0bbbd6fdd5b2b1c4fb7174b13f413457c14182420dfbf52ebdc65903b296dfb2.json",
-    sha256: "0bbbd6fdd5b2b1c4fb7174b13f413457c14182420dfbf52ebdc65903b296dfb2",
-    bytes: 702328
+    url: "/plugin-builtins/display-d2bbb0fa64f2d0cdade4eae765c7cc25741e3219ef9760fa5bf1ac39c79f7ccc.bin",
+    sha256: "d2bbb0fa64f2d0cdade4eae765c7cc25741e3219ef9760fa5bf1ac39c79f7ccc",
+    bytes: 603987
   },
-  "959ce0a8017634f93e7513e162b927587311650f2a5b997aa28c8e9f9a3ff4e1": {
-    url: "/plugin-builtins/display-ac8e4fa148b79079d20797c07508931a637d6f6fefe2513bc1f302c351e9ee47.json",
-    sha256: "ac8e4fa148b79079d20797c07508931a637d6f6fefe2513bc1f302c351e9ee47",
-    bytes: 511491
+  "95574dc63f8396acf33d82c6907b914e9a6d96027d7d7b65bc48944a10fa71f7": {
+    url: "/plugin-builtins/display-8f31fe0e3f8f52fdbde54fc20f5ed5562e61dfed3f7858eef38ba130b8d8bc6a.bin",
+    sha256: "8f31fe0e3f8f52fdbde54fc20f5ed5562e61dfed3f7858eef38ba130b8d8bc6a",
+    bytes: 208478
   },
   "9602d865817238f021df37c28f17bd35eb69ccf95f5bb6a7a23c164d799fdcbe": {
-    url: "/plugin-builtins/display-0bbbd6fdd5b2b1c4fb7174b13f413457c14182420dfbf52ebdc65903b296dfb2.json",
-    sha256: "0bbbd6fdd5b2b1c4fb7174b13f413457c14182420dfbf52ebdc65903b296dfb2",
-    bytes: 702328
+    url: "/plugin-builtins/display-d2bbb0fa64f2d0cdade4eae765c7cc25741e3219ef9760fa5bf1ac39c79f7ccc.bin",
+    sha256: "d2bbb0fa64f2d0cdade4eae765c7cc25741e3219ef9760fa5bf1ac39c79f7ccc",
+    bytes: 603987
   },
-  "9946d29d9ef4cce88e5958e009ade82b30f344255d37550167ae5ef3ae2b457d": {
-    url: "/plugin-builtins/display-b8055b5a11340e880efca703e62a99437abc98be0b5aaec079155a006239f532.json",
-    sha256: "b8055b5a11340e880efca703e62a99437abc98be0b5aaec079155a006239f532",
-    bytes: 206041
+  "96c267805e28df99d119b2c763f4ce152e57b5b5969f156bc7fed117a555b0a0": {
+    url: "/plugin-builtins/display-8f31fe0e3f8f52fdbde54fc20f5ed5562e61dfed3f7858eef38ba130b8d8bc6a.bin",
+    sha256: "8f31fe0e3f8f52fdbde54fc20f5ed5562e61dfed3f7858eef38ba130b8d8bc6a",
+    bytes: 208478
   },
   "9c69d15468beb5cf69a64bc347e66f59b22c8990b1af74eb3e25175b4fe7a63a": {
-    url: "/plugin-builtins/display-0bbbd6fdd5b2b1c4fb7174b13f413457c14182420dfbf52ebdc65903b296dfb2.json",
-    sha256: "0bbbd6fdd5b2b1c4fb7174b13f413457c14182420dfbf52ebdc65903b296dfb2",
-    bytes: 702328
+    url: "/plugin-builtins/display-d2bbb0fa64f2d0cdade4eae765c7cc25741e3219ef9760fa5bf1ac39c79f7ccc.bin",
+    sha256: "d2bbb0fa64f2d0cdade4eae765c7cc25741e3219ef9760fa5bf1ac39c79f7ccc",
+    bytes: 603987
   },
   "9d89db173ef9862143c0cc73104810b0197dc68a76e6128bab4912d7d7725c53": {
-    url: "/plugin-builtins/display-b720639e94b457ac088c4954dae15eabe46a054c9a142f2133cb6dda43e58b6a.json",
-    sha256: "b720639e94b457ac088c4954dae15eabe46a054c9a142f2133cb6dda43e58b6a",
-    bytes: 633413
+    url: "/plugin-builtins/display-c367099bbf87f58d638526ef31389b2412d6f77637f9d1221ad14fcbc2f57971.bin",
+    sha256: "c367099bbf87f58d638526ef31389b2412d6f77637f9d1221ad14fcbc2f57971",
+    bytes: 580803
   },
   "9e29592477ee7049b4c49445ff05bbed0964ad12da6e78bff341bddeb6e4ff58": {
-    url: "/plugin-builtins/display-0bbbd6fdd5b2b1c4fb7174b13f413457c14182420dfbf52ebdc65903b296dfb2.json",
-    sha256: "0bbbd6fdd5b2b1c4fb7174b13f413457c14182420dfbf52ebdc65903b296dfb2",
-    bytes: 702328
+    url: "/plugin-builtins/display-d2bbb0fa64f2d0cdade4eae765c7cc25741e3219ef9760fa5bf1ac39c79f7ccc.bin",
+    sha256: "d2bbb0fa64f2d0cdade4eae765c7cc25741e3219ef9760fa5bf1ac39c79f7ccc",
+    bytes: 603987
   },
   "9e9af5e9c930bc7980aaddf04f009b8729656ed64d12edeaa4033e70882dc975": {
-    url: "/plugin-builtins/display-b720639e94b457ac088c4954dae15eabe46a054c9a142f2133cb6dda43e58b6a.json",
-    sha256: "b720639e94b457ac088c4954dae15eabe46a054c9a142f2133cb6dda43e58b6a",
-    bytes: 633413
+    url: "/plugin-builtins/display-c367099bbf87f58d638526ef31389b2412d6f77637f9d1221ad14fcbc2f57971.bin",
+    sha256: "c367099bbf87f58d638526ef31389b2412d6f77637f9d1221ad14fcbc2f57971",
+    bytes: 580803
   },
   "9f1e05e77f27c6b3e3e90df5549c80bfb78ced0313303aba80ed9f40a5a3200b": {
-    url: "/plugin-builtins/display-0bbbd6fdd5b2b1c4fb7174b13f413457c14182420dfbf52ebdc65903b296dfb2.json",
-    sha256: "0bbbd6fdd5b2b1c4fb7174b13f413457c14182420dfbf52ebdc65903b296dfb2",
-    bytes: 702328
+    url: "/plugin-builtins/display-d2bbb0fa64f2d0cdade4eae765c7cc25741e3219ef9760fa5bf1ac39c79f7ccc.bin",
+    sha256: "d2bbb0fa64f2d0cdade4eae765c7cc25741e3219ef9760fa5bf1ac39c79f7ccc",
+    bytes: 603987
   },
   "9fc2b38d6d15140c0ff5b6435213fa76f5a143f3007582d0d3db7dd94426b331": {
-    url: "/plugin-builtins/display-0bbbd6fdd5b2b1c4fb7174b13f413457c14182420dfbf52ebdc65903b296dfb2.json",
-    sha256: "0bbbd6fdd5b2b1c4fb7174b13f413457c14182420dfbf52ebdc65903b296dfb2",
-    bytes: 702328
-  },
-  a2ab2617533b5e0c9e40e3608c66beef092c4855d833de62dbe11c05c1b53a2f: {
-    url: "/plugin-builtins/display-b8055b5a11340e880efca703e62a99437abc98be0b5aaec079155a006239f532.json",
-    sha256: "b8055b5a11340e880efca703e62a99437abc98be0b5aaec079155a006239f532",
-    bytes: 206041
+    url: "/plugin-builtins/display-d2bbb0fa64f2d0cdade4eae765c7cc25741e3219ef9760fa5bf1ac39c79f7ccc.bin",
+    sha256: "d2bbb0fa64f2d0cdade4eae765c7cc25741e3219ef9760fa5bf1ac39c79f7ccc",
+    bytes: 603987
   },
   a34ec1db5a9c2b7ba07bf33b412f3165b81403ef1d82e629b1a8f9da66cf391c: {
-    url: "/plugin-builtins/display-0bbbd6fdd5b2b1c4fb7174b13f413457c14182420dfbf52ebdc65903b296dfb2.json",
-    sha256: "0bbbd6fdd5b2b1c4fb7174b13f413457c14182420dfbf52ebdc65903b296dfb2",
-    bytes: 702328
+    url: "/plugin-builtins/display-d2bbb0fa64f2d0cdade4eae765c7cc25741e3219ef9760fa5bf1ac39c79f7ccc.bin",
+    sha256: "d2bbb0fa64f2d0cdade4eae765c7cc25741e3219ef9760fa5bf1ac39c79f7ccc",
+    bytes: 603987
   },
   a45f89216c4932274936b6dcbc9414daebd8c06929e6875ad4f8f806674e6c6b: {
-    url: "/plugin-builtins/display-a4dd75d9ff3d7b10fc0fe4c0b96cbd4ef535f85eeb2c5da6c8df1dd582d3d6d9.json",
-    sha256: "a4dd75d9ff3d7b10fc0fe4c0b96cbd4ef535f85eeb2c5da6c8df1dd582d3d6d9",
-    bytes: 84985
+    url: "/plugin-builtins/display-3cae2b18f3a87a7d7460fa1893e2583571d1d97098b7a73e197f76bfd70729cf.bin",
+    sha256: "3cae2b18f3a87a7d7460fa1893e2583571d1d97098b7a73e197f76bfd70729cf",
+    bytes: 77773
   },
   a6a2a53c56b02fa39fd246e3fe4a0d9cb76ac07ae59eeea0e4b036b239bbfb67: {
-    url: "/plugin-builtins/display-b720639e94b457ac088c4954dae15eabe46a054c9a142f2133cb6dda43e58b6a.json",
-    sha256: "b720639e94b457ac088c4954dae15eabe46a054c9a142f2133cb6dda43e58b6a",
-    bytes: 633413
+    url: "/plugin-builtins/display-c367099bbf87f58d638526ef31389b2412d6f77637f9d1221ad14fcbc2f57971.bin",
+    sha256: "c367099bbf87f58d638526ef31389b2412d6f77637f9d1221ad14fcbc2f57971",
+    bytes: 580803
   },
   a6a8c1dce4a67251a9ad20a7e5911e81f3c63631388de5da5798dff2cf8ba48c: {
-    url: "/plugin-builtins/display-0bbbd6fdd5b2b1c4fb7174b13f413457c14182420dfbf52ebdc65903b296dfb2.json",
-    sha256: "0bbbd6fdd5b2b1c4fb7174b13f413457c14182420dfbf52ebdc65903b296dfb2",
-    bytes: 702328
-  },
-  a6c73857aa5ca99d43b2db32fefeccf97ae69fe70fb0cfa6b60c21b5ccd02842: {
-    url: "/plugin-builtins/display-b8055b5a11340e880efca703e62a99437abc98be0b5aaec079155a006239f532.json",
-    sha256: "b8055b5a11340e880efca703e62a99437abc98be0b5aaec079155a006239f532",
-    bytes: 206041
+    url: "/plugin-builtins/display-d2bbb0fa64f2d0cdade4eae765c7cc25741e3219ef9760fa5bf1ac39c79f7ccc.bin",
+    sha256: "d2bbb0fa64f2d0cdade4eae765c7cc25741e3219ef9760fa5bf1ac39c79f7ccc",
+    bytes: 603987
   },
   a87898c1ad3ce460959db8b425d1da83563721874eedd61a1ed4003aa4f5f9a0: {
-    url: "/plugin-builtins/display-dc750c717473b1c636f1edc14492cbb127fc531fd8b978666ecac0ef6f499b27.json",
-    sha256: "dc750c717473b1c636f1edc14492cbb127fc531fd8b978666ecac0ef6f499b27",
-    bytes: 276052
+    url: "/plugin-builtins/display-516ed82fc6d954f5687b56c976cfd00ccddcf00b80f737f89b0d50ec7af27892.bin",
+    sha256: "516ed82fc6d954f5687b56c976cfd00ccddcf00b80f737f89b0d50ec7af27892",
+    bytes: 219509
   },
   a9cc0ea08d3c34e2d67cfc44aa805ca645452105c2ea469c496a03feeb6c9fba: {
-    url: "/plugin-builtins/display-b720639e94b457ac088c4954dae15eabe46a054c9a142f2133cb6dda43e58b6a.json",
-    sha256: "b720639e94b457ac088c4954dae15eabe46a054c9a142f2133cb6dda43e58b6a",
-    bytes: 633413
+    url: "/plugin-builtins/display-c367099bbf87f58d638526ef31389b2412d6f77637f9d1221ad14fcbc2f57971.bin",
+    sha256: "c367099bbf87f58d638526ef31389b2412d6f77637f9d1221ad14fcbc2f57971",
+    bytes: 580803
   },
   aa94b6508fce7f1089ae8a5e6219b3804692f949f3d25df4e53c423205a1f65f: {
-    url: "/plugin-builtins/display-b720639e94b457ac088c4954dae15eabe46a054c9a142f2133cb6dda43e58b6a.json",
-    sha256: "b720639e94b457ac088c4954dae15eabe46a054c9a142f2133cb6dda43e58b6a",
-    bytes: 633413
+    url: "/plugin-builtins/display-c367099bbf87f58d638526ef31389b2412d6f77637f9d1221ad14fcbc2f57971.bin",
+    sha256: "c367099bbf87f58d638526ef31389b2412d6f77637f9d1221ad14fcbc2f57971",
+    bytes: 580803
+  },
+  ac72e07e56750d9281d162aff951f9b681f3cb4ff325fe7049bb00249a203a3c: {
+    url: "/plugin-builtins/display-600bb64d89d3785d09b3af0d153d75098348404816844eb6617f49b12e42ec5c.bin",
+    sha256: "600bb64d89d3785d09b3af0d153d75098348404816844eb6617f49b12e42ec5c",
+    bytes: 182793
   },
   aee64a387a958accf6e33f4f8be31a9bbea8dc1f80f4571ccc7bc184f32f5348: {
-    url: "/plugin-builtins/display-b720639e94b457ac088c4954dae15eabe46a054c9a142f2133cb6dda43e58b6a.json",
-    sha256: "b720639e94b457ac088c4954dae15eabe46a054c9a142f2133cb6dda43e58b6a",
-    bytes: 633413
+    url: "/plugin-builtins/display-c367099bbf87f58d638526ef31389b2412d6f77637f9d1221ad14fcbc2f57971.bin",
+    sha256: "c367099bbf87f58d638526ef31389b2412d6f77637f9d1221ad14fcbc2f57971",
+    bytes: 580803
   },
   af070a2059e4f1e4dd6df9a409588bd8941eef964ab492041c7f40d243d0275d: {
-    url: "/plugin-builtins/display-b720639e94b457ac088c4954dae15eabe46a054c9a142f2133cb6dda43e58b6a.json",
-    sha256: "b720639e94b457ac088c4954dae15eabe46a054c9a142f2133cb6dda43e58b6a",
-    bytes: 633413
+    url: "/plugin-builtins/display-c367099bbf87f58d638526ef31389b2412d6f77637f9d1221ad14fcbc2f57971.bin",
+    sha256: "c367099bbf87f58d638526ef31389b2412d6f77637f9d1221ad14fcbc2f57971",
+    bytes: 580803
   },
   b032a91c8016279e154875ba79c21968ea6ef056e59923334a190b93dfb50cc9: {
-    url: "/plugin-builtins/display-a4dd75d9ff3d7b10fc0fe4c0b96cbd4ef535f85eeb2c5da6c8df1dd582d3d6d9.json",
-    sha256: "a4dd75d9ff3d7b10fc0fe4c0b96cbd4ef535f85eeb2c5da6c8df1dd582d3d6d9",
-    bytes: 84985
+    url: "/plugin-builtins/display-3cae2b18f3a87a7d7460fa1893e2583571d1d97098b7a73e197f76bfd70729cf.bin",
+    sha256: "3cae2b18f3a87a7d7460fa1893e2583571d1d97098b7a73e197f76bfd70729cf",
+    bytes: 77773
   },
-  b214d98c57fcdae8bfca3d2d4ba8f886cb84ae902f429684ffac5f581e4a1825: {
-    url: "/plugin-builtins/display-b8055b5a11340e880efca703e62a99437abc98be0b5aaec079155a006239f532.json",
-    sha256: "b8055b5a11340e880efca703e62a99437abc98be0b5aaec079155a006239f532",
-    bytes: 206041
+  b0a0b267f1ba647cb4a227198e5c338fb578c9c9ac57c5eeeea613c5831465b7: {
+    url: "/plugin-builtins/display-600bb64d89d3785d09b3af0d153d75098348404816844eb6617f49b12e42ec5c.bin",
+    sha256: "600bb64d89d3785d09b3af0d153d75098348404816844eb6617f49b12e42ec5c",
+    bytes: 182793
   },
   b2bdf4958c195930096ec506936fc3b7013f848a3fac7b5026580acefccca1ca: {
-    url: "/plugin-builtins/display-0bbbd6fdd5b2b1c4fb7174b13f413457c14182420dfbf52ebdc65903b296dfb2.json",
-    sha256: "0bbbd6fdd5b2b1c4fb7174b13f413457c14182420dfbf52ebdc65903b296dfb2",
-    bytes: 702328
-  },
-  b32976c8c1704cc541b35be92edfecc15223910236a8d3a97b20c2195e4c90aa: {
-    url: "/plugin-builtins/display-ac8e4fa148b79079d20797c07508931a637d6f6fefe2513bc1f302c351e9ee47.json",
-    sha256: "ac8e4fa148b79079d20797c07508931a637d6f6fefe2513bc1f302c351e9ee47",
-    bytes: 511491
+    url: "/plugin-builtins/display-d2bbb0fa64f2d0cdade4eae765c7cc25741e3219ef9760fa5bf1ac39c79f7ccc.bin",
+    sha256: "d2bbb0fa64f2d0cdade4eae765c7cc25741e3219ef9760fa5bf1ac39c79f7ccc",
+    bytes: 603987
   },
   b397d817344416d6cfec391b65f0163d46d4c380c59356397250026bb56c621f: {
-    url: "/plugin-builtins/display-0bbbd6fdd5b2b1c4fb7174b13f413457c14182420dfbf52ebdc65903b296dfb2.json",
-    sha256: "0bbbd6fdd5b2b1c4fb7174b13f413457c14182420dfbf52ebdc65903b296dfb2",
-    bytes: 702328
+    url: "/plugin-builtins/display-d2bbb0fa64f2d0cdade4eae765c7cc25741e3219ef9760fa5bf1ac39c79f7ccc.bin",
+    sha256: "d2bbb0fa64f2d0cdade4eae765c7cc25741e3219ef9760fa5bf1ac39c79f7ccc",
+    bytes: 603987
   },
   b3b6dfceb483aded9021d48c63b74afabfa27a3821b41c80cbd6c387133e1b6d: {
-    url: "/plugin-builtins/display-b720639e94b457ac088c4954dae15eabe46a054c9a142f2133cb6dda43e58b6a.json",
-    sha256: "b720639e94b457ac088c4954dae15eabe46a054c9a142f2133cb6dda43e58b6a",
-    bytes: 633413
+    url: "/plugin-builtins/display-c367099bbf87f58d638526ef31389b2412d6f77637f9d1221ad14fcbc2f57971.bin",
+    sha256: "c367099bbf87f58d638526ef31389b2412d6f77637f9d1221ad14fcbc2f57971",
+    bytes: 580803
   },
   b3c2ec301fbe001a9a48c5fb918f1b9da083a2e687f00ac1efdc25f93e30d044: {
-    url: "/plugin-builtins/display-b720639e94b457ac088c4954dae15eabe46a054c9a142f2133cb6dda43e58b6a.json",
-    sha256: "b720639e94b457ac088c4954dae15eabe46a054c9a142f2133cb6dda43e58b6a",
-    bytes: 633413
+    url: "/plugin-builtins/display-c367099bbf87f58d638526ef31389b2412d6f77637f9d1221ad14fcbc2f57971.bin",
+    sha256: "c367099bbf87f58d638526ef31389b2412d6f77637f9d1221ad14fcbc2f57971",
+    bytes: 580803
   },
   b868ec0156b3ffa836278756ce6d13f1f3ef59dd3deec7f787a4c7635cdd63c8: {
-    url: "/plugin-builtins/display-b720639e94b457ac088c4954dae15eabe46a054c9a142f2133cb6dda43e58b6a.json",
-    sha256: "b720639e94b457ac088c4954dae15eabe46a054c9a142f2133cb6dda43e58b6a",
-    bytes: 633413
+    url: "/plugin-builtins/display-c367099bbf87f58d638526ef31389b2412d6f77637f9d1221ad14fcbc2f57971.bin",
+    sha256: "c367099bbf87f58d638526ef31389b2412d6f77637f9d1221ad14fcbc2f57971",
+    bytes: 580803
   },
   b8c78b1b5855823a002a5ef8e7877d4916da4578af81632b2da27b7b71f9e2b4: {
-    url: "/plugin-builtins/display-b720639e94b457ac088c4954dae15eabe46a054c9a142f2133cb6dda43e58b6a.json",
-    sha256: "b720639e94b457ac088c4954dae15eabe46a054c9a142f2133cb6dda43e58b6a",
-    bytes: 633413
-  },
-  b8c88084bbff3e1fb2f3c8e544a1ad206b30adbb4ba1c30410ba64c25eb32c7d: {
-    url: "/plugin-builtins/display-ac8e4fa148b79079d20797c07508931a637d6f6fefe2513bc1f302c351e9ee47.json",
-    sha256: "ac8e4fa148b79079d20797c07508931a637d6f6fefe2513bc1f302c351e9ee47",
-    bytes: 511491
+    url: "/plugin-builtins/display-c367099bbf87f58d638526ef31389b2412d6f77637f9d1221ad14fcbc2f57971.bin",
+    sha256: "c367099bbf87f58d638526ef31389b2412d6f77637f9d1221ad14fcbc2f57971",
+    bytes: 580803
   },
   b9145d37e8fb4628492ad525817af6597b0da1f4afabc4f85fe8591e1981bad0: {
-    url: "/plugin-builtins/display-b8055b5a11340e880efca703e62a99437abc98be0b5aaec079155a006239f532.json",
-    sha256: "b8055b5a11340e880efca703e62a99437abc98be0b5aaec079155a006239f532",
-    bytes: 206041
+    url: "/plugin-builtins/display-8f31fe0e3f8f52fdbde54fc20f5ed5562e61dfed3f7858eef38ba130b8d8bc6a.bin",
+    sha256: "8f31fe0e3f8f52fdbde54fc20f5ed5562e61dfed3f7858eef38ba130b8d8bc6a",
+    bytes: 208478
   },
   b9181fae4f1c3fd751fdbf8dfc02421fcf8424c84c6ddd80734b80738c8544da: {
-    url: "/plugin-builtins/display-0bbbd6fdd5b2b1c4fb7174b13f413457c14182420dfbf52ebdc65903b296dfb2.json",
-    sha256: "0bbbd6fdd5b2b1c4fb7174b13f413457c14182420dfbf52ebdc65903b296dfb2",
-    bytes: 702328
-  },
-  b985d20558510c97aede7c349e8c74d9e8c8403fa445b3ee1a176f48f1d960d9: {
-    url: "/plugin-builtins/display-b8055b5a11340e880efca703e62a99437abc98be0b5aaec079155a006239f532.json",
-    sha256: "b8055b5a11340e880efca703e62a99437abc98be0b5aaec079155a006239f532",
-    bytes: 206041
+    url: "/plugin-builtins/display-d2bbb0fa64f2d0cdade4eae765c7cc25741e3219ef9760fa5bf1ac39c79f7ccc.bin",
+    sha256: "d2bbb0fa64f2d0cdade4eae765c7cc25741e3219ef9760fa5bf1ac39c79f7ccc",
+    bytes: 603987
   },
   bb43988c9877d1cae78d0df2192c48addfb75d7693c8b8210c186770605dd3c3: {
-    url: "/plugin-builtins/display-b720639e94b457ac088c4954dae15eabe46a054c9a142f2133cb6dda43e58b6a.json",
-    sha256: "b720639e94b457ac088c4954dae15eabe46a054c9a142f2133cb6dda43e58b6a",
-    bytes: 633413
+    url: "/plugin-builtins/display-c367099bbf87f58d638526ef31389b2412d6f77637f9d1221ad14fcbc2f57971.bin",
+    sha256: "c367099bbf87f58d638526ef31389b2412d6f77637f9d1221ad14fcbc2f57971",
+    bytes: 580803
+  },
+  bba5e16887e7698e1d8fae796b23ccae049b7a53020b0838e87023b6d9e0024e: {
+    url: "/plugin-builtins/display-8f31fe0e3f8f52fdbde54fc20f5ed5562e61dfed3f7858eef38ba130b8d8bc6a.bin",
+    sha256: "8f31fe0e3f8f52fdbde54fc20f5ed5562e61dfed3f7858eef38ba130b8d8bc6a",
+    bytes: 208478
   },
   bbcc0c56c2c13bda038709a6167e49700d5a6abdd954a5c80512a9b1cc92ee90: {
-    url: "/plugin-builtins/display-b720639e94b457ac088c4954dae15eabe46a054c9a142f2133cb6dda43e58b6a.json",
-    sha256: "b720639e94b457ac088c4954dae15eabe46a054c9a142f2133cb6dda43e58b6a",
-    bytes: 633413
+    url: "/plugin-builtins/display-c367099bbf87f58d638526ef31389b2412d6f77637f9d1221ad14fcbc2f57971.bin",
+    sha256: "c367099bbf87f58d638526ef31389b2412d6f77637f9d1221ad14fcbc2f57971",
+    bytes: 580803
   },
   be131324bed759378b337e22fd7691444aef9f2867e56a730c7bcb8f3907084b: {
-    url: "/plugin-builtins/display-b720639e94b457ac088c4954dae15eabe46a054c9a142f2133cb6dda43e58b6a.json",
-    sha256: "b720639e94b457ac088c4954dae15eabe46a054c9a142f2133cb6dda43e58b6a",
-    bytes: 633413
+    url: "/plugin-builtins/display-c367099bbf87f58d638526ef31389b2412d6f77637f9d1221ad14fcbc2f57971.bin",
+    sha256: "c367099bbf87f58d638526ef31389b2412d6f77637f9d1221ad14fcbc2f57971",
+    bytes: 580803
   },
   be40e857f8ae0b91e3c70ddcd6c65ceb638ab67b639d0030595d251ccbf52f04: {
-    url: "/plugin-builtins/display-dc750c717473b1c636f1edc14492cbb127fc531fd8b978666ecac0ef6f499b27.json",
-    sha256: "dc750c717473b1c636f1edc14492cbb127fc531fd8b978666ecac0ef6f499b27",
-    bytes: 276052
+    url: "/plugin-builtins/display-516ed82fc6d954f5687b56c976cfd00ccddcf00b80f737f89b0d50ec7af27892.bin",
+    sha256: "516ed82fc6d954f5687b56c976cfd00ccddcf00b80f737f89b0d50ec7af27892",
+    bytes: 219509
   },
   bedbb20ee290bf71614ad66d9ad6c6c70ffaa78914c2842cc6b6114162d823ac: {
-    url: "/plugin-builtins/display-dc750c717473b1c636f1edc14492cbb127fc531fd8b978666ecac0ef6f499b27.json",
-    sha256: "dc750c717473b1c636f1edc14492cbb127fc531fd8b978666ecac0ef6f499b27",
-    bytes: 276052
+    url: "/plugin-builtins/display-516ed82fc6d954f5687b56c976cfd00ccddcf00b80f737f89b0d50ec7af27892.bin",
+    sha256: "516ed82fc6d954f5687b56c976cfd00ccddcf00b80f737f89b0d50ec7af27892",
+    bytes: 219509
   },
   c674f9a19bd98232fe718b86fff31ed480b8654e82f441148699239a3fab05a7: {
-    url: "/plugin-builtins/display-0bbbd6fdd5b2b1c4fb7174b13f413457c14182420dfbf52ebdc65903b296dfb2.json",
-    sha256: "0bbbd6fdd5b2b1c4fb7174b13f413457c14182420dfbf52ebdc65903b296dfb2",
-    bytes: 702328
+    url: "/plugin-builtins/display-d2bbb0fa64f2d0cdade4eae765c7cc25741e3219ef9760fa5bf1ac39c79f7ccc.bin",
+    sha256: "d2bbb0fa64f2d0cdade4eae765c7cc25741e3219ef9760fa5bf1ac39c79f7ccc",
+    bytes: 603987
   },
-  c7e17c68a1aa01230c9524c43e690ee044d50caf3b926bc9484d9184f63539d3: {
-    url: "/plugin-builtins/display-04d08a651a8881ab27e6e1c3eb6164d0bf71d2bdac5b9df81020e2e3c05a80cb.json",
-    sha256: "04d08a651a8881ab27e6e1c3eb6164d0bf71d2bdac5b9df81020e2e3c05a80cb",
-    bytes: 167941
+  c9dc02c66f4bc7b6079ee1cf741cce1bca3aee324125a41cbd43812f5896043c: {
+    url: "/plugin-builtins/display-8f31fe0e3f8f52fdbde54fc20f5ed5562e61dfed3f7858eef38ba130b8d8bc6a.bin",
+    sha256: "8f31fe0e3f8f52fdbde54fc20f5ed5562e61dfed3f7858eef38ba130b8d8bc6a",
+    bytes: 208478
   },
   cc1cdf0495c44b002d543f3629bc0fd28724636a7face7701bc3aa7c528326e8: {
-    url: "/plugin-builtins/display-0bbbd6fdd5b2b1c4fb7174b13f413457c14182420dfbf52ebdc65903b296dfb2.json",
-    sha256: "0bbbd6fdd5b2b1c4fb7174b13f413457c14182420dfbf52ebdc65903b296dfb2",
-    bytes: 702328
+    url: "/plugin-builtins/display-d2bbb0fa64f2d0cdade4eae765c7cc25741e3219ef9760fa5bf1ac39c79f7ccc.bin",
+    sha256: "d2bbb0fa64f2d0cdade4eae765c7cc25741e3219ef9760fa5bf1ac39c79f7ccc",
+    bytes: 603987
   },
   cc5f04645276ab1b1bb5740deba77c8e2c5b3ba121c7a00ee1d4c222e3664868: {
-    url: "/plugin-builtins/display-b720639e94b457ac088c4954dae15eabe46a054c9a142f2133cb6dda43e58b6a.json",
-    sha256: "b720639e94b457ac088c4954dae15eabe46a054c9a142f2133cb6dda43e58b6a",
-    bytes: 633413
+    url: "/plugin-builtins/display-c367099bbf87f58d638526ef31389b2412d6f77637f9d1221ad14fcbc2f57971.bin",
+    sha256: "c367099bbf87f58d638526ef31389b2412d6f77637f9d1221ad14fcbc2f57971",
+    bytes: 580803
   },
   ce167a34d232e0345f4e0074bef9f3f4e5f1c20f4b269118fd6658ecb3b279c5: {
-    url: "/plugin-builtins/display-b720639e94b457ac088c4954dae15eabe46a054c9a142f2133cb6dda43e58b6a.json",
-    sha256: "b720639e94b457ac088c4954dae15eabe46a054c9a142f2133cb6dda43e58b6a",
-    bytes: 633413
+    url: "/plugin-builtins/display-c367099bbf87f58d638526ef31389b2412d6f77637f9d1221ad14fcbc2f57971.bin",
+    sha256: "c367099bbf87f58d638526ef31389b2412d6f77637f9d1221ad14fcbc2f57971",
+    bytes: 580803
   },
   ced8265242344fc70e2ab24d1a190f7f015a51a2c76a0084655e8c0dc3585333: {
-    url: "/plugin-builtins/display-641fc2795038945ca78fb589d90af8e3149cf359426847fcc98781fc1d560711.json",
-    sha256: "641fc2795038945ca78fb589d90af8e3149cf359426847fcc98781fc1d560711",
-    bytes: 77690
+    url: "/plugin-builtins/display-a572c0bd5c6966993839f5a3af307c299e40e100c1c9a780cd064afd00541671.bin",
+    sha256: "a572c0bd5c6966993839f5a3af307c299e40e100c1c9a780cd064afd00541671",
+    bytes: 93731
   },
   cefdcfa4192efb6f04aa1da85691b2896859b4f0004d0d135b47661efc859df0: {
-    url: "/plugin-builtins/display-b720639e94b457ac088c4954dae15eabe46a054c9a142f2133cb6dda43e58b6a.json",
-    sha256: "b720639e94b457ac088c4954dae15eabe46a054c9a142f2133cb6dda43e58b6a",
-    bytes: 633413
+    url: "/plugin-builtins/display-c367099bbf87f58d638526ef31389b2412d6f77637f9d1221ad14fcbc2f57971.bin",
+    sha256: "c367099bbf87f58d638526ef31389b2412d6f77637f9d1221ad14fcbc2f57971",
+    bytes: 580803
   },
   cf443f4787bb6dcfc13332ef6352a5a2b337e744b05278d327eb3b64cf43e57f: {
-    url: "/plugin-builtins/display-a4dd75d9ff3d7b10fc0fe4c0b96cbd4ef535f85eeb2c5da6c8df1dd582d3d6d9.json",
-    sha256: "a4dd75d9ff3d7b10fc0fe4c0b96cbd4ef535f85eeb2c5da6c8df1dd582d3d6d9",
-    bytes: 84985
-  },
-  d02b2869dc7e4d0c56ff60048f479f3d82815427313ccef620c2ef9eead5d0e4: {
-    url: "/plugin-builtins/display-b8055b5a11340e880efca703e62a99437abc98be0b5aaec079155a006239f532.json",
-    sha256: "b8055b5a11340e880efca703e62a99437abc98be0b5aaec079155a006239f532",
-    bytes: 206041
-  },
-  d1058f030d61b4127a08f3df30c1a1637de8e19bd7671721014c8cdf0fe80fd8: {
-    url: "/plugin-builtins/display-ac8e4fa148b79079d20797c07508931a637d6f6fefe2513bc1f302c351e9ee47.json",
-    sha256: "ac8e4fa148b79079d20797c07508931a637d6f6fefe2513bc1f302c351e9ee47",
-    bytes: 511491
+    url: "/plugin-builtins/display-3cae2b18f3a87a7d7460fa1893e2583571d1d97098b7a73e197f76bfd70729cf.bin",
+    sha256: "3cae2b18f3a87a7d7460fa1893e2583571d1d97098b7a73e197f76bfd70729cf",
+    bytes: 77773
   },
   d3923bfe0638fab3b027c69dd38c9566b49be4ff3b7f34087970e2d7f29b0a24: {
-    url: "/plugin-builtins/display-a4dd75d9ff3d7b10fc0fe4c0b96cbd4ef535f85eeb2c5da6c8df1dd582d3d6d9.json",
-    sha256: "a4dd75d9ff3d7b10fc0fe4c0b96cbd4ef535f85eeb2c5da6c8df1dd582d3d6d9",
-    bytes: 84985
+    url: "/plugin-builtins/display-3cae2b18f3a87a7d7460fa1893e2583571d1d97098b7a73e197f76bfd70729cf.bin",
+    sha256: "3cae2b18f3a87a7d7460fa1893e2583571d1d97098b7a73e197f76bfd70729cf",
+    bytes: 77773
   },
   d4778d0bf99fb9be186153c9b3fbf6d1c340d960d6fcc67798cadf3696a228b2: {
-    url: "/plugin-builtins/display-0bbbd6fdd5b2b1c4fb7174b13f413457c14182420dfbf52ebdc65903b296dfb2.json",
-    sha256: "0bbbd6fdd5b2b1c4fb7174b13f413457c14182420dfbf52ebdc65903b296dfb2",
-    bytes: 702328
+    url: "/plugin-builtins/display-d2bbb0fa64f2d0cdade4eae765c7cc25741e3219ef9760fa5bf1ac39c79f7ccc.bin",
+    sha256: "d2bbb0fa64f2d0cdade4eae765c7cc25741e3219ef9760fa5bf1ac39c79f7ccc",
+    bytes: 603987
   },
   d4f24831506145c6edaefbc310734cb2e28e3c4be15fc07c8633461806d18694: {
-    url: "/plugin-builtins/display-a4dd75d9ff3d7b10fc0fe4c0b96cbd4ef535f85eeb2c5da6c8df1dd582d3d6d9.json",
-    sha256: "a4dd75d9ff3d7b10fc0fe4c0b96cbd4ef535f85eeb2c5da6c8df1dd582d3d6d9",
-    bytes: 84985
-  },
-  d67341dcca0b9f604fbbbece1c3af45ac49f17e050ac6571f94aa22a6ce2a3ea: {
-    url: "/plugin-builtins/display-ac8e4fa148b79079d20797c07508931a637d6f6fefe2513bc1f302c351e9ee47.json",
-    sha256: "ac8e4fa148b79079d20797c07508931a637d6f6fefe2513bc1f302c351e9ee47",
-    bytes: 511491
+    url: "/plugin-builtins/display-3cae2b18f3a87a7d7460fa1893e2583571d1d97098b7a73e197f76bfd70729cf.bin",
+    sha256: "3cae2b18f3a87a7d7460fa1893e2583571d1d97098b7a73e197f76bfd70729cf",
+    bytes: 77773
   },
   d93345c8c74cd87a66aa061cfe4262007e90ddf8424e86a175d7b80b47c885c5: {
-    url: "/plugin-builtins/display-b720639e94b457ac088c4954dae15eabe46a054c9a142f2133cb6dda43e58b6a.json",
-    sha256: "b720639e94b457ac088c4954dae15eabe46a054c9a142f2133cb6dda43e58b6a",
-    bytes: 633413
+    url: "/plugin-builtins/display-c367099bbf87f58d638526ef31389b2412d6f77637f9d1221ad14fcbc2f57971.bin",
+    sha256: "c367099bbf87f58d638526ef31389b2412d6f77637f9d1221ad14fcbc2f57971",
+    bytes: 580803
   },
   d9e5353361d0196d0981352849882b1376f9abaf5064a31301b51b0843334c43: {
-    url: "/plugin-builtins/display-a4dd75d9ff3d7b10fc0fe4c0b96cbd4ef535f85eeb2c5da6c8df1dd582d3d6d9.json",
-    sha256: "a4dd75d9ff3d7b10fc0fe4c0b96cbd4ef535f85eeb2c5da6c8df1dd582d3d6d9",
-    bytes: 84985
+    url: "/plugin-builtins/display-3cae2b18f3a87a7d7460fa1893e2583571d1d97098b7a73e197f76bfd70729cf.bin",
+    sha256: "3cae2b18f3a87a7d7460fa1893e2583571d1d97098b7a73e197f76bfd70729cf",
+    bytes: 77773
   },
   db0107efa91b0524bc54be2da90889d8ea7dacea4dc9880d3ab443a3385c679b: {
-    url: "/plugin-builtins/display-04d08a651a8881ab27e6e1c3eb6164d0bf71d2bdac5b9df81020e2e3c05a80cb.json",
-    sha256: "04d08a651a8881ab27e6e1c3eb6164d0bf71d2bdac5b9df81020e2e3c05a80cb",
-    bytes: 167941
+    url: "/plugin-builtins/display-600bb64d89d3785d09b3af0d153d75098348404816844eb6617f49b12e42ec5c.bin",
+    sha256: "600bb64d89d3785d09b3af0d153d75098348404816844eb6617f49b12e42ec5c",
+    bytes: 182793
   },
   dd2d564d17a22dca6df26204cb8e7b7acd2b78604462c481e11fd9e977da0912: {
-    url: "/plugin-builtins/display-0bbbd6fdd5b2b1c4fb7174b13f413457c14182420dfbf52ebdc65903b296dfb2.json",
-    sha256: "0bbbd6fdd5b2b1c4fb7174b13f413457c14182420dfbf52ebdc65903b296dfb2",
-    bytes: 702328
+    url: "/plugin-builtins/display-d2bbb0fa64f2d0cdade4eae765c7cc25741e3219ef9760fa5bf1ac39c79f7ccc.bin",
+    sha256: "d2bbb0fa64f2d0cdade4eae765c7cc25741e3219ef9760fa5bf1ac39c79f7ccc",
+    bytes: 603987
   },
   dedb03dd5edeca8b5cf4fb8b3949a3edc9521cac99caebf5d2f2b6755a14b512: {
-    url: "/plugin-builtins/display-dc750c717473b1c636f1edc14492cbb127fc531fd8b978666ecac0ef6f499b27.json",
-    sha256: "dc750c717473b1c636f1edc14492cbb127fc531fd8b978666ecac0ef6f499b27",
-    bytes: 276052
+    url: "/plugin-builtins/display-516ed82fc6d954f5687b56c976cfd00ccddcf00b80f737f89b0d50ec7af27892.bin",
+    sha256: "516ed82fc6d954f5687b56c976cfd00ccddcf00b80f737f89b0d50ec7af27892",
+    bytes: 219509
   },
   dff15e8b98d51dae952f96d9d630e388ed98113ee48b374e677d50978fdd2fbb: {
-    url: "/plugin-builtins/display-b720639e94b457ac088c4954dae15eabe46a054c9a142f2133cb6dda43e58b6a.json",
-    sha256: "b720639e94b457ac088c4954dae15eabe46a054c9a142f2133cb6dda43e58b6a",
-    bytes: 633413
+    url: "/plugin-builtins/display-c367099bbf87f58d638526ef31389b2412d6f77637f9d1221ad14fcbc2f57971.bin",
+    sha256: "c367099bbf87f58d638526ef31389b2412d6f77637f9d1221ad14fcbc2f57971",
+    bytes: 580803
   },
   e0184d9ecf94269d68c536d5c081f0e8b5f32b190b24d88d3f24cb9f2a516b5c: {
-    url: "/plugin-builtins/display-0bbbd6fdd5b2b1c4fb7174b13f413457c14182420dfbf52ebdc65903b296dfb2.json",
-    sha256: "0bbbd6fdd5b2b1c4fb7174b13f413457c14182420dfbf52ebdc65903b296dfb2",
-    bytes: 702328
+    url: "/plugin-builtins/display-d2bbb0fa64f2d0cdade4eae765c7cc25741e3219ef9760fa5bf1ac39c79f7ccc.bin",
+    sha256: "d2bbb0fa64f2d0cdade4eae765c7cc25741e3219ef9760fa5bf1ac39c79f7ccc",
+    bytes: 603987
   },
   e0da96b6160a97b705574e93f63b361f04c7548b7892e6f49445256a0c1fa18e: {
-    url: "/plugin-builtins/display-ac8e4fa148b79079d20797c07508931a637d6f6fefe2513bc1f302c351e9ee47.json",
-    sha256: "ac8e4fa148b79079d20797c07508931a637d6f6fefe2513bc1f302c351e9ee47",
-    bytes: 511491
+    url: "/plugin-builtins/display-23673a241e14a187c82e85785f2244ca4a8bd4fe929bc6433b54a6cebc7adce6.bin",
+    sha256: "23673a241e14a187c82e85785f2244ca4a8bd4fe929bc6433b54a6cebc7adce6",
+    bytes: 463313
   },
   e17c07f174cedbee1a148a441e480e9b66e55a137cefa62f74d9223475dbee70: {
-    url: "/plugin-builtins/display-b720639e94b457ac088c4954dae15eabe46a054c9a142f2133cb6dda43e58b6a.json",
-    sha256: "b720639e94b457ac088c4954dae15eabe46a054c9a142f2133cb6dda43e58b6a",
-    bytes: 633413
-  },
-  e416a38dc73e1f443d8cddfe6454d78fd7743b9dc97b1045ffda50f0cdf3a0a9: {
-    url: "/plugin-builtins/display-ac8e4fa148b79079d20797c07508931a637d6f6fefe2513bc1f302c351e9ee47.json",
-    sha256: "ac8e4fa148b79079d20797c07508931a637d6f6fefe2513bc1f302c351e9ee47",
-    bytes: 511491
-  },
-  e41bb3d4470e6a9e28456424e44028860fbf5c397e93d1a7609c17e6b3fb7ab0: {
-    url: "/plugin-builtins/display-b8055b5a11340e880efca703e62a99437abc98be0b5aaec079155a006239f532.json",
-    sha256: "b8055b5a11340e880efca703e62a99437abc98be0b5aaec079155a006239f532",
-    bytes: 206041
+    url: "/plugin-builtins/display-c367099bbf87f58d638526ef31389b2412d6f77637f9d1221ad14fcbc2f57971.bin",
+    sha256: "c367099bbf87f58d638526ef31389b2412d6f77637f9d1221ad14fcbc2f57971",
+    bytes: 580803
   },
   e7c051d16732a844ceb0372718a081f73af032435c86031b8c4a4e509abba562: {
-    url: "/plugin-builtins/display-0bbbd6fdd5b2b1c4fb7174b13f413457c14182420dfbf52ebdc65903b296dfb2.json",
-    sha256: "0bbbd6fdd5b2b1c4fb7174b13f413457c14182420dfbf52ebdc65903b296dfb2",
-    bytes: 702328
+    url: "/plugin-builtins/display-d2bbb0fa64f2d0cdade4eae765c7cc25741e3219ef9760fa5bf1ac39c79f7ccc.bin",
+    sha256: "d2bbb0fa64f2d0cdade4eae765c7cc25741e3219ef9760fa5bf1ac39c79f7ccc",
+    bytes: 603987
+  },
+  e8859244241093c8c9104de5f7dc85b33c5c76dda49f00c33ee44acf8ddc4ebb: {
+    url: "/plugin-builtins/display-8f31fe0e3f8f52fdbde54fc20f5ed5562e61dfed3f7858eef38ba130b8d8bc6a.bin",
+    sha256: "8f31fe0e3f8f52fdbde54fc20f5ed5562e61dfed3f7858eef38ba130b8d8bc6a",
+    bytes: 208478
   },
   ea11b9551680cffacf5d9f7c08833702ed89985ce91b93dd4f814790595abf36: {
-    url: "/plugin-builtins/display-0bbbd6fdd5b2b1c4fb7174b13f413457c14182420dfbf52ebdc65903b296dfb2.json",
-    sha256: "0bbbd6fdd5b2b1c4fb7174b13f413457c14182420dfbf52ebdc65903b296dfb2",
-    bytes: 702328
+    url: "/plugin-builtins/display-d2bbb0fa64f2d0cdade4eae765c7cc25741e3219ef9760fa5bf1ac39c79f7ccc.bin",
+    sha256: "d2bbb0fa64f2d0cdade4eae765c7cc25741e3219ef9760fa5bf1ac39c79f7ccc",
+    bytes: 603987
   },
   eabe8e7c22bf1e9635e6d21dc2e655e2d0f1873647eb362044b23e65d24b2331: {
-    url: "/plugin-builtins/display-b720639e94b457ac088c4954dae15eabe46a054c9a142f2133cb6dda43e58b6a.json",
-    sha256: "b720639e94b457ac088c4954dae15eabe46a054c9a142f2133cb6dda43e58b6a",
-    bytes: 633413
+    url: "/plugin-builtins/display-c367099bbf87f58d638526ef31389b2412d6f77637f9d1221ad14fcbc2f57971.bin",
+    sha256: "c367099bbf87f58d638526ef31389b2412d6f77637f9d1221ad14fcbc2f57971",
+    bytes: 580803
+  },
+  ec42485f2fb0945bf87b2aad337b1f324b84d1be20646453eb5c4f83a6f8866d: {
+    url: "/plugin-builtins/display-23673a241e14a187c82e85785f2244ca4a8bd4fe929bc6433b54a6cebc7adce6.bin",
+    sha256: "23673a241e14a187c82e85785f2244ca4a8bd4fe929bc6433b54a6cebc7adce6",
+    bytes: 463313
   },
   ec4923758403fb054874c471d5fd7503d46acce2ebb3aafb841240444f419dd5: {
-    url: "/plugin-builtins/display-0bbbd6fdd5b2b1c4fb7174b13f413457c14182420dfbf52ebdc65903b296dfb2.json",
-    sha256: "0bbbd6fdd5b2b1c4fb7174b13f413457c14182420dfbf52ebdc65903b296dfb2",
-    bytes: 702328
+    url: "/plugin-builtins/display-d2bbb0fa64f2d0cdade4eae765c7cc25741e3219ef9760fa5bf1ac39c79f7ccc.bin",
+    sha256: "d2bbb0fa64f2d0cdade4eae765c7cc25741e3219ef9760fa5bf1ac39c79f7ccc",
+    bytes: 603987
   },
   ec6016d0f88ac08a183ce414855cb5a4408f2516f2aebb81391a65611f2a41b0: {
-    url: "/plugin-builtins/display-b720639e94b457ac088c4954dae15eabe46a054c9a142f2133cb6dda43e58b6a.json",
-    sha256: "b720639e94b457ac088c4954dae15eabe46a054c9a142f2133cb6dda43e58b6a",
-    bytes: 633413
+    url: "/plugin-builtins/display-c367099bbf87f58d638526ef31389b2412d6f77637f9d1221ad14fcbc2f57971.bin",
+    sha256: "c367099bbf87f58d638526ef31389b2412d6f77637f9d1221ad14fcbc2f57971",
+    bytes: 580803
   },
   ecf8af719dca178e17549b5f2f00488d49d543de20dcc01bf8a0264351d9726a: {
-    url: "/plugin-builtins/display-b720639e94b457ac088c4954dae15eabe46a054c9a142f2133cb6dda43e58b6a.json",
-    sha256: "b720639e94b457ac088c4954dae15eabe46a054c9a142f2133cb6dda43e58b6a",
-    bytes: 633413
-  },
-  ecfcaa15a86aba88ac6b6de2a6754d2b30b55065f5742a78d57b242be739c534: {
-    url: "/plugin-builtins/display-ac8e4fa148b79079d20797c07508931a637d6f6fefe2513bc1f302c351e9ee47.json",
-    sha256: "ac8e4fa148b79079d20797c07508931a637d6f6fefe2513bc1f302c351e9ee47",
-    bytes: 511491
+    url: "/plugin-builtins/display-c367099bbf87f58d638526ef31389b2412d6f77637f9d1221ad14fcbc2f57971.bin",
+    sha256: "c367099bbf87f58d638526ef31389b2412d6f77637f9d1221ad14fcbc2f57971",
+    bytes: 580803
   },
   ed75d47bed59d81722bfb1f077815317c178887728b79138becf95844015481b: {
-    url: "/plugin-builtins/display-b720639e94b457ac088c4954dae15eabe46a054c9a142f2133cb6dda43e58b6a.json",
-    sha256: "b720639e94b457ac088c4954dae15eabe46a054c9a142f2133cb6dda43e58b6a",
-    bytes: 633413
+    url: "/plugin-builtins/display-c367099bbf87f58d638526ef31389b2412d6f77637f9d1221ad14fcbc2f57971.bin",
+    sha256: "c367099bbf87f58d638526ef31389b2412d6f77637f9d1221ad14fcbc2f57971",
+    bytes: 580803
   },
   ee23870b91aeca1854f0dfbc8c1a015bd245f86882a28a2fa55c70512a2b4889: {
-    url: "/plugin-builtins/display-b720639e94b457ac088c4954dae15eabe46a054c9a142f2133cb6dda43e58b6a.json",
-    sha256: "b720639e94b457ac088c4954dae15eabe46a054c9a142f2133cb6dda43e58b6a",
-    bytes: 633413
+    url: "/plugin-builtins/display-c367099bbf87f58d638526ef31389b2412d6f77637f9d1221ad14fcbc2f57971.bin",
+    sha256: "c367099bbf87f58d638526ef31389b2412d6f77637f9d1221ad14fcbc2f57971",
+    bytes: 580803
   },
   ef4d2de3b0d767d3af63ca0b56bf75f4c8a46ff35e7171fb759b6372b67f57fe: {
-    url: "/plugin-builtins/display-b720639e94b457ac088c4954dae15eabe46a054c9a142f2133cb6dda43e58b6a.json",
-    sha256: "b720639e94b457ac088c4954dae15eabe46a054c9a142f2133cb6dda43e58b6a",
-    bytes: 633413
+    url: "/plugin-builtins/display-c367099bbf87f58d638526ef31389b2412d6f77637f9d1221ad14fcbc2f57971.bin",
+    sha256: "c367099bbf87f58d638526ef31389b2412d6f77637f9d1221ad14fcbc2f57971",
+    bytes: 580803
   },
   f08de717a3ecf1ffa15154c663a4c746f50d2ee72966f54cfda05d7e7e86f65e: {
-    url: "/plugin-builtins/display-b720639e94b457ac088c4954dae15eabe46a054c9a142f2133cb6dda43e58b6a.json",
-    sha256: "b720639e94b457ac088c4954dae15eabe46a054c9a142f2133cb6dda43e58b6a",
-    bytes: 633413
+    url: "/plugin-builtins/display-c367099bbf87f58d638526ef31389b2412d6f77637f9d1221ad14fcbc2f57971.bin",
+    sha256: "c367099bbf87f58d638526ef31389b2412d6f77637f9d1221ad14fcbc2f57971",
+    bytes: 580803
   },
   f31f07dbf8bfaaf88ba9cfed6691bad88d9d8bbd44a9be2c041da5ec575bf9fd: {
-    url: "/plugin-builtins/display-0bbbd6fdd5b2b1c4fb7174b13f413457c14182420dfbf52ebdc65903b296dfb2.json",
-    sha256: "0bbbd6fdd5b2b1c4fb7174b13f413457c14182420dfbf52ebdc65903b296dfb2",
-    bytes: 702328
+    url: "/plugin-builtins/display-d2bbb0fa64f2d0cdade4eae765c7cc25741e3219ef9760fa5bf1ac39c79f7ccc.bin",
+    sha256: "d2bbb0fa64f2d0cdade4eae765c7cc25741e3219ef9760fa5bf1ac39c79f7ccc",
+    bytes: 603987
+  },
+  f3acaf61086631bc820de025c3b0a4f7509628bdc8f19e91600f84554b555768: {
+    url: "/plugin-builtins/display-23673a241e14a187c82e85785f2244ca4a8bd4fe929bc6433b54a6cebc7adce6.bin",
+    sha256: "23673a241e14a187c82e85785f2244ca4a8bd4fe929bc6433b54a6cebc7adce6",
+    bytes: 463313
   },
   f3b3ffb40769420b74acb1100037209c54eca9274e18fc82ebd172268eacc1ab: {
-    url: "/plugin-builtins/display-0bbbd6fdd5b2b1c4fb7174b13f413457c14182420dfbf52ebdc65903b296dfb2.json",
-    sha256: "0bbbd6fdd5b2b1c4fb7174b13f413457c14182420dfbf52ebdc65903b296dfb2",
-    bytes: 702328
-  },
-  f465e3fea60fb3fe26df38ba861706f5836c38b5a827e289fdca653a375ac676: {
-    url: "/plugin-builtins/display-b8055b5a11340e880efca703e62a99437abc98be0b5aaec079155a006239f532.json",
-    sha256: "b8055b5a11340e880efca703e62a99437abc98be0b5aaec079155a006239f532",
-    bytes: 206041
+    url: "/plugin-builtins/display-d2bbb0fa64f2d0cdade4eae765c7cc25741e3219ef9760fa5bf1ac39c79f7ccc.bin",
+    sha256: "d2bbb0fa64f2d0cdade4eae765c7cc25741e3219ef9760fa5bf1ac39c79f7ccc",
+    bytes: 603987
   },
   f4a08ba275fbf44fe1d5dbb1a647fa6e3bb1403f938330019f3c047be33f2faa: {
-    url: "/plugin-builtins/display-b720639e94b457ac088c4954dae15eabe46a054c9a142f2133cb6dda43e58b6a.json",
-    sha256: "b720639e94b457ac088c4954dae15eabe46a054c9a142f2133cb6dda43e58b6a",
-    bytes: 633413
+    url: "/plugin-builtins/display-c367099bbf87f58d638526ef31389b2412d6f77637f9d1221ad14fcbc2f57971.bin",
+    sha256: "c367099bbf87f58d638526ef31389b2412d6f77637f9d1221ad14fcbc2f57971",
+    bytes: 580803
+  },
+  f73c76605088640743324e62a01e05390b1f01f1cba55abb0fe232ad47e0206c: {
+    url: "/plugin-builtins/display-a572c0bd5c6966993839f5a3af307c299e40e100c1c9a780cd064afd00541671.bin",
+    sha256: "a572c0bd5c6966993839f5a3af307c299e40e100c1c9a780cd064afd00541671",
+    bytes: 93731
   },
   f88589b6f0ded0ff60819d509caf9e20b223b3d73bbeecbebe83792fc12cbeb0: {
-    url: "/plugin-builtins/display-b720639e94b457ac088c4954dae15eabe46a054c9a142f2133cb6dda43e58b6a.json",
-    sha256: "b720639e94b457ac088c4954dae15eabe46a054c9a142f2133cb6dda43e58b6a",
-    bytes: 633413
+    url: "/plugin-builtins/display-c367099bbf87f58d638526ef31389b2412d6f77637f9d1221ad14fcbc2f57971.bin",
+    sha256: "c367099bbf87f58d638526ef31389b2412d6f77637f9d1221ad14fcbc2f57971",
+    bytes: 580803
   },
   f8ede6e9c72606e2ef5f3db97eff941c6c23c6f6e34f6f465b3c847d51a71491: {
-    url: "/plugin-builtins/display-b720639e94b457ac088c4954dae15eabe46a054c9a142f2133cb6dda43e58b6a.json",
-    sha256: "b720639e94b457ac088c4954dae15eabe46a054c9a142f2133cb6dda43e58b6a",
-    bytes: 633413
+    url: "/plugin-builtins/display-c367099bbf87f58d638526ef31389b2412d6f77637f9d1221ad14fcbc2f57971.bin",
+    sha256: "c367099bbf87f58d638526ef31389b2412d6f77637f9d1221ad14fcbc2f57971",
+    bytes: 580803
+  },
+  fb07eedbe36e3fe3d0908813e07a95c00915edcb6899b69e439b92c898ee78ad: {
+    url: "/plugin-builtins/display-8f31fe0e3f8f52fdbde54fc20f5ed5562e61dfed3f7858eef38ba130b8d8bc6a.bin",
+    sha256: "8f31fe0e3f8f52fdbde54fc20f5ed5562e61dfed3f7858eef38ba130b8d8bc6a",
+    bytes: 208478
   },
   ff3738a036e001c2326507c7af52c5f4e76f5915845cef20075b091b618722a5: {
-    url: "/plugin-builtins/display-0bbbd6fdd5b2b1c4fb7174b13f413457c14182420dfbf52ebdc65903b296dfb2.json",
-    sha256: "0bbbd6fdd5b2b1c4fb7174b13f413457c14182420dfbf52ebdc65903b296dfb2",
-    bytes: 702328
+    url: "/plugin-builtins/display-d2bbb0fa64f2d0cdade4eae765c7cc25741e3219ef9760fa5bf1ac39c79f7ccc.bin",
+    sha256: "d2bbb0fa64f2d0cdade4eae765c7cc25741e3219ef9760fa5bf1ac39c79f7ccc",
+    bytes: 603987
   },
   ff4676108e3b1fb229b83688bbe3c1a7606242c34879893051c79000cb0b8d62: {
-    url: "/plugin-builtins/display-641fc2795038945ca78fb589d90af8e3149cf359426847fcc98781fc1d560711.json",
-    sha256: "641fc2795038945ca78fb589d90af8e3149cf359426847fcc98781fc1d560711",
-    bytes: 77690
+    url: "/plugin-builtins/display-a572c0bd5c6966993839f5a3af307c299e40e100c1c9a780cd064afd00541671.bin",
+    sha256: "a572c0bd5c6966993839f5a3af307c299e40e100c1c9a780cd064afd00541671",
+    bytes: 93731
   },
   ff69900572cb7db2737100c4773eb4da6b0bcec4edc9b80470cc360985773b5e: {
-    url: "/plugin-builtins/display-b720639e94b457ac088c4954dae15eabe46a054c9a142f2133cb6dda43e58b6a.json",
-    sha256: "b720639e94b457ac088c4954dae15eabe46a054c9a142f2133cb6dda43e58b6a",
-    bytes: 633413
+    url: "/plugin-builtins/display-c367099bbf87f58d638526ef31389b2412d6f77637f9d1221ad14fcbc2f57971.bin",
+    sha256: "c367099bbf87f58d638526ef31389b2412d6f77637f9d1221ad14fcbc2f57971",
+    bytes: 580803
   },
   ff77e42449b35773f14c9bdff0f6e9641af17ebfae86e6524a10905288cb13d5: {
-    url: "/plugin-builtins/display-b720639e94b457ac088c4954dae15eabe46a054c9a142f2133cb6dda43e58b6a.json",
-    sha256: "b720639e94b457ac088c4954dae15eabe46a054c9a142f2133cb6dda43e58b6a",
-    bytes: 633413
+    url: "/plugin-builtins/display-c367099bbf87f58d638526ef31389b2412d6f77637f9d1221ad14fcbc2f57971.bin",
+    sha256: "c367099bbf87f58d638526ef31389b2412d6f77637f9d1221ad14fcbc2f57971",
+    bytes: 580803
   }
 };
 
@@ -269293,44 +269182,155 @@ var STATIC_GEOMETRY_COMPILER_VERSION = 5;
 
 // src/components/StarSky/shared/performance/BuiltinGeometryArtifactFormat.ts
 var BUILTIN_GEOMETRY_MAX_BYTES = 32 * 1024 * 1024;
+var BINARY_MAGIC = new Uint8Array([83, 71, 66, 80, 75, 71, 50, 0]);
+var BINARY_VERSION = 2;
+var BINARY_HEADER_BYTES = 32;
 var constructors = { Float32Array, Float64Array, Uint8Array, Uint8ClampedArray, Int8Array, Uint16Array, Int16Array, Uint32Array, Int32Array };
 var builtinGeometryDigest = (reference) => /^(?:shape:|static-v\d+:)?sha256:([a-f0-9]{64})$/.exec(reference)?.[1];
-function encodeBuiltinGeometryArtifact(records) {
-  const artifact = {
-    version: 1,
-    three: REVISION,
-    compiler: STATIC_GEOMETRY_COMPILER_VERSION,
-    shape: TERRAIN_SHAPE_GENERATOR_VERSION,
-    records
-  };
-  return JSON.stringify(artifact, (_key, value) => {
-    if (!ArrayBuffer.isView(value)) return value;
-    if (!(value.constructor.name in constructors)) throw new Error("\u4E0D\u652F\u6301\u7684\u5185\u7F6E\u51E0\u4F55\u7F13\u51B2\u7C7B\u578B");
-    const bytes = new Uint8Array(value.buffer, value.byteOffset, value.byteLength);
-    let binary = "";
-    for (let start = 0; start < bytes.length; start += 32768) binary += String.fromCharCode(...Array.from(bytes.subarray(start, start + 32768)));
-    return { typed: value.constructor.name, base64: btoa(binary) };
-  }) + "\n";
-}
-function decodeBuiltinGeometryArtifact(text, validate) {
-  if (new TextEncoder().encode(text).byteLength > BUILTIN_GEOMETRY_MAX_BYTES) throw new Error("\u5185\u7F6E\u663E\u793A\u4EA7\u7269\u8D85\u8FC7\u5927\u5C0F\u9650\u5236");
+function assertLittleEndian() {
   if (new Uint8Array(new Uint16Array([1]).buffer)[0] !== 1) throw new Error("\u5185\u7F6E\u663E\u793A\u4EA7\u7269\u5B57\u8282\u5E8F\u4E0D\u517C\u5BB9");
+}
+function constructorFor(type) {
+  if (typeof type !== "string" || !Object.prototype.hasOwnProperty.call(constructors, type)) throw new Error("\u5185\u7F6E\u663E\u793A\u7F13\u51B2\u683C\u5F0F\u65E0\u6548");
+  return constructors[type];
+}
+function bytesOf(value) {
+  const type = value.constructor.name;
+  constructorFor(type);
+  return new Uint8Array(value.buffer, value.byteOffset, value.byteLength);
+}
+function validateRecords(records, validate) {
+  const entries = Object.entries(records);
+  if (!entries.length || entries.length > 4096 || entries.some(([key]) => !builtinGeometryDigest(key))) throw new Error("\u5185\u7F6E\u663E\u793A\u4EA7\u7269\u76EE\u5F55\u65E0\u6548");
+  entries.forEach(([, record]) => validate(record));
+  return records;
+}
+function encodeBuiltinGeometryArtifact(records) {
+  assertLittleEndian();
+  const encoder = new TextEncoder();
+  const payload = [];
+  const descriptors = [];
+  let payloadBytes = 0;
+  for (const [key, record] of Object.entries(records).sort(([a], [b]) => a.localeCompare(b))) {
+    const attributes = {};
+    for (const [name, attribute] of Object.entries(record.attributes)) {
+      const bytes = bytesOf(attribute.array);
+      attributes[name] = { type: attribute.array.constructor.name, offset: payloadBytes, byteLength: bytes.byteLength, itemSize: attribute.itemSize, normalized: attribute.normalized };
+      payload.push(bytes.slice());
+      payloadBytes += bytes.byteLength;
+    }
+    let index = null;
+    if (record.index) {
+      const bytes = bytesOf(record.index);
+      index = { type: record.index.constructor.name, offset: payloadBytes, byteLength: bytes.byteLength };
+      payload.push(bytes.slice());
+      payloadBytes += bytes.byteLength;
+    }
+    const descriptor = { attributes, index, groups: record.groups, bounds: record.bounds, metadata: record.metadata, bytes: record.bytes };
+    descriptors.push({ key: encoder.encode(key), descriptor: encoder.encode(JSON.stringify(descriptor)) });
+  }
+  const three = encoder.encode(REVISION);
+  const directoryBytes = descriptors.reduce((total, item) => total + 8 + item.key.byteLength + item.descriptor.byteLength, 0);
+  const totalBytes = BINARY_HEADER_BYTES + three.byteLength + directoryBytes + payloadBytes;
+  if (totalBytes > BUILTIN_GEOMETRY_MAX_BYTES) throw new Error("\u5185\u7F6E\u663E\u793A\u4EA7\u7269\u8D85\u8FC7\u5927\u5C0F\u9650\u5236");
+  const output = new Uint8Array(totalBytes), view = new DataView(output.buffer);
+  output.set(BINARY_MAGIC, 0);
+  view.setUint16(8, BINARY_VERSION, true);
+  view.setUint16(10, three.byteLength, true);
+  view.setUint32(12, STATIC_GEOMETRY_COMPILER_VERSION, true);
+  view.setUint32(16, TERRAIN_SHAPE_GENERATOR_VERSION, true);
+  view.setUint32(20, descriptors.length, true);
+  view.setUint32(24, directoryBytes, true);
+  view.setUint32(28, payloadBytes, true);
+  let cursor = BINARY_HEADER_BYTES;
+  output.set(three, cursor);
+  cursor += three.byteLength;
+  descriptors.forEach((item) => {
+    view.setUint32(cursor, item.key.byteLength, true);
+    cursor += 4;
+    view.setUint32(cursor, item.descriptor.byteLength, true);
+    cursor += 4;
+    output.set(item.key, cursor);
+    cursor += item.key.byteLength;
+    output.set(item.descriptor, cursor);
+    cursor += item.descriptor.byteLength;
+  });
+  payload.forEach((bytes) => {
+    output.set(bytes, cursor);
+    cursor += bytes.byteLength;
+  });
+  return output;
+}
+function decodeLegacyJson(text, validate) {
+  if (new TextEncoder().encode(text).byteLength > BUILTIN_GEOMETRY_MAX_BYTES) throw new Error("\u5185\u7F6E\u663E\u793A\u4EA7\u7269\u8D85\u8FC7\u5927\u5C0F\u9650\u5236");
   let decodedBytes = 0;
   const artifact = JSON.parse(text, (_key, value) => {
     if (!value || typeof value !== "object" || !("typed" in value)) return value;
-    const Constructor = Object.prototype.hasOwnProperty.call(constructors, value.typed) ? constructors[value.typed] : void 0;
-    if (!Constructor || typeof value.base64 !== "string" || !/^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$/.test(value.base64)) throw new Error("\u5185\u7F6E\u663E\u793A\u7F13\u51B2\u683C\u5F0F\u65E0\u6548");
+    const Constructor = constructorFor(value.typed);
+    if (typeof value.base64 !== "string" || !/^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$/.test(value.base64)) throw new Error("\u5185\u7F6E\u663E\u793A\u7F13\u51B2\u683C\u5F0F\u65E0\u6548");
     const binary = atob(value.base64);
     decodedBytes += binary.length;
     if (decodedBytes > BUILTIN_GEOMETRY_MAX_BYTES || binary.length % Constructor.BYTES_PER_ELEMENT) throw new Error("\u5185\u7F6E\u663E\u793A\u7F13\u51B2\u5927\u5C0F\u65E0\u6548");
-    const bytes = Uint8Array.from(binary, (character) => character.charCodeAt(0));
-    return new Constructor(bytes.buffer);
+    return new Constructor(Uint8Array.from(binary, (character) => character.charCodeAt(0)).buffer);
   });
   if (!artifact || artifact.version !== 1 || artifact.three !== REVISION || artifact.compiler !== STATIC_GEOMETRY_COMPILER_VERSION || artifact.shape !== TERRAIN_SHAPE_GENERATOR_VERSION || !artifact.records || typeof artifact.records !== "object" || Array.isArray(artifact.records)) throw new Error("\u5185\u7F6E\u663E\u793A\u4EA7\u7269\u7248\u672C\u65E0\u6548");
-  const records = Object.entries(artifact.records);
-  if (!records.length || records.length > 4096 || records.some(([key]) => !builtinGeometryDigest(key))) throw new Error("\u5185\u7F6E\u663E\u793A\u4EA7\u7269\u76EE\u5F55\u65E0\u6548");
-  records.forEach(([, record]) => validate(record));
-  return artifact.records;
+  return validateRecords(artifact.records, validate);
+}
+function decodeBinary(input, validate) {
+  assertLittleEndian();
+  if (input.byteLength < BINARY_HEADER_BYTES || !BINARY_MAGIC.every((byte, index) => input[index] === byte)) throw new Error("\u5185\u7F6E\u663E\u793A\u4EA7\u7269\u683C\u5F0F\u65E0\u6548");
+  const view = new DataView(input.buffer, input.byteOffset, input.byteLength);
+  if (view.getUint16(8, true) !== BINARY_VERSION) throw new Error("\u5185\u7F6E\u663E\u793A\u4EA7\u7269\u7248\u672C\u65E0\u6548");
+  const threeBytes = view.getUint16(10, true), compiler = view.getUint32(12, true), shape = view.getUint32(16, true), count = view.getUint32(20, true);
+  const directoryBytes = view.getUint32(24, true), payloadBytes = view.getUint32(28, true);
+  if (compiler !== STATIC_GEOMETRY_COMPILER_VERSION || shape !== TERRAIN_SHAPE_GENERATOR_VERSION || !count || count > 4096 || BINARY_HEADER_BYTES + threeBytes + directoryBytes + payloadBytes !== input.byteLength) throw new Error("\u5185\u7F6E\u663E\u793A\u4EA7\u7269\u76EE\u5F55\u65E0\u6548");
+  const decoder = new TextDecoder("utf-8", { fatal: true });
+  let cursor = BINARY_HEADER_BYTES;
+  if (decoder.decode(input.subarray(cursor, cursor + threeBytes)) !== REVISION) throw new Error("\u5185\u7F6E\u663E\u793A\u4EA7\u7269\u7248\u672C\u65E0\u6548");
+  cursor += threeBytes;
+  const payloadStart = cursor + directoryBytes, records = {};
+  const readArray = (descriptor, label) => {
+    const Constructor = constructorFor(descriptor.type);
+    if (!Number.isInteger(descriptor.offset) || !Number.isInteger(descriptor.byteLength) || descriptor.offset < 0 || descriptor.byteLength < 0 || descriptor.offset + descriptor.byteLength > payloadBytes || descriptor.byteLength % Constructor.BYTES_PER_ELEMENT) throw new Error(`\u5185\u7F6E\u663E\u793A\u7F13\u51B2\u65E0\u6548: ${label}`);
+    const raw = input.slice(payloadStart + descriptor.offset, payloadStart + descriptor.offset + descriptor.byteLength);
+    return new Constructor(raw.buffer);
+  };
+  for (let index = 0; index < count; index += 1) {
+    if (cursor + 8 > payloadStart) throw new Error("\u5185\u7F6E\u663E\u793A\u76EE\u5F55\u622A\u65AD");
+    const keyBytes = view.getUint32(cursor, true), descriptorBytes = view.getUint32(cursor + 4, true);
+    cursor += 8;
+    if (!keyBytes || !descriptorBytes || cursor + keyBytes + descriptorBytes > payloadStart) throw new Error("\u5185\u7F6E\u663E\u793A\u76EE\u5F55\u65E0\u6548");
+    const key = decoder.decode(input.subarray(cursor, cursor + keyBytes));
+    cursor += keyBytes;
+    if (!builtinGeometryDigest(key)) throw new Error("\u5185\u7F6E\u663E\u793A\u76EE\u5F55\u952E\u65E0\u6548");
+    const descriptor = JSON.parse(decoder.decode(input.subarray(cursor, cursor + descriptorBytes)));
+    cursor += descriptorBytes;
+    const attributes = {};
+    for (const [name, item] of Object.entries(descriptor.attributes ?? {})) {
+      if (!Number.isInteger(item.itemSize) || item.itemSize < 1 || typeof item.normalized !== "boolean") throw new Error("\u5185\u7F6E\u663E\u793A\u5C5E\u6027\u63CF\u8FF0\u65E0\u6548");
+      attributes[name] = { array: readArray(item, name), itemSize: item.itemSize, normalized: item.normalized };
+    }
+    if (!Object.keys(attributes).length) throw new Error("\u5185\u7F6E\u663E\u793A\u5C5E\u6027\u7F3A\u5931");
+    const record = {
+      attributes,
+      index: descriptor.index ? readArray(descriptor.index, "index") : null,
+      groups: descriptor.groups,
+      bounds: descriptor.bounds,
+      metadata: descriptor.metadata,
+      bytes: descriptor.bytes
+    };
+    if (records[key]) throw new Error("\u5185\u7F6E\u663E\u793A\u76EE\u5F55\u91CD\u590D");
+    records[key] = record;
+  }
+  if (cursor !== payloadStart) throw new Error("\u5185\u7F6E\u663E\u793A\u76EE\u5F55\u957F\u5EA6\u4E0D\u4E00\u81F4");
+  return validateRecords(records, validate);
+}
+function decodeBuiltinGeometryArtifact(input, validate) {
+  if (typeof input === "string") return decodeLegacyJson(input, validate);
+  const bytes = input instanceof Uint8Array ? input : new Uint8Array(input);
+  if (bytes.byteLength > BUILTIN_GEOMETRY_MAX_BYTES) throw new Error("\u5185\u7F6E\u663E\u793A\u4EA7\u7269\u8D85\u8FC7\u5927\u5C0F\u9650\u5236");
+  if (BINARY_MAGIC.every((byte, index) => bytes[index] === byte)) return decodeBinary(bytes, validate);
+  return decodeLegacyJson(new TextDecoder("utf-8", { fatal: true }).decode(bytes), validate);
 }
 
 // src/utils/browserRuntimeDebug.ts
@@ -269527,14 +269527,14 @@ var BuiltinGeometryArtifacts = class {
     try {
       const published = publishedFiles.get(location.url);
       const isPublished = published?.sha256 === location.sha256 && published?.bytes === location.bytes;
-      if (!/^\/plugin-builtins\/display-[a-f0-9]{64}\.json$/.test(location.url) && !isPublished || !/^[a-f0-9]{64}$/.test(location.sha256) || !Number.isInteger(location.bytes) || location.bytes <= 0 || location.bytes > BUILTIN_GEOMETRY_MAX_BYTES) throw new Error("\u5185\u7F6E\u663E\u793A\u4E0B\u8F7D\u8EAB\u4EFD\u65E0\u6548");
+      if (!/^\/plugin-builtins\/display-[a-f0-9]{64}\.(?:json|bin)$/.test(location.url) && !isPublished || !/^[a-f0-9]{64}$/.test(location.sha256) || !Number.isInteger(location.bytes) || location.bytes <= 0 || location.bytes > BUILTIN_GEOMETRY_MAX_BYTES) throw new Error("\u5185\u7F6E\u663E\u793A\u4E0B\u8F7D\u8EAB\u4EFD\u65E0\u6548");
       const response = await this.request(location.url, { signal: controller.signal });
       if (!response.ok) throw new Error(`\u5185\u7F6E\u663E\u793A\u4E0B\u8F7D\u5931\u8D25: ${response.status}`);
       const bytes = await response.arrayBuffer(), downloadedAt = performance.now();
       if (bytes.byteLength !== location.bytes) throw new Error("\u5185\u7F6E\u663E\u793A\u4E0B\u8F7D\u5927\u5C0F\u4E0D\u5339\u914D");
       const hash = await crypto.subtle.digest("SHA-256", bytes);
       if (Array.from(new Uint8Array(hash), (byte) => byte.toString(16).padStart(2, "0")).join("") !== location.sha256) throw new Error("\u5185\u7F6E\u663E\u793A\u6458\u8981\u4E0D\u5339\u914D");
-      const records = decodeBuiltinGeometryArtifact(new TextDecoder("utf-8", { fatal: true }).decode(bytes), validate);
+      const records = decodeBuiltinGeometryArtifact(bytes, validate);
       logBrowserRuntimeDebug("plugin.builtin-display", {
         url: location.url,
         bytes: bytes.byteLength,
@@ -270756,6 +270756,19 @@ function hasSceneMotionRuntime(camera) {
   return sceneRuntimes.has(camera);
 }
 
+// src/components/StarSky/shared/performance/BatchMaterialExtension.ts
+var extensions = /* @__PURE__ */ new WeakMap();
+function batchMaterialExtensionScope(material) {
+  const extension = extensions.get(material);
+  if (extension) return material.onBeforeCompile === extension.compile && material.customProgramCacheKey === extension.programKey ? extension.scope : void 0;
+  return material.onBeforeCompile === Material.prototype.onBeforeCompile && material.customProgramCacheKey === Material.prototype.customProgramCacheKey ? "" : void 0;
+}
+function copyBatchMaterialExtension(source, target) {
+  if (batchMaterialExtensionScope(source) === void 0) throw new Error("\u6750\u8D28\u6269\u5C55\u672A\u767B\u8BB0\u6216\u5DF2\u5931\u6548");
+  target.onBeforeCompile = source.onBeforeCompile;
+  target.customProgramCacheKey = source.customProgramCacheKey;
+}
+
 // src/components/StarSky/shared/performance/ScenePreparationPriority.ts
 function createScenePreparationPriority(camera, sphere, root) {
   const view = new Frustum(), matrix = new Matrix4(), worldSphere = new Sphere();
@@ -270825,6 +270838,9 @@ function resolvePerformanceSource(object, previous) {
 // src/components/StarSky/shared/performance/ResourcePreparation.ts
 var resourceGenerations = /* @__PURE__ */ new WeakMap();
 var allocationTextures = /* @__PURE__ */ new WeakSet();
+function trackDynamicTextureAllocation(texture) {
+  allocationTextures.add(texture);
+}
 function collectBatchedMeshTextures(object) {
   if (!object.isBatchedMesh) return [];
   const batch = object;
@@ -270928,29 +270944,6 @@ function texturePreparationRevision(texture) {
     texture.premultiplyAlpha
   ]);
 }
-function collectMaterialTextures(material) {
-  const textures = [];
-  const collect = (value) => {
-    if (value === null || typeof value !== "object") return;
-    if (value.isTexture) {
-      const texture = value;
-      if (!textures.includes(texture)) textures.push(texture);
-    } else if (Array.isArray(value)) {
-      for (const item of value) collect(item);
-    }
-  };
-  const properties = material;
-  for (const slot in material) {
-    if (Object.prototype.hasOwnProperty.call(material, slot)) collect(properties[slot]);
-  }
-  if (material.isShaderMaterial) {
-    const uniforms = material.uniforms;
-    for (const name in uniforms) {
-      if (Object.prototype.hasOwnProperty.call(uniforms, name)) collect(uniforms[name].value);
-    }
-  }
-  return textures;
-}
 function isRenderTargetAttachment(texture) {
   return texture.isRenderTargetTexture || Boolean(texture.isDepthTexture && texture.renderTarget);
 }
@@ -270971,6 +270964,17 @@ function uploadPreparedTexture(renderer, texture) {
 // src/components/StarSky/shared/performance/GeometryPreparation.ts
 var contexts = /* @__PURE__ */ new WeakMap();
 var sequence = 0;
+var GEOMETRY_PREPARATION_BATCH_LIMIT = 4;
+function canCoalesceGeometrySubmission(object) {
+  let current = object;
+  while (current) {
+    const state = current.userData?.capabilityDisplayCacheHit;
+    if (state === true) return true;
+    if (state === false) return false;
+    current = current.parent;
+  }
+  return false;
+}
 function allocationSignature(object) {
   const mesh = object;
   if (!mesh.geometry?.isBufferGeometry) return "";
@@ -270995,9 +270999,11 @@ function getContext(renderer) {
     material: new MeshBasicMaterial({ colorWrite: false, depthWrite: false, depthTest: false }),
     scene: new Scene(),
     entries: /* @__PURE__ */ new WeakMap(),
+    pending: /* @__PURE__ */ new Set(),
     geometries: /* @__PURE__ */ new WeakMap(),
     reset: () => {
       created.entries = /* @__PURE__ */ new WeakMap();
+      created.pending.clear();
       created.geometries = /* @__PURE__ */ new WeakMap();
     }
   };
@@ -271036,19 +271042,48 @@ function prepareGeometryBuffers(renderer, object, camera, signal, scope) {
     resolvePreparation = resolve;
     rejectPreparation = reject;
   });
-  const entry = { signature, ready: false, promise };
+  const entry = {
+    signature,
+    ready: false,
+    promise,
+    object,
+    camera,
+    ownerId: source.ownerId,
+    scope,
+    signal,
+    resolve: resolvePreparation,
+    reject: rejectPreparation
+  };
   context.entries.set(object, entry);
+  context.pending.add(entry);
   const gl = renderer.getContext();
-  let fence = null;
-  const releaseFence = () => {
-    if (fence) {
-      gl.deleteSync(fence);
-      fence = null;
-    }
+  const releaseBatch = (batch) => {
+    if (!batch.entries.size) gl.deleteSync(batch.fence);
+  };
+  const failBatch = (batch, error) => {
+    batch.entries.forEach((item) => {
+      item.batch = void 0;
+      context.pending.delete(item);
+      if (context.entries.get(item.object) === item) context.entries.delete(item.object);
+      if (item.task) scheduler.cancel(item.ownerId, item.task.key);
+      item.reject?.(error);
+    });
+    batch.entries.clear();
+    gl.deleteSync(batch.fence);
   };
   const abort = () => {
     scheduler.cancel(source.ownerId, key);
-    releaseFence();
+    context.pending.delete(entry);
+    const batch = entry.batch;
+    if (batch) {
+      batch.entries.delete(entry);
+      entry.batch = void 0;
+      releaseBatch(batch);
+    }
+    if (entry.fence) {
+      gl.deleteSync(entry.fence);
+      entry.fence = void 0;
+    }
     rejectPreparation(new DOMException("\u7F13\u51B2\u51C6\u5907\u5DF2\u53D6\u6D88", "AbortError"));
   };
   signal.addEventListener("abort", abort, { once: true });
@@ -271061,11 +271096,14 @@ function prepareGeometryBuffers(renderer, object, camera, signal, scope) {
     viewPriority: createObjectPreparationPriority(object, camera),
     isValid: () => true,
     run: () => {
+      let invalidated = false;
       try {
         if (context.entries.get(object) !== entry || allocationSignature(object) !== signature) {
+          invalidated = true;
           throw new DOMException("\u7F13\u51B2\u5728\u51C6\u5907\u671F\u95F4\u5DF2\u66F4\u6362", "AbortError");
         }
-        if (!fence) {
+        let batch = entry.batch;
+        if (!batch && !entry.fence) {
           const shared = !hasObjectBuffers(object) ? context.geometries.get(object.geometry) : void 0;
           if (shared?.ready && shared.signature === signature) {
             entry.ready = true;
@@ -271089,37 +271127,91 @@ function prepareGeometryBuffers(renderer, object, camera, signal, scope) {
             });
             if (previousErrors.length === 16) throw new Error("\u7F13\u51B2\u51C6\u5907\u5931\u8D25\uFF1A\u65E0\u6CD5\u6E05\u6670\u754C\u5B9A\u5148\u524D GL \u9519\u8BEF");
           }
-          const submit = () => submitGeometryBuffers(renderer, object, camera, context);
+          const canBatch = context.pending.size > 1 && canCoalesceGeometrySubmission(object);
+          const pendingCandidates = canBatch ? Array.from(context.pending).filter((candidate) => canCoalesceGeometrySubmission(candidate.object) && !candidate.batch && candidate.ownerId === entry.ownerId && candidate.scope === entry.scope && candidate.camera === camera && !candidate.signal?.aborted && context.entries.get(candidate.object) === candidate && allocationSignature(candidate.object) === candidate.signature) : [];
+          const batchEntries = [entry, ...pendingCandidates.filter((candidate) => candidate !== entry)].slice(0, GEOMETRY_PREPARATION_BATCH_LIMIT);
+          const merged = batchEntries.length > 1;
+          const submit = () => submitGeometryBuffers(renderer, merged ? batchEntries.map((candidate) => candidate.object) : object, camera, context);
           const diagnostics = getPerformanceDiagnostics(renderer);
           if (diagnostics) diagnostics.measure("resource-submit", source, submit);
           else submit();
-          fence = gl.fenceSync(gl.SYNC_GPU_COMMANDS_COMPLETE, 0);
-          if (!fence) throw new Error("\u7F13\u51B2\u51C6\u5907\u5931\u8D25\uFF1A\u65E0\u6CD5\u521B\u5EFA GPU \u5B8C\u6210\u6807\u8BB0");
-          if (!hasObjectBuffers(object)) context.geometries.set(geometry, entry);
+          const fence2 = gl.fenceSync(gl.SYNC_GPU_COMMANDS_COMPLETE, 0);
+          if (!fence2) throw new Error("\u7F13\u51B2\u51C6\u5907\u5931\u8D25\uFF1A\u65E0\u6CD5\u521B\u5EFA GPU \u5B8C\u6210\u6807\u8BB0");
+          if (merged) {
+            batch = { fence: fence2, entries: new Set(batchEntries) };
+            batchEntries.forEach((candidate) => {
+              context.pending.delete(candidate);
+              candidate.batch = batch;
+              candidate.task.priority = "completion";
+              if (!hasObjectBuffers(candidate.object)) context.geometries.set(candidate.object.geometry, candidate);
+            });
+          } else {
+            entry.fence = fence2;
+            context.pending.delete(entry);
+            entry.task.priority = "completion";
+            if (!hasObjectBuffers(object)) context.geometries.set(geometry, entry);
+          }
           gl.flush();
           const error = gl.getError();
-          if (error !== gl.NO_ERROR) throw new Error(`\u51E0\u4F55/\u5B9E\u4F8B\u7F13\u51B2\u63D0\u4EA4\u5931\u8D25: WebGL ${error}`);
-          task.priority = "completion";
+          if (error !== gl.NO_ERROR) {
+            const failure = new Error(`\u51E0\u4F55/\u5B9E\u4F8B\u7F13\u51B2\u63D0\u4EA4\u5931\u8D25: WebGL ${error}`);
+            if (batch) failBatch(batch, failure);
+            else {
+              entry.fence = void 0;
+              gl.deleteSync(fence2);
+              context.entries.delete(object);
+              rejectPreparation(failure);
+            }
+            throw failure;
+          }
         }
+        const fence = batch?.fence ?? entry.fence;
+        if (!fence) throw new Error("\u7F13\u51B2\u51C6\u5907\u5931\u8D25\uFF1A\u7F3A\u5C11 GPU \u5B8C\u6210\u6807\u8BB0");
         const status = gl.clientWaitSync(fence, 0, 0);
         if (gl.isContextLost() || status === gl.WAIT_FAILED) throw new Error("\u7F13\u51B2\u51C6\u5907\u5931\u8D25\uFF1AGPU \u5B8C\u6210\u68C0\u67E5\u5931\u8D25");
         if (status === gl.TIMEOUT_EXPIRED) return false;
-        releaseFence();
+        if (batch) {
+          batch.entries.delete(entry);
+          entry.batch = void 0;
+        } else {
+          entry.fence = void 0;
+          gl.deleteSync(fence);
+        }
         entry.ready = true;
         if (!hasObjectBuffers(object)) context.geometries.set(object.geometry, entry);
         resolvePreparation();
+        if (batch) releaseBatch(batch);
       } catch (error) {
-        releaseFence();
-        if (!(error instanceof DOMException && error.name === "AbortError")) {
-          getPerformanceDiagnostics(renderer)?.issue("geometry.prepare-failed", "ERROR", source.ownerId, 1, 0);
+        context.pending.delete(entry);
+        const batch = entry.batch;
+        if (batch && invalidated) {
+          batch.entries.delete(entry);
+          entry.batch = void 0;
+          if (context.entries.get(object) === entry) context.entries.delete(object);
+          rejectPreparation(error);
+          releaseBatch(batch);
+        } else if (batch) {
+          failBatch(batch, error);
+        } else {
+          if (entry.fence) {
+            gl.deleteSync(entry.fence);
+            entry.fence = void 0;
+          }
+          if (!(error instanceof DOMException && error.name === "AbortError")) {
+            getPerformanceDiagnostics(renderer)?.issue("geometry.prepare-failed", "ERROR", source.ownerId, 1, 0);
+          }
+          rejectPreparation(error);
         }
-        rejectPreparation(error);
       }
       return true;
     }
   };
+  entry.task = task;
   const queued = scheduler.enqueue(task);
-  if (!queued) rejectPreparation(new Error("\u7F13\u51B2\u51C6\u5907\u65E0\u6CD5\u8FDB\u5165\u5171\u4EAB\u961F\u5217"));
+  if (!queued) {
+    context.pending.delete(entry);
+    rejectPreparation(new Error("\u7F13\u51B2\u51C6\u5907\u65E0\u6CD5\u8FDB\u5165\u5171\u4EAB\u961F\u5217"));
+  }
   void promise.catch((error) => {
     if (context.geometries.get(geometry) === entry) context.geometries.delete(geometry);
     if (error instanceof DOMException && error.name === "AbortError" && context.entries.get(object) === entry) {
@@ -271128,54 +271220,68 @@ function prepareGeometryBuffers(renderer, object, camera, signal, scope) {
   }).finally(() => signal.removeEventListener("abort", abort));
   return promise;
 }
-function submitGeometryBuffers(renderer, object, camera, context) {
-  const mesh = object;
+function submitGeometryBuffers(renderer, objects, camera, context) {
+  const meshes = Array.isArray(objects) ? objects : [objects];
   const gl = renderer.getContext();
   if (gl.isContextLost()) throw new Error("\u7F13\u51B2\u51C6\u5907\u5931\u8D25\uFF1AWebGL \u4E0A\u4E0B\u6587\u5DF2\u4E22\u5931");
-  for (const attribute of Object.values(mesh.geometry.attributes)) {
-    const external = attribute;
-    if (external.isGLBufferAttribute && !gl.isBuffer(external.buffer)) throw new Error("\u5916\u90E8\u51E0\u4F55\u7F13\u51B2\u65E0\u6548");
+  for (const mesh of meshes) {
+    for (const attribute of Object.values(mesh.geometry.attributes)) {
+      const external = attribute;
+      if (external.isGLBufferAttribute && !gl.isBuffer(external.buffer)) throw new Error("\u5916\u90E8\u51E0\u4F55\u7F13\u51B2\u65E0\u6548");
+    }
   }
   const target = renderer.getRenderTarget(), face = renderer.getActiveCubeFace(), mip = renderer.getActiveMipmapLevel();
   const viewport = renderer.getViewport(new Vector4()), scissor = renderer.getScissor(new Vector4());
   const scissorTest = renderer.getScissorTest(), autoClear = renderer.autoClear, shadows = renderer.shadowMap.enabled;
   const autoReset = renderer.info.autoReset;
   const counters = { ...renderer.info.render };
-  const material = mesh.material, children = mesh.children, visible = mesh.visible, culled = mesh.frustumCulled;
-  const mask = mesh.layers.mask, matrixAuto = mesh.matrixWorldAutoUpdate;
-  const before = mesh.onBeforeRender, after = mesh.onAfterRender;
+  const states = meshes.map((mesh) => ({
+    mesh,
+    material: mesh.material,
+    children: mesh.children,
+    visible: mesh.visible,
+    culled: mesh.frustumCulled,
+    mask: mesh.layers.mask,
+    matrixAuto: mesh.matrixWorldAutoUpdate,
+    before: mesh.onBeforeRender,
+    after: mesh.onAfterRender
+  }));
+  const stateByObject = new Map(states.map((state) => [state.mesh, state]));
   const draw = renderer.renderBufferDirect;
   try {
-    for (const texture of collectBatchedMeshTextures(object)) {
-      if (texture.version === 0) texture.needsUpdate = true;
-      if (!uploadPreparedTexture(renderer, texture)) throw new Error("\u77E9\u9635\u6279\u6B21\u7EB9\u7406\u5C1A\u672A\u5206\u914D");
+    for (const mesh of meshes) {
+      for (const texture of collectBatchedMeshTextures(mesh)) {
+        if (texture.version === 0) texture.needsUpdate = true;
+        if (!uploadPreparedTexture(renderer, texture)) throw new Error("\u77E9\u9635\u6279\u6B21\u7EB9\u7406\u5C1A\u672A\u5206\u914D");
+      }
+      mesh.material = context.material;
+      mesh.children = [];
+      mesh.visible = true;
+      mesh.frustumCulled = false;
+      mesh.layers.mask = camera.layers.mask;
+      mesh.matrixWorldAutoUpdate = false;
+      mesh.onBeforeRender = mesh.onAfterRender = () => void 0;
     }
-    mesh.material = context.material;
-    mesh.children = [];
-    mesh.visible = true;
-    mesh.frustumCulled = false;
-    mesh.layers.mask = camera.layers.mask;
-    mesh.matrixWorldAutoUpdate = false;
-    mesh.onBeforeRender = mesh.onAfterRender = () => void 0;
-    renderer.renderBufferDirect = (drawCamera, scene, geometry, drawMaterial, object2, group) => {
-      const batch = object2;
+    renderer.renderBufferDirect = (drawCamera, scene, geometry, drawMaterial, object, group) => {
+      const state = stateByObject.get(object);
+      const batch = object;
       const count = batch._multiDrawCount;
       try {
-        if (object2 === mesh && batch.isBatchedMesh) batch._multiDrawCount = 0;
+        if (state && batch.isBatchedMesh) batch._multiDrawCount = 0;
         draw.call(
           renderer,
           drawCamera,
           scene,
           geometry,
           drawMaterial,
-          object2,
-          object2 === mesh ? { start: geometry.drawRange.start, count: 0, materialIndex: 0 } : group
+          object,
+          state ? { start: geometry.drawRange.start, count: 0, materialIndex: 0 } : group
         );
       } finally {
-        if (object2 === mesh && batch.isBatchedMesh) batch._multiDrawCount = count;
+        if (state && batch.isBatchedMesh) batch._multiDrawCount = count;
       }
     };
-    context.scene.children = [mesh];
+    context.scene.children = [...meshes];
     renderer.autoClear = false;
     renderer.shadowMap.enabled = false;
     renderer.info.autoReset = false;
@@ -271183,14 +271289,16 @@ function submitGeometryBuffers(renderer, object, camera, context) {
     renderer.render(context.scene, camera);
   } finally {
     context.scene.children = [];
-    mesh.material = material;
-    mesh.children = children;
-    mesh.visible = visible;
-    mesh.frustumCulled = culled;
-    mesh.layers.mask = mask;
-    mesh.matrixWorldAutoUpdate = matrixAuto;
-    mesh.onBeforeRender = before;
-    mesh.onAfterRender = after;
+    states.forEach((state) => {
+      state.mesh.material = state.material;
+      state.mesh.children = state.children;
+      state.mesh.visible = state.visible;
+      state.mesh.frustumCulled = state.culled;
+      state.mesh.layers.mask = state.mask;
+      state.mesh.matrixWorldAutoUpdate = state.matrixAuto;
+      state.mesh.onBeforeRender = state.before;
+      state.mesh.onAfterRender = state.after;
+    });
     renderer.renderBufferDirect = draw;
     renderer.autoClear = autoClear;
     renderer.shadowMap.enabled = shadows;
@@ -271584,6 +271692,74 @@ var CapabilityRigidBatchSnapshot = class {
   }
 };
 
+// src/components/StarSky/host/runtime/sandbox/Capabilities/CapabilityMatrixMaterial.ts
+var MATRIX_MATERIAL_PARAMETERS = /* @__PURE__ */ new Set(["roughness", "metalness", "emissive", "emissiveIntensity"]);
+var varyings = "flat varying vec2 vCapabilitySurface;\nflat varying vec3 vCapabilityEmissive;\n";
+function bindCapabilityMatrixMaterial(material, sources, counts) {
+  const pixels = new Float32Array(counts.reduce((sum, count) => sum + count, 0) * 8);
+  const texture = new DataTexture(pixels, 2, pixels.length / 8, RGBAFormat, FloatType);
+  texture.name = "CapabilityMatrixMaterialParameters";
+  trackDynamicTextureAllocation(texture);
+  Object.assign(material, { capabilityMaterialParameters: texture });
+  const dispose = () => {
+    material.removeEventListener("dispose", dispose);
+    texture.dispose();
+  };
+  material.addEventListener("dispose", dispose);
+  const states = /* @__PURE__ */ new Map();
+  let slot = 0;
+  sources.forEach((source, index) => {
+    const original = source.material;
+    let state = states.get(original);
+    if (!state) {
+      state = { material: original, slots: [], roughness: NaN, metalness: NaN, intensity: NaN, emissive: new Color() };
+      states.set(original, state);
+    }
+    for (let i = 0; i < counts[index]; i++) state.slots.push(slot++);
+  });
+  const sync = () => {
+    let changed = false;
+    states.forEach((state) => {
+      const source = state.material;
+      if (state.roughness === source.roughness && state.metalness === source.metalness && state.intensity === source.emissiveIntensity && state.emissive.equals(source.emissive)) return;
+      state.roughness = source.roughness;
+      state.metalness = source.metalness;
+      state.intensity = source.emissiveIntensity;
+      state.emissive.copy(source.emissive);
+      for (const index of state.slots) {
+        const offset = index * 8;
+        pixels[offset] = source.roughness;
+        pixels[offset + 1] = source.metalness;
+        pixels[offset + 4] = source.emissive.r * source.emissiveIntensity;
+        pixels[offset + 5] = source.emissive.g * source.emissiveIntensity;
+        pixels[offset + 6] = source.emissive.b * source.emissiveIntensity;
+      }
+      changed = true;
+    });
+    if (changed) texture.needsUpdate = true;
+  };
+  sync();
+  patchMaterialParameters(material, texture);
+  return sync;
+}
+function patchMaterialParameters(material, texture) {
+  const compile = material.onBeforeCompile, programKey = material.customProgramCacheKey();
+  material.onBeforeCompile = (shader, renderer) => {
+    compile.call(material, shader, renderer);
+    if (!shader.vertexShader.includes("#include <batching_vertex>") || !["vec3 totalEmissiveRadiance = emissive;", "#include <roughnessmap_fragment>", "#include <metalnessmap_fragment>"].every((token) => shader.fragmentShader.includes(token))) throw new Error("\u5F53\u524D PBR \u7A0B\u5E8F\u4E0D\u652F\u6301\u77E9\u9635\u6750\u8D28\u53C2\u6570");
+    shader.uniforms.capabilityMaterialParameters = { value: texture };
+    shader.vertexShader = varyings + "uniform highp sampler2D capabilityMaterialParameters;\n" + shader.vertexShader.replace(
+      "#include <batching_vertex>",
+      `#include <batching_vertex>
+      int capabilitySlot = int( getIndirectIndex( gl_DrawID ) );
+      vCapabilitySurface = texelFetch( capabilityMaterialParameters, ivec2( 0, capabilitySlot ), 0 ).rg;
+      vCapabilityEmissive = texelFetch( capabilityMaterialParameters, ivec2( 1, capabilitySlot ), 0 ).rgb;`
+    );
+    shader.fragmentShader = varyings + shader.fragmentShader.replace("vec3 totalEmissiveRadiance = emissive;", "vec3 totalEmissiveRadiance = vCapabilityEmissive;").replace("#include <roughnessmap_fragment>", ShaderChunk.roughnessmap_fragment.replace("= roughness;", "= vCapabilitySurface.x;")).replace("#include <metalnessmap_fragment>", ShaderChunk.metalnessmap_fragment.replace("= metalness;", "= vCapabilitySurface.y;"));
+  };
+  material.customProgramCacheKey = () => `${programKey}:capability-matrix-parameters-v1`;
+}
+
 // src/components/StarSky/host/runtime/sandbox/Capabilities/CapabilityMatrixBatch.ts
 var synchronizers = /* @__PURE__ */ new WeakMap();
 var preparationSignals = /* @__PURE__ */ new WeakMap();
@@ -271611,12 +271787,13 @@ function captureMatrixMaterial(material) {
     return Object.keys(value).sort().map((key2) => [key2, capture(object[key2], () => read()?.[key2])]);
   };
   const source = material;
-  const key = JSON.stringify(Object.keys(material).sort().filter((name) => !["id", "uuid", "name", "userData", "version", "color", "_listeners"].includes(name)).map((name) => [name, capture(source[name], () => source[name])]));
+  const key = JSON.stringify(Object.keys(material).sort().filter((name) => !["id", "uuid", "name", "userData", "version", "color", "_listeners"].includes(name) && !MATRIX_MATERIAL_PARAMETERS.has(name)).map((name) => [name, capture(source[name], () => source[name])]));
   const version = material.version;
-  return { key, matches: () => material.version === version && checks.every((check) => check()) };
+  const extension = batchMaterialExtensionScope(material);
+  return { key: JSON.stringify([key, extension]), matches: () => material.version === version && batchMaterialExtensionScope(material) === extension && checks.every((check) => check()) };
 }
 function matrixMaterialGroupKey(node, state = captureMatrixMaterial(node.material)) {
-  return collectMaterialTextures(node.material).length || node.userData.capabilityMaterialDescriptor?.textureUrl ? node.material.uuid : state.key;
+  return JSON.stringify([state.key, node.userData.capabilityMaterialDescriptor?.textureUrl ?? null]);
 }
 function sourceGeometryKey(geometry) {
   const pooled = getPooledGeometryKey(geometry), key = pooled ?? geometry.userData.terrainCacheKey;
@@ -271654,7 +271831,7 @@ function validMatrixBatchLayout(layout, counts, geometry) {
 }
 function collectCapabilityMatrixGroups(root, eligible) {
   const groups = /* @__PURE__ */ new Map();
-  const materialKeys = /* @__PURE__ */ new Map();
+  const materialStates = /* @__PURE__ */ new Map();
   root.updateWorldMatrix(true, true);
   const inverse = root.matrixWorld.clone().invert(), local = new Matrix4(), instance = new Matrix4(), combined = new Matrix4();
   root.traverse((node) => {
@@ -271672,11 +271849,12 @@ function collectCapabilityMatrixGroups(root, eligible) {
     }
     const attributes = Object.entries(node.geometry.attributes).sort(([a], [b]) => a.localeCompare(b)).map(([name, value]) => [name, value.array.constructor.name, value.itemSize, value.normalized]);
     const material = node.material;
-    let materialKey = materialKeys.get(material);
-    if (!materialKey) {
-      materialKey = matrixMaterialGroupKey(node);
-      materialKeys.set(material, materialKey);
+    let materialState = materialStates.get(material);
+    if (!materialState) {
+      materialState = captureMatrixMaterial(material);
+      materialStates.set(material, materialState);
     }
+    const materialKey = matrixMaterialGroupKey(node, materialState);
     const key = JSON.stringify([materialKey, node.castShadow, node.receiveShadow, node.renderOrder, node.layers.mask, attributes]);
     const sources = groups.get(key) ?? [];
     sources.push(node);
@@ -271715,10 +271893,14 @@ function* createCapabilityMatrixBatch(sources, root, pool, cached) {
   if (batchNormals === ShaderChunk.defaultnormal_vertex) throw new Error("\u5F53\u524D Three \u77E9\u9635\u6279\u6B21\u6CD5\u7EBF\u9002\u914D\u4E0D\u517C\u5BB9");
   const material = sources[0].material.clone();
   material.color.setRGB(1, 1, 1);
-  material.onBeforeCompile = (shader) => {
+  copyBatchMaterialExtension(sources[0].material, material);
+  const syncMaterial = bindCapabilityMatrixMaterial(material, sources, counts);
+  const compile = material.onBeforeCompile, programKey = material.customProgramCacheKey();
+  material.onBeforeCompile = (shader, renderer) => {
+    compile.call(material, shader, renderer);
     shader.vertexShader = shader.vertexShader.replace("#include <defaultnormal_vertex>", batchNormals);
   };
-  material.customProgramCacheKey = () => "capability-matrix-normals-v1";
+  material.customProgramCacheKey = () => `${programKey}:capability-matrix-normals-v1`;
   const mesh = new BatchedMesh(counts.reduce((a, b) => a + b, 0), vertexCount, indexCount, material);
   let layout = cached?.batched;
   let geometry;
@@ -271769,7 +271951,11 @@ function* createCapabilityMatrixBatch(sources, root, pool, cached) {
     mesh.frustumCulled = false;
     mesh.sortObjects = false;
     mesh.raycast = () => void 0;
-    const sync = createMatrixSynchronizer(mesh, sources, root, counts);
+    const syncMatrices = createMatrixSynchronizer(mesh, sources, root, counts);
+    const sync = () => {
+      syncMaterial();
+      return syncMatrices();
+    };
     synchronizers.set(mesh, { sync, valid: true });
     let disposed = false;
     complete = true;
@@ -271891,7 +272077,7 @@ var CapabilityFinalDisplayManifest = class {
         parent: parentId ? ids.get(parentId) ?? `external:${external.get(parentId)}` : null
       };
     });
-    return `plugin-final-display-${this.matrixBatches ? "v7-matrix" : "v4"}:${STATIC_GEOMETRY_COMPILER_VERSION}:three-r${REVISION}:${stringifyDisplayCacheInput(canonical)}`;
+    return `plugin-final-display-${this.matrixBatches ? "v8-matrix" : "v4"}:${STATIC_GEOMETRY_COMPILER_VERSION}:three-r${REVISION}:${stringifyDisplayCacheInput(canonical)}`;
   }
   /** 结构与布局一并校验；任何缺项回到完整源路径，不产生半个不可显示的代理组。 */
   async read(plan) {
@@ -272047,8 +272233,53 @@ var RIGID_PHYSICAL_MATERIAL_VALUES = [
   "anisotropyRotation"
 ];
 var MATRIX_MIN_SAVED_DRAWS = 32;
+var MATRIX_MIN_LIVE_SAVED_DRAWS = 8;
 var matrixRuntimes = /* @__PURE__ */ new WeakMap();
+var matrixContextLostRenderers = /* @__PURE__ */ new WeakSet();
 var liveMatrixPlans = /* @__PURE__ */ new WeakMap();
+function getCapabilityBatchRejectionReason(node, beforeRender = node.onBeforeRender, matrixMode = false) {
+  if (!(node instanceof Mesh || node instanceof CapabilityDisplaySource)) return "not-mesh";
+  const mesh = node;
+  if (isCapabilityInstancedMesh(node) && (!node.count || node.instanceColor || node.morphTexture)) return "instance-state";
+  if (!matrixMode && node.children.length) return "children";
+  if (node.userData.capabilityNodeId === void 0) return "missing-node-id";
+  if (!(node.material instanceof MeshStandardMaterial)) return "material-type";
+  if (node.material.transparent || node.material.alphaTest !== 0 || node.material.alphaMap) return "transparent-or-alpha";
+  if (mesh.customDepthMaterial || mesh.customDistanceMaterial) return "custom-depth";
+  if (matrixMode ? batchMaterialExtensionScope(node.material) === void 0 : node.material.onBeforeCompile !== Material.prototype.onBeforeCompile) return "custom-shader";
+  if (beforeRender !== Object3D.prototype.onBeforeRender || node.onBeforeShadow !== Object3D.prototype.onBeforeShadow) return "custom-render-hook";
+  if (!canCompileStaticGeometry(node.geometry)) return "geometry";
+  return void 0;
+}
+function createCapabilityBatchCollectionStats() {
+  return {
+    scanned: 0,
+    compatible: 0,
+    dynamic: 0,
+    candidateGroups: 0,
+    selectedGroups: 0,
+    selectedMembers: 0,
+    droppedSmallGroups: 0,
+    savedDraws: 0,
+    rejectionReasons: {}
+  };
+}
+function recordCapabilityBatchRejection(stats, reason) {
+  stats.rejectionReasons[reason] = (stats.rejectionReasons[reason] ?? 0) + 1;
+}
+function mergeCapabilityBatchCollectionStats(target, source) {
+  target.scanned += source.scanned;
+  target.compatible += source.compatible;
+  target.dynamic += source.dynamic;
+  target.candidateGroups += source.candidateGroups;
+  target.selectedGroups += source.selectedGroups;
+  target.selectedMembers += source.selectedMembers;
+  target.droppedSmallGroups += source.droppedSmallGroups;
+  target.savedDraws += source.savedDraws;
+  Object.entries(source.rejectionReasons).forEach(([reason, count]) => {
+    target.rejectionReasons[reason] = (target.rejectionReasons[reason] ?? 0) + count;
+  });
+}
 var CapabilityRigidBatchRuntime = class {
   constructor(renderer, root, pluginId) {
     this.renderer = renderer;
@@ -272076,6 +272307,7 @@ var CapabilityRigidBatchRuntime = class {
     this.prebuiltMatrixBatches = /* @__PURE__ */ new Map();
     this.sourceRenders = /* @__PURE__ */ new WeakMap();
     this.livePlanKeys = /* @__PURE__ */ new Set();
+    this.matrixContextLost = false;
     this.clearLivePlans = () => {
       if (this.renderer) this.livePlanKeys.forEach((key) => {
         const plans = liveMatrixPlans.get(this.renderer);
@@ -272083,7 +272315,17 @@ var CapabilityRigidBatchRuntime = class {
       });
       this.livePlanKeys.clear();
     };
+    this.markContextRestored = () => {
+      this.matrixContextLost = false;
+      if (this.renderer) matrixContextLostRenderers.delete(this.renderer);
+    };
+    this.markContextLost = () => {
+      this.matrixContextLost = true;
+      if (this.renderer) matrixContextLostRenderers.add(this.renderer);
+      this.clearLivePlans();
+    };
     this.matrixPool = new SharedGeometryPool(renderer);
+    this.matrixContextLost = renderer ? matrixContextLostRenderers.has(renderer) : false;
     this.matrixCandidateRoot = renderer?.extensions?.has("WEBGL_multi_draw") ? root : void 0;
     this.compiler = new StaticGeometryCompiler(8 * 1024 * 1024, true, void 0, renderer ? new SharedGeometryPool(renderer) : void 0, true);
     const hasLive = (key) => this.compiler.hasLive(key) || Boolean(this.matrixPool.peek(key) && isPooledGeometryUnchanged(this.matrixPool.peek(key)));
@@ -272092,33 +272334,63 @@ var CapabilityRigidBatchRuntime = class {
     if (renderer) {
       this.drawFilter = new CapabilityDrawFilter(renderer);
       this.scheduler = getFrameTaskScheduler(renderer);
-      renderer.domElement?.addEventListener("webglcontextlost", this.clearLivePlans);
+      renderer.domElement?.addEventListener("webglcontextlost", this.markContextLost);
+      renderer.domElement?.addEventListener("webglcontextrestored", this.markContextRestored);
     }
   }
   /** 完整声明恢复期间只标脏，不编译下一条命令马上会淘汰的中间模型。 */
   beginUpdate() {
     this.updating++;
   }
-  /** 显示缓存确认命中后，先恢复最终组；冷态不读取额外清单。 */
+  /** 热载只复用同渲染器已经就绪的矩阵计划；冷载和未就绪磁盘清单不进入直达路径。 */
   async prepareDeclaration(commands, hit, warm = false) {
     if (!this.renderer || !this.scheduler || this.disposed) return;
-    if (!this.declaration && warm && this.matrixCandidateRoot && !this.batches.size && !this.jobs.size) {
-      this.warmDeclaration = true;
-      matrixRuntimes.set(this.matrixCandidateRoot, this);
-      const plans = liveMatrixPlans.get(this.renderer);
-      if (plans?.size) {
-        const manifests = this.matrixManifests();
-        if (plans.has(manifests.declaration(commands).key)) {
-          this.matrixRoot = this.matrixCandidateRoot;
-          this.manifests = manifests;
-        }
-      }
-    }
     const previous = commands.some((command) => command.type === "scene.removeNode") ? void 0 : this.declaration;
     const accumulated = [...previous?.plan.commands ?? [], ...commands.filter((command) => command.type === "scene.createNode")];
+    let direct;
+    let directSource = "none";
+    if ((!this.declaration || this.warmDeclaration && this.declaration.plan.continuation) && hit && warm && !this.matrixContextLost && this.matrixCandidateRoot && !this.batches.size && !this.jobs.size) {
+      this.warmDeclaration = warm;
+      matrixRuntimes.set(this.matrixCandidateRoot, this);
+      const manifests = this.matrixManifests();
+      const candidate = manifests.declaration(accumulated);
+      const owner = liveMatrixPlans.get(this.renderer)?.get(candidate.key);
+      let resolvedFromLive = false;
+      if (owner) {
+        const live = owner.declaration;
+        const groups = live ? Array.from(live.displayed.values()).filter((group) => group.layout?.batched) : [];
+        if (groups.length && groups.every((group) => this.matrixPool.peek(group.layout.geometryKey) && isPooledGeometryUnchanged(this.matrixPool.peek(group.layout.geometryKey)))) {
+          if (live.plan.key === candidate.key) {
+            candidate.groups = groups.map((group) => ({ ...group }));
+            candidate.restored = groups.map((group) => ({ ...group.layout }));
+          } else candidate.continuation = true;
+          resolvedFromLive = true;
+          directSource = "matrix-live";
+        }
+      }
+      if (this.disposed) return;
+      const savedDraws = candidate.groups.reduce((saved, group) => saved + group.slots.length - 1, 0);
+      if (resolvedFromLive && (candidate.continuation || savedDraws >= MATRIX_MIN_LIVE_SAVED_DRAWS)) {
+        this.matrixRoot = this.matrixCandidateRoot;
+        this.manifests = manifests;
+        direct = candidate;
+      } else directSource = "none";
+    }
     const possible = accumulated.length >= 2;
-    const plan = this.manifests.declaration(accumulated, hit && possible);
-    if (hit && possible) await this.manifests.read(plan);
+    const plan = direct ?? this.manifests.declaration(accumulated, hit && possible);
+    if (!direct && hit && possible) await this.manifests.read(plan);
+    if (!direct && plan.groups.length) directSource = "rigid-cache";
+    if (this.matrixRoot && plan.groups.length) {
+      const rigid = new CapabilityFinalDisplayManifest((key) => this.compiler.hasLive(key));
+      const remainder = rigid.declaration(accumulated);
+      await rigid.read(remainder);
+      const covered = new Set(plan.groups.flatMap((group) => group.slots));
+      remainder.groups.forEach((group, index) => {
+        if (group.slots.some((slot) => covered.has(slot))) return;
+        plan.groups = [...plan.groups, group];
+        plan.restored = [...plan.restored, remainder.restored[index]];
+      });
+    }
     if (this.disposed) return;
     const context = {
       plan,
@@ -272130,8 +272402,12 @@ var CapabilityRigidBatchRuntime = class {
       expectedGroups: new Map(previous?.expectedGroups),
       displayed: /* @__PURE__ */ new Map(),
       prefixes: previous ? [...previous.prefixes, previous.plan] : [],
-      saved: hit && plan.groups.length > 0
+      saved: hit && plan.groups.length > 0,
+      summaryLogged: false,
+      manifestSource: directSource,
+      groupStats: createCapabilityBatchCollectionStats()
     };
+    if (previous) mergeCapabilityBatchCollectionStats(context.groupStats, previous.groupStats);
     context.nodes.forEach((node) => this.declarationSources.set(node, context));
     this.declaration = context;
   }
@@ -272171,26 +272447,35 @@ var CapabilityRigidBatchRuntime = class {
       const parent = this.matrixRoot ?? node.parent;
       if (parent && this.dirty.has(parent)) context.pendingParents.add(parent);
     });
+    if (this.matrixRoot && this.dirty.has(this.matrixRoot)) context.plan.groups.forEach((group, index) => {
+      if (context.plan.restored[index].batched) return;
+      const parent = context.nodes.get(group.slots[0])?.parent;
+      if (parent) {
+        this.dirty.add(parent);
+        context.pendingParents.add(parent);
+      }
+    });
     context.expectedGroups.forEach((parent, key) => {
       if (this.dirty.has(parent)) context.expectedGroups.delete(key);
     });
     if (context.plan.groups.length) context.pendingParents.forEach((parent) => this.preparedGroups.set(parent, { sources: [], keys: [], restored: [] }));
     const invalid = /* @__PURE__ */ new Set();
-    const materialKeys = /* @__PURE__ */ new Map();
+    const materialStates = /* @__PURE__ */ new Map();
     const materialKey = (node) => {
       const material = node.material;
-      let key = materialKeys.get(material);
-      if (key === void 0) {
-        key = matrixMaterialGroupKey(node);
-        materialKeys.set(material, key);
+      let state = materialStates.get(material);
+      if (!state) {
+        state = captureMatrixMaterial(material);
+        materialStates.set(material, state);
       }
-      return key;
+      return matrixMaterialGroupKey(node, state);
     };
     context.plan.groups.forEach((group, index) => {
       const sources = group.slots.map((slot) => context.nodes.get(slot));
-      const parent = this.matrixRoot ?? sources[0]?.parent;
+      const matrixMode = Boolean(context.plan.restored[index].batched);
+      const parent = matrixMode ? this.matrixRoot : sources[0]?.parent;
       if (parent && (!this.dirty.has(parent) || invalid.has(parent))) return;
-      if (!parent || sources.some((node) => !node || !this.matrixRoot && (node.parent !== parent || this.dynamic.has(node)) || !canBatchCapabilitySource(node)) || (this.matrixRoot ? !matchesCapabilityMatrixSources(sources, context.plan.restored[index].batched) : group.states ? !this.snapshots.matches(sources, group.states, group.slots.map((slot) => context.initialMatrices.get(slot))) : this.snapshots.key(sources) !== group.snapshotKey) || sources.some((node) => (this.matrixRoot ? materialKey(node) !== materialKey(sources[0]) : node.material !== sources[0].material) || node.castShadow !== sources[0].castShadow || node.receiveShadow !== sources[0].receiveShadow || node.renderOrder !== sources[0].renderOrder || node.layers.mask !== sources[0].layers.mask)) {
+      if (!parent || sources.some((node) => !node || !matrixMode && (node.parent !== parent || this.dynamic.has(node)) || !canBatchCapabilitySource(node, node.onBeforeRender, matrixMode)) || (matrixMode ? !matchesCapabilityMatrixSources(sources, context.plan.restored[index].batched) : group.states ? !this.snapshots.matches(sources, group.states, group.slots.map((slot) => context.initialMatrices.get(slot))) : this.snapshots.key(sources) !== group.snapshotKey) || sources.some((node) => (matrixMode ? materialKey(node) !== materialKey(sources[0]) : node.material !== sources[0].material) || node.castShadow !== sources[0].castShadow || node.receiveShadow !== sources[0].receiveShadow || node.renderOrder !== sources[0].renderOrder || node.layers.mask !== sources[0].layers.mask)) {
         if (parent) {
           invalid.add(parent);
           this.preparedGroups.delete(parent);
@@ -272208,10 +272493,26 @@ var CapabilityRigidBatchRuntime = class {
     });
   }
   publishDeclaration(context) {
-    if (context.saved || context.pendingParents.size || !context.expectedGroups.size || context.expectedGroups.size !== context.displayed.size) return;
+    if (context.pendingParents.size || !context.expectedGroups.size || context.expectedGroups.size !== context.displayed.size) return;
+    if (!context.summaryLogged) {
+      context.summaryLogged = true;
+      logBrowserRuntimeDebug("plugin.rigid.display-summary", {
+        pluginId: this.pluginId,
+        manifestSource: context.manifestSource,
+        continuation: context.plan.continuation,
+        commands: context.plan.commands.length,
+        manifestGroups: context.plan.groups.length,
+        expectedGroups: context.expectedGroups.size,
+        displayedGroups: context.displayed.size,
+        restoredGroups: context.plan.restored.filter(Boolean).length,
+        matrixGroups: context.plan.restored.filter((layout) => Boolean(layout?.batched)).length,
+        savedDraws: context.plan.groups.reduce((saved, group) => saved + group.slots.length - 1, 0),
+        groupStats: context.groupStats
+      });
+    }
+    if (context.saved) return;
     context.saved = true;
     this.manifests.save(context.plan, Array.from(context.displayed.values()), this.snapshots.flush(), context.prefixes);
-    this.registerLiveMatrixPlan(context);
   }
   registerLiveMatrixPlan(context) {
     if (this.matrixRoot && this.renderer && context.expectedGroups.size && context.expectedGroups.size === context.displayed.size) {
@@ -272229,7 +272530,7 @@ var CapabilityRigidBatchRuntime = class {
   /** 只认可自己的提交包装；用户新增的自定义回调仍不能合批。 */
   eligibleMatrixSource(node) {
     const source = node, owned = this.sourceRenders.get(source);
-    return canBatchCapabilitySource(node, owned && source.onBeforeRender === owned.wrapped ? owned.before : source.onBeforeRender) && (this.pluginId === void 0 || node.userData.pluginId === this.pluginId);
+    return canBatchCapabilitySource(node, owned && source.onBeforeRender === owned.wrapped ? owned.before : source.onBeforeRender, true) && (this.pluginId === void 0 || node.userData.pluginId === this.pluginId);
   }
   /** 原始完整表示就绪后，在共享空闲预算中准备可选表示，不延长首显屏障。 */
   prepareMatrixDisplay() {
@@ -272433,28 +272734,31 @@ var CapabilityRigidBatchRuntime = class {
       if (node instanceof CapabilityDisplaySource) node.reveal();
     });
   }
-  recordFinalGroup(sources, key, initialStates) {
+  recordFinalGroup(sources, key, initialStates, layout) {
     const context = this.declarationSources.get(sources[0]);
-    if (!context || context.saved && !this.matrixRoot || !key || sources.some((source) => this.declarationSources.get(source) !== context)) return;
+    if (!context || !key || sources.some((source) => this.declarationSources.get(source) !== context)) return;
     const slots = sources.map((source) => context.slots.get(source.userData.capabilityNodeId));
     if (!context.expectedGroups.has(slots.join(","))) return;
     if (context.displayed.has(slots.join(","))) return;
     const states = this.matrixRoot ? void 0 : initialStates ?? this.snapshots.capture(sources);
     if (!this.matrixRoot && !states) return;
-    context.displayed.set(slots.join(","), { slots, snapshotKey: key, ...states ? { states } : {} });
+    context.displayed.set(slots.join(","), { slots, snapshotKey: key, ...states ? { states } : {}, ...layout ? { layout } : {} });
     this.publishDeclaration(context);
     this.registerLiveMatrixPlan(context);
   }
   /** 节点变更立即恢复源表示，反复运动的叶子不再进入静态编译。 */
   invalidate(parent, moving) {
     if (!parent || this.disposed || !this.renderer) return;
-    if (!moving) this.cancelMatrixPromotion();
+    if (!moving) {
+      this.clearLivePlans();
+      this.cancelMatrixPromotion();
+      this.promotionChecked = false;
+    }
     if (this.matrixRoot) {
       if (moving) {
         if (!(moving instanceof Mesh || moving instanceof CapabilityDisplaySource) || this.matrixSources.has(moving)) return;
       } else {
         parent = this.matrixRoot;
-        this.clearLivePlans();
         this.batches.forEach((values, owner) => {
           if (owner === parent) return;
           values.forEach((dispose) => dispose());
@@ -272572,7 +272876,13 @@ var CapabilityRigidBatchRuntime = class {
     this.discoveries.delete(parent);
   }
   collectGroups(parent) {
-    return this.matrixRoot === parent ? collectCapabilityMatrixGroups(parent, (node) => canBatchCapabilitySource(node) && !this.dynamic.has(node) && (this.pluginId === void 0 || node.userData.pluginId === this.pluginId)) : collectCapabilityRigidGroups(parent, (node) => this.dynamic.has(node));
+    if (this.matrixRoot === parent) {
+      return collectCapabilityMatrixGroups(parent, (node) => canBatchCapabilitySource(node, node.onBeforeRender, true) && !this.dynamic.has(node) && (this.pluginId === void 0 || node.userData.pluginId === this.pluginId));
+    }
+    const stats = createCapabilityBatchCollectionStats();
+    const groups = collectCapabilityRigidGroups(parent, (node) => this.dynamic.has(node), stats);
+    if (this.declaration) mergeCapabilityBatchCollectionStats(this.declaration.groupStats, stats);
+    return groups;
   }
   *build(parent) {
     this.discover(parent);
@@ -272606,6 +272916,7 @@ var CapabilityRigidBatchRuntime = class {
         while (!ready2) yield "wait";
       }
       for (let groupIndex = 0; groupIndex < selected.length; groupIndex++) {
+        const matrixMode2 = direct?.restored[groupIndex] ? Boolean(direct.restored[groupIndex].batched) : this.matrixRoot === parent;
         const sources = selected[groupIndex];
         const sourceParents = sources.map((node) => node.parent);
         sources.forEach((node) => node.updateMatrix());
@@ -272614,7 +272925,7 @@ var CapabilityRigidBatchRuntime = class {
         let cached = restored[groupIndex];
         let product;
         let liveHit = false;
-        if (cached?.matrices === null && !matrixMode) {
+        if (cached?.matrices === null && !matrixMode2) {
           try {
             const count = sources.reduce((sum, node) => sum + (isCapabilityInstancedMesh(node) ? node.count : 1), 0);
             product = this.compiler.restoreLive(cached.geometryKey, count);
@@ -272638,8 +272949,8 @@ var CapabilityRigidBatchRuntime = class {
           }
         }
         if (!cached && reads[groupIndex]) discovery?.sources[groupIndex]();
-        const inputs = cached || matrixMode ? [] : expandCapabilityRigidSources(sources);
-        const canInstance = matrixMode ? false : cached ? cached.matrices !== null : inputs.every((input) => input.geometry === inputs[0].geometry && instanceMatrixCompatible(input.matrix));
+        const inputs = cached || matrixMode2 ? [] : expandCapabilityRigidSources(sources);
+        const canInstance = matrixMode2 ? false : cached ? cached.matrices !== null : inputs.every((input) => input.geometry === inputs[0].geometry && instanceMatrixCompatible(input.matrix));
         const geometryChecks2 = sources.map((node) => {
           const geometry = node.geometry;
           const attributes = Object.entries(geometry.attributes).map(
@@ -272654,10 +272965,10 @@ var CapabilityRigidBatchRuntime = class {
             ({ name, attribute, version }) => geometry.attributes[name] === attribute && ("version" in attribute ? attribute.version : attribute.data.version) === version
           );
         });
-        const job = canInstance || product || matrixMode ? void 0 : this.compiler.acquire(inputs);
+        const job = canInstance || product || matrixMode2 ? void 0 : this.compiler.acquire(inputs);
         const prebuilt = this.prebuiltMatrixBatches.get(sources[0]);
         this.prebuiltMatrixBatches.delete(sources[0]);
-        const matrixJob = matrixMode && !prebuilt ? createCapabilityMatrixBatch(sources, parent, this.matrixPool, cached) : void 0;
+        const matrixJob = matrixMode2 && !prebuilt ? createCapabilityMatrixBatch(sources, parent, this.matrixPool, cached) : void 0;
         let matrixBatch = prebuilt;
         try {
           if (matrixJob) {
@@ -272683,12 +272994,13 @@ var CapabilityRigidBatchRuntime = class {
           }
           const sourceMaterial = sources[0].material;
           const sourceMaterials = sources.map((source) => source.material);
-          let matrixMaterialStates = matrixMode ? Array.from(new Set(sourceMaterials)).map((material2) => captureMatrixMaterial(material2)) : [];
+          let matrixMaterialStates = matrixMode2 ? Array.from(new Set(sourceMaterials)).map((material2) => captureMatrixMaterial(material2)) : [];
           const coldLoad = sources.some((node) => node.userData.capabilityDisplayCacheHit === false);
           const knownLoad = coldLoad || sources.every((node) => node.userData.capabilityDisplayCacheHit === true);
-          const ownsMaterial = matrixMode || !knownLoad || !canInstance && !sourceMaterial.vertexColors;
+          const vertexColors = !canInstance && !matrixMode2 ? sources.some((source) => Boolean(source.geometry.attributes.color)) : sourceMaterial.vertexColors;
+          const ownsMaterial = matrixMode2 || !knownLoad || !canInstance && (!sourceMaterial.vertexColors || !vertexColors);
           const material = matrixBatch ? matrixBatch.mesh.material : ownsMaterial ? sourceMaterial.clone() : sourceMaterial;
-          if (!canInstance && !matrixMode) material.vertexColors = sources.some((source) => Boolean(source.geometry.attributes.color));
+          if (!canInstance && !matrixMode2) material.vertexColors = vertexColors;
           const expectedValues = RIGID_MATERIAL_VALUES.map((key) => sourceMaterial[key]);
           const expectedColor = sourceMaterial.color.clone(), expectedEmissive = sourceMaterial.emissive.clone();
           let expectedMap = sourceMaterial.map?.uuid;
@@ -272702,7 +273014,7 @@ var CapabilityRigidBatchRuntime = class {
             range: physicalMaterial.iridescenceThicknessRange.slice()
           } : void 0;
           const matchesMaterial = () => {
-            if (matrixMode) return matrixMaterialStates.every((state) => state.matches());
+            if (matrixMode2) return matrixMaterialStates.every((state) => state.matches());
             if (!sourceMaterial.color.equals(expectedColor) || !sourceMaterial.emissive.equals(expectedEmissive) || sourceMaterial.map?.uuid !== expectedMap || sourceMaterial.normalMap?.uuid !== expectedNormalMap || sourceMaterial instanceof MeshPhysicalMaterial !== Boolean(physicalMaterial)) return false;
             for (let index = 0; index < RIGID_MATERIAL_VALUES.length; index++) {
               if (sourceMaterial[RIGID_MATERIAL_VALUES[index]] !== expectedValues[index]) return false;
@@ -272727,7 +273039,7 @@ var CapabilityRigidBatchRuntime = class {
             mesh.computeBoundingBox();
             mesh.computeBoundingSphere();
           }
-          this.configureBatch(mesh, sources, matrixMode);
+          this.configureBatch(mesh, sources, matrixMode2);
           mesh.userData.capabilityFinalBatchCacheHit = Boolean(cached);
           mesh.userData.capabilityFinalManifestHit = Boolean(direct);
           mesh.userData.capabilityFinalLiveGeometryHit = matrixBatch?.liveHit ?? liveHit;
@@ -272755,7 +273067,7 @@ var CapabilityRigidBatchRuntime = class {
             expectedMap = sourceMaterial.map?.uuid;
             expectedMaterialVersion = sourceMaterial.version;
             expectedValues[0] = expectedMaterialVersion;
-            if (matrixMode) matrixMaterialStates = Array.from(new Set(sourceMaterials)).map((material2) => captureMatrixMaterial(material2));
+            if (matrixMode2) matrixMaterialStates = Array.from(new Set(sourceMaterials)).map((material2) => captureMatrixMaterial(material2));
             textureBindingRevision++;
             prepared = false;
             checkedFrame = preparationFrame = -1;
@@ -272776,9 +273088,9 @@ var CapabilityRigidBatchRuntime = class {
           };
           let fallbackLogged = false;
           const matchesSources = () => {
-            const matches = syncMatrices() && matchesMaterial() && sources.every((node, i) => node.parent === sourceParents[i] && (matrixMode || (coldLoad ? node.visible : isFinalBatchSourceVisible(node)) && node.matrix.equals(sourceMatrices[i])) && (matrixMode || !instanceStates[i] || isCapabilityInstancedMesh(node) && node.count === instanceStates[i].count && node.instanceMatrix === instanceStates[i].matrix && node.instanceMatrix.version === instanceStates[i].version) && geometryChecks2[i]() && node.material === sourceMaterials[i] && node.layers.mask === mesh.layers.mask && node.renderOrder === mesh.renderOrder && node.castShadow === mesh.castShadow && node.receiveShadow === mesh.receiveShadow);
+            const matches = syncMatrices() && matchesMaterial() && sources.every((node, i) => node.parent === sourceParents[i] && (matrixMode2 || (coldLoad ? node.visible : isFinalBatchSourceVisible(node)) && node.matrix.equals(sourceMatrices[i])) && (matrixMode2 || !instanceStates[i] || isCapabilityInstancedMesh(node) && node.count === instanceStates[i].count && node.instanceMatrix === instanceStates[i].matrix && node.instanceMatrix.version === instanceStates[i].version) && geometryChecks2[i]() && node.material === sourceMaterials[i] && node.layers.mask === mesh.layers.mask && node.renderOrder === mesh.renderOrder && node.castShadow === mesh.castShadow && node.receiveShadow === mesh.receiveShadow);
             if (!matches) {
-              if (!fallbackLogged && (matrixMode || sources.some((node) => node instanceof CapabilityDisplaySource && !node.isMesh))) {
+              if (!fallbackLogged && (matrixMode2 || sources.some((node) => node instanceof CapabilityDisplaySource && !node.isMesh))) {
                 fallbackLogged = true;
                 logBrowserRuntimeDebug("plugin.rigid.source-fallback", {
                   pluginId: mesh.userData.pluginId,
@@ -272806,7 +273118,7 @@ var CapabilityRigidBatchRuntime = class {
             return matches;
           };
           const warm = (renderer, scene, camera) => {
-            if (!coldLoad && getFinalBatchPreparation(mesh) || preparing || prepared || controller.signal.aborted || !hasSceneMotionRuntime(camera) || sources.some((node, index) => !matrixMode && !node.visible || node.parent !== sourceParents[index]))
+            if (!coldLoad && getFinalBatchPreparation(mesh) || preparing || prepared || controller.signal.aborted || !hasSceneMotionRuntime(camera) || sources.some((node, index) => !matrixMode2 && !node.visible || node.parent !== sourceParents[index]))
               return;
             preparing = true;
             this.scheduler.enqueue({
@@ -272823,7 +273135,7 @@ var CapabilityRigidBatchRuntime = class {
                 }
                 try {
                   const staging = new Group();
-                  const proxy = matrixMode ? Object.assign(new Mesh(mesh.geometry, mesh.material), {
+                  const proxy = matrixMode2 ? Object.assign(new Mesh(mesh.geometry, mesh.material), {
                     isBatchedMesh: true,
                     _colorsTexture: mesh._colorsTexture
                   }) : mesh instanceof InstancedMesh ? new InstancedMesh(mesh.geometry, mesh.material, mesh.count) : new Mesh(mesh.geometry, mesh.material);
@@ -272884,6 +273196,11 @@ var CapabilityRigidBatchRuntime = class {
           const finalDisplay = () => !controller.signal.aborted && mesh.visible && isPrepared() && matchesSources();
           if (cached || prebuilt) restore.push(bindFinalBatchDisplay(sources, finalDisplay, () => !controller.signal.aborted && isFinalBatchSourceVisible(mesh) && matchesSources(), isPrepared));
           const persistentProduct = product;
+          const liveLayout = currentMatrixBatch ? {
+            geometryKey: getPooledGeometryKey(mesh.geometry),
+            matrices: null,
+            batched: currentMatrixBatch.layout
+          } : void 0;
           let saved = Boolean(cached);
           const suppress = (node, compiled) => {
             const before = node.onBeforeRender;
@@ -272893,7 +273210,7 @@ var CapabilityRigidBatchRuntime = class {
                 saved = true;
                 this.snapshots.save(keys[groupIndex], mesh, persistentProduct, currentMatrixBatch?.layout);
               }
-              if (compiled && selected2) this.recordFinalGroup(sources, keys[groupIndex]);
+              if (compiled && selected2) this.recordFinalGroup(sources, keys[groupIndex], void 0, liveLayout);
               return selected2 === compiled;
             });
             const wrapped = (...args) => {
@@ -272911,7 +273228,7 @@ var CapabilityRigidBatchRuntime = class {
           };
           sources.forEach((node) => {
             this.batchedSources.add(node);
-            if (matrixMode) {
+            if (matrixMode2) {
               this.matrixSources.add(node);
               if (node instanceof CapabilityDisplaySource) {
                 const source = node;
@@ -272974,7 +273291,8 @@ var CapabilityRigidBatchRuntime = class {
     this.cancelMatrixPromotion();
     if (this.matrixCandidateRoot) matrixRuntimes.delete(this.matrixCandidateRoot);
     this.clearLivePlans();
-    this.renderer?.domElement?.removeEventListener("webglcontextlost", this.clearLivePlans);
+    this.renderer?.domElement?.removeEventListener("webglcontextlost", this.markContextLost);
+    this.renderer?.domElement?.removeEventListener("webglcontextrestored", this.markContextRestored);
     this.prebuiltMatrixBatches.forEach((batch) => batch.dispose());
     this.prebuiltMatrixBatches.clear();
     this.controller.abort();
@@ -272993,18 +273311,44 @@ var CapabilityRigidBatchRuntime = class {
     this.drawFilter?.dispose();
   }
 };
-function collectCapabilityRigidGroups(parent, dynamic = () => false) {
+function collectCapabilityRigidGroups(parent, dynamic = () => false, stats) {
   const groups = /* @__PURE__ */ new Map();
   parent.children.forEach((node) => {
-    if (!canBatchCapabilitySource(node) || dynamic(node)) return;
-    const instanceKey = isCapabilityInstancedMesh(node) && node.count > 1 ? node.geometry.uuid : "";
-    const material = node.material;
-    const key = `${material.uuid}:${node.castShadow}:${node.receiveShadow}:${node.renderOrder}:${node.layers.mask}:${instanceKey}`;
+    if (stats) stats.scanned++;
+    if (dynamic(node)) {
+      if (stats) {
+        stats.dynamic++;
+        recordCapabilityBatchRejection(stats, "dynamic");
+      }
+      return;
+    }
+    const reason = getCapabilityBatchRejectionReason(node);
+    if (reason) {
+      if (stats) recordCapabilityBatchRejection(stats, reason);
+      return;
+    }
+    if (stats) stats.compatible++;
+    const mesh = node;
+    const instanceKey = isCapabilityInstancedMesh(mesh) && mesh.count > 1 ? mesh.geometry.uuid : "";
+    const material = mesh.material;
+    const key = `${material.uuid}:${mesh.castShadow}:${mesh.receiveShadow}:${mesh.renderOrder}:${mesh.layers.mask}:${instanceKey}`;
     const values = groups.get(key) ?? [];
-    values.push(node);
+    values.push(mesh);
     groups.set(key, values);
   });
-  return Array.from(groups.values()).filter((sources) => sources.length >= (sources.every(isCapabilityInstancedMesh) ? 2 : 3));
+  const candidates = Array.from(groups.values());
+  if (stats) stats.candidateGroups = candidates.length;
+  const selected = candidates.filter((sources) => {
+    const accepted = sources.length >= (sources.every(isCapabilityInstancedMesh) ? 2 : 3);
+    if (stats && !accepted) stats.droppedSmallGroups++;
+    return accepted;
+  });
+  if (stats) {
+    stats.selectedGroups = selected.length;
+    stats.selectedMembers = selected.reduce((count, group) => count + group.length, 0);
+    stats.savedDraws = selected.reduce((count, group) => count + group.length - 1, 0);
+  }
+  return selected;
 }
 function expandCapabilityRigidSources(sources) {
   return sources.flatMap((node) => {
@@ -273024,10 +273368,8 @@ function instanceMatrixCompatible(matrix) {
   const z = new Vector3().setFromMatrixColumn(matrix, 2).normalize();
   return Math.max(Math.abs(x.dot(y)), Math.abs(x.dot(z)), Math.abs(y.dot(z))) < 1e-6;
 }
-function canBatchCapabilitySource(node, beforeRender = node.onBeforeRender) {
-  if (!(node instanceof Mesh || node instanceof CapabilityDisplaySource)) return false;
-  const mesh = node;
-  return !(isCapabilityInstancedMesh(node) && (!node.count || node.instanceColor || node.morphTexture)) && !node.children.length && node.userData.capabilityNodeId !== void 0 && node.material instanceof MeshStandardMaterial && !node.material.transparent && node.material.alphaTest === 0 && !node.material.alphaMap && !mesh.customDepthMaterial && !mesh.customDistanceMaterial && node.material.onBeforeCompile === Material.prototype.onBeforeCompile && beforeRender === Object3D.prototype.onBeforeRender && node.onBeforeShadow === Object3D.prototype.onBeforeShadow && canCompileStaticGeometry(node.geometry);
+function canBatchCapabilitySource(node, beforeRender = node.onBeforeRender, matrixMode = false) {
+  return getCapabilityBatchRejectionReason(node, beforeRender, matrixMode) === void 0;
 }
 
 // src/components/StarSky/host/runtime/sandbox/Capabilities/LoftGeometry.ts
@@ -276530,20 +276872,20 @@ async function buildPluginDisplay(builder) {
       matrix
     ]) {
       if (!records.size) continue;
-      const text = encodeBuiltinGeometryArtifact(
+      const payload = encodeBuiltinGeometryArtifact(
         Object.fromEntries(Array.from(records.entries()).sort(([a], [b]) => a.localeCompare(b)))
       );
-      const sha256 = digest(text);
+      const sha256 = digest(payload);
       const keys = Array.from(records.keys(), (key) => {
         const hash = /sha256:([a-f0-9]{64})$/.exec(key)?.[1];
         assert.ok(hash, key);
         return hash;
       });
       artifacts.push({
-        filename: `display-${sha256}.json`,
-        text,
+        filename: `display-${sha256}.bin`,
+        payload,
         sha256,
-        bytes: Buffer.byteLength(text),
+        bytes: payload.byteLength,
         keys
       });
     }

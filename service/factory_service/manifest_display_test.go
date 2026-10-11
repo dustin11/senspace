@@ -57,12 +57,17 @@ func TestRuntimeDisplayArtifactsValidation(t *testing.T) {
 	require.NoError(t, os.WriteFile(filepath.Join(dir, filepath.FromSlash(artifact.URL)), content, 0o644))
 	catalog := map[string]runtimeDisplayArtifact{hash: artifact}
 	require.NoError(t, validateRuntimeDisplayArtifacts(dir, catalog))
+	binaryArtifact := artifact
+	binaryArtifact.URL = "display/display-" + hash + ".bin"
+	require.NoError(t, os.WriteFile(filepath.Join(dir, filepath.FromSlash(binaryArtifact.URL)), content, 0o644))
+	require.NoError(t, validateRuntimeDisplayArtifacts(dir, map[string]runtimeDisplayArtifact{hash: binaryArtifact}))
 	require.NoError(t, validateRuntimeDisplayArtifacts(dir, nil))
 	require.Error(t, validateRuntimeDisplayArtifacts(dir, map[string]runtimeDisplayArtifact{}))
 	for _, invalid := range []runtimeDisplayArtifact{
 		{URL: "../" + artifact.URL, SHA256: hash, Bytes: artifact.Bytes},
 		{URL: artifact.URL, SHA256: "bad", Bytes: artifact.Bytes},
 		{URL: artifact.URL, SHA256: hash, Bytes: artifact.Bytes + 1},
+		{URL: "display/display-" + hash + ".dat", SHA256: hash, Bytes: artifact.Bytes},
 	} {
 		require.Error(t, validateRuntimeDisplayArtifacts(dir, map[string]runtimeDisplayArtifact{hash: invalid}))
 	}

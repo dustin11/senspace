@@ -259178,6 +259178,16 @@ function resolvePluginSnappingProfileLocalBounds(plugin) {
   }
   return profileLocalBoundsBox.isEmpty() ? null : profileLocalBoundsBox.clone();
 }
+function resolvePluginSnappingStackNormalWorld(plugin, object) {
+  const attachment = resolveSurfaceAttachmentProfile({
+    spaceAnchors: plugin?.getSpatialProfile?.()?.anchors,
+    attachmentProfile: plugin?.getSurfaceAttachmentProfile?.()
+  });
+  object.updateWorldMatrix(true, false);
+  return attachment.mountFrame.forward.clone().applyQuaternion(
+    object.getWorldQuaternion(new Quaternion())
+  );
+}
 function resolvePluginSnappingProfileWorldBounds(object, localBounds) {
   if (!object || !localBounds || localBounds.isEmpty()) {
     return null;
@@ -260811,12 +260821,6 @@ function getPluginSnappingBehaviorApi(plugin) {
   return state?.api || null;
 }
 function createPluginSnappingBehavior(options = {}) {
-  const resolveStackNormalWorld = (_plugin, targetObject) => {
-    targetObject.updateWorldMatrix(true, false);
-    return new Vector3(0, 1, 0).applyQuaternion(
-      targetObject.getWorldQuaternion(new Quaternion())
-    );
-  };
   const resolveState = (plugin) => {
     const existing = plugin.behaviorState[PLUGIN_SNAPPING_BEHAVIOR_KEY2];
     if (existing) {
@@ -260935,7 +260939,7 @@ function createPluginSnappingBehavior(options = {}) {
       state.lastSnapTargetPlugin = null;
       return null;
     }
-    const stackNormalWorld = resolveStackNormalWorld(plugin, targetMesh);
+    const stackNormalWorld = resolvePluginSnappingStackNormalWorld(targetPlugin, targetMesh);
     const preview = resolvePluginSnappingPreview({
       sourceObject,
       targetObject: targetMesh,
@@ -260991,7 +260995,7 @@ function createPluginSnappingBehavior(options = {}) {
         targetObject,
         resolveProfileLocalBounds(targetPlugin)
       ),
-      stackNormalWorld: resolveStackNormalWorld(plugin, targetObject),
+      stackNormalWorld: resolvePluginSnappingStackNormalWorld(targetPlugin, targetObject),
       gap: options.resolveGap?.(plugin, targetPlugin) ?? DEFAULT_PLUGIN_SNAPPING_GAP
     }) : null;
     const resolvedWorldPoint = resolvedPreview?.worldPoint || worldPoint;
@@ -262117,38 +262121,6 @@ function createFocusOnDoubleClickBehavior(options = {}) {
         return void 0;
       }
       return resolveAction(event.plugin);
-    }
-  };
-}
-
-// src/components/StarSky/PluginFramework/behaviors/containerPlacementBehavior.ts
-function createContainerPlacementBehavior(options = {}) {
-  const canHandle = (plugin) => {
-    const containerId = plugin.getPlacementContainerId?.();
-    return typeof containerId === "string" && containerId.length > 0 && (options.enabled?.(plugin) ?? true);
-  };
-  const dispatch = (callback, event) => {
-    if (callback?.(event) === true) event.stopBehaviorPropagation?.();
-  };
-  return {
-    name: "container-placement",
-    onSingleDown(event) {
-      if (canHandle(event.plugin)) dispatch(options.onSingleDown, event);
-    },
-    onSingleDrag(event) {
-      if (canHandle(event.plugin)) dispatch(options.onSingleDrag, event);
-    },
-    onSingleUp(event) {
-      if (canHandle(event.plugin)) dispatch(options.onSingleUp, event);
-    },
-    onDoubleDown(event) {
-      if (canHandle(event.plugin)) dispatch(options.onDoubleDown, event);
-    },
-    onDoubleDrag(event) {
-      if (canHandle(event.plugin)) dispatch(options.onDoubleDrag, event);
-    },
-    onDoubleUp(event) {
-      if (canHandle(event.plugin)) dispatch(options.onDoubleUp, event);
     }
   };
 }
@@ -264764,13 +264736,6 @@ function createStandardSurfacePersistenceFields(options = {}) {
 }
 function createStandardSurfaceBehaviors(options = {}) {
   const behaviors = [];
-  if (options.containerPlacement) {
-    behaviors.push(
-      createContainerPlacementBehavior(
-        options.containerPlacement
-      )
-    );
-  }
   const hasSurfaceTiltChannel = (channel) => {
     return typeof channel === "object" && channel !== null && (typeof channel.targetName === "string" && channel.targetName.length > 0 || typeof channel.targetNodeId === "string" && channel.targetNodeId.length > 0);
   };
@@ -270755,7 +270720,14 @@ function isPooledGeometryUnchanged(geometry) {
   return geometryChecks.get(geometry)?.() === true;
 }
 function getSharedGeometryKey(descriptor) {
-  const source = JSON.stringify(descriptor, (_key, value) => value && typeof value === "object" && !Array.isArray(value) ? Object.fromEntries(Object.entries(value).sort(([a], [b]) => a.localeCompare(b))) : value);
+  const source = JSON.stringify(descriptor, (_key, value) => {
+    if (!value || typeof value !== "object" || Array.isArray(value)) return value;
+    const keys = Object.keys(value);
+    if (keys.every((key, i) => i === 0 || keys[i - 1].localeCompare(key) <= 0)) return value;
+    const ordered = /* @__PURE__ */ Object.create(null);
+    for (const [key, item] of Object.entries(value).sort(([a], [b]) => a.localeCompare(b))) ordered[key] = item;
+    return ordered;
+  });
   return `plugin-geometry-v1:three-r${REVISION}:${source}`;
 }
 function geometryStats(entries) {
@@ -271393,8 +271365,18 @@ var geometryBufferSequence = 0;
 function geometryBufferIdentity(attribute) {
   if (!attribute) return "-";
   const buffer = attribute.isInterleavedBufferAttribute ? attribute.data : attribute;
-  if (!geometryBufferIds.has(buffer)) geometryBufferIds.set(buffer, ++geometryBufferSequence);
-  return `${geometryBufferIds.get(buffer)}:${buffer.count}:${buffer.itemSize ?? buffer.stride}`;
+  let entry = geometryBufferIds.get(buffer);
+  const count = buffer.count, size = buffer.itemSize ?? buffer.stride;
+  if (!entry) {
+    const id = ++geometryBufferSequence;
+    entry = { id, count, size, signature: `${id}:${count}:${size}` };
+    geometryBufferIds.set(buffer, entry);
+  } else if (entry.count !== count || entry.size !== size) {
+    entry.count = count;
+    entry.size = size;
+    entry.signature = `${entry.id}:${count}:${size}`;
+  }
+  return entry.signature;
 }
 function resourceGeneration(resource) {
   if (!resourceGenerations.has(resource)) {
@@ -271449,7 +271431,11 @@ function doublePassMaterialSignature(material) {
     "sheen",
     "transmission"
   ].map((key) => Number(source[key] ?? 0) > 0);
-  const textures = Object.entries(material).filter(([, value]) => value?.isTexture).map(([slot, texture]) => [slot, texture.uuid, texture.channel, texture.mapping, texture.colorSpace]);
+  const textures = [];
+  for (const slot of Object.keys(material)) {
+    const texture = source[slot];
+    if (texture?.isTexture) textures.push([slot, texture.uuid, texture.channel, texture.mapping, texture.colorSpace]);
+  }
   return JSON.stringify([
     parameters,
     features,
@@ -271505,28 +271491,35 @@ function uploadPreparedTexture(renderer, texture) {
 var contexts2 = /* @__PURE__ */ new WeakMap();
 var sequence = 0;
 var GEOMETRY_PREPARATION_BATCH_LIMIT = 4;
-function canCoalesceGeometrySubmission(object) {
-  let current = object;
-  while (current) {
-    const state = current.userData?.capabilityDisplayCacheHit;
-    if (state === true) return true;
-    if (state === false) return false;
-    current = current.parent;
-  }
-  return false;
-}
+var allocationSignatures = /* @__PURE__ */ new WeakMap();
 function allocationSignature(object) {
   const mesh = object;
   if (!mesh.geometry?.isBufferGeometry) return "";
-  const instance = object;
-  return JSON.stringify([
-    mesh.geometry.uuid,
-    resourceRevision(mesh.geometry),
-    geometryBufferIdentity(mesh.geometry.index),
-    Object.entries(mesh.geometry.attributes).map(([key, value]) => [key, geometryBufferIdentity(value)]),
-    instance.isInstancedMesh ? [resourceRevision(instance), geometryBufferIdentity(instance.instanceMatrix), geometryBufferIdentity(instance.instanceColor)] : null,
-    collectBatchedMeshTextures(object).map((texture) => [texture.uuid, texturePreparationRevision(texture)])
-  ]);
+  const geometry = mesh.geometry, instance = object;
+  const attributes = Object.keys(geometry.attributes);
+  const parts = [
+    geometry.uuid,
+    resourceRevision(geometry),
+    geometryBufferIdentity(geometry.index),
+    attributes.length
+  ];
+  for (const name of attributes) parts.push(name, geometryBufferIdentity(geometry.attributes[name]));
+  parts.push(Boolean(instance.isInstancedMesh));
+  if (instance.isInstancedMesh) parts.push(
+    resourceRevision(instance),
+    geometryBufferIdentity(instance.instanceMatrix),
+    geometryBufferIdentity(instance.instanceColor)
+  );
+  const textures = collectBatchedMeshTextures(object);
+  parts.push(textures.length);
+  for (const texture of textures) parts.push(texture.uuid, texturePreparationRevision(texture));
+  const previous = allocationSignatures.get(object);
+  if (previous && previous.parts.length === parts.length && parts.every((value, index) => value === previous.parts[index])) {
+    return previous.signature;
+  }
+  const signature = JSON.stringify(parts);
+  allocationSignatures.set(object, { parts, signature });
+  return signature;
 }
 function hasObjectBuffers(object) {
   return Boolean(object.isInstancedMesh || object.isBatchedMesh);
@@ -271537,11 +271530,11 @@ function getContext(renderer) {
   const created = {
     target: new WebGLRenderTarget(1, 1, { depthBuffer: false, colorSpace: LinearSRGBColorSpace }),
     material: new MeshBasicMaterial({ colorWrite: false, depthWrite: false, depthTest: false }),
-    // 零顶点上传只需有效程序；无需为灯光、实例或批次生成完整的颜色 Shader。
+    // 零顶点也保留有效的逐顶点属性，避免浏览器为属性 0 模拟缓冲或拒绝空 VAO。
     // WebGLObjects 仍上传所有属性及实例缓冲，renderBufferDirect 仍绑定真实索引。
     bufferMaterial: new RawShaderMaterial({
       glslVersion: GLSL3,
-      vertexShader: "void main() { gl_Position = vec4(0.0); }",
+      vertexShader: "layout(location = 0) in vec3 position; void main() { gl_Position = vec4(position, 1.0); }",
       fragmentShader: "precision highp float; out vec4 uploadColor; void main() { uploadColor = vec4(0.0); }",
       colorWrite: false,
       depthWrite: false,
@@ -271628,7 +271621,6 @@ function prepareGeometryBuffers(renderer, object, camera, signal, scope, batchLi
     batch.entries.forEach((item) => {
       item.batch = void 0;
       context.pending.delete(item);
-      if (context.entries.get(item.object) === item) context.entries.delete(item.object);
       if (item.task) scheduler.cancel(item.ownerId, item.task.key);
       item.reject?.(error);
     });
@@ -271697,13 +271689,13 @@ function prepareGeometryBuffers(renderer, object, camera, signal, scope, batchLi
             });
             if (previousErrors.length === 16) throw new Error("\u7F13\u51B2\u51C6\u5907\u5931\u8D25\uFF1A\u65E0\u6CD5\u6E05\u6670\u754C\u5B9A\u5148\u524D GL \u9519\u8BEF");
           }
-          const canBatch = context.pending.size > 1 && canCoalesceGeometrySubmission(object);
+          const canBatch = context.pending.size > 1 && entry.batchLimit > 1;
           const batchEntries = [entry];
           const selectedGeometries = /* @__PURE__ */ new Set();
           if (!hasObjectBuffers(object)) selectedGeometries.add(geometry);
           if (canBatch) for (const candidate of Array.from(context.pending)) {
             if (batchEntries.length >= entry.batchLimit) break;
-            if (candidate === entry || candidate.ready || candidate.batch || candidate.fence || !canCoalesceGeometrySubmission(candidate.object) || candidate.batchLimit !== entry.batchLimit || candidate.ownerId !== entry.ownerId || candidate.scope !== entry.scope || candidate.camera !== camera || candidate.signal?.aborted || context.entries.get(candidate.object) !== candidate || allocationSignature(candidate.object) !== candidate.signature) continue;
+            if (candidate === entry || candidate.ready || candidate.batch || candidate.fence || candidate.batchLimit !== entry.batchLimit || candidate.ownerId !== entry.ownerId || candidate.scope !== entry.scope || candidate.camera !== camera || candidate.signal?.aborted || context.entries.get(candidate.object) !== candidate || allocationSignature(candidate.object) !== candidate.signature) continue;
             if (!hasObjectBuffers(candidate.object)) {
               const candidateGeometry = candidate.object.geometry;
               const submitted = context.geometries.get(candidateGeometry);
@@ -271741,7 +271733,6 @@ function prepareGeometryBuffers(renderer, object, camera, signal, scope, batchLi
             else {
               entry.fence = void 0;
               gl.deleteSync(fence2);
-              context.entries.delete(object);
               rejectPreparation(failure);
             }
             throw failure;
@@ -271828,12 +271819,13 @@ function submitGeometryBuffers(renderer, objects, camera, context) {
   const counters = { ...renderer.info.render };
   const states = meshes.map((mesh) => ({
     mesh,
-    material: mesh.material,
     children: mesh.children,
     visible: mesh.visible,
     culled: mesh.frustumCulled,
     mask: mesh.layers.mask,
     matrixAuto: mesh.matrixWorldAutoUpdate,
+    // 骨骼和形变纹理由 Three.js 的有效 uniform 触发上传，仍沿用标准材质准备。
+    preparationMaterial: mesh.isSkinnedMesh || Object.values(mesh.geometry.morphAttributes).some((attributes) => attributes.length > 0) || Boolean(mesh.morphTexture) ? context.material : context.bufferMaterial,
     before: mesh.onBeforeRender,
     after: mesh.onAfterRender
   }));
@@ -271845,8 +271837,6 @@ function submitGeometryBuffers(renderer, objects, camera, context) {
         if (texture.version === 0) texture.needsUpdate = true;
         if (!uploadPreparedTexture(renderer, texture)) throw new Error("\u77E9\u9635\u6279\u6B21\u7EB9\u7406\u5C1A\u672A\u5206\u914D");
       }
-      const vertexTextures = mesh.isSkinnedMesh || Object.values(mesh.geometry.morphAttributes).some((attributes) => attributes.length > 0) || Boolean(mesh.morphTexture);
-      mesh.material = vertexTextures ? context.material : context.bufferMaterial;
       mesh.children = [];
       mesh.visible = true;
       mesh.frustumCulled = false;
@@ -271865,7 +271855,7 @@ function submitGeometryBuffers(renderer, objects, camera, context) {
           drawCamera,
           scene,
           geometry,
-          drawMaterial,
+          state?.preparationMaterial ?? drawMaterial,
           object,
           state ? { start: geometry.drawRange.start, count: 0, materialIndex: 0 } : group
         );
@@ -271874,6 +271864,7 @@ function submitGeometryBuffers(renderer, objects, camera, context) {
       }
     };
     context.scene.children = [...meshes];
+    context.scene.overrideMaterial = context.bufferMaterial;
     renderer.autoClear = false;
     renderer.shadowMap.enabled = false;
     renderer.info.autoReset = false;
@@ -271881,8 +271872,8 @@ function submitGeometryBuffers(renderer, objects, camera, context) {
     renderer.render(context.scene, camera);
   } finally {
     context.scene.children = [];
+    context.scene.overrideMaterial = null;
     states.forEach((state) => {
-      state.mesh.material = state.material;
       state.mesh.children = state.children;
       state.mesh.visible = state.visible;
       state.mesh.frustumCulled = state.culled;
@@ -272115,6 +272106,30 @@ var CapabilityDisplaySource = class extends Object3D {
     this.isMesh = true;
     this.isInstancedMesh = Boolean(this.instanceMatrix);
   }
+  /** 完成显示后的 CPU 恢复才启用；不可见材质仍保留拾取，重新可见立即恢复原字段。 */
+  elideInvisibleRendering() {
+    if (!this.isMesh) return;
+    const hidden = () => {
+      const materials = Array.isArray(this.material) ? this.material : [this.material];
+      return materials.length > 0 && materials.every((material) => material.visible === false);
+    };
+    if (!hidden()) return;
+    const restore = (value) => Object.defineProperty(
+      this,
+      "isMesh",
+      { value, configurable: true, enumerable: true, writable: true }
+    );
+    Object.defineProperty(this, "isMesh", {
+      configurable: true,
+      enumerable: true,
+      get: () => {
+        if (hidden()) return false;
+        restore(true);
+        return true;
+      },
+      set: restore
+    });
+  }
   /** 当前实例布局同时供拾取和运行中的变换命令使用。 */
   getMatrixAt(index, matrix) {
     matrix.fromArray(this.instanceMatrix.array, index * 16);
@@ -272146,6 +272161,9 @@ var CapabilityDisplaySource = class extends Object3D {
 };
 function isCapabilityInstancedMesh(node) {
   return node instanceof InstancedMesh || node instanceof CapabilityDisplaySource && Boolean(node.instanceMatrix);
+}
+function isCapabilityMesh(node) {
+  return node instanceof Mesh || node instanceof CapabilityDisplaySource;
 }
 
 // src/components/StarSky/host/runtime/sandbox/Capabilities/CapabilityMatrixMaterial.ts
@@ -272244,10 +272262,44 @@ function stringifyDisplayCacheInput(value) {
   return JSON.stringify(value, (_key, item) => {
     if (typeof item === "number") return stableDisplayCacheNumber(item);
     if (!item || typeof item !== "object" || Array.isArray(item)) return item;
+    const keys = Object.keys(item);
+    if (keys.every((key, i) => i === 0 || keys[i - 1].localeCompare(key) <= 0)) return item;
     const ordered = /* @__PURE__ */ Object.create(null);
     for (const [key, value2] of Object.entries(item).sort(([a], [b]) => a.localeCompare(b))) ordered[key] = value2;
     return ordered;
   });
+}
+function equalDisplayCacheInputs(left, right) {
+  if (left === right) return true;
+  if (typeof left === "number" && typeof right === "number")
+    return stableDisplayCacheNumber(left) === stableDisplayCacheNumber(right) || !Number.isFinite(left) && !Number.isFinite(right);
+  if (!left || !right || typeof left !== "object" || typeof right !== "object")
+    return stringifyDisplayCacheInput(left) === stringifyDisplayCacheInput(right);
+  if ("toJSON" in left || "toJSON" in right) return stringifyDisplayCacheInput(left) === stringifyDisplayCacheInput(right);
+  const array = Array.isArray(left);
+  if (array !== Array.isArray(right)) return false;
+  if (array) {
+    const other = right;
+    if (left.length !== other.length) return false;
+    for (let i = 0; i < left.length; i++) if (!equalDisplayCacheInputs(jsonLeaf(left[i]) ?? null, jsonLeaf(other[i]) ?? null)) return false;
+    return true;
+  }
+  const plain = (value) => Object.getPrototypeOf(value) === Object.prototype || Object.getPrototypeOf(value) === null;
+  if (!plain(left) || !plain(right)) return stringifyDisplayCacheInput(left) === stringifyDisplayCacheInput(right);
+  const a = left, b = right;
+  let count = 0;
+  for (const key of Object.keys(a)) {
+    const value = jsonLeaf(a[key]);
+    if (value === void 0) continue;
+    count++;
+    if (!Object.prototype.hasOwnProperty.call(b, key) || !equalDisplayCacheInputs(value, jsonLeaf(b[key]))) return false;
+  }
+  for (const key of Object.keys(b)) if (jsonLeaf(b[key]) !== void 0) count--;
+  return count === 0;
+}
+function jsonLeaf(value) {
+  if (typeof value === "function" || typeof value === "symbol" || value === void 0) return void 0;
+  return typeof value === "number" && !Number.isFinite(value) ? null : value;
 }
 function stableGeometryDisplayIdentity(key) {
   const marker = key.indexOf("plugin-geometry-v1:three-r");
@@ -272276,15 +272328,16 @@ function bindFinalBatchDependencies(mesh, ready2) {
     if (finalBatchDependencies.get(mesh) === ready2) finalBatchDependencies.delete(mesh);
   };
 }
-function bindFinalBatchPreparationRoot(renderer, root, pluginId) {
+function bindFinalBatchPreparationRoot(renderer, root, pluginId, isTakingOver) {
   let roots = pendingFinalBatchRoots.get(renderer);
   if (!roots) {
     roots = /* @__PURE__ */ new Map();
     pendingFinalBatchRoots.set(renderer, roots);
   }
-  roots.set(root, pluginId);
+  const entry = { pluginId, isTakingOver };
+  roots.set(root, entry);
   const release = () => {
-    if (roots.get(root) === pluginId) roots.delete(root);
+    if (roots.get(root) === entry) roots.delete(root);
     if (!roots.size && pendingFinalBatchRoots.get(renderer) === roots) pendingFinalBatchRoots.delete(renderer);
   };
   try {
@@ -274850,6 +274903,12 @@ var GeometryRegistry = class {
     const viewKey = `geometry-view-v1:${normalizedGeometryCacheKey(normalized)}`;
     return this.pool.acquireScaled(key, viewKey, template.scale, create, template.transformNormals);
   }
+  /** 已核验清单的同一源几何只增加本注册表引用，不重新规范化描述。 */
+  retain(geometry) {
+    const key = getPooledGeometryKey(geometry);
+    if (!key || !this.pool.owns(geometry) || this.pool.peek(key) !== geometry || !isPooledGeometryUnchanged(geometry)) return void 0;
+    return this.pool.acquire(key, () => geometry);
+  }
   /** 释放几何资源引用；无引用时自动 dispose。 */
   release(geometry) {
     this.pool.release(geometry);
@@ -275216,7 +275275,7 @@ function readPositiveNumber(value, fallback) {
 }
 
 // src/components/StarSky/host/runtime/sandbox/Capabilities/CapabilityGeometryNormalization.ts
-function normalizeSceneGeometry(command, retainInstance = false) {
+function normalizeSceneGeometry(command, retainInstance = false, hasPreparedInstances = false) {
   if (command.kind === "group" || command.kind === "light") return command;
   if (command.instances?.length === 0) return command;
   if (!["box", "plane", "sphere", "cylinder", "torus", "ring"].includes(command.geometry?.kind ?? command.kind)) {
@@ -275265,6 +275324,7 @@ function normalizeSceneGeometry(command, retainInstance = false) {
     }
   }
   if (!supported) return retainInstance && !explicitInstances ? { ...command, instances: [{}] } : command;
+  if (hasPreparedInstances) return { ...command, geometry };
   return {
     ...command,
     geometry,
@@ -275731,7 +275791,8 @@ function validateSandboxCapabilityCommandBatch(commands, context) {
     hasNode: (nodeId) => batchNodeSet.has(nodeId) || context.hasNode(nodeId),
     hasBehavior: (behaviorId) => batchBehaviorSet.has(behaviorId) || context.hasBehavior(behaviorId),
     getNodeKind: (nodeId) => batchNodeKindMap.has(nodeId) ? batchNodeKindMap.get(nodeId) || null : context.getNodeKind(nodeId),
-    getParentNodeId: (nodeId) => batchParentMap.has(nodeId) ? batchParentMap.get(nodeId) || null : context.getParentNodeId(nodeId)
+    getParentNodeId: (nodeId) => batchParentMap.has(nodeId) ? batchParentMap.get(nodeId) || null : context.getParentNodeId(nodeId),
+    hasValidatedCreateShape: (command) => context.hasValidatedCreateShape?.(command) === true
   };
   commands.forEach((command) => {
     validateSandboxCapabilityCommand(command, batchContext);
@@ -275778,6 +275839,7 @@ function validateSceneCreateNode(command, context) {
       `\u80FD\u529B\u8282\u70B9\u7236\u7EA7\u4E0D\u5B58\u5728: ${command.parentId}`
     );
   }
+  if (context.hasValidatedCreateShape?.(command)) return;
   validateSceneNodeKind(command.kind);
   validateSceneNodeShape(command);
   validateSceneTransform(command.transform);
@@ -277166,7 +277228,7 @@ function collectEffects(behavior, motion, mutable) {
       return false;
   }
 }
-function planCapabilityRenderAsset(input, behaviors) {
+function planCapabilityRenderBehaviorBoundary(input, behaviors) {
   const commands = input.filter((command) => command.type === "scene.createNode");
   const slots = new Map(commands.map((command, slot) => [command.nodeId, slot]));
   const motion = /* @__PURE__ */ new Set(), mutable = new Set(behaviors?.targetNodeIds ?? []);
@@ -277187,11 +277249,23 @@ function planCapabilityRenderAsset(input, behaviors) {
   }
   const parents = commands.map((command) => command.parentId ? slots.get(command.parentId) ?? null : null);
   const motionRoots2 = commands.flatMap((command, slot) => motion.has(command.nodeId) || parents[slot] === null ? [slot] : []);
-  const roots = new Set(motionRoots2), mutableSlots = commands.flatMap((command, slot) => mutable.has(command.nodeId) ? [slot] : []);
-  const protectedSlots = new Set(mutableSlots);
-  const groups = [];
+  const mutableSlots = commands.flatMap((command, slot) => mutable.has(command.nodeId) ? [slot] : []);
   const behaviorKey = stringifyDisplayCacheInput({ version: 2, fallback, declared: Boolean(behaviors), motionRoots: motionRoots2, mutableSlots });
+  return { commands, parents, motionRoots: motionRoots2, mutableSlots, behaviorKey, fallback };
+}
+function planCapabilityRenderAsset(input, behaviors) {
+  const { commands, parents, motionRoots: motionRoots2, mutableSlots, behaviorKey, fallback } = planCapabilityRenderBehaviorBoundary(input, behaviors);
+  const roots = new Set(motionRoots2), protectedSlots = new Set(mutableSlots);
+  const groups = [];
   if (fallback && behaviors) return { behaviorKey, motionRoots: motionRoots2, mutableSlots, groups, fallback };
+  const identities = /* @__PURE__ */ new Map();
+  const identity = (value) => {
+    const input2 = JSON.stringify(value), previous = identities.get(input2);
+    if (previous !== void 0) return previous;
+    const encoded = stringifyDisplayCacheInput(value);
+    identities.set(input2, encoded);
+    return encoded;
+  };
   const buckets = /* @__PURE__ */ new Map();
   commands.forEach((command, slot) => {
     if (command.kind === "group" || command.kind === "light" || roots.has(slot) || command.instances?.length === 0) return;
@@ -277210,15 +277284,15 @@ function planCapabilityRenderAsset(input, behaviors) {
     if (command.material?.faceMaterials?.length || material.transparent || material.kind !== "standard" && material.kind !== "physical" || material.transmission) return;
     const { color: _color3, roughness: _roughness, metalness: _metalness, emissive: _emissive, emissiveIntensity: _intensity, ...program } = material;
     const normalized = normalizeSceneGeometry(command);
-    const geometry = stringifyDisplayCacheInput(normalizeGeometryDescriptor(normalized.geometry ?? { kind: command.kind }));
+    const geometry = identity(normalizeGeometryDescriptor(normalized.geometry ?? { kind: command.kind }));
     if (orderRoot !== null) return;
-    const key = stringifyDisplayCacheInput([motionRootSlot, program, command.castShadow ?? false, command.receiveShadow ?? false, command.renderOrder ?? 0]);
+    const key = stringifyDisplayCacheInput([motionRootSlot, identity(program), command.castShadow ?? false, command.receiveShadow ?? false, command.renderOrder ?? 0]);
     const bucket = buckets.get(key) ?? [];
     bucket.push({
       slot,
       root: motionRootSlot,
       geometry,
-      material: stringifyDisplayCacheInput(material),
+      material: identity(material),
       count: command.instances?.length ?? 1,
       triangles: estimateGeometryTriangles(normalized.geometry, command.kind)
     });
@@ -277345,11 +277419,27 @@ async function readCapabilityRenderAsset(commands, store = terrainCompiledGeomet
   const asset = reference ? (await store.get(reference))?.metadata.renderAsset : entry.metadata.renderAsset;
   validateCapabilityRenderAsset(asset, completeCommands ?? commands);
   if (Boolean(asset.rigidGroups) !== rigid) throw new Error("\u5B8C\u6574\u6E32\u67D3\u8D44\u4EA7\u8868\u793A\u4E0D\u5339\u914D");
-  if (rigid && asset.behaviorKey !== behaviorKey) throw new Error("\u5B8C\u6574\u6E32\u67D3\u8D44\u4EA7\u884C\u4E3A\u8FB9\u754C\u4E0D\u5339\u914D");
-  if (plan && asset.rigidGroups?.some((group) => !plan.groups.some((candidate) => candidate.motionRootSlot === group.motionRootSlot && candidate.representation === "instances" === Boolean(group.instances) && group.slots.every((slot) => candidate.slots.includes(slot))))) throw new Error("\u5B8C\u6574\u6E32\u67D3\u8D44\u4EA7\u8D85\u51FA\u58F0\u660E\u5408\u5E76\u8FB9\u754C");
+  if (plan) validateCapabilityRenderAssetPlan(asset, plan);
   if (completeCommands && asset.commands.length !== completeCommands.filter((command) => command.type === "scene.createNode").length)
     throw new Error("\u5B8C\u6574\u6E32\u67D3\u8D44\u4EA7\u58F0\u660E\u6570\u91CF\u4E0D\u5339\u914D");
   return asset;
+}
+function validateCapabilityRenderAssetPlan(asset, plan) {
+  if (asset.behaviorKey !== plan.behaviorKey) throw new Error("\u5B8C\u6574\u6E32\u67D3\u8D44\u4EA7\u884C\u4E3A\u8FB9\u754C\u4E0D\u5339\u914D");
+  if (asset.rigidGroups?.some((group) => !plan.groups.some((candidate) => candidate.motionRootSlot === group.motionRootSlot && candidate.representation === "instances" === Boolean(group.instances) && group.slots.every((slot) => candidate.slots.includes(slot))))) throw new Error("\u5B8C\u6574\u6E32\u67D3\u8D44\u4EA7\u8D85\u51FA\u58F0\u660E\u5408\u5E76\u8FB9\u754C");
+}
+
+// src/components/StarSky/host/runtime/sandbox/Capabilities/CapabilityRenderAssetEntry.ts
+var CAPABILITY_RENDER_ASSET_ENTRY_VERSION = `v1:three-r${REVISION}`;
+
+// src/components/StarSky/host/runtime/sandbox/Capabilities/CapabilityRenderDeclarationCache.ts
+var TAB_MAX_CHARACTERS = 512 * 1024;
+
+// src/components/StarSky/host/runtime/sandbox/Capabilities/CapabilityPrebuiltRenderAsset.ts
+var verifiedDeclarations = /* @__PURE__ */ new WeakMap();
+function isVerifiedRenderDeclaration(command, asset, slot) {
+  const verified = verifiedDeclarations.get(command);
+  return Boolean(verified && (!asset || verified.asset === asset && verified.slot === slot));
 }
 
 // src/components/StarSky/host/runtime/sandbox/Capabilities/CapabilityRenderRevisionJournal.ts
@@ -277468,6 +277558,8 @@ var CapabilityRenderAssetRuntime = class {
     this.watchedResources = /* @__PURE__ */ new WeakSet();
     this.disposedResources = /* @__PURE__ */ new WeakSet();
     this.resourceCleanup = [];
+    /** 源树恢复前保留首显使用的基础材质，接管继续通过同一注册表持有引用。 */
+    this.displaySourceMaterials = [];
     /** 源树分片接管期间仍使用预显示准备门，全部接管后恢复原回调。 */
     this.displayPreparationCleanup = [];
     this.resourceReleases = /* @__PURE__ */ new Map();
@@ -277487,6 +277579,7 @@ var CapabilityRenderAssetRuntime = class {
     this.allowPreDisplay = false;
     /** 刚性直读先建立平铺最终网格；正式批次到达后才恢复源树。 */
     this.deferredSources = false;
+    this.sourceFormal = [];
     this.displayTokens = /* @__PURE__ */ new Map();
     this.revealFrame = -1;
     this.constructionTiming = { workMs: 0, waitMs: 0, slices: 0, maxSliceMs: 0 };
@@ -277540,20 +277633,40 @@ var CapabilityRenderAssetRuntime = class {
     if (this.asset) {
       if (this.prebuiltOffset !== void 0) {
         const offset = this.prebuiltOffset;
-        const rebound = [...this.commands.slice(0, offset), ...created, ...this.commands.slice(offset + created.length)];
-        if (offset + created.length > this.commands.length || stringifyDisplayCacheInput(renderAssetIdentityCommands(rebound)) !== stringifyDisplayCacheInput(renderAssetIdentityCommands(this.commands))) {
+        if (offset + created.length > this.commands.length) {
           this.fallback();
           return false;
         }
-        if (this.deferredSources && !await this.restorePrebuiltSources()) return false;
+        const rebound = [...this.commands.slice(0, offset), ...created, ...this.commands.slice(offset + created.length)];
+        const sameBindings = created.every((command, i) => command.nodeId === this.commands[offset + i]?.nodeId && command.parentId === this.commands[offset + i]?.parentId);
+        const matches = sameBindings ? created.every((command, i) => {
+          if (isVerifiedRenderDeclaration(command, this.asset, offset + i)) return true;
+          const expected = this.commands[offset + i];
+          const placement = expected.kind === "group" && !this.asset.commands[offset + i].parentId?.startsWith("asset:");
+          const resource = (node) => ({
+            ...node,
+            name: void 0,
+            ...placement ? { transform: void 0 } : {}
+          });
+          return equalDisplayCacheInputs(resource(command), resource(expected));
+        }) : equalDisplayCacheInputs(renderAssetIdentityCommands(rebound), renderAssetIdentityCommands(this.commands));
+        if (!matches) {
+          this.fallback();
+          return false;
+        }
         this.commands.slice(offset, offset + created.length).forEach((command) => this.pending.delete(command.nodeId));
         this.bindCommands(created, offset);
         this.commands = rebound;
         this.prebuiltOffset += created.length;
-        return true;
+        return !this.deferredSources || this.restorePrebuiltSources(
+          commands.every((command) => command.type === "scene.createNode") ? created : []
+        );
       }
       const accumulated2 = [...this.commands, ...created];
-      if (stringifyDisplayCacheInput(renderAssetIdentityCommands(accumulated2).slice(this.commands.length)) !== stringifyDisplayCacheInput(renderAssetIdentityCommands(this.asset.commands).slice(this.commands.length, accumulated2.length))) {
+      if (!equalDisplayCacheInputs(
+        renderAssetIdentityCommands(accumulated2).slice(this.commands.length),
+        renderAssetIdentityCommands(this.asset.commands).slice(this.commands.length, accumulated2.length)
+      )) {
         this.fallback();
         return false;
       }
@@ -277589,18 +277702,25 @@ var CapabilityRenderAssetRuntime = class {
     this.commands = commands;
     this.bindCommands(commands, 0);
     this.deferredSources = true;
-    this.resourceCleanup.push(bindFinalBatchPreparationRoot(this.port.renderer, this.port.root, this.port.pluginId));
+    this.resourceCleanup.push(bindFinalBatchPreparationRoot(
+      this.port.renderer,
+      this.port.root,
+      this.port.pluginId,
+      () => this.asset === asset && !this.failed && this.stats.adopted < asset.commands.length
+    ));
     asset.rigidGroups.forEach((group) => group.slots.forEach((slot) => this.covered.add(slot)));
     asset.sources.forEach((source) => {
       this.displayTokens.set(source.slot, { userData: { capabilityNodeId: commands[source.slot].nodeId } });
     });
     const sidecars = asset.sources.filter((source) => !this.covered.has(source.slot) && source.renderState.visible && source.node.materials.some((material) => !material || material.visible !== false));
+    const rigidKeys = asset.rigidGroups.map((group) => group.layout.geometryKey);
+    const sidecarKeys = sidecars.map((source) => source.node.geometryKey);
     const keys = Array.from(/* @__PURE__ */ new Set([
-      ...asset.rigidGroups.filter((group) => {
-        const geometry = this.pool.peek(group.layout.geometryKey);
+      ...rigidKeys.filter((key) => {
+        const geometry = this.pool.peek(key);
         return !geometry || !isPooledGeometryUnchanged(geometry);
-      }).map((group) => group.layout.geometryKey),
-      ...sidecars.map((source) => source.node.geometryKey)
+      }),
+      ...sidecarKeys
     ]));
     this.port.root.userData.capabilityFinalDisplayGeometryCount = keys.length;
     const geometries = await terrainCompiledGeometryCache.getMany(keys);
@@ -277612,12 +277732,8 @@ var CapabilityRenderAssetRuntime = class {
       for (const definition of asset.rigidGroups) {
         const source = sourceMap.get(definition.slots[0]), command = commands[source.slot];
         const base = runtime.port.acquireDisplayMaterial(command, { ...source.node, fromManifest: true });
-        let restored;
-        try {
-          restored = restoreCapabilityRigidRenderGroup(definition, geometries.get(definition.layout.geometryKey) ?? void 0, base, runtime.pool);
-        } finally {
-          runtime.port.releaseDisplayMaterial(base);
-        }
+        runtime.displaySourceMaterials.push(base);
+        const restored = restoreCapabilityRigidRenderGroup(definition, geometries.get(definition.layout.geometryKey) ?? void 0, base, runtime.pool);
         runtime.resourceCleanup.push(runtime.port.bindDisplayTextures(restored.mesh, command));
         runtime.installDisplay({ poseRevision: 0, rigid: restored, meshes: [restored.mesh], slots: definition.slots, cleanup: [], valid: true });
         restored.mesh.userData.capabilityBatchCounts = definition.counts;
@@ -277679,18 +277795,53 @@ var CapabilityRenderAssetRuntime = class {
       group.cleanup.push(bindFinalBatchFailure(mesh, () => this.fallback()));
     });
   }
-  /** 在既有显示继续绘制期间恢复 CPU 源身份；构造器接回同一最终网格和可见侧车。 */
-  async restorePrebuiltSources() {
-    try {
+  /** 接管计时内可与编译读取并行；这里只读几何，不提前创建或授权正式节点。 */
+  preparePrebuiltSourceGeometry() {
+    if (!this.deferredSources || !this.asset) return Promise.resolve();
+    return this.sourceGeometryRead ??= (async () => {
       const keys = Array.from(new Set(this.asset.sources.map((source) => source.node.geometryKey).filter((key) => !this.sourceGeometries.has(key))));
       const geometries = await terrainCompiledGeometryCache.getMany(keys);
-      if (this.controller.signal.aborted || this.failed) return false;
+      if (this.controller.signal.aborted || this.failed) throw new DOMException("\u5B8C\u6574\u6E32\u67D3\u8D44\u4EA7\u5DF2\u53D6\u6D88", "AbortError");
       if (keys.some((key) => !geometries.get(key))) throw new Error("\u5B8C\u6574\u6E32\u67D3\u8D44\u4EA7\u62FE\u53D6\u8D44\u6E90\u7F3A\u5931");
       geometries.forEach((geometry, key) => {
         if (geometry) this.sourceGeometries.set(key, geometry);
       });
-      await this.construct(this.commands, this.sourceGeometries, []);
+    })();
+  }
+  /** 只恢复已核验 CPU 身份；正式命令仍等待编译、当前声明核验与逐条授权。 */
+  preparePrebuiltSources() {
+    return !this.deferredSources ? Promise.resolve(!this.failed) : this.restorePrebuiltSources([]);
+  }
+  /** 在既有显示继续绘制期间恢复 CPU 源身份；构造器接回同一最终网格和可见侧车。 */
+  restorePrebuiltSources(formal) {
+    if (this.sourceRestoration && formal.length) this.sourceFormal.push(...formal);
+    return this.sourceRestoration ??= this.restorePrebuiltSourcesOnce(formal);
+  }
+  async restorePrebuiltSourcesOnce(formal) {
+    const started = performance.now(), workBefore = this.constructionTiming.workMs;
+    try {
+      await this.preparePrebuiltSourceGeometry();
       if (this.controller.signal.aborted || this.failed) return false;
+      const readAt = performance.now();
+      const sources = this.asset.commands.map((planned, slot) => {
+        const current = this.commands[slot];
+        return {
+          ...planned,
+          nodeId: current.nodeId,
+          parentId: current.parentId,
+          name: current.name,
+          ...planned.kind === "group" && !planned.parentId?.startsWith("asset:") ? { transform: current.transform } : {}
+        };
+      });
+      await this.construct(sources, this.sourceGeometries, formal);
+      this.releaseDisplaySourceMaterials();
+      if (this.controller.signal.aborted || this.failed) return false;
+      logBrowserRuntimeDebug("plugin.render-asset.sources-restored", {
+        pluginId: this.port.pluginId,
+        readMs: readAt - started,
+        constructionMs: performance.now() - readAt,
+        workMs: this.constructionTiming.workMs - workBefore
+      });
       this.deferredSources = false;
       this.displayPreparationCleanup.splice(0).forEach((release) => release());
       this.changed();
@@ -277818,17 +277969,25 @@ var CapabilityRenderAssetRuntime = class {
     const sourceMap = new Map(asset.sources.map((source) => [source.slot, source]));
     const ids = new Map(commands.map((command, i) => [command.nodeId, i]));
     const create = function* (runtime) {
+      const stage = runtime.deferredSources && !formal.length;
+      const restoredSources = /* @__PURE__ */ new Map();
+      const roots = [], transfers = [];
       for (let slot = 0; slot < commands.length; slot++) {
         const command = commands[slot], source = sourceMap.get(slot), proxy = runtime.covered.has(slot);
         const cached = source ? { ...source.node, geometry: geometries.get(source.node.geometryKey) ?? void 0, fromManifest: true } : void 0;
         const existing = runtime.nodes.get(slot);
-        const node = existing ?? runtime.port.create(command, cached, proxy);
-        if (existing) {
+        const node = existing ?? runtime.port.create(command, cached, proxy, source ? restoredSources : void 0, runtime.deferredSources && runtime.firstDisplay);
+        if (existing && !stage) {
           node.matrixAutoUpdate = true;
           node.updateMatrix();
         }
         runtime.nodes.set(slot, node);
         runtime.nodeSlots.set(node, slot);
+        const parent = command.parentId ? runtime.nodes.get(ids.get(command.parentId)) ?? runtime.port.getNode(command.parentId) : runtime.port.root;
+        if (!parent) throw new Error("\u5B8C\u6574\u6E32\u67D3\u8D44\u4EA7\u5916\u90E8\u7236\u7EA7\u7F3A\u5931");
+        if (stage && existing) transfers.push({ node, parent });
+        else if (stage && parent === runtime.port.root) roots.push(node);
+        else parent.add(node);
         runtime.journal.watch(node, ["geometry", "material", "instanceMatrix", "count", "matrixAutoUpdate", "castShadow", "receiveShadow", "renderOrder", "onBeforeRender", "onBeforeShadow"]);
         runtime.journal.watch(node, ["parent"], () => {
           runtime.changed();
@@ -277844,14 +278003,11 @@ var CapabilityRenderAssetRuntime = class {
         runtime.poseJournal.watch(node.position, void 0, poseChanged);
         runtime.poseJournal.watch(node.quaternion, ["_x", "_y", "_z", "_w"], poseChanged);
         runtime.poseJournal.watch(node.scale, void 0, poseChanged);
-        const parent = command.parentId ? runtime.nodes.get(ids.get(command.parentId)) ?? runtime.port.getNode(command.parentId) : runtime.port.root;
-        if (!parent) throw new Error("\u5B8C\u6574\u6E32\u67D3\u8D44\u4EA7\u5916\u90E8\u7236\u7EA7\u7F3A\u5931");
-        parent.add(node);
         if (source) {
           const mesh = node;
           runtime.revisions.set(slot, {
             node: mesh,
-            parent: mesh.parent,
+            parent,
             geometry: mesh.geometry,
             material: mesh.material,
             instances: isCapabilityInstancedMesh(node) ? node.instanceMatrix : void 0,
@@ -277871,6 +278027,16 @@ var CapabilityRenderAssetRuntime = class {
           runtime.preparedResults.set(command2, result);
           if (!result.ok) throw new Error(result.error ?? "\u5B8C\u6574\u8D44\u4EA7\u6B63\u5F0F\u8282\u70B9\u63A5\u7BA1\u88AB\u62D2\u7EDD");
         }
+        yield;
+      }
+      for (const root of roots) {
+        runtime.port.root.add(root);
+        yield;
+      }
+      for (const { node, parent } of transfers) {
+        node.matrixAutoUpdate = true;
+        node.updateMatrix();
+        if (node.parent !== parent) parent.add(node);
         yield;
       }
       for (const group of asset.groups) {
@@ -277965,6 +278131,15 @@ var CapabilityRenderAssetRuntime = class {
         });
         yield;
       }
+      if (stage && runtime.port.adopt) {
+        for (const command of runtime.sourceFormal) {
+          const result = runtime.port.adopt(command);
+          runtime.preparedResults.set(command, result);
+          if (!result.ok) throw new Error(result.error ?? "\u5B8C\u6574\u8D44\u4EA7\u6B63\u5F0F\u8282\u70B9\u63A5\u7BA1\u88AB\u62D2\u7EDD");
+          yield;
+        }
+        runtime.sourceFormal.length = 0;
+      }
       runtime.stats.groups = asset.groups.length + (asset.rigidGroups?.length ?? 0);
       runtime.stats.members = asset.sources.length;
     };
@@ -278010,9 +278185,10 @@ var CapabilityRenderAssetRuntime = class {
             finish(error);
             return true;
           } finally {
-            this.constructionTiming.workMs += performance.now() - started;
-            this.constructionTiming.maxSliceMs = Math.max(this.constructionTiming.maxSliceMs, performance.now() - started);
-            this.constructionTiming.waitMs = Math.max(0, performance.now() - queuedAt - this.constructionTiming.workMs);
+            const finished = performance.now(), duration = finished - started;
+            this.constructionTiming.workMs += duration;
+            this.constructionTiming.maxSliceMs = Math.max(this.constructionTiming.maxSliceMs, duration);
+            this.constructionTiming.waitMs = Math.max(0, finished - queuedAt - this.constructionTiming.workMs);
           }
         }
       })) finish(new Error("\u5B8C\u6574\u6E32\u67D3\u8D44\u4EA7\u65E0\u6CD5\u8FDB\u5165\u5171\u4EAB\u51C6\u5907\u961F\u5217"));
@@ -278071,7 +278247,7 @@ var CapabilityRenderAssetRuntime = class {
     if (this.adoptedSlots.size === this.asset?.commands.length) this.sourceGeometries.clear();
     if (this.adoptedSlots.size === this.asset?.commands.length) this.allowPreDisplay = false;
     this.stats.adopted++;
-    this.changed();
+    this.readyFrame = this.preparationFrame = -1;
     return node;
   }
   /** 已执行的正式命令仅交接结果，不重复执行；失败回源也保留成功的前缀。 */
@@ -278281,11 +278457,12 @@ var CapabilityRenderAssetRuntime = class {
   /** 正式挂载后记录实际父级，预显示容器不成为节点拓扑的隐式约束。 */
   adopted(node) {
     const state = this.revisions.get(this.nodeSlots.get(node));
-    if (state) {
-      state.parent = node.parent;
-      state.version = state.instances?.version;
-    }
-    this.changed();
+    if (!state) return;
+    const changed = state.parent !== node.parent || state.version !== state.instances?.version;
+    state.parent = node.parent;
+    state.version = state.instances?.version;
+    if (changed) this.changed();
+    this.readyFrame = this.preparationFrame = -1;
   }
   poll() {
     if (this.checkedRevision === this.validationRevision) return;
@@ -278345,14 +278522,20 @@ var CapabilityRenderAssetRuntime = class {
     this.groups.forEach((group2) => {
       if (!group2.valid) return;
       if (group2.batch && !group2.batch.sync()) this.drop(group2);
-      if (group2.rigid && (publish || this.firstDisplay) && group2.slots.some((slot) => {
-        let node = this.nodes.get(slot);
-        while (node && node !== group2.rigid.mesh.parent) {
-          if (!(node instanceof Mesh || node instanceof CapabilityDisplaySource ? isFinalBatchSourceVisible(node) : node.visible)) return true;
-          node = node.parent ?? void 0;
-        }
-        return false;
-      })) this.drop(group2);
+      if (group2.rigid && (publish || this.firstDisplay) && group2.visibleRevision !== group2.poseRevision) {
+        let cacheable = true;
+        const hidden = group2.slots.some((slot) => {
+          let node = this.nodes.get(slot);
+          while (node && node !== group2.rigid.mesh.parent) {
+            if (!node.visible) cacheable = false;
+            if (!(node instanceof Mesh || node instanceof CapabilityDisplaySource ? isFinalBatchSourceVisible(node) : node.visible)) return true;
+            node = node.parent ?? void 0;
+          }
+          return false;
+        });
+        if (hidden) this.drop(group2);
+        else group2.visibleRevision = cacheable ? group2.poseRevision : void 0;
+      }
     });
     if (this.failed) return false;
     if (this.firstDisplay) {
@@ -278433,6 +278616,8 @@ var CapabilityRenderAssetRuntime = class {
       if (this.adoptedSlots.has(slot) && node instanceof CapabilityDisplaySource) node.reveal();
     });
     this.sourceGeometries.clear();
+    this.sourceFormal.length = 0;
+    this.releaseDisplaySourceMaterials();
     if (this.filter) this.filter.afterSubmission(() => this.clearUnadopted());
     else this.clearUnadopted();
     this.journal.dispose();
@@ -278445,6 +278630,9 @@ var CapabilityRenderAssetRuntime = class {
     this.materialObjects.clear();
     this.materialObjectRefs.clear();
     this.poseGroups.clear();
+  }
+  releaseDisplaySourceMaterials() {
+    this.displaySourceMaterials.splice(0).forEach((material) => this.port.releaseDisplayMaterial(material));
   }
   clearUnadopted() {
     this.nodes.forEach((node, slot) => {
@@ -278474,6 +278662,7 @@ var CapabilityRenderAssetRuntime = class {
     this.journal.dispose();
     this.poseJournal.dispose();
     this.displayPreparationCleanup.splice(0).forEach((release) => release());
+    this.releaseDisplaySourceMaterials();
     this.resourceCleanup.splice(0).forEach((cleanup) => cleanup());
     this.resourceReleases.forEach((release) => release());
     this.resourceReleases.clear();
@@ -278487,6 +278676,7 @@ var CapabilityRenderAssetRuntime = class {
     this.slotGroups.clear();
     this.poseGroups.clear();
     this.sourceGeometries.clear();
+    this.sourceFormal.length = 0;
     this.materialChecks.clear();
     this.materialObjects.clear();
     this.materialObjectRefs.clear();
@@ -278535,7 +278725,7 @@ var CapabilityDisplaySnapshot = class {
     const meshes = commands.filter(isMeshCommand);
     if (!meshes.length) return commands.map((command) => this.port.execute(command));
     const cacheAvailable = this.store.available;
-    commands = JSON.parse(JSON.stringify(commands));
+    commands = commands.some((command) => isVerifiedRenderDeclaration(command)) ? commands.map((command) => isVerifiedRenderDeclaration(command) ? command : JSON.parse(JSON.stringify(command))) : JSON.parse(JSON.stringify(commands));
     const sourceMeshes = commands.filter(isMeshCommand);
     const started = performance.now();
     const reads = { manifestMs: 0, geometryMs: 0 };
@@ -278822,6 +279012,11 @@ var CapabilitySceneRuntime = class {
   constructor(port) {
     this.port = port;
     this.nodeMap = /* @__PURE__ */ new Map();
+    /** 类型只在节点原型改变时重判；几何、面数和实例数仍逐次读取。 */
+    this.triangleReaders = /* @__PURE__ */ new WeakMap();
+    /** 仅同一次同步检查共享几何面数，下次检查重新读取实际缓冲计数。 */
+    this.triangleGeometryCounts = /* @__PURE__ */ new WeakMap();
+    this.triangleReadScan = 0;
     /** 保存原声明，后续尺寸更新不能叠乘已经归一化的实例缩放。 */
     this.sourceCommands = /* @__PURE__ */ new WeakMap();
     /** 预显示与正式节点交接同一份贴图引用，异步回调不能重新创建显示对象。 */
@@ -278836,7 +279031,7 @@ var CapabilitySceneRuntime = class {
       getNode: (id) => this.nodeMap.get(id),
       texturesReady: (node) => this.collectMaterialTextureUrls(node.userData.capabilityMaterialDescriptor).every((url) => this.port.getTexture(url) !== null),
       texturesFailed: (node) => this.collectMaterialTextureUrls(node.userData.capabilityMaterialDescriptor).some((url) => this.port.hasTextureFailed?.(url) === true),
-      create: (command, cached, proxy) => this.createPreviewObject(command, cached, proxy),
+      create: (command, cached, proxy, geometry, elideInvisible) => this.createPreviewObject(command, cached, proxy, geometry, elideInvisible),
       acquireDisplayMaterial: (command, cached) => port.acquireMaterial(command.material, () => restoreDisplayMaterial(cached, 0)),
       releaseDisplayMaterial: (material) => port.releaseMaterial(material),
       bindDisplayTextures: (mesh, command) => {
@@ -278867,18 +279062,21 @@ var CapabilitySceneRuntime = class {
     });
   }
   /** 显示与拾取共用一次 CPU 恢复，正式命令只接管身份和行为。 */
-  createPreviewObject(command, cached, proxy) {
-    command = normalizeSceneGeometry(command);
+  createPreviewObject(command, cached, proxy, sourceGeometries, elideInvisible = false) {
+    command = normalizeSceneGeometry(command, false, proxy && Boolean(cached?.matrices));
+    const geometryIdentity = sourceGeometries ? JSON.stringify(command.geometry ?? { kind: command.kind }) : "";
     let node;
     if (proxy) {
       if (command.kind === "group" || command.kind === "light") throw new Error("\u5B8C\u6574\u6E32\u67D3\u8D44\u4EA7 CPU \u4EE3\u7406\u5FC5\u987B\u5305\u542B\u51E0\u4F55");
-      const geometry = this.port.acquireGeometry(
+      const sharedGeometry = sourceGeometries?.get(geometryIdentity);
+      const geometry = (sharedGeometry && this.port.retainGeometry?.(sharedGeometry)) ?? this.port.acquireGeometry(
         command.geometry || { kind: command.kind },
         cached ? () => restoreDisplayGeometry(cached) : void 0
       );
       const material = this.port.acquireMaterial(command.material, cached ? () => restoreDisplayMaterial(cached, 0) : void 0);
       node = new CapabilityDisplaySource(geometry, material, cached?.matrices ?? null);
     } else node = this.createObject3D(command, cached);
+    if (sourceGeometries && isCapabilityMesh(node)) sourceGeometries.set(geometryIdentity, node.geometry);
     Object.assign(node.userData, {
       pluginId: this.port.pluginId,
       capabilityNodeId: command.nodeId,
@@ -278886,6 +279084,7 @@ var CapabilitySceneRuntime = class {
       capabilityDisplayCacheHit: true
     });
     this.applyNodeState(node, command, command.nodeId);
+    if (elideInvisible && node instanceof CapabilityDisplaySource) node.elideInvisibleRendering();
     const urls = new Set(this.collectMaterialTextureUrls(command.material));
     if (urls.size) {
       const textures = { urls };
@@ -279136,10 +279335,32 @@ var CapabilitySceneRuntime = class {
   }
   /** 读取当前 capability 场景估算三角面总数。 */
   getTotalTriangleCount() {
+    const scan = ++this.triangleReadScan;
     let total = 0;
-    for (const node of Array.from(this.nodeMap.values())) {
-      total += this.getTriangleCountFromNode(node);
-    }
+    this.nodeMap.forEach((node) => {
+      const prototype = Object.getPrototypeOf(node);
+      let entry = this.triangleReaders.get(node);
+      if (!entry || entry.prototype !== prototype) {
+        const proxy = node instanceof CapabilityDisplaySource;
+        entry = { prototype, proxy, mesh: proxy || node instanceof Mesh, instanced: node instanceof InstancedMesh };
+        this.triangleReaders.set(node, entry);
+      }
+      if (!entry.mesh) return;
+      const geometry = node.geometry;
+      if (!geometry) return;
+      const native = geometry.getIndex === BufferGeometry.prototype.getIndex && geometry.getAttribute === BufferGeometry.prototype.getAttribute;
+      let counts = this.triangleGeometryCounts.get(geometry);
+      if (!counts || counts.scan !== scan || !native) {
+        const indexCount = geometry.getIndex()?.count;
+        const count = typeof indexCount === "number" && indexCount > 0 ? indexCount : geometry.getAttribute("position")?.count;
+        counts ??= { scan: -1, count: 0 };
+        counts.scan = native ? scan : -1;
+        counts.count = typeof count === "number" && count > 0 ? Math.floor(count / 3) : 0;
+        this.triangleGeometryCounts.set(geometry, counts);
+      }
+      const instanceCount = entry.proxy ? node.instanceMatrix ? node.count : 1 : entry.instanced ? node.count : 1;
+      total += counts.count * instanceCount;
+    });
     return total;
   }
   /** 读取指定 capability 节点当前估算三角面数。 */
@@ -279382,15 +279603,11 @@ var CapabilitySceneRuntime = class {
   /** 从 capability 节点读取当前几何三角面数。 */
   getTriangleCountFromNode(node) {
     const mesh = node ? this.asCapabilityMesh(node) : null;
-    if (!mesh?.geometry) {
-      return 0;
-    }
-    const indexedTriangleCount = mesh.geometry.getIndex()?.count;
-    if (typeof indexedTriangleCount === "number" && indexedTriangleCount > 0) {
-      return Math.floor(indexedTriangleCount / 3) * this.readMeshInstanceCount(mesh);
-    }
-    const positionCount = mesh.geometry.getAttribute("position")?.count;
-    return typeof positionCount === "number" && positionCount > 0 ? Math.floor(positionCount / 3) * this.readMeshInstanceCount(mesh) : 0;
+    const geometry = mesh?.geometry;
+    if (!geometry) return 0;
+    const indexCount = geometry.getIndex()?.count;
+    const count = typeof indexCount === "number" && indexCount > 0 ? indexCount : geometry.getAttribute("position")?.count;
+    return typeof count === "number" && count > 0 ? Math.floor(count / 3) * this.readMeshInstanceCount(mesh) : 0;
   }
   /** 返回普通或实例化网格的实际绘制实例数。 */
   readMeshInstanceCount(mesh) {
@@ -279398,7 +279615,7 @@ var CapabilitySceneRuntime = class {
   }
   /** 把对象视为能力 mesh。 */
   asCapabilityMesh(node) {
-    return node instanceof Mesh || node instanceof CapabilityDisplaySource ? node : null;
+    return node instanceof CapabilityDisplaySource || node instanceof Mesh ? node : null;
   }
   /** 把对象视为能力点光源。 */
   asCapabilityPointLight(node) {
@@ -279816,9 +280033,6 @@ async function buildDisplayArtifact(batches, store, finalStores = {}, experiment
   }
 }
 
-// src/components/StarSky/host/runtime/sandbox/Capabilities/CapabilityRenderAssetEntry.ts
-var CAPABILITY_RENDER_ASSET_ENTRY_VERSION = `v1:three-r${REVISION}`;
-
 // src/components/StarSky/host/runtime/sandbox/Capabilities/buildPluginDisplay.ts
 function capturePrebuildBehaviors(builder, context, batches) {
   if (typeof builder !== "function" || !(builder.prototype instanceof ComposablePluginBase)) return void 0;
@@ -280114,7 +280328,6 @@ export {
   createAnchorSurfaceAttachmentProfile,
   createAxialDrilledSphereGeometry,
   createBoxLocalCorners,
-  createContainerPlacementBehavior,
   createCrescentTubeCurve,
   createFallbackMediaEntry,
   createFocusOnDoubleClickBehavior,

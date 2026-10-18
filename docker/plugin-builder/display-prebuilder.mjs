@@ -257143,13 +257143,16 @@ function parsePluginPersistencePayload(payload) {
   const rotation = parseCompactRotation(record.r);
   const tilt = parseCompactTilt(record.t);
   const stackPlacement = parseCompactStackPlacement(record.sp);
+  const containerPlacement = parseCompactContainerPlacement(record.c);
+  const hasDefaultContainer = Object.prototype.hasOwnProperty.call(record, "dc");
+  const defaultContainerId = hasDefaultContainer ? typeof record.dc === "string" && record.dc.length > 0 ? record.dc : null : void 0;
   const mediaIndex = typeof record.i === "number" && Number.isFinite(record.i) ? record.i : void 0;
   const surfaceId = typeof record.s === "string" ? record.s : void 0;
   const face = isCompactPluginFacePersistencePayload(record.face) ? { ...record.face } : void 0;
   if (face && (typeof face.f !== "number" || !Number.isFinite(face.f) || face.f < 0 || face.f > 1)) {
     delete face.f;
   }
-  if (!surfaceId && !compactPoint && !rotation && !tilt && !stackPlacement && mediaIndex === void 0 && !face && !("d" in record)) {
+  if (!surfaceId && !compactPoint && !rotation && !tilt && !stackPlacement && !containerPlacement && defaultContainerId === void 0 && mediaIndex === void 0 && !face && !("d" in record)) {
     return null;
   }
   return {
@@ -257159,10 +257162,21 @@ function parsePluginPersistencePayload(payload) {
     rotation: rotation || void 0,
     tilt: tilt || void 0,
     stackPlacement: stackPlacement || void 0,
+    containerPlacement: containerPlacement || void 0,
+    defaultContainerId,
     mediaIndex,
     face,
     data: "d" in record ? record.d : void 0,
     raw: payload
+  };
+}
+function parseCompactContainerPlacement(value) {
+  if (!value || typeof value !== "object") return null;
+  const record = value;
+  if (typeof record.id !== "string" || record.id.length === 0) return null;
+  return {
+    containerId: record.id,
+    ...typeof record.o === "number" && Number.isFinite(record.o) ? { orderKey: record.o } : {}
   };
 }
 function parseCompactStackPlacement(value) {
@@ -260309,6 +260323,52 @@ function createPersistentPositionStackPlacementField() {
     }
   };
 }
+function createPersistentPositionContainerPlacementField(binding = {}) {
+  return {
+    id: "containerPlacement",
+    saveOrder: 250,
+    restoreOrder: 250,
+    serialize(plugin, writer) {
+      const boundDefaultContainerId = binding.getDefaultContainerId?.(plugin);
+      const defaultContainerId = binding.getDefaultContainerId ? boundDefaultContainerId : typeof plugin.defaultPlacementContainerId === "string" || plugin.defaultPlacementContainerId === null ? plugin.defaultPlacementContainerId : void 0;
+      const boundContainerId = binding.getContainerId?.(plugin);
+      const containerId = binding.getContainerId ? boundContainerId : plugin.getPlacementContainerId?.() || null;
+      if (containerId) {
+        const boundOrderKey = binding.getOrderKey?.(plugin);
+        const orderKey = binding.getOrderKey ? boundOrderKey : plugin.getPlacementContainerOrder?.() ?? null;
+        writer.payload.c = {
+          id: containerId,
+          ...typeof orderKey === "number" && Number.isFinite(orderKey) ? { o: orderKey } : {}
+        };
+        writer.markWritten();
+      }
+      if (defaultContainerId !== void 0) {
+        writer.payload.dc = defaultContainerId;
+        writer.markWritten();
+      }
+    },
+    restore(plugin, reader) {
+      const defaultContainerId = reader.payload.defaultContainerId;
+      if (defaultContainerId !== void 0) {
+        if (binding.setDefaultContainer) {
+          binding.setDefaultContainer(plugin, defaultContainerId);
+        } else {
+          plugin.defaultPlacementContainerId = defaultContainerId;
+        }
+      }
+      const placement = reader.payload.containerPlacement;
+      if (!placement) {
+        return;
+      }
+      if (binding.setContainer) {
+        binding.setContainer(plugin, placement.containerId, placement.orderKey);
+      } else {
+        plugin.setPlacementContainerId?.(placement.containerId);
+        plugin.setPlacementContainerOrder?.(placement.orderKey ?? 0);
+      }
+    }
+  };
+}
 function createPersistentPositionMediaIndexField(binding) {
   return {
     id: "mediaIndex",
@@ -261676,6 +261736,15 @@ var ComposablePluginBase = class {
     this.runtimeState.hasDragOffset = false;
     this.syncAttachmentPosition();
   }
+  /** 取消当前世界双拖而不派发 onDoubleUp，供容器抽拉回退使用。 */
+  cancelDoubleDrag() {
+    this.runtimeState.isDragging = false;
+    this.runtimeState.hasDragOffset = false;
+    this.runtimeState.isDoubleDragActive = false;
+    this.runtimeState.doubleDragMoved = false;
+    this.runtimeState.lastDoubleDragWorldPoint = null;
+    this.runtimeState.dragOffset.set(0, 0, 0);
+  }
   /**
    * 按当前活动平面局部坐标执行拖拽。
    * 关键逻辑：先做碰撞安全位置，再做当前 surface clamp。
@@ -262048,6 +262117,38 @@ function createFocusOnDoubleClickBehavior(options = {}) {
         return void 0;
       }
       return resolveAction(event.plugin);
+    }
+  };
+}
+
+// src/components/StarSky/PluginFramework/behaviors/containerPlacementBehavior.ts
+function createContainerPlacementBehavior(options = {}) {
+  const canHandle = (plugin) => {
+    const containerId = plugin.getPlacementContainerId?.();
+    return typeof containerId === "string" && containerId.length > 0 && (options.enabled?.(plugin) ?? true);
+  };
+  const dispatch = (callback, event) => {
+    if (callback?.(event) === true) event.stopBehaviorPropagation?.();
+  };
+  return {
+    name: "container-placement",
+    onSingleDown(event) {
+      if (canHandle(event.plugin)) dispatch(options.onSingleDown, event);
+    },
+    onSingleDrag(event) {
+      if (canHandle(event.plugin)) dispatch(options.onSingleDrag, event);
+    },
+    onSingleUp(event) {
+      if (canHandle(event.plugin)) dispatch(options.onSingleUp, event);
+    },
+    onDoubleDown(event) {
+      if (canHandle(event.plugin)) dispatch(options.onDoubleDown, event);
+    },
+    onDoubleDrag(event) {
+      if (canHandle(event.plugin)) dispatch(options.onDoubleDrag, event);
+    },
+    onDoubleUp(event) {
+      if (canHandle(event.plugin)) dispatch(options.onDoubleUp, event);
     }
   };
 }
@@ -264663,6 +264764,13 @@ function createStandardSurfacePersistenceFields(options = {}) {
 }
 function createStandardSurfaceBehaviors(options = {}) {
   const behaviors = [];
+  if (options.containerPlacement) {
+    behaviors.push(
+      createContainerPlacementBehavior(
+        options.containerPlacement
+      )
+    );
+  }
   const hasSurfaceTiltChannel = (channel) => {
     return typeof channel === "object" && channel !== null && (typeof channel.targetName === "string" && channel.targetName.length > 0 || typeof channel.targetNodeId === "string" && channel.targetNodeId.length > 0);
   };
@@ -268274,8 +268382,8 @@ var builtinGeometryArtifacts_generated_default = {
     bytes: 168540
   },
   "0d4df42e425665dfff6932e256326a416e10941e79f7db45f28abb207cb407ad": {
-    url: "/plugin-builtins/display-3b9c9090d89688d3b40cc9559edafa4db247ab4c3a94270609b69e4d770c4a61.bin",
-    sha256: "3b9c9090d89688d3b40cc9559edafa4db247ab4c3a94270609b69e4d770c4a61",
+    url: "/plugin-builtins/display-97b40399bcd06f9a8abce25cb4d266dd978ea732a5da040445e7a3c332e206b8.bin",
+    sha256: "97b40399bcd06f9a8abce25cb4d266dd978ea732a5da040445e7a3c332e206b8",
     bytes: 1538332
   },
   "0d655d284b007cbad7c7353e5e8953aa0242a9be523f0456a0c9ce9f30137888": {
@@ -268319,8 +268427,8 @@ var builtinGeometryArtifacts_generated_default = {
     bytes: 168476
   },
   "134a70fa0e1143b984b5c6cf178cd21b4cdc0056adb7da3e2f84ad6d4c9e9d56": {
-    url: "/plugin-builtins/display-fe21b82f8f1c38f1f67dd689511cb172f4167bb6e84bdf846415361fc23f20c9.bin",
-    sha256: "fe21b82f8f1c38f1f67dd689511cb172f4167bb6e84bdf846415361fc23f20c9",
+    url: "/plugin-builtins/display-6ea2c3ae5634eca3bdb3cf9ecc9a3d0d5c8fe4dd05f9bb9f20280cc8a2f7746d.bin",
+    sha256: "6ea2c3ae5634eca3bdb3cf9ecc9a3d0d5c8fe4dd05f9bb9f20280cc8a2f7746d",
     bytes: 297400
   },
   "158fe9a8b903a0ea042206efad377533dc1a72eb76414ca57bb56ec33c046cc8": {
@@ -268329,8 +268437,8 @@ var builtinGeometryArtifacts_generated_default = {
     bytes: 168540
   },
   "15ee1775847150cf379e5b249c752db39349b72ab3dcc783bf5c3cf3056c18b5": {
-    url: "/plugin-builtins/display-3b9c9090d89688d3b40cc9559edafa4db247ab4c3a94270609b69e4d770c4a61.bin",
-    sha256: "3b9c9090d89688d3b40cc9559edafa4db247ab4c3a94270609b69e4d770c4a61",
+    url: "/plugin-builtins/display-97b40399bcd06f9a8abce25cb4d266dd978ea732a5da040445e7a3c332e206b8.bin",
+    sha256: "97b40399bcd06f9a8abce25cb4d266dd978ea732a5da040445e7a3c332e206b8",
     bytes: 1538332
   },
   "1664a93293d726821fb49806f32535d01ae9e58f77af5deefeeff353b2a5b1f6": {
@@ -268339,8 +268447,8 @@ var builtinGeometryArtifacts_generated_default = {
     bytes: 168540
   },
   "169d52a07170ab5930efdfe26a35172447b742789aa6600bd892cef4b08aba31": {
-    url: "/plugin-builtins/display-00b0666d4ed43696ddf7eefc9ced727462241e4741e89161dbf153c383376010.bin",
-    sha256: "00b0666d4ed43696ddf7eefc9ced727462241e4741e89161dbf153c383376010",
+    url: "/plugin-builtins/display-8c5a5aa11910a08b9d66c7302a73d6bb669dd690ee4a53e2782d2af2943c6525.bin",
+    sha256: "8c5a5aa11910a08b9d66c7302a73d6bb669dd690ee4a53e2782d2af2943c6525",
     bytes: 420879
   },
   "1849457f88a3994f561c2726b879c16d515644f1e4415fa78736aaeca20920ed": {
@@ -268359,8 +268467,8 @@ var builtinGeometryArtifacts_generated_default = {
     bytes: 278076
   },
   "189a59410179f5723d27ec7a1549d3a6bd6ef2c58e1597c3ec53a97157bc8a2f": {
-    url: "/plugin-builtins/display-df60ef5be0639c95ee21e22183cd36771df548b751c177bbc7099993df67c537.bin",
-    sha256: "df60ef5be0639c95ee21e22183cd36771df548b751c177bbc7099993df67c537",
+    url: "/plugin-builtins/display-e041ad0342d47e6a405dc05faf7496ab6718d6d7e71cc51350d324f8f688363f.bin",
+    sha256: "e041ad0342d47e6a405dc05faf7496ab6718d6d7e71cc51350d324f8f688363f",
     bytes: 2083826
   },
   "19953a5d10ad9dea79b1e365d0a04a4835e43857a0a311603a9e6a176670201c": {
@@ -268369,8 +268477,8 @@ var builtinGeometryArtifacts_generated_default = {
     bytes: 534021
   },
   "1adc7a36679a1b6eb3b00fc4156a7f1a23db1c258a3b00530667ba05354a0580": {
-    url: "/plugin-builtins/display-3b9c9090d89688d3b40cc9559edafa4db247ab4c3a94270609b69e4d770c4a61.bin",
-    sha256: "3b9c9090d89688d3b40cc9559edafa4db247ab4c3a94270609b69e4d770c4a61",
+    url: "/plugin-builtins/display-97b40399bcd06f9a8abce25cb4d266dd978ea732a5da040445e7a3c332e206b8.bin",
+    sha256: "97b40399bcd06f9a8abce25cb4d266dd978ea732a5da040445e7a3c332e206b8",
     bytes: 1538332
   },
   "1adebe625644480591a7baa5e67b5e81344fb3d722f668b542751583d2f76fe2": {
@@ -268649,13 +268757,13 @@ var builtinGeometryArtifacts_generated_default = {
     bytes: 248495
   },
   "49a4b3691c31493bd6095169b401297aae5b9c43e2a50b82be8c98e7b497aa73": {
-    url: "/plugin-builtins/display-df60ef5be0639c95ee21e22183cd36771df548b751c177bbc7099993df67c537.bin",
-    sha256: "df60ef5be0639c95ee21e22183cd36771df548b751c177bbc7099993df67c537",
+    url: "/plugin-builtins/display-e041ad0342d47e6a405dc05faf7496ab6718d6d7e71cc51350d324f8f688363f.bin",
+    sha256: "e041ad0342d47e6a405dc05faf7496ab6718d6d7e71cc51350d324f8f688363f",
     bytes: 2083826
   },
   "4a28d2fb2f7e9190ab1fb9335211d166b92ee0b03df803498e20c341fd9470b0": {
-    url: "/plugin-builtins/display-fe21b82f8f1c38f1f67dd689511cb172f4167bb6e84bdf846415361fc23f20c9.bin",
-    sha256: "fe21b82f8f1c38f1f67dd689511cb172f4167bb6e84bdf846415361fc23f20c9",
+    url: "/plugin-builtins/display-6ea2c3ae5634eca3bdb3cf9ecc9a3d0d5c8fe4dd05f9bb9f20280cc8a2f7746d.bin",
+    sha256: "6ea2c3ae5634eca3bdb3cf9ecc9a3d0d5c8fe4dd05f9bb9f20280cc8a2f7746d",
     bytes: 297400
   },
   "4a5f561126c7412fe3f2795236571feee448647d0e1ea8eafccbb5fecc6892cb": {
@@ -268709,8 +268817,8 @@ var builtinGeometryArtifacts_generated_default = {
     bytes: 132617
   },
   "5452b5fb0a8ab14e5490ee829d018844f1e4137b3f3eed12a5b5580ff2c19075": {
-    url: "/plugin-builtins/display-00b0666d4ed43696ddf7eefc9ced727462241e4741e89161dbf153c383376010.bin",
-    sha256: "00b0666d4ed43696ddf7eefc9ced727462241e4741e89161dbf153c383376010",
+    url: "/plugin-builtins/display-8c5a5aa11910a08b9d66c7302a73d6bb669dd690ee4a53e2782d2af2943c6525.bin",
+    sha256: "8c5a5aa11910a08b9d66c7302a73d6bb669dd690ee4a53e2782d2af2943c6525",
     bytes: 420879
   },
   "551ced5c7b65f316ec40ca10912b85157715e48c03d19a8bb140f8648cb52d80": {
@@ -268754,8 +268862,8 @@ var builtinGeometryArtifacts_generated_default = {
     bytes: 2352796
   },
   "5d02971076300aee7bf6d36d7ca65ae742078665b01b0c9e264cb83ce159e3bc": {
-    url: "/plugin-builtins/display-df60ef5be0639c95ee21e22183cd36771df548b751c177bbc7099993df67c537.bin",
-    sha256: "df60ef5be0639c95ee21e22183cd36771df548b751c177bbc7099993df67c537",
+    url: "/plugin-builtins/display-e041ad0342d47e6a405dc05faf7496ab6718d6d7e71cc51350d324f8f688363f.bin",
+    sha256: "e041ad0342d47e6a405dc05faf7496ab6718d6d7e71cc51350d324f8f688363f",
     bytes: 2083826
   },
   "5d665957ec9e0eea84b2f0d59f16e5b5240a818344b18bb48b3c947763eb2ea4": {
@@ -268779,8 +268887,8 @@ var builtinGeometryArtifacts_generated_default = {
     bytes: 1273
   },
   "60bf21a6aa5e121f8341176fda76618210d38079b63d529f294f138f803afe95": {
-    url: "/plugin-builtins/display-00b0666d4ed43696ddf7eefc9ced727462241e4741e89161dbf153c383376010.bin",
-    sha256: "00b0666d4ed43696ddf7eefc9ced727462241e4741e89161dbf153c383376010",
+    url: "/plugin-builtins/display-8c5a5aa11910a08b9d66c7302a73d6bb669dd690ee4a53e2782d2af2943c6525.bin",
+    sha256: "8c5a5aa11910a08b9d66c7302a73d6bb669dd690ee4a53e2782d2af2943c6525",
     bytes: 420879
   },
   "618a4dee843c02bbbdf4b712a737db764070d514698a62bd95cd495778659fc8": {
@@ -268899,8 +269007,8 @@ var builtinGeometryArtifacts_generated_default = {
     bytes: 248495
   },
   "792c4e5590bf6d8dc8a1c44ddbf51261a7bc03891ae3ec7acbb1f3f892f23783": {
-    url: "/plugin-builtins/display-df60ef5be0639c95ee21e22183cd36771df548b751c177bbc7099993df67c537.bin",
-    sha256: "df60ef5be0639c95ee21e22183cd36771df548b751c177bbc7099993df67c537",
+    url: "/plugin-builtins/display-e041ad0342d47e6a405dc05faf7496ab6718d6d7e71cc51350d324f8f688363f.bin",
+    sha256: "e041ad0342d47e6a405dc05faf7496ab6718d6d7e71cc51350d324f8f688363f",
     bytes: 2083826
   },
   "797487c92dc77239b86935fd3fcd365f3b1da52faa7fbcc48528f70e368c2be3": {
@@ -268914,8 +269022,8 @@ var builtinGeometryArtifacts_generated_default = {
     bytes: 132617
   },
   "7bfc82fee73cbddbf381472a596c472b2c85c46290ad4a0cc11db69df4dadf54": {
-    url: "/plugin-builtins/display-df60ef5be0639c95ee21e22183cd36771df548b751c177bbc7099993df67c537.bin",
-    sha256: "df60ef5be0639c95ee21e22183cd36771df548b751c177bbc7099993df67c537",
+    url: "/plugin-builtins/display-e041ad0342d47e6a405dc05faf7496ab6718d6d7e71cc51350d324f8f688363f.bin",
+    sha256: "e041ad0342d47e6a405dc05faf7496ab6718d6d7e71cc51350d324f8f688363f",
     bytes: 2083826
   },
   "7d400a65663b66824429eff9a1dad8f7f218b9dffa2eeb107a17ca2df37c8053": {
@@ -268999,8 +269107,8 @@ var builtinGeometryArtifacts_generated_default = {
     bytes: 93035
   },
   "8e91fec4908774d877487670fcb30a444af6df5234e6175a5f29893c2837368c": {
-    url: "/plugin-builtins/display-3b9c9090d89688d3b40cc9559edafa4db247ab4c3a94270609b69e4d770c4a61.bin",
-    sha256: "3b9c9090d89688d3b40cc9559edafa4db247ab4c3a94270609b69e4d770c4a61",
+    url: "/plugin-builtins/display-97b40399bcd06f9a8abce25cb4d266dd978ea732a5da040445e7a3c332e206b8.bin",
+    sha256: "97b40399bcd06f9a8abce25cb4d266dd978ea732a5da040445e7a3c332e206b8",
     bytes: 1538332
   },
   "8f8b09df9262e4e417486e324197af8f0389c4a95d4273f0e050f76c427d2b91": {
@@ -269069,8 +269177,8 @@ var builtinGeometryArtifacts_generated_default = {
     bytes: 168498
   },
   "967f661a0957f684a190bf874de064ea19df6169a5b2eaf409cb9561d3693c50": {
-    url: "/plugin-builtins/display-fe21b82f8f1c38f1f67dd689511cb172f4167bb6e84bdf846415361fc23f20c9.bin",
-    sha256: "fe21b82f8f1c38f1f67dd689511cb172f4167bb6e84bdf846415361fc23f20c9",
+    url: "/plugin-builtins/display-6ea2c3ae5634eca3bdb3cf9ecc9a3d0d5c8fe4dd05f9bb9f20280cc8a2f7746d.bin",
+    sha256: "6ea2c3ae5634eca3bdb3cf9ecc9a3d0d5c8fe4dd05f9bb9f20280cc8a2f7746d",
     bytes: 297400
   },
   "96c267805e28df99d119b2c763f4ce152e57b5b5969f156bc7fed117a555b0a0": {
@@ -269159,8 +269267,8 @@ var builtinGeometryArtifacts_generated_default = {
     bytes: 93035
   },
   ab0914d092ca58cd75c63e19a3f8f1cef4d5111627d6b37a96d33909cd93c2cb: {
-    url: "/plugin-builtins/display-df60ef5be0639c95ee21e22183cd36771df548b751c177bbc7099993df67c537.bin",
-    sha256: "df60ef5be0639c95ee21e22183cd36771df548b751c177bbc7099993df67c537",
+    url: "/plugin-builtins/display-e041ad0342d47e6a405dc05faf7496ab6718d6d7e71cc51350d324f8f688363f.bin",
+    sha256: "e041ad0342d47e6a405dc05faf7496ab6718d6d7e71cc51350d324f8f688363f",
     bytes: 2083826
   },
   abbbee55b722e2695e976d10efe87a2cadc5f76acd2a138e4a3c255ae43303a3: {
@@ -269334,8 +269442,8 @@ var builtinGeometryArtifacts_generated_default = {
     bytes: 76623
   },
   ce43dced521b73bef847dc33202ca263c6be6b4bec79e2854c302bd2c1405313: {
-    url: "/plugin-builtins/display-00b0666d4ed43696ddf7eefc9ced727462241e4741e89161dbf153c383376010.bin",
-    sha256: "00b0666d4ed43696ddf7eefc9ced727462241e4741e89161dbf153c383376010",
+    url: "/plugin-builtins/display-8c5a5aa11910a08b9d66c7302a73d6bb669dd690ee4a53e2782d2af2943c6525.bin",
+    sha256: "8c5a5aa11910a08b9d66c7302a73d6bb669dd690ee4a53e2782d2af2943c6525",
     bytes: 420879
   },
   ceaca3c04cc210a2e9e5320130617d9335ea76c04d9f41ba462e5cc0c057151e: {
@@ -269424,13 +269532,13 @@ var builtinGeometryArtifacts_generated_default = {
     bytes: 76623
   },
   e309b0cb6f4427e4973bf1c8d3cb8f6678234e52661ba0a90bf9d66323c3f83a: {
-    url: "/plugin-builtins/display-df60ef5be0639c95ee21e22183cd36771df548b751c177bbc7099993df67c537.bin",
-    sha256: "df60ef5be0639c95ee21e22183cd36771df548b751c177bbc7099993df67c537",
+    url: "/plugin-builtins/display-e041ad0342d47e6a405dc05faf7496ab6718d6d7e71cc51350d324f8f688363f.bin",
+    sha256: "e041ad0342d47e6a405dc05faf7496ab6718d6d7e71cc51350d324f8f688363f",
     bytes: 2083826
   },
   e6ab36023401639ac41bdf73f087d7cf41af0a0008a53fccc1f9da81ac0e7ef2: {
-    url: "/plugin-builtins/display-df60ef5be0639c95ee21e22183cd36771df548b751c177bbc7099993df67c537.bin",
-    sha256: "df60ef5be0639c95ee21e22183cd36771df548b751c177bbc7099993df67c537",
+    url: "/plugin-builtins/display-e041ad0342d47e6a405dc05faf7496ab6718d6d7e71cc51350d324f8f688363f.bin",
+    sha256: "e041ad0342d47e6a405dc05faf7496ab6718d6d7e71cc51350d324f8f688363f",
     bytes: 2083826
   },
   e7c051d16732a844ceb0372718a081f73af032435c86031b8c4a4e509abba562: {
@@ -269494,8 +269602,8 @@ var builtinGeometryArtifacts_generated_default = {
     bytes: 76623
   },
   f02f4c4a34165794f1657c34342562273406a97fec8a6e88fb89818374d7a238: {
-    url: "/plugin-builtins/display-fe21b82f8f1c38f1f67dd689511cb172f4167bb6e84bdf846415361fc23f20c9.bin",
-    sha256: "fe21b82f8f1c38f1f67dd689511cb172f4167bb6e84bdf846415361fc23f20c9",
+    url: "/plugin-builtins/display-6ea2c3ae5634eca3bdb3cf9ecc9a3d0d5c8fe4dd05f9bb9f20280cc8a2f7746d.bin",
+    sha256: "6ea2c3ae5634eca3bdb3cf9ecc9a3d0d5c8fe4dd05f9bb9f20280cc8a2f7746d",
     bytes: 297400
   },
   f08de717a3ecf1ffa15154c663a4c746f50d2ee72966f54cfda05d7e7e86f65e: {
@@ -269529,13 +269637,13 @@ var builtinGeometryArtifacts_generated_default = {
     bytes: 76623
   },
   f4c73b09a000bda2578d7bbca986fa9bb9721ae3e75d4665f1fe3f1159c7c790: {
-    url: "/plugin-builtins/display-df60ef5be0639c95ee21e22183cd36771df548b751c177bbc7099993df67c537.bin",
-    sha256: "df60ef5be0639c95ee21e22183cd36771df548b751c177bbc7099993df67c537",
+    url: "/plugin-builtins/display-e041ad0342d47e6a405dc05faf7496ab6718d6d7e71cc51350d324f8f688363f.bin",
+    sha256: "e041ad0342d47e6a405dc05faf7496ab6718d6d7e71cc51350d324f8f688363f",
     bytes: 2083826
   },
   f663eabddd9bb605f2412f18cd66cb1006672710e33e4103c86f19af0f8c8b40: {
-    url: "/plugin-builtins/display-fe21b82f8f1c38f1f67dd689511cb172f4167bb6e84bdf846415361fc23f20c9.bin",
-    sha256: "fe21b82f8f1c38f1f67dd689511cb172f4167bb6e84bdf846415361fc23f20c9",
+    url: "/plugin-builtins/display-6ea2c3ae5634eca3bdb3cf9ecc9a3d0d5c8fe4dd05f9bb9f20280cc8a2f7746d.bin",
+    sha256: "6ea2c3ae5634eca3bdb3cf9ecc9a3d0d5c8fe4dd05f9bb9f20280cc8a2f7746d",
     bytes: 297400
   },
   f73c76605088640743324e62a01e05390b1f01f1cba55abb0fe232ad47e0206c: {
@@ -271429,6 +271537,16 @@ function getContext(renderer) {
   const created = {
     target: new WebGLRenderTarget(1, 1, { depthBuffer: false, colorSpace: LinearSRGBColorSpace }),
     material: new MeshBasicMaterial({ colorWrite: false, depthWrite: false, depthTest: false }),
+    // 零顶点上传只需有效程序；无需为灯光、实例或批次生成完整的颜色 Shader。
+    // WebGLObjects 仍上传所有属性及实例缓冲，renderBufferDirect 仍绑定真实索引。
+    bufferMaterial: new RawShaderMaterial({
+      glslVersion: GLSL3,
+      vertexShader: "void main() { gl_Position = vec4(0.0); }",
+      fragmentShader: "precision highp float; out vec4 uploadColor; void main() { uploadColor = vec4(0.0); }",
+      colorWrite: false,
+      depthWrite: false,
+      depthTest: false
+    }),
     scene: new Scene(),
     entries: /* @__PURE__ */ new WeakMap(),
     pending: /* @__PURE__ */ new Set(),
@@ -271452,7 +271570,16 @@ function isGeometryPreparationPass(renderer) {
   const context = contexts2.get(renderer);
   return Boolean(context && renderer.getRenderTarget() === context.target);
 }
-function prepareGeometryBuffers(renderer, object, camera, signal, scope) {
+function areGeometryBuffersPrepared(renderer, object) {
+  const signature = allocationSignature(object);
+  if (!signature) return true;
+  const context = contexts2.get(renderer);
+  const entry = context?.entries.get(object);
+  if (entry?.ready && entry.signature === signature) return true;
+  const shared = !hasObjectBuffers(object) ? context?.geometries.get(object.geometry) : void 0;
+  return shared?.ready === true && shared.signature === signature;
+}
+function prepareGeometryBuffers(renderer, object, camera, signal, scope, batchLimit = GEOMETRY_PREPARATION_BATCH_LIMIT) {
   if (signal.aborted) return Promise.reject(new DOMException("\u7F13\u51B2\u51C6\u5907\u5DF2\u53D6\u6D88", "AbortError"));
   const signature = allocationSignature(object);
   if (!signature) return Promise.resolve();
@@ -271487,6 +271614,7 @@ function prepareGeometryBuffers(renderer, object, camera, signal, scope) {
     ownerId: source.ownerId,
     scope,
     signal,
+    batchLimit: Math.max(1, Math.floor(batchLimit)),
     resolve: resolvePreparation,
     reject: rejectPreparation
   };
@@ -271506,6 +271634,11 @@ function prepareGeometryBuffers(renderer, object, camera, signal, scope) {
     });
     batch.entries.clear();
     gl.deleteSync(batch.fence);
+  };
+  const complete = (item) => {
+    item.ready = true;
+    if (!hasObjectBuffers(item.object)) context.geometries.set(item.object.geometry, item);
+    item.resolve?.();
   };
   const abort = () => {
     scheduler.cancel(source.ownerId, key);
@@ -271542,6 +271675,7 @@ function prepareGeometryBuffers(renderer, object, camera, signal, scope) {
         if (!batch && !entry.fence) {
           const shared = !hasObjectBuffers(object) ? context.geometries.get(object.geometry) : void 0;
           if (shared?.ready && shared.signature === signature) {
+            context.pending.delete(entry);
             entry.ready = true;
             resolvePreparation();
             return true;
@@ -271564,8 +271698,20 @@ function prepareGeometryBuffers(renderer, object, camera, signal, scope) {
             if (previousErrors.length === 16) throw new Error("\u7F13\u51B2\u51C6\u5907\u5931\u8D25\uFF1A\u65E0\u6CD5\u6E05\u6670\u754C\u5B9A\u5148\u524D GL \u9519\u8BEF");
           }
           const canBatch = context.pending.size > 1 && canCoalesceGeometrySubmission(object);
-          const pendingCandidates = canBatch ? Array.from(context.pending).filter((candidate) => canCoalesceGeometrySubmission(candidate.object) && !candidate.batch && candidate.ownerId === entry.ownerId && candidate.scope === entry.scope && candidate.camera === camera && !candidate.signal?.aborted && context.entries.get(candidate.object) === candidate && allocationSignature(candidate.object) === candidate.signature) : [];
-          const batchEntries = [entry, ...pendingCandidates.filter((candidate) => candidate !== entry)].slice(0, GEOMETRY_PREPARATION_BATCH_LIMIT);
+          const batchEntries = [entry];
+          const selectedGeometries = /* @__PURE__ */ new Set();
+          if (!hasObjectBuffers(object)) selectedGeometries.add(geometry);
+          if (canBatch) for (const candidate of Array.from(context.pending)) {
+            if (batchEntries.length >= entry.batchLimit) break;
+            if (candidate === entry || candidate.ready || candidate.batch || candidate.fence || !canCoalesceGeometrySubmission(candidate.object) || candidate.batchLimit !== entry.batchLimit || candidate.ownerId !== entry.ownerId || candidate.scope !== entry.scope || candidate.camera !== camera || candidate.signal?.aborted || context.entries.get(candidate.object) !== candidate || allocationSignature(candidate.object) !== candidate.signature) continue;
+            if (!hasObjectBuffers(candidate.object)) {
+              const candidateGeometry = candidate.object.geometry;
+              const submitted = context.geometries.get(candidateGeometry);
+              if (selectedGeometries.has(candidateGeometry) || submitted && submitted !== candidate && submitted.signature === candidate.signature) continue;
+              selectedGeometries.add(candidateGeometry);
+            }
+            batchEntries.push(candidate);
+          }
           const merged = batchEntries.length > 1;
           const submit = () => submitGeometryBuffers(renderer, merged ? batchEntries.map((candidate) => candidate.object) : object, camera, context);
           const diagnostics = getPerformanceDiagnostics(renderer);
@@ -271607,16 +271753,25 @@ function prepareGeometryBuffers(renderer, object, camera, signal, scope) {
         if (gl.isContextLost() || status === gl.WAIT_FAILED) throw new Error("\u7F13\u51B2\u51C6\u5907\u5931\u8D25\uFF1AGPU \u5B8C\u6210\u68C0\u67E5\u5931\u8D25");
         if (status === gl.TIMEOUT_EXPIRED) return false;
         if (batch) {
-          batch.entries.delete(entry);
-          entry.batch = void 0;
-        } else {
-          entry.fence = void 0;
-          gl.deleteSync(fence);
+          const confirmed = Array.from(batch.entries, (item) => ({
+            item,
+            valid: !item.signal?.aborted && context.entries.get(item.object) === item && allocationSignature(item.object) === item.signature
+          }));
+          confirmed.forEach(({ item, valid }) => {
+            batch.entries.delete(item);
+            item.batch = void 0;
+            if (item !== entry && item.task) scheduler.cancel(item.ownerId, item.task.key);
+            if (!valid) {
+              if (context.entries.get(item.object) === item) context.entries.delete(item.object);
+              item.reject?.(new DOMException("\u7F13\u51B2\u5728\u51C6\u5907\u671F\u95F4\u5DF2\u66F4\u6362", "AbortError"));
+            } else complete(item);
+          });
+          releaseBatch(batch);
+          return true;
         }
-        entry.ready = true;
-        if (!hasObjectBuffers(object)) context.geometries.set(object.geometry, entry);
-        resolvePreparation();
-        if (batch) releaseBatch(batch);
+        entry.fence = void 0;
+        gl.deleteSync(fence);
+        complete(entry);
       } catch (error) {
         context.pending.delete(entry);
         const batch = entry.batch;
@@ -271690,7 +271845,8 @@ function submitGeometryBuffers(renderer, objects, camera, context) {
         if (texture.version === 0) texture.needsUpdate = true;
         if (!uploadPreparedTexture(renderer, texture)) throw new Error("\u77E9\u9635\u6279\u6B21\u7EB9\u7406\u5C1A\u672A\u5206\u914D");
       }
-      mesh.material = context.material;
+      const vertexTextures = mesh.isSkinnedMesh || Object.values(mesh.geometry.morphAttributes).some((attributes) => attributes.length > 0) || Boolean(mesh.morphTexture);
+      mesh.material = vertexTextures ? context.material : context.bufferMaterial;
       mesh.children = [];
       mesh.visible = true;
       mesh.frustumCulled = false;
@@ -271750,6 +271906,8 @@ function submitGeometryBuffers(renderer, objects, camera, context) {
 
 // src/components/StarSky/shared/performance/compileShaderWarmup.ts
 var finalizedPrograms = /* @__PURE__ */ new WeakMap();
+var completedPreparations = /* @__PURE__ */ new WeakSet();
+var pendingPreparationPrograms = /* @__PURE__ */ new WeakMap();
 function submitShaderWarmupPrograms(renderer, objects, camera, scene, mode = "screen-and-transmission") {
   const programs = /* @__PURE__ */ new Set();
   const collect = (root2) => {
@@ -271865,9 +272023,11 @@ function compileShaderPrograms(renderer, objects, camera, scene, signal, bufferR
       reject(new Error("Shader \u5B8C\u6210\u68C0\u67E5\u65E0\u6CD5\u8FDB\u5165\u5171\u4EAB\u51C6\u5907\u961F\u5217"));
     }
   });
+  if (programs.size === 0) completedPreparations.add(shaderReady);
+  pendingPreparationPrograms.set(shaderReady, programs);
   return shaderReady;
 }
-function compileShaderWarmup(renderer, objects, camera, scene, signal, bufferRoot = objects, scope, mode = "screen-and-transmission", bufferObjects) {
+function compileShaderWarmup(renderer, objects, camera, scene, signal, bufferRoot = objects, scope, mode = "screen-and-transmission", bufferObjects, geometryBatchLimit) {
   if (signal.aborted) return Promise.reject(new DOMException("Shader \u9884\u70ED\u5DF2\u53D6\u6D88", "AbortError"));
   const shaderReady = compileShaderPrograms(renderer, objects, camera, scene, signal, bufferRoot, scope, mode);
   const buffers = [];
@@ -271878,9 +272038,14 @@ function compileShaderWarmup(renderer, objects, camera, scene, signal, bufferRoo
   })();
   candidates.forEach((object) => {
     const mesh = object;
-    if (mesh.material && mesh.geometry?.isBufferGeometry) buffers.push(prepareGeometryBuffers(renderer, object, camera, signal, scope));
+    if (mesh.material && mesh.geometry?.isBufferGeometry) buffers.push(prepareGeometryBuffers(renderer, object, camera, signal, scope, geometryBatchLimit));
   });
-  return Promise.all([shaderReady, ...buffers]).then(() => void 0);
+  const preparation = Promise.all([shaderReady, ...buffers]).then(() => {
+    completedPreparations.add(preparation);
+  });
+  const programs = pendingPreparationPrograms.get(shaderReady);
+  if (programs) pendingPreparationPrograms.set(preparation, programs);
+  return preparation;
 }
 var warmupSequence = 0;
 
@@ -272103,6 +272268,14 @@ var finalBatchSourceVisibility = /* @__PURE__ */ new WeakMap();
 var finalBatchSourceChanges = /* @__PURE__ */ new WeakMap();
 var finalBatchDiscoveries = /* @__PURE__ */ new WeakMap();
 var pendingFinalBatchRoots = /* @__PURE__ */ new WeakMap();
+var finalBatchPreparationConsumers = /* @__PURE__ */ new WeakMap();
+var finalBatchDependencies = /* @__PURE__ */ new WeakMap();
+function bindFinalBatchDependencies(mesh, ready2) {
+  finalBatchDependencies.set(mesh, ready2);
+  return () => {
+    if (finalBatchDependencies.get(mesh) === ready2) finalBatchDependencies.delete(mesh);
+  };
+}
 function bindFinalBatchPreparationRoot(renderer, root, pluginId) {
   let roots = pendingFinalBatchRoots.get(renderer);
   if (!roots) {
@@ -272110,10 +272283,20 @@ function bindFinalBatchPreparationRoot(renderer, root, pluginId) {
     pendingFinalBatchRoots.set(renderer, roots);
   }
   roots.set(root, pluginId);
-  return () => {
+  const release = () => {
     if (roots.get(root) === pluginId) roots.delete(root);
     if (!roots.size && pendingFinalBatchRoots.get(renderer) === roots) pendingFinalBatchRoots.delete(renderer);
   };
+  try {
+    finalBatchPreparationConsumers.get(renderer)?.(root, pluginId);
+  } catch (error) {
+    release();
+    throw error;
+  }
+  return release;
+}
+function notifyFinalBatchPreparationRoot(renderer, root, pluginId) {
+  finalBatchPreparationConsumers.get(renderer)?.(root, pluginId);
 }
 function bindFinalBatchDiscovery(parent, discover) {
   finalBatchDiscoveries.set(parent, discover);
@@ -272123,6 +272306,19 @@ function bindFinalBatchDiscovery(parent, discover) {
 }
 function isFinalBatchSourceVisible(mesh) {
   return mesh.visible || finalBatchSourceVisibility.get(mesh)?.() === true;
+}
+function bindFinalBatchSourceVisibility(mesh, visible) {
+  finalBatchSourceVisibility.set(mesh, visible);
+  notifyFinalBatchSourceVisibility(mesh);
+  return () => {
+    if (finalBatchSourceVisibility.get(mesh) === visible) {
+      finalBatchSourceVisibility.delete(mesh);
+      notifyFinalBatchSourceVisibility(mesh);
+    }
+  };
+}
+function notifyFinalBatchSourceVisibility(mesh) {
+  finalBatchSourceChanges.get(mesh)?.forEach((changed) => changed());
 }
 function bindFinalBatchSourceChange(mesh, changed) {
   let callbacks = finalBatchSourceChanges.get(mesh);
@@ -274265,6 +274461,202 @@ function validCapabilityMatrixBatchDisplay(display, count) {
     if (matrix.elements[3] !== 0 || matrix.elements[7] !== 0 || matrix.elements[11] !== 0 || matrix.elements[15] !== 1 || matrix.determinant() <= 0) return false;
   }
   return true;
+}
+
+// src/components/StarSky/host/runtime/sandbox/Capabilities/CapabilityRigidRenderAsset.ts
+function materialParameters(source) {
+  const material = source.material;
+  return [material.roughness, material.metalness, ...material.emissive.clone().multiplyScalar(material.emissiveIntensity).toArray()];
+}
+function bindVertexParameters(material) {
+  const compile = material.onBeforeCompile, key = material.customProgramCacheKey();
+  const varyings2 = "flat varying vec2 vCapabilitySurface;\nflat varying vec3 vCapabilityEmissive;\n";
+  material.onBeforeCompile = (shader, renderer) => {
+    compile.call(material, shader, renderer);
+    if (!shader.vertexShader.includes("#include <begin_vertex>") || !["vec3 totalEmissiveRadiance = emissive;", "#include <roughnessmap_fragment>", "#include <metalnessmap_fragment>"].every((token) => shader.fragmentShader.includes(token))) throw new Error("\u5F53\u524D PBR \u7A0B\u5E8F\u4E0D\u652F\u6301\u9759\u6001\u9876\u70B9\u53C2\u6570");
+    shader.vertexShader = varyings2 + "attribute vec2 capabilitySurface;\nattribute vec3 capabilityEmissive;\n" + shader.vertexShader.replace("#include <begin_vertex>", "#include <begin_vertex>\nvCapabilitySurface = capabilitySurface;\nvCapabilityEmissive = capabilityEmissive;");
+    shader.fragmentShader = varyings2 + shader.fragmentShader.replace("vec3 totalEmissiveRadiance = emissive;", "vec3 totalEmissiveRadiance = vCapabilityEmissive;").replace("#include <roughnessmap_fragment>", ShaderChunk.roughnessmap_fragment.replace("= roughness;", "= vCapabilitySurface.x;")).replace("#include <metalnessmap_fragment>", ShaderChunk.metalnessmap_fragment.replace("= metalness;", "= vCapabilitySurface.y;"));
+  };
+  material.customProgramCacheKey = () => `${key}:capability-static-vertex-parameters-v1`;
+}
+function bakeParameters(geometry, parameters) {
+  const result = geometry.clone(), slots = result.getAttribute("capabilityMaterialSlot");
+  const surface = new Float32Array(slots.count * 2), emissive = new Float32Array(slots.count * 3);
+  for (let i = 0; i < slots.count; i++) {
+    const values = parameters[slots.getX(i)];
+    if (!values) throw new Error("\u9759\u6001 PBR \u6750\u8D28\u69FD\u65E0\u6548");
+    surface.set(values.slice(0, 2), i * 2);
+    emissive.set(values.slice(2), i * 3);
+  }
+  result.deleteAttribute("capabilityMaterialSlot");
+  result.setAttribute("capabilitySurface", new BufferAttribute(surface, 2));
+  result.setAttribute("capabilityEmissive", new BufferAttribute(emissive, 3));
+  return result;
+}
+async function buildCapabilityRigidRenderGroups(root, nodes, slots, asset, store, plan) {
+  const sourceMap = new Map(asset.sources.map((source) => [source.slot, source]));
+  const compiler = new StaticGeometryCompiler(8 * 1024 * 1024, false, void 0, void 0, true);
+  const result = [], inverse = root.matrixWorld.clone().invert();
+  const objects = /* @__PURE__ */ new Map();
+  root.traverse((node) => {
+    const slot = slots.get(node.userData.capabilityNodeId);
+    if (slot !== void 0) objects.set(slot, node);
+  });
+  const count = (mesh) => isCapabilityInstancedMesh(mesh) ? mesh.count : 1;
+  const vertices = (mesh) => mesh.geometry.attributes.position.count * count(mesh);
+  try {
+    for (const candidate of plan.groups) {
+      const motionRoot = candidate.motionRootSlot === null ? root : objects.get(candidate.motionRootSlot);
+      if (!motionRoot) throw new Error("\u58F0\u660E\u8BA1\u5212\u8FD0\u52A8\u6839\u4E0D\u5B58\u5728");
+      const instanced = candidate.representation === "instances";
+      const groups = /* @__PURE__ */ new Map();
+      for (const slot of candidate.slots) {
+        const mesh = nodes.get(slot), source = sourceMap.get(slot);
+        if (!mesh || !source || !source.renderState.visible || !canBatchCapabilitySource(mesh) || mesh.geometry.attributes.color && !mesh.material.vertexColors || !instanced && vertices(mesh) > 65536) continue;
+        const key = JSON.stringify([
+          matrixMaterialGroupKey(mesh),
+          source.renderState,
+          instanced ? [mesh.geometry.uuid, mesh.material.uuid] : null
+        ]);
+        const chunks = groups.get(key) ?? [[]];
+        let chunk = chunks[chunks.length - 1];
+        if (!instanced && chunk.reduce((sum, member) => sum + vertices(member), 0) + vertices(mesh) > 65536)
+          chunks.push(chunk = []);
+        chunk.push(mesh);
+        groups.set(key, chunks);
+      }
+      for (const sources of Array.from(groups.values()).flat()) {
+        if (sources.length < 2) continue;
+        const first = sources[0];
+        const motionInverse = motionRoot.matrixWorld.clone().invert();
+        const colorBaked = sources.some((source) => !source.material.color.equals(first.material.color));
+        const parameters = sources.map(materialParameters), parametersBaked = parameters.some((values) => values.some((value, i) => value !== parameters[0][i]));
+        const inputs = sources.flatMap((source, slot) => Array.from({ length: count(source) }, (_, i) => {
+          const matrix = new Matrix4().multiplyMatrices(motionInverse, source.matrixWorld);
+          if (isCapabilityInstancedMesh(source)) {
+            const instance = new Matrix4();
+            source.getMatrixAt(i, instance);
+            matrix.multiply(instance);
+          }
+          return {
+            geometry: source.geometry,
+            matrix,
+            color: colorBaked ? source.material.color.clone() : new Color(16777215),
+            ...parametersBaked ? { materialSlot: slot } : {}
+          };
+        }));
+        if (instanced) {
+          if (!inputs.every((input) => instanceMatrixCompatible(input.matrix))) continue;
+          let geometryKey2 = sourceMap.get(slots.get(first.userData.capabilityNodeId)).node.geometryKey;
+          if (getGeometryTemplateSource(first.geometry) !== first.geometry) {
+            const identity = getPooledGeometryKey(first.geometry);
+            if (!identity) throw new Error("\u5B9E\u4F8B\u51E0\u4F55\u7F3A\u5C11\u7A33\u5B9A\u5C3A\u5BF8\u8EAB\u4EFD");
+            const key = `plugin-render-instance-geometry-v1:${identity}`;
+            if (!await store.putConfirmed(key, encodeCachedGeometry(first.geometry))) throw new Error("\u5B9E\u4F8B\u5C3A\u5BF8\u51E0\u4F55\u5199\u5165\u5931\u8D25");
+            geometryKey2 = await store.reference(key);
+          }
+          const triangleCount = (first.geometry.index?.count ?? first.geometry.attributes.position.count) / 3;
+          result.push({
+            slots: sources.map((source) => slots.get(source.userData.capabilityNodeId)),
+            counts: sources.map(count),
+            motionRootSlot: candidate.motionRootSlot,
+            layout: { geometryKey: geometryKey2 },
+            instances: inputs.flatMap((input) => input.matrix.toArray()),
+            matrix: new Matrix4().multiplyMatrices(inverse, motionRoot.matrixWorld).toArray(),
+            colorBaked: false,
+            parametersBaked: false,
+            renderState: captureCapabilityDisplayRenderState(first),
+            ranges: inputs.map((_input, partIndex) => ({ partIndex, firstTriangle: 0, triangleCount }))
+          });
+          continue;
+        }
+        const job = compiler.acquire(inputs);
+        let step = job.next();
+        while (!step.done) step = job.next();
+        const product = step.value;
+        let geometry = product.geometry;
+        try {
+          if (parametersBaked) geometry = bakeParameters(geometry, parameters);
+          const key = parametersBaked ? `${product.key}:vertex-pbr-v1:${JSON.stringify(parameters)}` : product.key;
+          if (!await store.putConfirmed(key, encodeCachedGeometry(geometry, { ranges: product.ranges })))
+            throw new Error("\u9759\u6001\u673A\u6784\u51E0\u4F55\u5199\u5165\u5931\u8D25");
+          result.push({
+            slots: sources.map((source) => slots.get(source.userData.capabilityNodeId)),
+            counts: sources.map(count),
+            motionRootSlot: slots.get(motionRoot.userData.capabilityNodeId) ?? null,
+            layout: { geometryKey: await store.reference(key) },
+            matrix: new Matrix4().multiplyMatrices(inverse, motionRoot.matrixWorld).toArray(),
+            colorBaked,
+            parametersBaked,
+            renderState: captureCapabilityDisplayRenderState(first),
+            ranges: product.ranges
+          });
+        } finally {
+          if (geometry !== product.geometry) geometry.dispose();
+          compiler.release(product);
+        }
+      }
+    }
+    return result;
+  } finally {
+    compiler.dispose();
+  }
+}
+function restoreCapabilityRigidRenderGroup(group, cached, base, pool) {
+  const geometry = pool.acquire(group.layout.geometryKey, () => {
+    if (!cached) throw new Error("\u9759\u6001\u673A\u6784\u51E0\u4F55\u7F3A\u5931");
+    for (const [name, size] of [["capabilitySurface", 2], ["capabilityEmissive", 3]]) {
+      const attribute = cached.attributes[name];
+      if (group.parametersBaked ? !attribute || attribute.itemSize !== size || attribute.normalized || attribute.array.some((value) => !Number.isFinite(value) || value < 0 || name === "capabilitySurface" && value > 1) : Boolean(attribute))
+        throw new Error("\u9759\u6001 PBR \u9876\u70B9\u5C5E\u6027\u65E0\u6548");
+    }
+    return decodeCachedGeometry(cached);
+  });
+  const last = group.ranges[group.ranges.length - 1];
+  const triangles = (geometry.index?.count ?? geometry.attributes.position.count) / 3;
+  if (!last || (group.instances ? group.ranges.some((range) => range.firstTriangle !== 0 || range.triangleCount !== triangles) : last.firstTriangle + last.triangleCount !== triangles || geometry.groups.length)) {
+    pool.release(geometry);
+    throw new Error("\u9759\u6001\u673A\u6784\u4E09\u89D2\u6620\u5C04\u65E0\u6548");
+  }
+  const vertexColors = Boolean(geometry.attributes.color);
+  const createMaterial = () => {
+    const material2 = base.clone();
+    if (group.colorBaked) material2.color.setRGB(1, 1, 1);
+    material2.vertexColors = vertexColors;
+    if (group.parametersBaked) bindVertexParameters(material2);
+    return material2;
+  };
+  let material;
+  try {
+    material = createMaterial();
+  } catch (error) {
+    pool.release(geometry);
+    throw error;
+  }
+  const mesh = group.instances ? new InstancedMesh(geometry, material, group.instances.length / 16) : new Mesh(geometry, material);
+  if (mesh instanceof InstancedMesh) {
+    const matrix = new Matrix4();
+    for (let i = 0; i < mesh.count; i++) mesh.setMatrixAt(i, matrix.fromArray(group.instances, i * 16));
+    mesh.instanceMatrix.needsUpdate = true;
+    mesh.computeBoundingBox();
+    mesh.computeBoundingSphere();
+  }
+  mesh.userData.capabilityDisplayCacheHit = true;
+  mesh.matrixAutoUpdate = false;
+  mesh.matrix.fromArray(group.matrix);
+  mesh.matrixWorldNeedsUpdate = true;
+  const { layers, ...state } = group.renderState;
+  Object.assign(mesh, state);
+  mesh.layers.mask = layers;
+  let disposed = false;
+  return { mesh, dispose() {
+    if (disposed) return;
+    disposed = true;
+    mesh.removeFromParent();
+    if (mesh instanceof InstancedMesh) mesh.dispose();
+    material.dispose();
+    pool.release(geometry);
+  } };
 }
 
 // src/components/StarSky/host/runtime/sandbox/Capabilities/LoftGeometry.ts
@@ -277076,6 +277468,8 @@ var CapabilityRenderAssetRuntime = class {
     this.watchedResources = /* @__PURE__ */ new WeakSet();
     this.disposedResources = /* @__PURE__ */ new WeakSet();
     this.resourceCleanup = [];
+    /** 源树分片接管期间仍使用预显示准备门，全部接管后恢复原回调。 */
+    this.displayPreparationCleanup = [];
     this.resourceReleases = /* @__PURE__ */ new Map();
     this.initialized = false;
     this.failed = false;
@@ -277089,8 +277483,13 @@ var CapabilityRenderAssetRuntime = class {
     this.preparationFrame = -1;
     this.preparationRevision = -1;
     this.preparationState = false;
+    /** 版本入口直读阶段允许最终批次先于正式身份显露。 */
+    this.allowPreDisplay = false;
+    /** 刚性直读先建立平铺最终网格；正式批次到达后才恢复源树。 */
+    this.deferredSources = false;
+    this.displayTokens = /* @__PURE__ */ new Map();
     this.revealFrame = -1;
-    this.constructionTiming = { workMs: 0, waitMs: 0, slices: 0 };
+    this.constructionTiming = { workMs: 0, waitMs: 0, slices: 0, maxSliceMs: 0 };
     this.stats = { groups: 0, members: 0, adopted: 0, revision: 0, validationPasses: 0, sourceChecks: 0, fallbacks: 0, liveGeometryHits: 0 };
     this.journal = new CapabilityRenderRevisionJournal(() => this.changed());
     this.poseJournal = new CapabilityRenderRevisionJournal(() => this.poseChanged());
@@ -277102,7 +277501,7 @@ var CapabilityRenderAssetRuntime = class {
   /** 首批定位完整资产；后续批次只接管对应身份，缺失或损坏安全回原路径。 */
   prepare(commands) {
     if (!this.port.enabled) return false;
-    if (!this.port.renderer?.extensions?.has("WEBGL_multi_draw") || this.controller.signal.aborted || this.failed || !terrainCompiledGeometryCache.available) {
+    if (!this.asset?.rigidGroups && !this.port.renderer?.extensions?.has("WEBGL_multi_draw") || this.controller.signal.aborted || this.failed || !terrainCompiledGeometryCache.available) {
       logBrowserRuntimeDebug("plugin.render-asset.skipped", {
         pluginId: this.port.pluginId,
         multiDraw: Boolean(this.port.renderer?.extensions?.has("WEBGL_multi_draw")),
@@ -277113,27 +277512,199 @@ var CapabilityRenderAssetRuntime = class {
     }
     return this.prepareSupported(commands);
   }
+  /**
+   * 预显示已经拿到版本化入口时，直接使用同一份清单建立最终表示。
+   *
+   * 此阶段只创建显示代理，不执行正式命令；后续的 executeBatchPrepared 会
+   * 通过 prepare 的同一资产命中路径接管这些代理，避免显示后再造一套 Mesh。
+   * @param prebuilt 已验证的预构建资产及当前实例节点绑定
+   */
+  async preparePrebuilt(prebuilt) {
+    if (!this.port.enabled || !this.port.renderer || !prebuilt.asset.rigidGroups && !this.port.renderer.extensions?.has("WEBGL_multi_draw") || this.controller.signal.aborted || this.failed || !terrainCompiledGeometryCache.available) return false;
+    const created = prebuilt.commands.filter((command) => command.type === "scene.createNode");
+    if (!created.length) return Boolean(this.asset);
+    if (this.asset) return this.prepareSupported(created);
+    this.allowPreDisplay = true;
+    this.prebuiltOffset = 0;
+    try {
+      return prebuilt.asset.rigidGroups ? await this.prepareFinalDisplay(prebuilt.asset, created) : await this.prepareAsset(prebuilt.asset, created, []);
+    } catch (error) {
+      if (!this.controller.signal.aborted) logBrowserRuntimeDebug("plugin.render-asset.failed", { pluginId: this.port.pluginId, message: String(error) });
+      this.fallback();
+      return false;
+    }
+  }
   async prepareSupported(commands) {
     const created = commands.filter((command) => command.type === "scene.createNode");
     if (!created.length) return Boolean(this.asset);
-    const accumulated = [...this.commands, ...created];
     if (this.asset) {
-      if (stringifyDisplayCacheInput(renderAssetIdentityCommands(accumulated).slice(this.commands.length)) !== stringifyDisplayCacheInput(renderAssetIdentityCommands(this.asset.commands).slice(this.commands.length, accumulated.length))) {
+      if (this.prebuiltOffset !== void 0) {
+        const offset = this.prebuiltOffset;
+        const rebound = [...this.commands.slice(0, offset), ...created, ...this.commands.slice(offset + created.length)];
+        if (offset + created.length > this.commands.length || stringifyDisplayCacheInput(renderAssetIdentityCommands(rebound)) !== stringifyDisplayCacheInput(renderAssetIdentityCommands(this.commands))) {
+          this.fallback();
+          return false;
+        }
+        if (this.deferredSources && !await this.restorePrebuiltSources()) return false;
+        this.commands.slice(offset, offset + created.length).forEach((command) => this.pending.delete(command.nodeId));
+        this.bindCommands(created, offset);
+        this.commands = rebound;
+        this.prebuiltOffset += created.length;
+        return true;
+      }
+      const accumulated2 = [...this.commands, ...created];
+      if (stringifyDisplayCacheInput(renderAssetIdentityCommands(accumulated2).slice(this.commands.length)) !== stringifyDisplayCacheInput(renderAssetIdentityCommands(this.asset.commands).slice(this.commands.length, accumulated2.length))) {
         this.fallback();
         return false;
       }
       this.bindCommands(created, this.commands.length);
-      this.commands = accumulated;
+      this.commands = accumulated2;
       return true;
     }
+    const accumulated = created;
     const started = performance.now();
-    const loans = [];
     try {
       const asset = await readCapabilityRenderAsset(accumulated);
       if (!asset || this.controller.signal.aborted) {
         if (!asset) logBrowserRuntimeDebug("plugin.render-asset.miss", { pluginId: this.port.pluginId, commands: accumulated.length });
         return false;
       }
+      return await this.prepareAsset(
+        asset,
+        created,
+        commands.every((command) => command.type === "scene.createNode") ? created : [],
+        started
+      );
+    } catch (error) {
+      if (!this.controller.signal.aborted) logBrowserRuntimeDebug("plugin.render-asset.failed", { pluginId: this.port.pluginId, message: String(error) });
+      this.fallback();
+      this.clearUnadopted();
+      return false;
+    }
+  }
+  /** 首显只读取最终几何和可见侧车；拾取、监听和隐藏部件均留到正式接管。 */
+  async prepareFinalDisplay(asset, commands) {
+    if (this.port.validate(commands, asset.batches)) return false;
+    this.asset = asset;
+    this.commands = commands;
+    this.bindCommands(commands, 0);
+    this.deferredSources = true;
+    this.resourceCleanup.push(bindFinalBatchPreparationRoot(this.port.renderer, this.port.root, this.port.pluginId));
+    asset.rigidGroups.forEach((group) => group.slots.forEach((slot) => this.covered.add(slot)));
+    asset.sources.forEach((source) => {
+      this.displayTokens.set(source.slot, { userData: { capabilityNodeId: commands[source.slot].nodeId } });
+    });
+    const sidecars = asset.sources.filter((source) => !this.covered.has(source.slot) && source.renderState.visible && source.node.materials.some((material) => !material || material.visible !== false));
+    const keys = Array.from(/* @__PURE__ */ new Set([
+      ...asset.rigidGroups.filter((group) => {
+        const geometry = this.pool.peek(group.layout.geometryKey);
+        return !geometry || !isPooledGeometryUnchanged(geometry);
+      }).map((group) => group.layout.geometryKey),
+      ...sidecars.map((source) => source.node.geometryKey)
+    ]));
+    this.port.root.userData.capabilityFinalDisplayGeometryCount = keys.length;
+    const geometries = await terrainCompiledGeometryCache.getMany(keys);
+    if (this.controller.signal.aborted || this.failed) return false;
+    if (keys.some((key) => !geometries.get(key))) throw new Error("\u5B8C\u6574\u6E32\u67D3\u8D44\u4EA7\u663E\u793A\u8D44\u6E90\u7F3A\u5931");
+    sidecars.forEach((source) => this.sourceGeometries.set(source.node.geometryKey, geometries.get(source.node.geometryKey)));
+    const sourceMap = new Map(asset.sources.map((source) => [source.slot, source]));
+    const steps = function* (runtime) {
+      for (const definition of asset.rigidGroups) {
+        const source = sourceMap.get(definition.slots[0]), command = commands[source.slot];
+        const base = runtime.port.acquireDisplayMaterial(command, { ...source.node, fromManifest: true });
+        let restored;
+        try {
+          restored = restoreCapabilityRigidRenderGroup(definition, geometries.get(definition.layout.geometryKey) ?? void 0, base, runtime.pool);
+        } finally {
+          runtime.port.releaseDisplayMaterial(base);
+        }
+        runtime.resourceCleanup.push(runtime.port.bindDisplayTextures(restored.mesh, command));
+        runtime.installDisplay({ poseRevision: 0, rigid: restored, meshes: [restored.mesh], slots: definition.slots, cleanup: [], valid: true });
+        restored.mesh.userData.capabilityBatchCounts = definition.counts;
+        runtime.port.root.add(restored.mesh);
+        notifyFinalBatchPreparationRoot(runtime.port.renderer, runtime.port.root, runtime.port.pluginId);
+        yield;
+      }
+      for (const source of sidecars) {
+        const mesh = runtime.port.create(commands[source.slot], {
+          ...source.node,
+          geometry: geometries.get(source.node.geometryKey),
+          fromManifest: true
+        }, false);
+        runtime.nodes.set(source.slot, mesh);
+        mesh.matrixAutoUpdate = false;
+        mesh.matrix.fromArray(source.matrix);
+        mesh.matrixWorldNeedsUpdate = true;
+        const { layers, ...state } = source.renderState;
+        Object.assign(mesh, state);
+        mesh.layers.mask = layers;
+        runtime.installDisplay({ poseRevision: 0, meshes: [mesh], slots: [source.slot], cleanup: [], valid: true });
+        runtime.port.root.add(mesh);
+        notifyFinalBatchPreparationRoot(runtime.port.renderer, runtime.port.root, runtime.port.pluginId);
+        yield;
+      }
+      runtime.initialized = true;
+      runtime.stats.groups = asset.rigidGroups.length;
+      runtime.stats.members = asset.sources.length;
+    };
+    await this.schedule(steps(this));
+    if (this.controller.signal.aborted || this.failed) return false;
+    return true;
+  }
+  installDisplay(group) {
+    this.groups.push(group);
+    group.slots.forEach((slot) => this.slotGroups.set(slot, group));
+    group.meshes.forEach((mesh) => {
+      const visible = mesh.visible;
+      mesh.visible = false;
+      group.cleanup.push(bindFinalBatchSourceVisibility(mesh, () => visible));
+      Object.assign(mesh.userData, {
+        pluginId: this.port.pluginId,
+        capabilityRigidBatch: true,
+        capabilityRenderAsset: true,
+        capabilityFinalManifestHit: true,
+        capabilityDisplayCacheHit: true,
+        capabilityBatchSources: group.slots.map((slot) => this.displayTokens.get(slot))
+      });
+      group.cleanup.push(bindFinalBatchDependencies(mesh, () => this.port.texturesReady(mesh)));
+      const before = mesh.onBeforeRender;
+      mesh.onBeforeRender = (...args) => {
+        before.apply(mesh, args);
+        if (!isGeometryPreparationPass(this.port.renderer)) this.displayGroupPrepared(group);
+      };
+      this.displayPreparationCleanup.push(() => {
+        mesh.onBeforeRender = before;
+      });
+      group.cleanup.push(this.filter.register(mesh, () => group.valid && (isGeometryPreparationPass(this.port.renderer) || this.ready(group, true))));
+      group.cleanup.push(bindFinalBatchFailure(mesh, () => this.fallback()));
+    });
+  }
+  /** 在既有显示继续绘制期间恢复 CPU 源身份；构造器接回同一最终网格和可见侧车。 */
+  async restorePrebuiltSources() {
+    try {
+      const keys = Array.from(new Set(this.asset.sources.map((source) => source.node.geometryKey).filter((key) => !this.sourceGeometries.has(key))));
+      const geometries = await terrainCompiledGeometryCache.getMany(keys);
+      if (this.controller.signal.aborted || this.failed) return false;
+      if (keys.some((key) => !geometries.get(key))) throw new Error("\u5B8C\u6574\u6E32\u67D3\u8D44\u4EA7\u62FE\u53D6\u8D44\u6E90\u7F3A\u5931");
+      geometries.forEach((geometry, key) => {
+        if (geometry) this.sourceGeometries.set(key, geometry);
+      });
+      await this.construct(this.commands, this.sourceGeometries, []);
+      if (this.controller.signal.aborted || this.failed) return false;
+      this.deferredSources = false;
+      this.displayPreparationCleanup.splice(0).forEach((release) => release());
+      this.changed();
+      return true;
+    } catch (error) {
+      if (!this.controller.signal.aborted) logBrowserRuntimeDebug("plugin.render-asset.failed", { pluginId: this.port.pluginId, message: String(error) });
+      this.fallback();
+      return false;
+    }
+  }
+  /** 将已验证资产统一转换为当前实例的代理和最终批次。 */
+  async prepareAsset(asset, created, formal, started = performance.now()) {
+    const loans = [];
+    try {
       const lookupAt = performance.now();
       const ids = asset.commands.map((_node, i) => created[i]?.nodeId ?? `render:${MathUtils.generateUUID()}:${i}`);
       const externals = /* @__PURE__ */ new Map();
@@ -277155,7 +277726,11 @@ var CapabilityRenderAssetRuntime = class {
       }
       const validatedAt = performance.now();
       asset.groups.forEach((group) => group.slots.forEach((slot) => this.covered.add(slot)));
-      const groupResources = asset.groups.map((group) => group.layout.geometryKey).filter((key) => {
+      asset.rigidGroups?.forEach((group) => group.slots.forEach((slot) => this.covered.add(slot)));
+      const groupResources = [
+        ...asset.groups.map((group) => group.layout.geometryKey),
+        ...asset.rigidGroups?.map((group) => group.layout.geometryKey) ?? []
+      ].filter((key) => {
         const geometry = this.pool.peek(key);
         if (!geometry || !isPooledGeometryUnchanged(geometry)) return true;
         loans.push(this.pool.acquire(key, () => {
@@ -277171,9 +277746,9 @@ var CapabilityRenderAssetRuntime = class {
       asset.sources.forEach((source) => this.sourceGeometries.set(source.node.geometryKey, geometries.get(source.node.geometryKey)));
       const geometryAt = performance.now();
       this.asset = asset;
-      this.commands = accumulated;
+      this.commands = [...created];
       this.bindCommands(created, 0);
-      await this.construct(preview, geometries, commands.every((command) => command.type === "scene.createNode") ? created : []);
+      await this.construct(preview, geometries, formal);
       if (this.controller.signal.aborted || this.failed) {
         this.fallback();
         return false;
@@ -277193,11 +277768,6 @@ var CapabilityRenderAssetRuntime = class {
         }
       });
       return true;
-    } catch (error) {
-      if (!this.controller.signal.aborted) logBrowserRuntimeDebug("plugin.render-asset.failed", { pluginId: this.port.pluginId, message: String(error) });
-      this.fallback();
-      this.clearUnadopted();
-      return false;
     } finally {
       loans.forEach((geometry) => this.pool.release(geometry));
     }
@@ -277209,8 +277779,39 @@ var CapabilityRenderAssetRuntime = class {
   displayNodes(commands) {
     if (!this.initialized || this.failed || !this.asset) return null;
     const created = commands.filter((command) => command.type === "scene.createNode");
-    const offset = this.commands.length - created.length;
-    return this.asset.sources.filter((source) => source.slot >= offset && source.slot < this.commands.length).sort((left, right) => left.slot - right.slot).map((source) => ({ ...source.node, geometry: this.sourceGeometries.get(source.node.geometryKey), fromManifest: true }));
+    const end = this.prebuiltOffset ?? this.commands.length, offset = end - created.length;
+    return this.asset.sources.filter((source) => source.slot >= offset && source.slot < end).sort((left, right) => left.slot - right.slot).map((source) => ({ ...source.node, geometry: this.sourceGeometries.get(source.node.geometryKey), fromManifest: true }));
+  }
+  /** 返回直读阶段的资源准备状态，用于把纹理等待和 GPU 尾等待分开记录。 */
+  getPreparationDiagnostics() {
+    const texturesPending = this.asset?.sources.filter((source) => {
+      const node = this.nodes.get(source.slot);
+      return node ? !this.port.texturesReady(node) : false;
+    }).length ?? 0;
+    const texturesFailed = this.asset?.sources.filter((source) => {
+      const node = this.nodes.get(source.slot);
+      return node ? this.port.texturesFailed(node) : false;
+    }).length ?? 0;
+    const groupsReady = this.groups.filter((group) => group.valid && (this.deferredSources ? this.displayGroupPrepared(group) : group.meshes.every((mesh) => getFinalBatchPreparation(mesh)?.() === true))).length;
+    const groupStates = this.groups.map((group) => ({
+      slots: [...group.slots],
+      sources: group.meshes.flatMap((mesh) => {
+        const sources = mesh.userData.capabilityBatchSources;
+        return sources?.flatMap((source) => source.userData?.capabilityNodeId ? [source.userData.capabilityNodeId] : []) ?? [];
+      }),
+      prepared: group.valid && (this.deferredSources ? this.displayGroupPrepared(group) : group.meshes.every((mesh) => getFinalBatchPreparation(mesh)?.() === true)),
+      valid: group.valid
+    }));
+    return {
+      texturesPending,
+      texturesFailed,
+      groupsPending: Math.max(0, this.groups.length - groupsReady),
+      groupsReady,
+      buffersPending: this.groups.filter((group) => group.valid && group.meshes.some((mesh) => isFinalBatchSourceVisible(mesh) && !areGeometryBuffersPrepared(this.port.renderer, mesh))).length,
+      unadopted: this.asset ? this.asset.commands.length - this.adoptedSlots.size : 0,
+      groupStates,
+      construction: { ...this.constructionTiming }
+    };
   }
   construct(commands, geometries, formal) {
     const asset = this.asset;
@@ -277220,16 +277821,25 @@ var CapabilityRenderAssetRuntime = class {
       for (let slot = 0; slot < commands.length; slot++) {
         const command = commands[slot], source = sourceMap.get(slot), proxy = runtime.covered.has(slot);
         const cached = source ? { ...source.node, geometry: geometries.get(source.node.geometryKey) ?? void 0, fromManifest: true } : void 0;
-        const node = runtime.port.create(command, cached, proxy);
+        const existing = runtime.nodes.get(slot);
+        const node = existing ?? runtime.port.create(command, cached, proxy);
+        if (existing) {
+          node.matrixAutoUpdate = true;
+          node.updateMatrix();
+        }
         runtime.nodes.set(slot, node);
         runtime.nodeSlots.set(node, slot);
-        runtime.journal.watch(node, ["parent", "geometry", "material", "instanceMatrix", "count", "matrixAutoUpdate", "castShadow", "receiveShadow", "renderOrder", "onBeforeRender", "onBeforeShadow"]);
+        runtime.journal.watch(node, ["geometry", "material", "instanceMatrix", "count", "matrixAutoUpdate", "castShadow", "receiveShadow", "renderOrder", "onBeforeRender", "onBeforeShadow"]);
+        runtime.journal.watch(node, ["parent"], () => {
+          runtime.changed();
+          runtime.poseChanged(node, true);
+        });
         runtime.poseJournal.watch(node, ["visible"], () => runtime.poseChanged(node));
         runtime.journal.watch(node.layers, ["mask"]);
         const poseChanged = node instanceof CapabilityDisplaySource && proxy ? () => {
           node.markRenderPoseDirty();
-          runtime.poseChanged(node);
-        } : () => runtime.poseChanged(node);
+          runtime.poseChanged(node, true);
+        } : () => runtime.poseChanged(node, true);
         if (node instanceof CapabilityDisplaySource && proxy) node.enableRenderPoseCache();
         runtime.poseJournal.watch(node.position, void 0, poseChanged);
         runtime.poseJournal.watch(node.quaternion, ["_x", "_y", "_z", "_w"], poseChanged);
@@ -277254,7 +277864,7 @@ var CapabilityRenderAssetRuntime = class {
               node.computeBoundingBox();
               node.computeBoundingSphere();
             }
-          } else runtime.install({ poseRevision: 0, meshes: [mesh], slots: [slot], cleanup: [], valid: true });
+          } else runtime.install(runtime.slotGroups.get(slot) ?? { poseRevision: 0, meshes: [mesh], slots: [slot], cleanup: [], valid: true });
         }
         if (formal[slot] && runtime.port.adopt) {
           const command2 = formal[slot], result = runtime.port.adopt(command2);
@@ -277317,10 +277927,52 @@ var CapabilityRenderAssetRuntime = class {
         });
         yield;
       }
-      runtime.stats.groups = asset.groups.length;
+      for (const group of asset.rigidGroups ?? []) {
+        const sources = group.slots.map((slot) => runtime.nodes.get(slot));
+        if (sources.some((source) => !source)) throw new Error(`\u9759\u6001\u673A\u6784\u6E90\u8282\u70B9\u7F3A\u5931: ${group.slots.filter((slot) => !runtime.nodes.has(slot)).join(",")} (nodes=${runtime.nodes.size}, commands=${commands.length}, asset=${asset.commands.length})`);
+        const root = group.motionRootSlot === null ? runtime.port.root : runtime.nodes.get(group.motionRootSlot);
+        if (!root) throw new Error("\u9759\u6001\u673A\u6784\u8FD0\u52A8\u6839\u7F3A\u5931");
+        const sourceMaterial = sources[0].material;
+        const base = Array.isArray(sourceMaterial) ? sourceMaterial[0] : sourceMaterial;
+        if (!base) throw new Error("\u9759\u6001\u673A\u6784\u6750\u8D28\u7F3A\u5931");
+        const previous = runtime.slotGroups.get(group.slots[0]);
+        const restored = previous?.rigid ?? restoreCapabilityRigidRenderGroup(
+          group,
+          geometries.get(group.layout.geometryKey) ?? void 0,
+          base,
+          runtime.pool
+        );
+        restored.mesh.matrix.identity();
+        restored.mesh.matrixWorldNeedsUpdate = true;
+        const installed = previous ?? { poseRevision: 0, rigid: restored, meshes: [restored.mesh], slots: group.slots, cleanup: [], valid: true };
+        Object.assign(restored.mesh.userData, {
+          pluginId: runtime.port.pluginId,
+          capabilityRigidBatch: true,
+          capabilityFinalManifestHit: true,
+          capabilityDisplayCacheHit: true,
+          capabilityBatchSources: sources,
+          capabilityBatchCounts: group.counts,
+          capabilityRenderAsset: true
+        });
+        root.add(restored.mesh);
+        sources.forEach((source) => {
+          for (let node = source; node && node !== root; node = node.parent) runtime.trackPose(node, installed);
+        });
+        runtime.install(installed);
+        group.slots.forEach((slot) => {
+          const state = runtime.revisions.get(slot);
+          runtime.watchSource(state, installed);
+        });
+        yield;
+      }
+      runtime.stats.groups = asset.groups.length + (asset.rigidGroups?.length ?? 0);
       runtime.stats.members = asset.sources.length;
     };
-    const steps = create(this), scheduler = getFrameTaskScheduler(this.port.renderer);
+    return this.schedule(create(this));
+  }
+  /** 显示恢复和源树恢复都遵守同一个共享分片预算。 */
+  schedule(steps) {
+    const scheduler = getFrameTaskScheduler(this.port.renderer);
     const queuedAt = performance.now();
     return new Promise((resolve, reject) => {
       const abort = () => {
@@ -277347,6 +277999,7 @@ var CapabilityRenderAssetRuntime = class {
           this.constructionTiming.slices++;
           try {
             do {
+              if (this.failed) throw new Error("\u5B8C\u6574\u6E32\u67D3\u8D44\u4EA7\u6784\u5EFA\u671F\u95F4\u5931\u6548");
               if (steps.next().done) {
                 finish();
                 return true;
@@ -277358,6 +278011,7 @@ var CapabilityRenderAssetRuntime = class {
             return true;
           } finally {
             this.constructionTiming.workMs += performance.now() - started;
+            this.constructionTiming.maxSliceMs = Math.max(this.constructionTiming.maxSliceMs, performance.now() - started);
             this.constructionTiming.waitMs = Math.max(0, performance.now() - queuedAt - this.constructionTiming.workMs);
           }
         }
@@ -277378,7 +278032,8 @@ var CapabilityRenderAssetRuntime = class {
     return root;
   }
   install(group) {
-    this.groups.push(group);
+    if (this.groups.includes(group)) group.cleanup.splice(0).forEach((release) => release());
+    else this.groups.push(group);
     group.slots.forEach((slot) => this.slotGroups.set(slot, group));
     const sources = group.slots.map((slot) => this.nodes.get(slot));
     group.meshes.forEach((mesh) => {
@@ -277389,7 +278044,7 @@ var CapabilityRenderAssetRuntime = class {
       group.cleanup.push(this.filter.register(mesh, () => group.valid && (isGeometryPreparationPass(this.port.renderer) || this.ready(group, true)) && group.valid));
       group.cleanup.push(bindFinalBatchFailure(mesh, () => this.fallback()));
     });
-    if (group.batch) group.cleanup.push(bindFinalBatchDisplay(
+    if (group.batch || group.rigid) group.cleanup.push(bindFinalBatchDisplay(
       sources,
       () => this.ready(group) && group.valid,
       () => group.valid,
@@ -277414,6 +278069,7 @@ var CapabilityRenderAssetRuntime = class {
       if (group) this.watchSource(state, group);
     }
     if (this.adoptedSlots.size === this.asset?.commands.length) this.sourceGeometries.clear();
+    if (this.adoptedSlots.size === this.asset?.commands.length) this.allowPreDisplay = false;
     this.stats.adopted++;
     this.changed();
     return node;
@@ -277466,7 +278122,7 @@ var CapabilityRenderAssetRuntime = class {
     const objects = /* @__PURE__ */ new Set();
     const watch = (object, fields, pose = false) => {
       objects.add(object);
-      if (pose) this.poseJournal.watch(object, fields, () => this.poseChanged(object));
+      if (pose) this.poseJournal.watch(object, fields, () => this.poseChanged(object, true));
       else this.journal.watch(object, fields);
     };
     watch(material, [
@@ -277522,11 +278178,13 @@ var CapabilityRenderAssetRuntime = class {
     this.poseChanged();
   }
   /** 运动和兼容参数只同步当前批次，不重复核验不可变源资源。 */
-  poseChanged(object) {
+  poseChanged(object, invalidateRigid = false) {
     this.stats.revision = ++this.revision;
     const groups = object ? this.poseGroups.get(object) : this.groups;
     groups?.forEach((group) => {
-      if (group.valid) group.poseRevision++;
+      if (!group.valid) return;
+      group.poseRevision++;
+      if (object && invalidateRigid && group.rigid) this.drop(group);
     });
   }
   trackPose(object, group) {
@@ -277588,12 +278246,18 @@ var CapabilityRenderAssetRuntime = class {
   }
   /** 正式异步贴图绑定同步到既有最终材质，只重新核验 GPU 门，不重建几何。 */
   updateMaterialTextures(material, update) {
-    const compatible = this.materialChecks.get(material)?.matches() !== false;
+    const check = this.materialChecks.get(material);
+    if (!check) {
+      update();
+      return;
+    }
+    const compatible = check.matches();
     update();
     if (compatible) {
       this.groups.forEach((group) => {
-        if (!group.valid || !group.batch || !group.slots.some((slot) => this.revisions.get(slot)?.material === material)) return;
-        const source = material, target = group.batch.mesh.material;
+        const mesh = group.batch?.mesh ?? group.rigid?.mesh;
+        if (!group.valid || !mesh || !group.slots.some((slot) => this.revisions.get(slot)?.material === material)) return;
+        const source = material, target = mesh.material;
         target.map = source.map;
         target.emissiveMap = source.emissiveMap;
         target.needsUpdate = true;
@@ -277630,27 +278294,41 @@ var CapabilityRenderAssetRuntime = class {
     const badGeometry = new Set(Array.from(this.geometryChecks).filter(([, check]) => !check()).map(([geometry]) => geometry));
     const badMaterials = new Set(Array.from(this.materialChecks).filter(([, check]) => !check.matches()).map(([material]) => material));
     for (const group of this.groups) {
-      if (!group.valid || !group.batch) continue;
+      if (!group.valid || !group.batch && !group.rigid) continue;
       const definition = this.asset.groups.find((value) => value.slots === group.slots);
       const valid = group.slots.every((slot, i) => {
-        const state = this.revisions.get(slot), node = state.node, mesh = group.batch.mesh;
+        const state = this.revisions.get(slot), node = state.node, mesh = group.batch?.mesh ?? group.rigid?.mesh;
+        if (!mesh) return false;
         this.stats.sourceChecks++;
         for (let parent = node.parent; parent && parent !== this.port.root; parent = parent.parent) if (!parent.matrixAutoUpdate) return false;
-        return node.parent === state.parent && node.geometry === state.geometry && node.material === state.material && !badGeometry.has(node.geometry) && !badMaterials.has(node.material) && node.layers.mask === mesh.layers.mask && !this.disposedResources.has(node.geometry) && !this.disposedResources.has(node.material) && node.castShadow === mesh.castShadow && node.receiveShadow === mesh.receiveShadow && node.renderOrder === mesh.renderOrder && node.matrixAutoUpdate && node.onBeforeRender === Object3D.prototype.onBeforeRender && node.onBeforeShadow === Object3D.prototype.onBeforeShadow && (!state.instances || isCapabilityInstancedMesh(node) && node.instanceMatrix === state.instances && node.count === state.count && (!definition.baked[i] || node.instanceMatrix.version === state.version));
+        return node.parent === state.parent && node.geometry === state.geometry && node.material === state.material && !badGeometry.has(node.geometry) && !badMaterials.has(node.material) && node.layers.mask === mesh.layers.mask && !this.disposedResources.has(node.geometry) && !this.disposedResources.has(node.material) && node.castShadow === mesh.castShadow && node.receiveShadow === mesh.receiveShadow && node.renderOrder === mesh.renderOrder && node.matrixAutoUpdate && node.onBeforeRender === Object3D.prototype.onBeforeRender && node.onBeforeShadow === Object3D.prototype.onBeforeShadow && (!state.instances || isCapabilityInstancedMesh(node) && node.instanceMatrix === state.instances && node.count === state.count && (!(group.rigid || definition?.baked[i]) || node.instanceMatrix.version === state.version));
       });
-      if (!valid || !group.batch.sync()) {
+      if (!valid || group.batch && !group.batch.sync()) {
         logBrowserRuntimeDebug("plugin.render-asset.source-fallback", {
           pluginId: this.port.pluginId,
           members: group.slots.length,
-          reason: valid ? group.batch.mesh.userData.capabilityMatrixIncompatible : "source-state"
+          reason: valid ? group.batch?.mesh.userData.capabilityMatrixIncompatible : "source-state"
         });
         this.drop(group);
       }
     }
   }
   ready(group, publish = false) {
-    if (!this.initialized || this.failed || this.controller.signal.aborted) return false;
-    if (!this.firstDisplay && this.asset.sources.some((source) => this.asset.commands[source.slot].raycast !== false && this.pendingHasSlot(source.slot))) return false;
+    if (this.failed || this.controller.signal.aborted) return false;
+    if (this.deferredSources) {
+      if (group.meshes.some((mesh) => this.port.texturesFailed(mesh))) {
+        this.fallback();
+        return false;
+      }
+      const prepared = this.displayGroupPrepared(group);
+      if (prepared && publish) {
+        group.published = true;
+        if (this.initialized && this.groups.every((value) => value.published)) this.firstDisplay = true;
+      }
+      return prepared;
+    }
+    if (!this.initialized) return false;
+    if (!this.firstDisplay && !this.allowPreDisplay && this.asset.sources.some((source) => this.asset.commands[source.slot].raycast !== false && this.pendingHasSlot(source.slot))) return false;
     this.journal.poll(this.firstDisplay ? group.shapes ?? [] : void 0);
     const frame = this.port.renderer.info.render.frame;
     if (publish && !this.firstDisplay) {
@@ -277665,7 +278343,16 @@ var CapabilityRenderAssetRuntime = class {
     this.poll();
     if (this.failed) return false;
     this.groups.forEach((group2) => {
-      if (group2.valid && group2.batch && !group2.batch.sync()) this.drop(group2);
+      if (!group2.valid) return;
+      if (group2.batch && !group2.batch.sync()) this.drop(group2);
+      if (group2.rigid && (publish || this.firstDisplay) && group2.slots.some((slot) => {
+        let node = this.nodes.get(slot);
+        while (node && node !== group2.rigid.mesh.parent) {
+          if (!(node instanceof Mesh || node instanceof CapabilityDisplaySource ? isFinalBatchSourceVisible(node) : node.visible)) return true;
+          node = node.parent ?? void 0;
+        }
+        return false;
+      })) this.drop(group2);
     });
     if (this.failed) return false;
     if (this.firstDisplay) {
@@ -277688,6 +278375,15 @@ var CapabilityRenderAssetRuntime = class {
     this.readyState = ready2;
     return ready2;
   }
+  /** 私有最终资源在预显示期间没有行为写入；异步完成在下一渲染帧重新核验。 */
+  displayGroupPrepared(group) {
+    const frame = this.port.renderer.info.render.frame;
+    if (group.preparationFrame !== frame) {
+      group.preparationFrame = frame;
+      group.prepared = group.meshes.every((mesh) => this.port.texturesReady(mesh) && getFinalBatchPreparation(mesh)?.() === true);
+    }
+    return group.prepared === true;
+  }
   /** LOD 只查询资源准备，不按每个源零件重复核验整车；真实提交仍走 ready 的即时检查。 */
   preparationReady() {
     if (!this.initialized || this.failed || this.controller.signal.aborted) return false;
@@ -277696,7 +278392,7 @@ var CapabilityRenderAssetRuntime = class {
     if (this.preparationFrame === frame && this.preparationRevision === this.validationRevision) return this.preparationState;
     this.preparationFrame = frame;
     this.preparationRevision = this.validationRevision;
-    this.preparationState = !this.asset.sources.some((source) => !this.port.texturesReady(this.nodes.get(source.slot)) || this.asset.commands[source.slot].raycast !== false && this.pendingHasSlot(source.slot)) && this.groups.every((group) => !group.valid || group.meshes.every((mesh) => getFinalBatchPreparation(mesh)?.() === true));
+    this.preparationState = !this.asset.sources.some((source) => !this.port.texturesReady(this.nodes.get(source.slot)) || !this.allowPreDisplay && this.asset.commands[source.slot].raycast !== false && this.pendingHasSlot(source.slot)) && this.groups.every((group) => !group.valid || group.meshes.every((mesh) => getFinalBatchPreparation(mesh)?.() === true));
     return this.preparationState;
   }
   pendingHasSlot(slot) {
@@ -277710,18 +278406,27 @@ var CapabilityRenderAssetRuntime = class {
     }
     group.valid = false;
     if (group.batch) group.batch.mesh.visible = false;
+    if (group.rigid) group.rigid.mesh.visible = false;
     const cleanup = group.cleanup.splice(0);
     this.filter.afterSubmission(() => {
       cleanup.forEach((release) => release());
       group.batch?.dispose();
+      group.rigid?.dispose();
     });
-    if (group.batch) group.slots.forEach((slot) => {
+    if (group.batch || group.rigid) group.slots.forEach((slot) => {
       const node = this.nodes.get(slot);
       if (node instanceof CapabilityDisplaySource) node.reveal();
     });
     this.stats.fallbacks++;
   }
   fallback() {
+    logBrowserRuntimeDebug("plugin.render-asset.fallback", {
+      pluginId: this.port.pluginId,
+      initialized: this.initialized,
+      firstDisplay: this.firstDisplay,
+      groups: this.groups.length,
+      nodes: this.nodes.size
+    });
     this.failed = true;
     this.groups.forEach((group) => this.drop(group));
     this.nodes.forEach((node, slot) => {
@@ -277733,6 +278438,7 @@ var CapabilityRenderAssetRuntime = class {
     this.journal.dispose();
     this.poseJournal.dispose();
     this.resourceCleanup.splice(0).forEach((cleanup) => cleanup());
+    this.displayPreparationCleanup.splice(0).forEach((release) => release());
     this.resourceReleases.forEach((release) => release());
     this.resourceReleases.clear();
     this.materialChecks.clear();
@@ -277744,7 +278450,7 @@ var CapabilityRenderAssetRuntime = class {
     this.nodes.forEach((node, slot) => {
       if (this.adoptedSlots.has(slot)) return;
       node.removeFromParent();
-      this.port.release(node, this.covered.has(slot));
+      this.port.release(node);
       this.nodes.delete(slot);
     });
     this.pending.clear();
@@ -277760,12 +278466,14 @@ var CapabilityRenderAssetRuntime = class {
     this.groups.forEach((group) => {
       group.cleanup.splice(0).forEach((cleanup) => cleanup());
       group.batch?.dispose();
+      group.rigid?.dispose();
     });
     this.nodes.forEach((node) => {
       if (node instanceof CapabilityDisplaySource) node.disableRenderPoseCache();
     });
     this.journal.dispose();
     this.poseJournal.dispose();
+    this.displayPreparationCleanup.splice(0).forEach((release) => release());
     this.resourceCleanup.splice(0).forEach((cleanup) => cleanup());
     this.resourceReleases.forEach((release) => release());
     this.resourceReleases.clear();
@@ -277773,6 +278481,8 @@ var CapabilityRenderAssetRuntime = class {
     this.nodes.clear();
     this.revisions.clear();
     this.pending.clear();
+    this.displayTokens.clear();
+    this.allowPreDisplay = false;
     this.preparedResults.clear();
     this.slotGroups.clear();
     this.poseGroups.clear();
@@ -278127,16 +278837,32 @@ var CapabilitySceneRuntime = class {
       texturesReady: (node) => this.collectMaterialTextureUrls(node.userData.capabilityMaterialDescriptor).every((url) => this.port.getTexture(url) !== null),
       texturesFailed: (node) => this.collectMaterialTextureUrls(node.userData.capabilityMaterialDescriptor).some((url) => this.port.hasTextureFailed?.(url) === true),
       create: (command, cached, proxy) => this.createPreviewObject(command, cached, proxy),
+      acquireDisplayMaterial: (command, cached) => port.acquireMaterial(command.material, () => restoreDisplayMaterial(cached, 0)),
+      releaseDisplayMaterial: (material) => port.releaseMaterial(material),
+      bindDisplayTextures: (mesh, command) => {
+        mesh.userData.capabilityMaterialDescriptor = command.material;
+        const urls = this.collectMaterialTextureUrls(command.material);
+        let active = true;
+        const apply = () => {
+          if (active) (Array.isArray(mesh.material) ? mesh.material : [mesh.material]).forEach((material) => this.applyMaterialTextureDescriptor(material, command.material));
+        };
+        urls.forEach((url) => port.acquireTexture(url, apply, (next) => port.resolveTextureUrl(next)));
+        apply();
+        return () => {
+          active = false;
+          urls.forEach((url) => port.releaseTexture(url));
+        };
+      },
       adopt: port.adoptRenderAssetNode,
-      release: (node, proxy) => {
+      release: (node) => {
         const textures = this.previewTextures.get(node);
         if (textures && !textures.nodeId) textures.urls.forEach((url) => port.releaseTexture(url));
         this.previewTextures.delete(node);
-        if (node instanceof CapabilityDisplaySource && proxy) {
+        if (node instanceof Mesh || node instanceof CapabilityDisplaySource) {
           port.releaseGeometry(node.geometry);
           (Array.isArray(node.material) ? node.material : [node.material]).forEach((material) => port.releaseMaterial(material));
-          if (node.instanceMatrix) node.dispose();
-        } else if (node instanceof Mesh || node instanceof CapabilityDisplaySource) this.disposeNodeResources(node);
+          if (isCapabilityInstancedMesh(node)) node.dispose();
+        }
       }
     });
   }
@@ -278153,7 +278879,12 @@ var CapabilitySceneRuntime = class {
       const material = this.port.acquireMaterial(command.material, cached ? () => restoreDisplayMaterial(cached, 0) : void 0);
       node = new CapabilityDisplaySource(geometry, material, cached?.matrices ?? null);
     } else node = this.createObject3D(command, cached);
-    Object.assign(node.userData, { pluginId: this.port.pluginId, capabilityMaterialDescriptor: command.material, capabilityDisplayCacheHit: true });
+    Object.assign(node.userData, {
+      pluginId: this.port.pluginId,
+      capabilityNodeId: command.nodeId,
+      capabilityMaterialDescriptor: command.material,
+      capabilityDisplayCacheHit: true
+    });
     this.applyNodeState(node, command, command.nodeId);
     const urls = new Set(this.collectMaterialTextureUrls(command.material));
     if (urls.size) {
@@ -278260,7 +278991,7 @@ var CapabilitySceneRuntime = class {
     if (displayChanged) {
       if (this.renderAsset.owns(node)) {
         if (parentChanged || "geometry" in command || "instances" in command || "renderOrder" in command || "castShadow" in command || "receiveShadow" in command) this.renderAsset.invalidate(node);
-        else this.renderAsset.poseChanged(node);
+        else this.renderAsset.poseChanged(node, true);
       } else this.rigidBatches.invalidate(node.parent, parentChanged ? void 0 : node);
     }
     const currentKind = this.readNodeKind(node);
@@ -278307,7 +279038,7 @@ var CapabilitySceneRuntime = class {
       throw new Error(`\u80FD\u529B\u8282\u70B9\u4E0D\u5B58\u5728: ${command.nodeId}`);
     }
     const preservedWorldMatrix = this.port.shouldPreserveWorldPoseDuringUpdate?.(node) === true ? (node.updateWorldMatrix(true, false), node.matrixWorld.clone()) : null;
-    if (this.renderAsset.owns(node)) this.renderAsset.poseChanged(node);
+    if (this.renderAsset.owns(node)) this.renderAsset.poseChanged(node, true);
     else this.rigidBatches.invalidate(node.parent, node);
     this.port.applyTransform(node, command.transform);
     if (preservedWorldMatrix) {
@@ -278587,7 +279318,7 @@ var CapabilitySceneRuntime = class {
       }
       return;
     }
-    if (this.renderAsset.owns(node)) this.renderAsset.poseChanged(node);
+    if (this.renderAsset.owns(node)) this.renderAsset.poseChanged(node, true);
     else this.rigidBatches.invalidate(node.parent, node);
     this.port.applyTransform(node, command.transform);
   }
@@ -278814,135 +279545,6 @@ function replaceTransform(node, transform) {
   node.rotation.set(0, 0, 0);
   node.quaternion.set(0, 0, 0, 1);
   applyTransform(node, transform);
-}
-
-// src/components/StarSky/host/runtime/sandbox/Capabilities/CapabilityRigidRenderAsset.ts
-function materialParameters(source) {
-  const material = source.material;
-  return [material.roughness, material.metalness, ...material.emissive.clone().multiplyScalar(material.emissiveIntensity).toArray()];
-}
-function bakeParameters(geometry, parameters) {
-  const result = geometry.clone(), slots = result.getAttribute("capabilityMaterialSlot");
-  const surface = new Float32Array(slots.count * 2), emissive = new Float32Array(slots.count * 3);
-  for (let i = 0; i < slots.count; i++) {
-    const values = parameters[slots.getX(i)];
-    if (!values) throw new Error("\u9759\u6001 PBR \u6750\u8D28\u69FD\u65E0\u6548");
-    surface.set(values.slice(0, 2), i * 2);
-    emissive.set(values.slice(2), i * 3);
-  }
-  result.deleteAttribute("capabilityMaterialSlot");
-  result.setAttribute("capabilitySurface", new BufferAttribute(surface, 2));
-  result.setAttribute("capabilityEmissive", new BufferAttribute(emissive, 3));
-  return result;
-}
-async function buildCapabilityRigidRenderGroups(root, nodes, slots, asset, store, plan) {
-  const sourceMap = new Map(asset.sources.map((source) => [source.slot, source]));
-  const compiler = new StaticGeometryCompiler(8 * 1024 * 1024, false, void 0, void 0, true);
-  const result = [], inverse = root.matrixWorld.clone().invert();
-  const objects = /* @__PURE__ */ new Map();
-  root.traverse((node) => {
-    const slot = slots.get(node.userData.capabilityNodeId);
-    if (slot !== void 0) objects.set(slot, node);
-  });
-  const count = (mesh) => isCapabilityInstancedMesh(mesh) ? mesh.count : 1;
-  const vertices = (mesh) => mesh.geometry.attributes.position.count * count(mesh);
-  try {
-    for (const candidate of plan.groups) {
-      const motionRoot = candidate.motionRootSlot === null ? root : objects.get(candidate.motionRootSlot);
-      if (!motionRoot) throw new Error("\u58F0\u660E\u8BA1\u5212\u8FD0\u52A8\u6839\u4E0D\u5B58\u5728");
-      const instanced = candidate.representation === "instances";
-      const groups = /* @__PURE__ */ new Map();
-      for (const slot of candidate.slots) {
-        const mesh = nodes.get(slot), source = sourceMap.get(slot);
-        if (!mesh || !source || !source.renderState.visible || !canBatchCapabilitySource(mesh) || mesh.geometry.attributes.color && !mesh.material.vertexColors || !instanced && vertices(mesh) > 65536) continue;
-        const key = JSON.stringify([
-          matrixMaterialGroupKey(mesh),
-          source.renderState,
-          instanced ? [mesh.geometry.uuid, mesh.material.uuid] : null
-        ]);
-        const chunks = groups.get(key) ?? [[]];
-        let chunk = chunks[chunks.length - 1];
-        if (!instanced && chunk.reduce((sum, member) => sum + vertices(member), 0) + vertices(mesh) > 65536)
-          chunks.push(chunk = []);
-        chunk.push(mesh);
-        groups.set(key, chunks);
-      }
-      for (const sources of Array.from(groups.values()).flat()) {
-        if (sources.length < 2) continue;
-        const first = sources[0];
-        const motionInverse = motionRoot.matrixWorld.clone().invert();
-        const colorBaked = sources.some((source) => !source.material.color.equals(first.material.color));
-        const parameters = sources.map(materialParameters), parametersBaked = parameters.some((values) => values.some((value, i) => value !== parameters[0][i]));
-        const inputs = sources.flatMap((source, slot) => Array.from({ length: count(source) }, (_, i) => {
-          const matrix = new Matrix4().multiplyMatrices(motionInverse, source.matrixWorld);
-          if (isCapabilityInstancedMesh(source)) {
-            const instance = new Matrix4();
-            source.getMatrixAt(i, instance);
-            matrix.multiply(instance);
-          }
-          return {
-            geometry: source.geometry,
-            matrix,
-            color: colorBaked ? source.material.color.clone() : new Color(16777215),
-            ...parametersBaked ? { materialSlot: slot } : {}
-          };
-        }));
-        if (instanced) {
-          if (!inputs.every((input) => instanceMatrixCompatible(input.matrix))) continue;
-          let geometryKey2 = sourceMap.get(slots.get(first.userData.capabilityNodeId)).node.geometryKey;
-          if (getGeometryTemplateSource(first.geometry) !== first.geometry) {
-            const identity = getPooledGeometryKey(first.geometry);
-            if (!identity) throw new Error("\u5B9E\u4F8B\u51E0\u4F55\u7F3A\u5C11\u7A33\u5B9A\u5C3A\u5BF8\u8EAB\u4EFD");
-            const key = `plugin-render-instance-geometry-v1:${identity}`;
-            if (!await store.putConfirmed(key, encodeCachedGeometry(first.geometry))) throw new Error("\u5B9E\u4F8B\u5C3A\u5BF8\u51E0\u4F55\u5199\u5165\u5931\u8D25");
-            geometryKey2 = await store.reference(key);
-          }
-          const triangleCount = (first.geometry.index?.count ?? first.geometry.attributes.position.count) / 3;
-          result.push({
-            slots: sources.map((source) => slots.get(source.userData.capabilityNodeId)),
-            counts: sources.map(count),
-            motionRootSlot: candidate.motionRootSlot,
-            layout: { geometryKey: geometryKey2 },
-            instances: inputs.flatMap((input) => input.matrix.toArray()),
-            matrix: new Matrix4().multiplyMatrices(inverse, motionRoot.matrixWorld).toArray(),
-            colorBaked: false,
-            parametersBaked: false,
-            renderState: captureCapabilityDisplayRenderState(first),
-            ranges: inputs.map((_input, partIndex) => ({ partIndex, firstTriangle: 0, triangleCount }))
-          });
-          continue;
-        }
-        const job = compiler.acquire(inputs);
-        let step = job.next();
-        while (!step.done) step = job.next();
-        const product = step.value;
-        let geometry = product.geometry;
-        try {
-          if (parametersBaked) geometry = bakeParameters(geometry, parameters);
-          const key = parametersBaked ? `${product.key}:vertex-pbr-v1:${JSON.stringify(parameters)}` : product.key;
-          if (!await store.putConfirmed(key, encodeCachedGeometry(geometry, { ranges: product.ranges })))
-            throw new Error("\u9759\u6001\u673A\u6784\u51E0\u4F55\u5199\u5165\u5931\u8D25");
-          result.push({
-            slots: sources.map((source) => slots.get(source.userData.capabilityNodeId)),
-            counts: sources.map(count),
-            motionRootSlot: slots.get(motionRoot.userData.capabilityNodeId) ?? null,
-            layout: { geometryKey: await store.reference(key) },
-            matrix: new Matrix4().multiplyMatrices(inverse, motionRoot.matrixWorld).toArray(),
-            colorBaked,
-            parametersBaked,
-            renderState: captureCapabilityDisplayRenderState(first),
-            ranges: product.ranges
-          });
-        } finally {
-          if (geometry !== product.geometry) geometry.dispose();
-          compiler.release(product);
-        }
-      }
-    }
-    return result;
-  } finally {
-    compiler.dispose();
-  }
 }
 
 // src/components/StarSky/host/runtime/sandbox/Capabilities/buildRenderAsset.ts
@@ -279512,6 +280114,7 @@ export {
   createAnchorSurfaceAttachmentProfile,
   createAxialDrilledSphereGeometry,
   createBoxLocalCorners,
+  createContainerPlacementBehavior,
   createCrescentTubeCurve,
   createFallbackMediaEntry,
   createFocusOnDoubleClickBehavior,
@@ -279522,6 +280125,7 @@ export {
   createMaterialDescriptor,
   createMediaStageDescriptor,
   createPersistentPositionBehavior,
+  createPersistentPositionContainerPlacementField,
   createPersistentPositionDataField,
   createPersistentPositionDescriptor,
   createPersistentPositionMediaIndexField,

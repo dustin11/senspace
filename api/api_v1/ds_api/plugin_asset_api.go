@@ -7,6 +7,7 @@ import (
 
 	"senspace/pkg/app"
 	"senspace/pkg/app/contextx"
+	"senspace/pkg/bizerr"
 	"senspace/pkg/e"
 	"senspace/pkg/setting"
 	"senspace/pkg/util"
@@ -200,7 +201,7 @@ func PluginAssetSaveStateFact(ctx *contextx.AppContext) {
 	factAssetId, err := strconv.ParseInt(ctx.Gin.Param("factAssetId"), 10, 64)
 	e.PanicParameterError(err)
 	scope, err := ds_service.ResolveFactPluginAssetScope(*ctx.User, factAssetId)
-	e.PanicServerErr(err)
+	bizerr.PanicHTTP(err)
 	req := bindPluginStateInput(ctx)
 	var snapshot *ds_service.PluginAssetSnapshot
 	if req.ResourceState != nil || req.Bindings != nil {
@@ -215,7 +216,7 @@ func PluginAssetSaveStateFact(ctx *contextx.AppContext) {
 			State:            req.State,
 		})
 	}
-	e.PanicServerErr(err)
+	bizerr.PanicHTTP(err)
 	app.Response(ctx.Gin, e.SuccessData(snapshot))
 }
 

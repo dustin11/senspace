@@ -24,6 +24,7 @@ import (
 	"senspace/domain/ds"
 	"senspace/domain/factory"
 	"senspace/pkg/app/security"
+	"senspace/pkg/bizerr"
 	"senspace/pkg/setting"
 	"senspace/pkg/util"
 )
@@ -1049,7 +1050,7 @@ func resolveOwnedFactoryAsset(db *gorm.DB, user security.JwtUser, factAssetId in
 	var asset factory.Asset
 	err := db.Where("id = ? AND owner_key = ? AND status = ?", factAssetId, ownerKey, factory.AssetStatusActive).First(&asset).Error
 	if errors.Is(err, gorm.ErrRecordNotFound) {
-		return nil, errors.New("插件资产实例不存在或无权访问")
+		return nil, bizerr.NotFound("插件资产实例不存在或无权访问")
 	}
 	if err != nil {
 		return nil, err

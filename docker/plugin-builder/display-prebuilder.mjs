@@ -107638,18 +107638,18 @@ ${lanes.join("\n")}
         if (!!getNamespaceDeclarationNode(node)) {
           return true;
         }
-        const bindings = node.importClause && node.importClause.namedBindings;
-        if (!bindings) {
+        const bindings2 = node.importClause && node.importClause.namedBindings;
+        if (!bindings2) {
           return false;
         }
-        if (!isNamedImports(bindings)) return false;
+        if (!isNamedImports(bindings2)) return false;
         let defaultRefCount = 0;
-        for (const binding of bindings.elements) {
+        for (const binding of bindings2.elements) {
           if (isNamedDefaultReference(binding)) {
             defaultRefCount++;
           }
         }
-        return defaultRefCount > 0 && defaultRefCount !== bindings.elements.length || !!(bindings.elements.length - defaultRefCount) && isDefaultImport(node);
+        return defaultRefCount > 0 && defaultRefCount !== bindings2.elements.length || !!(bindings2.elements.length - defaultRefCount) && isDefaultImport(node);
       }
       function getImportNeedsImportDefaultHelper(node) {
         return !getImportNeedsImportStarHelper(node) && (isDefaultImport(node) || !!node.importClause && isNamedImports(node.importClause.namedBindings) && containsDefaultReference(node.importClause.namedBindings));
@@ -110557,7 +110557,7 @@ ${lanes.join("\n")}
           const allowEmpty = !!compilerOptions.verbatimModuleSyntax;
           const exportClause = visitNode(
             node.exportClause,
-            (bindings) => visitNamedExportBindings(bindings, allowEmpty),
+            (bindings2) => visitNamedExportBindings(bindings2, allowEmpty),
             isNamedExportBindings
           );
           return exportClause ? factory2.updateExportDeclaration(
@@ -128270,9 +128270,9 @@ ${lanes.join("\n")}
             const declarations = resolver.getReferencedValueDeclarations(name);
             if (declarations) {
               for (const declaration of declarations) {
-                const bindings = currentModuleInfo == null ? void 0 : currentModuleInfo.exportedBindings[getOriginalNodeId(declaration)];
-                if (bindings) {
-                  for (const binding of bindings) {
+                const bindings2 = currentModuleInfo == null ? void 0 : currentModuleInfo.exportedBindings[getOriginalNodeId(declaration)];
+                if (bindings2) {
+                  for (const binding of bindings2) {
                     bindingsSet.add(binding);
                   }
                 }
@@ -160298,11 +160298,11 @@ interface Symbol {
             })
           );
         }
-        const selection = typeList.length > 1 ? typeList : expandedFirstType;
-        const { typeParameters, affectedTextRange } = collectTypeParameters(checker, selection, enclosingNode, file);
+        const selection2 = typeList.length > 1 ? typeList : expandedFirstType;
+        const { typeParameters, affectedTextRange } = collectTypeParameters(checker, selection2, enclosingNode, file);
         if (!typeParameters) return { info: { error: getLocaleSpecificMessage(Diagnostics.No_type_could_be_extracted_from_this_type_node) }, affectedTextRange: void 0 };
-        const typeElements = flattenTypeLiteralNodeReference(checker, selection);
-        return { info: { isJS, selection, enclosingNode, typeParameters, typeElements }, affectedTextRange };
+        const typeElements = flattenTypeLiteralNodeReference(checker, selection2);
+        return { info: { isJS, selection: selection2, enclosingNode, typeParameters, typeElements }, affectedTextRange };
       }
       function getFirstTypeAt(file, startPosition, range, isCursorRequest) {
         const currentNodes = [
@@ -160319,21 +160319,21 @@ interface Symbol {
         }
         return void 0;
       }
-      function flattenTypeLiteralNodeReference(checker, selection) {
-        if (!selection) return void 0;
-        if (isArray(selection)) {
+      function flattenTypeLiteralNodeReference(checker, selection2) {
+        if (!selection2) return void 0;
+        if (isArray(selection2)) {
           const result = [];
-          for (const type of selection) {
+          for (const type of selection2) {
             const flattenedTypeMembers = flattenTypeLiteralNodeReference(checker, type);
             if (!flattenedTypeMembers) return void 0;
             addRange(result, flattenedTypeMembers);
           }
           return result;
         }
-        if (isIntersectionTypeNode(selection)) {
+        if (isIntersectionTypeNode(selection2)) {
           const result = [];
           const seen = /* @__PURE__ */ new Set();
-          for (const type of selection.types) {
+          for (const type of selection2.types) {
             const flattenedTypeMembers = flattenTypeLiteralNodeReference(checker, type);
             if (!flattenedTypeMembers || !flattenedTypeMembers.every((type2) => type2.name && addToSeen(seen, getNameFromPropertyName(type2.name)))) {
               return void 0;
@@ -160341,19 +160341,19 @@ interface Symbol {
             addRange(result, flattenedTypeMembers);
           }
           return result;
-        } else if (isParenthesizedTypeNode(selection)) {
-          return flattenTypeLiteralNodeReference(checker, selection.type);
-        } else if (isTypeLiteralNode(selection)) {
-          return selection.members;
+        } else if (isParenthesizedTypeNode(selection2)) {
+          return flattenTypeLiteralNodeReference(checker, selection2.type);
+        } else if (isTypeLiteralNode(selection2)) {
+          return selection2.members;
         }
         return void 0;
       }
       function rangeContainsSkipTrivia(r1, node, file) {
         return rangeContainsStartEnd(r1, skipTrivia(file.text, node.pos), node.end);
       }
-      function collectTypeParameters(checker, selection, enclosingNode, file) {
+      function collectTypeParameters(checker, selection2, enclosingNode, file) {
         const result = [];
-        const selectionArray = toArray(selection);
+        const selectionArray = toArray(selection2);
         const selectionRange = { pos: selectionArray[0].getStart(file), end: selectionArray[selectionArray.length - 1].end };
         for (const t of selectionArray) {
           if (visitor(t)) return { typeParameters: void 0, affectedTextRange: void 0 };
@@ -192232,13 +192232,13 @@ ${content}
         }
         Debug.assert(selectedItemIndex !== -1);
         const help = { items: flatMapToMutable(items, identity), applicableSpan, selectedItemIndex, argumentIndex, argumentCount };
-        const selected = help.items[selectedItemIndex];
-        if (selected.isVariadic) {
-          const firstRest = findIndex(selected.parameters, (p) => !!p.isRest);
-          if (-1 < firstRest && firstRest < selected.parameters.length - 1) {
-            help.argumentIndex = selected.parameters.length;
+        const selected2 = help.items[selectedItemIndex];
+        if (selected2.isVariadic) {
+          const firstRest = findIndex(selected2.parameters, (p) => !!p.isRest);
+          if (-1 < firstRest && firstRest < selected2.parameters.length - 1) {
+            help.argumentIndex = selected2.parameters.length;
           } else {
-            help.argumentIndex = Math.min(help.argumentIndex, selected.parameters.length - 1);
+            help.argumentIndex = Math.min(help.argumentIndex, selected2.parameters.length - 1);
           }
         }
         return help;
@@ -241854,21 +241854,21 @@ var Composite = class {
     if (binding !== void 0) binding.getValue(array, offset);
   }
   setValue(array, offset) {
-    const bindings = this._bindings;
-    for (let i = this._targetGroup.nCachedObjects_, n = bindings.length; i !== n; ++i) {
-      bindings[i].setValue(array, offset);
+    const bindings2 = this._bindings;
+    for (let i = this._targetGroup.nCachedObjects_, n = bindings2.length; i !== n; ++i) {
+      bindings2[i].setValue(array, offset);
     }
   }
   bind() {
-    const bindings = this._bindings;
-    for (let i = this._targetGroup.nCachedObjects_, n = bindings.length; i !== n; ++i) {
-      bindings[i].bind();
+    const bindings2 = this._bindings;
+    for (let i = this._targetGroup.nCachedObjects_, n = bindings2.length; i !== n; ++i) {
+      bindings2[i].bind();
     }
   }
   unbind() {
-    const bindings = this._bindings;
-    for (let i = this._targetGroup.nCachedObjects_, n = bindings.length; i !== n; ++i) {
-      bindings[i].unbind();
+    const bindings2 = this._bindings;
+    for (let i = this._targetGroup.nCachedObjects_, n = bindings2.length; i !== n; ++i) {
+      bindings2[i].unbind();
     }
   }
 };
@@ -242296,7 +242296,7 @@ var AnimationObjectGroup = class {
    * @param {...Object3D} arguments - The 3D objects to add.
    */
   add() {
-    const objects = this._objects, indicesByUUID = this._indicesByUUID, paths = this._paths, parsedPaths = this._parsedPaths, bindings = this._bindings, nBindings = bindings.length;
+    const objects = this._objects, indicesByUUID = this._indicesByUUID, paths = this._paths, parsedPaths = this._parsedPaths, bindings2 = this._bindings, nBindings = bindings2.length;
     let knownObject = void 0, nObjects = objects.length, nCachedObjects = this.nCachedObjects_;
     for (let i = 0, n = arguments.length; i !== n; ++i) {
       const object = arguments[i], uuid = object.uuid;
@@ -242306,7 +242306,7 @@ var AnimationObjectGroup = class {
         indicesByUUID[uuid] = index;
         objects.push(object);
         for (let j = 0, m = nBindings; j !== m; ++j) {
-          bindings[j].push(new PropertyBinding(object, paths[j], parsedPaths[j]));
+          bindings2[j].push(new PropertyBinding(object, paths[j], parsedPaths[j]));
         }
       } else if (index < nCachedObjects) {
         knownObject = objects[index];
@@ -242316,7 +242316,7 @@ var AnimationObjectGroup = class {
         indicesByUUID[uuid] = firstActiveIndex;
         objects[firstActiveIndex] = object;
         for (let j = 0, m = nBindings; j !== m; ++j) {
-          const bindingsForPath = bindings[j], lastCached = bindingsForPath[firstActiveIndex];
+          const bindingsForPath = bindings2[j], lastCached = bindingsForPath[firstActiveIndex];
           let binding = bindingsForPath[index];
           bindingsForPath[index] = lastCached;
           if (binding === void 0) {
@@ -242336,7 +242336,7 @@ var AnimationObjectGroup = class {
    * @param {...Object3D} arguments - The 3D objects to remove.
    */
   remove() {
-    const objects = this._objects, indicesByUUID = this._indicesByUUID, bindings = this._bindings, nBindings = bindings.length;
+    const objects = this._objects, indicesByUUID = this._indicesByUUID, bindings2 = this._bindings, nBindings = bindings2.length;
     let nCachedObjects = this.nCachedObjects_;
     for (let i = 0, n = arguments.length; i !== n; ++i) {
       const object = arguments[i], uuid = object.uuid, index = indicesByUUID[uuid];
@@ -242347,7 +242347,7 @@ var AnimationObjectGroup = class {
         indicesByUUID[uuid] = lastCachedIndex;
         objects[lastCachedIndex] = object;
         for (let j = 0, m = nBindings; j !== m; ++j) {
-          const bindingsForPath = bindings[j], firstActive = bindingsForPath[lastCachedIndex], binding = bindingsForPath[index];
+          const bindingsForPath = bindings2[j], firstActive = bindingsForPath[lastCachedIndex], binding = bindingsForPath[index];
           bindingsForPath[index] = firstActive;
           bindingsForPath[lastCachedIndex] = binding;
         }
@@ -242361,7 +242361,7 @@ var AnimationObjectGroup = class {
    * @param {...Object3D} arguments - The 3D objects to uncache.
    */
   uncache() {
-    const objects = this._objects, indicesByUUID = this._indicesByUUID, bindings = this._bindings, nBindings = bindings.length;
+    const objects = this._objects, indicesByUUID = this._indicesByUUID, bindings2 = this._bindings, nBindings = bindings2.length;
     let nCachedObjects = this.nCachedObjects_, nObjects = objects.length;
     for (let i = 0, n = arguments.length; i !== n; ++i) {
       const object = arguments[i], uuid = object.uuid, index = indicesByUUID[uuid];
@@ -242375,7 +242375,7 @@ var AnimationObjectGroup = class {
           objects[firstActiveIndex] = lastObject;
           objects.pop();
           for (let j = 0, m = nBindings; j !== m; ++j) {
-            const bindingsForPath = bindings[j], lastCached = bindingsForPath[firstActiveIndex], last = bindingsForPath[lastIndex];
+            const bindingsForPath = bindings2[j], lastCached = bindingsForPath[firstActiveIndex], last = bindingsForPath[lastIndex];
             bindingsForPath[index] = lastCached;
             bindingsForPath[firstActiveIndex] = last;
             bindingsForPath.pop();
@@ -242388,7 +242388,7 @@ var AnimationObjectGroup = class {
           objects[index] = lastObject;
           objects.pop();
           for (let j = 0, m = nBindings; j !== m; ++j) {
-            const bindingsForPath = bindings[j];
+            const bindingsForPath = bindings2[j];
             bindingsForPath[index] = bindingsForPath[lastIndex];
             bindingsForPath.pop();
           }
@@ -242401,14 +242401,14 @@ var AnimationObjectGroup = class {
   subscribe_(path2, parsedPath) {
     const indicesByPath = this._bindingsIndicesByPath;
     let index = indicesByPath[path2];
-    const bindings = this._bindings;
-    if (index !== void 0) return bindings[index];
+    const bindings2 = this._bindings;
+    if (index !== void 0) return bindings2[index];
     const paths = this._paths, parsedPaths = this._parsedPaths, objects = this._objects, nObjects = objects.length, nCachedObjects = this.nCachedObjects_, bindingsForPath = new Array(nObjects);
-    index = bindings.length;
+    index = bindings2.length;
     indicesByPath[path2] = index;
     paths.push(path2);
     parsedPaths.push(parsedPath);
-    bindings.push(bindingsForPath);
+    bindings2.push(bindingsForPath);
     for (let i = nCachedObjects, n = objects.length; i !== n; ++i) {
       const object = objects[i];
       bindingsForPath[i] = new PropertyBinding(object, path2, parsedPath);
@@ -242418,10 +242418,10 @@ var AnimationObjectGroup = class {
   unsubscribe_(path2) {
     const indicesByPath = this._bindingsIndicesByPath, index = indicesByPath[path2];
     if (index !== void 0) {
-      const paths = this._paths, parsedPaths = this._parsedPaths, bindings = this._bindings, lastBindingsIndex = bindings.length - 1, lastBindings = bindings[lastBindingsIndex], lastBindingsPath = path2[lastBindingsIndex];
+      const paths = this._paths, parsedPaths = this._parsedPaths, bindings2 = this._bindings, lastBindingsIndex = bindings2.length - 1, lastBindings = bindings2[lastBindingsIndex], lastBindingsPath = path2[lastBindingsIndex];
       indicesByPath[lastBindingsPath] = index;
-      bindings[index] = lastBindings;
-      bindings.pop();
+      bindings2[index] = lastBindings;
+      bindings2.pop();
       parsedPaths[index] = parsedPaths[lastBindingsIndex];
       parsedPaths.pop();
       paths[index] = paths[lastBindingsIndex];
@@ -242951,7 +242951,7 @@ var AnimationMixer = class extends EventDispatcher {
     this.timeScale = 1;
   }
   _bindAction(action, prototypeAction) {
-    const root = action._localRoot || this._root, tracks = action._clip.tracks, nTracks = tracks.length, bindings = action._propertyBindings, interpolants = action._interpolants, rootUuid = root.uuid, bindingsByRoot = this._bindingsByRootAndName;
+    const root = action._localRoot || this._root, tracks = action._clip.tracks, nTracks = tracks.length, bindings2 = action._propertyBindings, interpolants = action._interpolants, rootUuid = root.uuid, bindingsByRoot = this._bindingsByRootAndName;
     let bindingsByName = bindingsByRoot[rootUuid];
     if (bindingsByName === void 0) {
       bindingsByName = {};
@@ -242962,9 +242962,9 @@ var AnimationMixer = class extends EventDispatcher {
       let binding = bindingsByName[trackName];
       if (binding !== void 0) {
         ++binding.referenceCount;
-        bindings[i] = binding;
+        bindings2[i] = binding;
       } else {
-        binding = bindings[i];
+        binding = bindings2[i];
         if (binding !== void 0) {
           if (binding._cacheIndex === null) {
             ++binding.referenceCount;
@@ -242980,7 +242980,7 @@ var AnimationMixer = class extends EventDispatcher {
         );
         ++binding.referenceCount;
         this._addInactiveBinding(binding, rootUuid, trackName);
-        bindings[i] = binding;
+        bindings2[i] = binding;
       }
       interpolants[i].resultBuffer = binding.buffer;
     }
@@ -242995,9 +242995,9 @@ var AnimationMixer = class extends EventDispatcher {
         );
         this._addInactiveAction(action, clipUuid, rootUuid);
       }
-      const bindings = action._propertyBindings;
-      for (let i = 0, n = bindings.length; i !== n; ++i) {
-        const binding = bindings[i];
+      const bindings2 = action._propertyBindings;
+      for (let i = 0, n = bindings2.length; i !== n; ++i) {
+        const binding = bindings2[i];
         if (binding.useCount++ === 0) {
           this._lendBinding(binding);
           binding.saveOriginalState();
@@ -243008,9 +243008,9 @@ var AnimationMixer = class extends EventDispatcher {
   }
   _deactivateAction(action) {
     if (this._isActiveAction(action)) {
-      const bindings = action._propertyBindings;
-      for (let i = 0, n = bindings.length; i !== n; ++i) {
-        const binding = bindings[i];
+      const bindings2 = action._propertyBindings;
+      for (let i = 0, n = bindings2.length; i !== n; ++i) {
+        const binding = bindings2[i];
         if (--binding.useCount === 0) {
           binding.restoreOriginalState();
           this._takeBackBinding(binding);
@@ -243100,9 +243100,9 @@ var AnimationMixer = class extends EventDispatcher {
     this._removeInactiveBindingsForAction(action);
   }
   _removeInactiveBindingsForAction(action) {
-    const bindings = action._propertyBindings;
-    for (let i = 0, n = bindings.length; i !== n; ++i) {
-      const binding = bindings[i];
+    const bindings2 = action._propertyBindings;
+    for (let i = 0, n = bindings2.length; i !== n; ++i) {
+      const binding = bindings2[i];
       if (--binding.referenceCount === 0) {
         this._removeInactiveBinding(binding);
       }
@@ -243124,39 +243124,39 @@ var AnimationMixer = class extends EventDispatcher {
   }
   // Memory management for PropertyMixer objects
   _addInactiveBinding(binding, rootUuid, trackName) {
-    const bindingsByRoot = this._bindingsByRootAndName, bindings = this._bindings;
+    const bindingsByRoot = this._bindingsByRootAndName, bindings2 = this._bindings;
     let bindingByName = bindingsByRoot[rootUuid];
     if (bindingByName === void 0) {
       bindingByName = {};
       bindingsByRoot[rootUuid] = bindingByName;
     }
     bindingByName[trackName] = binding;
-    binding._cacheIndex = bindings.length;
-    bindings.push(binding);
+    binding._cacheIndex = bindings2.length;
+    bindings2.push(binding);
   }
   _removeInactiveBinding(binding) {
-    const bindings = this._bindings, propBinding = binding.binding, rootUuid = propBinding.rootNode.uuid, trackName = propBinding.path, bindingsByRoot = this._bindingsByRootAndName, bindingByName = bindingsByRoot[rootUuid], lastInactiveBinding = bindings[bindings.length - 1], cacheIndex = binding._cacheIndex;
+    const bindings2 = this._bindings, propBinding = binding.binding, rootUuid = propBinding.rootNode.uuid, trackName = propBinding.path, bindingsByRoot = this._bindingsByRootAndName, bindingByName = bindingsByRoot[rootUuid], lastInactiveBinding = bindings2[bindings2.length - 1], cacheIndex = binding._cacheIndex;
     lastInactiveBinding._cacheIndex = cacheIndex;
-    bindings[cacheIndex] = lastInactiveBinding;
-    bindings.pop();
+    bindings2[cacheIndex] = lastInactiveBinding;
+    bindings2.pop();
     delete bindingByName[trackName];
     if (Object.keys(bindingByName).length === 0) {
       delete bindingsByRoot[rootUuid];
     }
   }
   _lendBinding(binding) {
-    const bindings = this._bindings, prevIndex = binding._cacheIndex, lastActiveIndex = this._nActiveBindings++, firstInactiveBinding = bindings[lastActiveIndex];
+    const bindings2 = this._bindings, prevIndex = binding._cacheIndex, lastActiveIndex = this._nActiveBindings++, firstInactiveBinding = bindings2[lastActiveIndex];
     binding._cacheIndex = lastActiveIndex;
-    bindings[lastActiveIndex] = binding;
+    bindings2[lastActiveIndex] = binding;
     firstInactiveBinding._cacheIndex = prevIndex;
-    bindings[prevIndex] = firstInactiveBinding;
+    bindings2[prevIndex] = firstInactiveBinding;
   }
   _takeBackBinding(binding) {
-    const bindings = this._bindings, prevIndex = binding._cacheIndex, firstInactiveIndex = --this._nActiveBindings, lastActiveBinding = bindings[firstInactiveIndex];
+    const bindings2 = this._bindings, prevIndex = binding._cacheIndex, firstInactiveIndex = --this._nActiveBindings, lastActiveBinding = bindings2[firstInactiveIndex];
     binding._cacheIndex = firstInactiveIndex;
-    bindings[firstInactiveIndex] = binding;
+    bindings2[firstInactiveIndex] = binding;
     lastActiveBinding._cacheIndex = prevIndex;
-    bindings[prevIndex] = lastActiveBinding;
+    bindings2[prevIndex] = lastActiveBinding;
   }
   // Memory management of Interpolants for weight and time scale
   _lendControlInterpolant() {
@@ -243263,9 +243263,9 @@ var AnimationMixer = class extends EventDispatcher {
       const action = actions[i];
       action._update(time, deltaTime, timeDirection, accuIndex);
     }
-    const bindings = this._bindings, nBindings = this._nActiveBindings;
+    const bindings2 = this._bindings, nBindings = this._nActiveBindings;
     for (let i = 0; i !== nBindings; ++i) {
-      bindings[i].apply(accuIndex);
+      bindings2[i].apply(accuIndex);
     }
     return this;
   }
@@ -256310,6 +256310,10 @@ function definePluginSpatialProfile(profile) {
   if (focusAnchorId && !resolveSpaceAnchor(anchors, focusAnchorId)) {
     throw new Error(`\u805A\u7126\u7A7A\u95F4\u951A\u70B9\u4E0D\u5B58\u5728: ${focusAnchorId}`);
   }
+  const stackAnchorId = profile.stackTargetAnchorId;
+  if (stackAnchorId && resolveSpaceAnchor(anchors, stackAnchorId)?.kind !== "frame") {
+    throw new Error(`\u5806\u53E0\u627F\u8F7D\u5FC5\u987B\u5F15\u7528 frame \u7A7A\u95F4\u951A\u70B9: ${stackAnchorId}`);
+  }
   const bodyCenterAnchorId = profile.body?.centerAnchorId;
   const bodyCenterAnchor = resolveSpaceAnchor(anchors, bodyCenterAnchorId);
   if (bodyCenterAnchorId && bodyCenterAnchor?.kind !== "point") {
@@ -256466,11 +256470,14 @@ function resolveDynamicSurfaceFootprintCollisionInfo(plugin, options = {}) {
   const surface = mountParent && surfaceCandidate?.parentObject !== mountParent ? null : surfaceCandidate;
   const referencePosition = options.referencePosition || resolveDynamicFootprintReferencePosition(plugin, collisionMesh) || new Vector3();
   const blockingHeight = Number.isFinite(options.blockingHeight) && (options.blockingHeight || 0) > 0 ? Number(options.blockingHeight) : 0;
+  const bodyRefNode = blockingHeight > 0 && footprint.bodyRefNodeId ? resolveDynamicFootprintRefNode(collisionMesh, footprint.bodyRefNodeId) : null;
   refNode.updateWorldMatrix(true, true);
+  bodyRefNode?.updateWorldMatrix(true, true);
   mountParent?.updateWorldMatrix(true, false);
   const cacheKey = [
     blockingHeight > 0 ? blockingHeight.toFixed(4) : "base",
     getDynamicFootprintMatrixCacheSignature(refNode.matrixWorld),
+    bodyRefNode ? getDynamicFootprintMatrixCacheSignature(bodyRefNode.matrixWorld) : "support-only",
     mountParent ? getDynamicFootprintMatrixCacheSignature(mountParent.matrixWorld) : "world",
     surface?.id || "surface"
   ].join("|");
@@ -256488,7 +256495,8 @@ function resolveDynamicSurfaceFootprintCollisionInfo(plugin, options = {}) {
     mountParent,
     surface,
     footprint,
-    blockingHeight
+    blockingHeight,
+    bodyRefNode
   });
   if (bandPoints.length === 0) {
     return null;
@@ -256653,25 +256661,35 @@ function getDynamicFootprintSupportBandPoints(options) {
     mountParent,
     surface,
     footprint,
-    blockingHeight
+    blockingHeight,
+    bodyRefNode
   } = options;
   refNode.updateWorldMatrix(true, true);
   const footprintExtent = footprint.shape === "circle" ? footprint.radius * 2 : Math.max(footprint.width, footprint.depth);
   const bandTolerance = Math.max(1e-3, footprintExtent * 0.04);
   const projectedPoints = [];
   let minHeight = Infinity;
-  for (const localPoint of localSamplePoints) {
-    const worldPoint = localPoint.clone().applyMatrix4(refNode.matrixWorld);
-    const projected = projectDynamicFootprintPoint(
-      worldPoint,
-      mountParent,
-      surface
-    );
-    if (!projected) {
-      continue;
+  const sampleSources = [{ node: refNode, points: localSamplePoints }];
+  if (bodyRefNode && bodyRefNode !== refNode) {
+    sampleSources.push({
+      node: bodyRefNode,
+      points: getDynamicFootprintLocalSamplePoints(bodyRefNode)
+    });
+  }
+  for (const { node, points } of sampleSources) {
+    for (const localPoint of points) {
+      const worldPoint = localPoint.clone().applyMatrix4(node.matrixWorld);
+      const projected = projectDynamicFootprintPoint(
+        worldPoint,
+        mountParent,
+        surface
+      );
+      if (!projected) {
+        continue;
+      }
+      projectedPoints.push(projected);
+      minHeight = Math.min(minHeight, projected.height);
     }
-    projectedPoints.push(projected);
-    minHeight = Math.min(minHeight, projected.height);
   }
   if (!Number.isFinite(minHeight) || projectedPoints.length === 0) {
     return [];
@@ -256725,7 +256743,8 @@ function getDynamicFootprintLocalSamplePoints(refNode) {
     }
     const nodeMatrix = inverseRefWorld.clone().multiply(mesh.matrixWorld);
     const instance = mesh;
-    const count = instance.isInstancedMesh ? instance.count : 1;
+    const hasInstances = !!instance.instanceMatrix && typeof instance.getMatrixAt === "function";
+    const count = hasInstances ? instance.count : 1;
     const step = Math.max(
       1,
       Math.ceil(
@@ -256734,7 +256753,7 @@ function getDynamicFootprintLocalSamplePoints(refNode) {
     );
     for (let part = 0; part < count; part++) {
       const localMatrix = new Matrix4();
-      if (instance.isInstancedMesh) instance.getMatrixAt(part, localMatrix);
+      if (hasInstances) instance.getMatrixAt(part, localMatrix);
       localMatrix.premultiply(nodeMatrix);
       for (let index = 0; index < positionAttribute.count; index += step) {
         samplePoints.push(
@@ -257356,10 +257375,7 @@ function resolveSurfaceWorldReferenceAxis(surface, options) {
   const originWorld = resolveSurfaceOriginWorld(surface);
   const localPositiveZWorld = surface.surfaceToWorld(new Vector3(0, 0, 1)).sub(originWorld).projectOnPlane(options.normalWorld);
   const preferredReferenceWorld = localPositiveZWorld.lengthSq() > 1e-8 ? localPositiveZWorld.normalize() : void 0;
-  const frame = surface.resolveFrameAtPoint?.(
-    options.surfacePoint,
-    preferredReferenceWorld
-  );
+  const frame = surface.resolveFrameAtPoint?.(options.surfacePoint);
   const tangentUpWorld = frame?.tangentUpWorld?.clone() || null;
   if (tangentUpWorld && tangentUpWorld.lengthSq() > 1e-8) {
     tangentUpWorld.projectOnPlane(options.normalWorld);
@@ -257505,14 +257521,12 @@ function resolveSurfaceHingedTiltPose(options) {
   if (options.surface.shape === "rect" || options.surface.shape === "polygon") {
     clampedSurfacePoint.y = 0;
   }
-  const baseWorldPosition = options.surface.surfaceToWorld(
-    clampedSurfacePoint.clone()
-  );
-  const surfaceNormal = resolveSurfaceWorldNormal(options.surface, {
+  const baseWorldPosition = options.supportFrame?.origin.clone() || options.surface.surfaceToWorld(clampedSurfacePoint.clone());
+  const surfaceNormal = options.supportFrame?.forward.clone() || resolveSurfaceWorldNormal(options.surface, {
     worldPoint: baseWorldPosition
   }) || new Vector3(0, 1, 0);
   const rotationAxisLocal = options.rotationAxisLocal?.clone().normalize() || new Vector3(0, 1, 0);
-  const surfaceFrame = options.mountFrame ? resolveSurfaceWorldFrameAtPoint(options.surface, clampedSurfacePoint) : null;
+  const surfaceFrame = options.mountFrame ? options.supportFrame || resolveSurfaceWorldFrameAtPoint(options.surface, clampedSurfacePoint) : null;
   if (options.mountFrame && surfaceFrame) {
     const pluginLocalDelta = createPluginLocalBehaviorMatrix({
       mountFrame: options.mountFrame,
@@ -257785,6 +257799,7 @@ function resolveSurfaceTiltCanonicalSupportedPose(options) {
     baseSurfacePoint: options.anchorPoint,
     baseWorldQuaternion: options.baseWorldQuaternion,
     mountFrame: options.mountFrame,
+    supportFrame: options.supportFrame,
     angle: options.angle,
     horizontalAngle: options.horizontalAngle,
     hingeRadius: 0,
@@ -258163,15 +258178,24 @@ function createSurfaceAnchoredTiltBehavior(options) {
     }
     return clampedPoint;
   };
-  const resolveTiltBodyLocalCorners = (plugin, _target2) => {
+  const resolveTiltBodyLocalCorners = (plugin, target) => {
     const attachmentProfile = resolvePluginSurfaceAttachmentProfile(plugin);
-    return resolveSurfaceTiltClampLocalCorners({
+    const corners = resolveSurfaceTiltClampLocalCorners({
       spatialProfile: plugin.getSpatialProfile(),
       mountFrame: attachmentProfile.mountFrame
     });
+    const worldScale = target.getWorldScale(new Vector3());
+    return corners?.map((corner) => corner.multiply(worldScale)) || null;
+  };
+  const resolveTiltMountFrame = (plugin, target) => {
+    const frame = resolvePluginSurfaceAttachmentProfile(plugin).mountFrame;
+    return {
+      ...frame,
+      origin: frame.origin.clone().multiply(target.getWorldScale(new Vector3()))
+    };
   };
   const clampAnchorPointByTiltedPose = (plugin, target, surface, anchorPoint, margin) => {
-    if (surface.shape !== "rect") {
+    if (getPluginSnappingStackPlacementState(plugin)?.support || surface.shape !== "rect") {
       return null;
     }
     const bounds = surface.getBoundsMetadata?.();
@@ -258191,7 +258215,6 @@ function createSurfaceAnchoredTiltBehavior(options) {
       referencePosition: new Vector3(anchorPoint.x, 0, anchorPoint.z)
     });
     const state = getState(plugin);
-    const attachmentProfile = resolvePluginSurfaceAttachmentProfile(plugin);
     return clampSurfaceTiltAnchorPointByPose({
       surface,
       target,
@@ -258202,7 +258225,7 @@ function createSurfaceAnchoredTiltBehavior(options) {
         target,
         "vertical"
       ),
-      mountFrame: resolvePoseTargetPositionMode() === "world-pose" && target === plugin.mesh ? attachmentProfile.mountFrame : void 0,
+      mountFrame: resolvePoseTargetPositionMode() === "world-pose" && target === plugin.mesh ? resolveTiltMountFrame(plugin, target) : void 0,
       angle: state.currentAngle,
       hingeRadius: resolveHingeRadius(plugin, "vertical"),
       hingeOffsetLocal: resolveHingeOffsetLocal(plugin, "vertical"),
@@ -258528,10 +258551,25 @@ function createSurfaceAnchoredTiltBehavior(options) {
     plugin.behaviorState[SURFACE_ANCHORED_TILT_BEHAVIOR_KEY] = created;
     return created;
   };
+  const resolveStackSupportFrame = (plugin, target, surface, anchorPoint) => {
+    const state = getState(plugin);
+    return resolvePluginSnappingTiltSupportFrame(plugin, {
+      surface,
+      currentWorldPosition: target.getWorldPosition(new Vector3()),
+      baseSurfacePoint: anchorPoint,
+      baseWorldQuaternion: resolveBaseWorldQuaternion(plugin, target, "vertical"),
+      mountFrame: resolveTiltMountFrame(plugin, target),
+      angle: state.currentAngle,
+      horizontalAngle: state.currentHorizontalAngle,
+      hingeRadius: resolveHingeRadius(plugin, "vertical"),
+      hingeOffsetLocal: resolveHingeOffsetLocal(plugin, "vertical"),
+      rotationAxisLocal: resolveRotationAxisLocal(plugin, "vertical"),
+      surfaceTiltClampLocalCorners: resolveTiltBodyLocalCorners(plugin, target) || void 0
+    });
+  };
   const applyResolvedPose = (plugin, target, surface, channel, angle, horizontalAngle, anchorPoint, updateState = true) => {
     const state = getState(plugin);
     const localCorners = resolveTiltBodyLocalCorners(plugin, target) || void 0;
-    const attachmentProfile = resolvePluginSurfaceAttachmentProfile(plugin);
     const useMountFrame = resolvePoseTargetPositionMode() === "world-pose" && target === plugin.mesh;
     const horizontalQuaternion = createSurfaceTiltHorizontalQuaternion({
       surface,
@@ -258544,7 +258582,8 @@ function createSurfaceAnchoredTiltBehavior(options) {
       currentWorldPosition: target.getWorldPosition(new Vector3()),
       baseSurfacePoint: anchorPoint,
       baseWorldQuaternion: resolveBaseWorldQuaternion(plugin, target, channel),
-      mountFrame: useMountFrame ? attachmentProfile.mountFrame : void 0,
+      mountFrame: useMountFrame ? resolveTiltMountFrame(plugin, target) : void 0,
+      supportFrame: useMountFrame ? resolveStackSupportFrame(plugin, target, surface, anchorPoint) : void 0,
       angle,
       hingeRadius: channel === "vertical" ? resolveHingeRadius(plugin, "vertical") : 0,
       hingeOffsetLocal: channel === "vertical" ? resolveHingeOffsetLocal(plugin, "vertical") : void 0,
@@ -258623,7 +258662,6 @@ function createSurfaceAnchoredTiltBehavior(options) {
     if (!verticalTarget) {
       return false;
     }
-    const attachmentProfile = resolvePluginSurfaceAttachmentProfile(plugin);
     const useMountFrame = resolvePoseTargetPositionMode() === "world-pose" && verticalTarget === plugin.mesh;
     const horizontalQuaternion = createSurfaceTiltHorizontalQuaternion({
       surface,
@@ -258639,13 +258677,15 @@ function createSurfaceAnchoredTiltBehavior(options) {
         verticalTarget,
         "vertical"
       ),
-      mountFrame: useMountFrame ? attachmentProfile.mountFrame : void 0,
+      mountFrame: useMountFrame ? resolveTiltMountFrame(plugin, verticalTarget) : void 0,
+      supportFrame: useMountFrame ? resolveStackSupportFrame(plugin, verticalTarget, surface, anchorPoint) : void 0,
       angle,
+      horizontalAngle: useMountFrame ? horizontalAngle : void 0,
       rotationAxisLocal: resolveRotationAxisLocal(plugin, "vertical"),
       travelAxisLocal: resolveTravelAxisLocal(plugin, "vertical"),
       surfaceTiltClampLocalCorners: resolveTiltBodyLocalCorners(plugin, verticalTarget) || void 0
     });
-    if (horizontalQuaternion) {
+    if (!useMountFrame && horizontalQuaternion) {
       pose.quaternion.premultiply(horizontalQuaternion);
     }
     const anchorPlacementTarget = resolveAnchorPlacementTarget(
@@ -258977,7 +259017,22 @@ function resolveSurfaceTiltCapabilityValue(plugin, value) {
   return value;
 }
 
+// src/components/StarSky/PluginFramework/utils/objectTree/findDescendantByNodeId.ts
+function findDescendantByNodeId(root, nodeId) {
+  if (!root || !nodeId.trim()) {
+    return null;
+  }
+  let resolved = null;
+  root.traverse((object) => {
+    if (!resolved && object.userData?.capabilityNodeId === nodeId) {
+      resolved = object;
+    }
+  });
+  return resolved;
+}
+
 // src/components/StarSky/PluginFramework/behaviors/pluginSnappingCore.ts
+var stackTargetNodeCache = /* @__PURE__ */ new WeakMap();
 var PLUGIN_SNAPPING_BEHAVIOR_KEY = "pluginSnappingBehavior";
 var PLUGIN_SNAPPING_STACK_PLACEMENT_KEY = "pluginSnappingStackPlacement";
 var DEFAULT_PLUGIN_SNAPPING_GAP = 2e-3;
@@ -259058,16 +259113,16 @@ function setPluginSnappingStackPlacementState(plugin, placement) {
     state.worldPoint = null;
     state.targetPluginId = null;
     state.targetRelativeQuaternion = null;
+    state.support = void 0;
     return true;
   }
   const previousTargetPluginId = state.targetPluginId;
-  const nextTargetPluginId = normalizePluginSnappingTargetPluginId(
-    placement.targetPluginId
-  );
+  const nextTargetPluginId = placement.targetPluginId === void 0 ? previousTargetPluginId : normalizePluginSnappingTargetPluginId(placement.targetPluginId);
   state.active = true;
   state.anchorPoint = placement.anchorPoint.clone();
   state.worldPoint = placement.worldPoint.clone();
   state.targetPluginId = nextTargetPluginId;
+  if (previousTargetPluginId !== nextTargetPluginId) state.support = void 0;
   if (placement.targetRelativeQuaternion !== void 0) {
     state.targetRelativeQuaternion = placement.targetRelativeQuaternion ? placement.targetRelativeQuaternion.clone().normalize() : null;
   } else if (previousTargetPluginId !== nextTargetPluginId) {
@@ -259141,6 +259196,81 @@ function setPluginSnappingStackPlacementPersistedState(plugin, value) {
 function resolvePluginSnappingSceneObject(plugin) {
   return plugin?.getCollisionMesh?.() || plugin?.getMesh?.() || plugin?.mesh || null;
 }
+function resolvePluginSnappingTargetObject(plugin) {
+  const root = resolvePluginSnappingSceneObject(plugin);
+  const profile = plugin?.getSpatialProfile?.();
+  const anchor = resolveSpaceAnchor(
+    profile?.anchors,
+    profile?.stackTargetAnchorId
+  );
+  if (!root || !anchor?.nodeId) return root;
+  const cached = stackTargetNodeCache.get(root);
+  if (cached?.nodeId === anchor.nodeId) {
+    let ancestor = cached.node;
+    while (ancestor) {
+      if (ancestor === root) return cached.node;
+      ancestor = ancestor.parent;
+    }
+  }
+  const node = findDescendantByNodeId(root, anchor.nodeId) || findDescendantByName(root, anchor.nodeId);
+  if (node) stackTargetNodeCache.set(root, { nodeId: anchor.nodeId, node });
+  return node;
+}
+function resolvePluginSnappingTargetLocalBounds(plugin) {
+  const target = resolvePluginSnappingTargetObject(plugin);
+  if (!target) return null;
+  if (target === resolvePluginSnappingSceneObject(plugin)) {
+    return resolvePluginSnappingProfileLocalBounds(plugin);
+  }
+  const geometry = target.geometry;
+  if (geometry) {
+    if (!geometry.boundingBox) geometry.computeBoundingBox();
+    return geometry.boundingBox?.clone() || null;
+  }
+  target.updateWorldMatrix(true, true);
+  return resolveObjectLocalBounds(target);
+}
+function resolvePluginSnappingTiltSupportFrame(plugin, currentPose) {
+  const placement = getPluginSnappingStackPlacementState(plugin);
+  const support = placement?.active ? placement.support : void 0;
+  if (!support || !currentPose.mountFrame) return void 0;
+  support.object.updateWorldMatrix(true, false);
+  const frame = {
+    origin: support.frame.origin.clone().applyMatrix4(support.object.matrixWorld),
+    forward: support.frame.forward.clone().transformDirection(support.object.matrixWorld),
+    up: support.frame.up.clone().transformDirection(support.object.matrixWorld),
+    right: new Vector3()
+  };
+  if (!support.calibrated) {
+    const source = resolvePluginSnappingSceneObject(plugin);
+    if (!source) return void 0;
+    const zeroQuaternion = new Quaternion().setFromAxisAngle(
+      frame.forward,
+      -(currentPose.horizontalAngle || 0)
+    ).multiply(source.getWorldQuaternion(new Quaternion())).multiply(
+      new Quaternion().setFromAxisAngle(
+        currentPose.rotationAxisLocal || new Vector3(0, 1, 0),
+        -currentPose.angle
+      )
+    );
+    const up = currentPose.mountFrame.up.clone().applyQuaternion(zeroQuaternion);
+    up.addScaledVector(frame.forward, -up.dot(frame.forward));
+    if (up.lengthSq() > 1e-8) frame.up.copy(up.normalize());
+    frame.right.crossVectors(frame.up, frame.forward).normalize();
+    frame.up.crossVectors(frame.forward, frame.right).normalize();
+    const baseline = resolveSurfaceHingedTiltPose({ ...currentPose, supportFrame: frame });
+    const delta = currentPose.currentWorldPosition.clone().sub(baseline.position);
+    delta.addScaledVector(frame.forward, -delta.dot(frame.forward));
+    frame.origin.add(delta);
+    support.frame.origin.copy(support.object.worldToLocal(frame.origin.clone()));
+    support.frame.up.copy(frame.up).transformDirection(support.object.matrixWorld.clone().invert());
+    support.frame.right.crossVectors(support.frame.up, support.frame.forward).normalize();
+    support.calibrated = true;
+  }
+  frame.right.crossVectors(frame.up, frame.forward).normalize();
+  frame.up.crossVectors(frame.forward, frame.right).normalize();
+  return frame;
+}
 function resolvePluginSnappingTargetRelativeQuaternion(plugin, targetPlugin) {
   const object = resolvePluginSnappingSceneObject(plugin);
   const targetObject = resolvePluginSnappingSceneObject(targetPlugin);
@@ -259179,12 +259309,15 @@ function resolvePluginSnappingProfileLocalBounds(plugin) {
   return profileLocalBoundsBox.isEmpty() ? null : profileLocalBoundsBox.clone();
 }
 function resolvePluginSnappingStackNormalWorld(plugin, object) {
+  const profile = plugin?.getSpatialProfile?.();
+  const stackAnchor = resolveSpaceAnchor(profile?.anchors, profile?.stackTargetAnchorId);
   const attachment = resolveSurfaceAttachmentProfile({
-    spaceAnchors: plugin?.getSpatialProfile?.()?.anchors,
+    spaceAnchors: profile?.anchors,
     attachmentProfile: plugin?.getSurfaceAttachmentProfile?.()
   });
   object.updateWorldMatrix(true, false);
-  return attachment.mountFrame.forward.clone().applyQuaternion(
+  const normal = stackAnchor?.kind === "frame" ? resolveSpaceFrame(stackAnchor).forward : attachment.mountFrame.forward.clone();
+  return normal.applyQuaternion(
     object.getWorldQuaternion(new Quaternion())
   );
 }
@@ -260397,13 +260530,13 @@ function createPersistentPositionMediaIndexField(binding) {
     }
   };
 }
-function createPersistentPositionDataField(bindings) {
+function createPersistentPositionDataField(bindings2) {
   return {
     id: "data",
     saveOrder: 500,
     restoreOrder: 500,
     serialize(plugin, writer) {
-      const data = serializePersistentPositionData(plugin, bindings);
+      const data = serializePersistentPositionData(plugin, bindings2);
       if (!data) {
         return;
       }
@@ -260414,7 +260547,7 @@ function createPersistentPositionDataField(bindings) {
       writer.markWritten();
     },
     restore(plugin, reader) {
-      restorePersistentPositionData(plugin, reader.payload.data, bindings);
+      restorePersistentPositionData(plugin, reader.payload.data, bindings2);
     }
   };
 }
@@ -260647,12 +260780,12 @@ function restorePersistentSurfacePosition(plugin, data) {
   const restoredPoint = data.dimensions === 2 && currentSurface?.shape === "mesh" ? currentSurface.clampSurfacePoint(data.point.clone(), 0) : data.point;
   plugin.attachment.localPoint.copy(restoredPoint);
 }
-function serializePersistentPositionData(plugin, bindings) {
-  if (!bindings || bindings.length === 0) {
+function serializePersistentPositionData(plugin, bindings2) {
+  if (!bindings2 || bindings2.length === 0) {
     return null;
   }
   const data = {};
-  bindings.forEach((binding) => {
+  bindings2.forEach((binding) => {
     if (!binding.key || !binding.get) {
       return;
     }
@@ -260660,21 +260793,21 @@ function serializePersistentPositionData(plugin, bindings) {
   });
   return Object.keys(data).length > 0 ? data : null;
 }
-function restorePersistentPositionData(plugin, value, bindings) {
-  if (!bindings || bindings.length === 0) {
+function restorePersistentPositionData(plugin, value, bindings2) {
+  if (!bindings2 || bindings2.length === 0) {
     return;
   }
   const data = readPersistentPositionDataRecord(value);
   if (!data) {
     return;
   }
-  bindings.forEach((binding) => {
+  bindings2.forEach((binding) => {
     if (!binding.key || !(binding.key in data)) {
       return;
     }
     binding.set?.(plugin, data[binding.key]);
   });
-  bindings.forEach((binding) => binding.apply?.(plugin));
+  bindings2.forEach((binding) => binding.apply?.(plugin));
 }
 
 // src/components/StarSky/PluginFramework/behaviors/persistentPositionBehavior.ts
@@ -260866,7 +260999,7 @@ function createPluginSnappingBehavior(options = {}) {
   };
   const resolvePreviewRootObject = (plugin, targetPlugin) => {
     const sourceObject = resolvePluginSnappingSceneObject(plugin);
-    const targetObject = resolvePluginSnappingSceneObject(
+    const targetObject = resolvePluginSnappingTargetObject(
       targetPlugin
     );
     return sourceObject?.parent || targetPlugin.getParentGroup?.() || targetObject?.parent || null;
@@ -260924,13 +261057,13 @@ function createPluginSnappingBehavior(options = {}) {
       return null;
     }
     const sourceObject = resolvePluginSnappingSceneObject(plugin);
-    const targetMesh = resolvePluginSnappingSceneObject(
+    const targetMesh = resolvePluginSnappingTargetObject(
       targetPlugin
     );
     const rootObject = resolvePreviewRootObject(plugin, targetPlugin);
     const previewSize = resolvePreviewSizeFromPlugin(plugin);
     const sourceLocalBounds = resolveProfileLocalBounds(plugin);
-    const targetLocalBounds = resolveProfileLocalBounds(targetPlugin);
+    const targetLocalBounds = resolvePluginSnappingTargetLocalBounds(targetPlugin);
     const targetWorldBounds = resolvePluginSnappingProfileWorldBounds(
       targetMesh,
       targetLocalBounds
@@ -260961,7 +261094,7 @@ function createPluginSnappingBehavior(options = {}) {
     }
     const targetPlugin = state.lastSnapTargetPlugin;
     const sourceObject = resolvePluginSnappingSceneObject(plugin);
-    const targetObject = targetPlugin && resolvePluginSnappingSceneObject(
+    const targetObject = targetPlugin && resolvePluginSnappingTargetObject(
       targetPlugin
     );
     applyPluginSnappingSourceCommitPose(
@@ -260990,10 +261123,10 @@ function createPluginSnappingBehavior(options = {}) {
       targetPluginId: targetPlugin.id,
       previewSize: resolvePreviewSizeFromPlugin(plugin),
       sourceLocalBounds: resolveProfileLocalBounds(plugin),
-      targetLocalBounds: resolveProfileLocalBounds(targetPlugin),
+      targetLocalBounds: resolvePluginSnappingTargetLocalBounds(targetPlugin),
       targetWorldBounds: resolvePluginSnappingProfileWorldBounds(
         targetObject,
-        resolveProfileLocalBounds(targetPlugin)
+        resolvePluginSnappingTargetLocalBounds(targetPlugin)
       ),
       stackNormalWorld: resolvePluginSnappingStackNormalWorld(targetPlugin, targetObject),
       gap: options.resolveGap?.(plugin, targetPlugin) ?? DEFAULT_PLUGIN_SNAPPING_GAP
@@ -265369,6 +265502,9 @@ function createPluginActionIconTexture(icon, textureSize = DEFAULT_TEXTURE_SIZE)
   if (icon === "settings") {
     return createSettingsIconTexture(textureSize);
   }
+  if (icon === "focus") {
+    return createGestureIconTexture({ glyph: "\u25CE", textureSize, fillStyle: ACTION_ICON_FACE_STYLE });
+  }
   return createInfoIconTexture(textureSize);
 }
 function createPluginActionButton(config, options = {}) {
@@ -265411,6 +265547,8 @@ function createPluginActionButton(config, options = {}) {
         depthTest: true,
         depthWrite: false,
         side: DoubleSide,
+        // 图标只有一个平面，保留双面显示且不再分别提交正反面。
+        forceSinglePass: true,
         premultipliedAlpha: true
       })
     );
@@ -265449,6 +265587,7 @@ function createPluginActionBar(options) {
     const orderDelta = (a.order ?? 0) - (b.order ?? 0);
     return orderDelta || a.id.localeCompare(b.id);
   });
+  group.userData.pluginActionHalo = options.halo === false ? false : { ...options.halo, buttons: options.halo?.buttons, inheritedButtons: visibleButtons };
   const gap = options.gap ?? DEFAULT_GAP;
   const widths = visibleButtons.map(
     (button) => button.size ?? DEFAULT_BUTTON_DIAMETER
@@ -265567,8 +265706,18 @@ function createPluginActionButtonsCapabilityBehavior(options) {
             id: button.id,
             icon: button.icon,
             order: button.order,
-            size: button.size
+            size: button.size,
+            tooltip: button.tooltip,
+            action: button.action,
+            disabled: button.disabled
           })),
+          halo: options.halo === false ? false : options.halo ? {
+            padding: options.halo.padding,
+            buttons: options.halo.buttons?.map((button) => ({
+              ...button,
+              icon: typeof button.icon === "string" ? button.icon : "info"
+            }))
+          } : void 0,
           anchor: {
             x: options.anchor.x,
             y: options.anchor.y,
@@ -266920,19 +267069,19 @@ function buildVehicleSpeedControls(scene, options) {
     }
   ];
   gears.forEach(({ gear, node, color, y }) => {
-    const selected = gear === options.selectedGear;
+    const selected2 = gear === options.selectedGear;
     scene.box(node.nodeId, node.name, {
       size: [7e-3, 8e-3, 22e-4],
       material: {
         color,
         emissive: color,
-        emissiveIntensity: selected ? 0.82 : 0.08,
+        emissiveIntensity: selected2 ? 0.82 : 0.08,
         roughness: 0.3,
         metalness: 0.08,
         clearcoat: 0.5,
         clearcoatRoughness: 0.24
       },
-      at: [originX, originY + y, originZ + depth(selected ? 72e-4 : 82e-4)]
+      at: [originX, originY + y, originZ + depth(selected2 ? 72e-4 : 82e-4)]
     });
   });
   buildRoundInstrumentButton(scene, {
@@ -267552,20 +267701,6 @@ function createSurfacePlaneCommentPanelLayout(options) {
   };
 }
 
-// src/components/StarSky/PluginFramework/utils/objectTree/findDescendantByNodeId.ts
-function findDescendantByNodeId(root, nodeId) {
-  if (!root || !nodeId.trim()) {
-    return null;
-  }
-  let resolved = null;
-  root.traverse((object) => {
-    if (!resolved && object.userData?.capabilityNodeId === nodeId) {
-      resolved = object;
-    }
-  });
-  return resolved;
-}
-
 // src/components/StarSky/PluginFramework/utils/math/motionMath.ts
 function applyLinearVectorTransform(vector, matrix) {
   const { x, y, z } = vector;
@@ -267673,13 +267808,13 @@ function normalizeAssetGroupsAtPath(value) {
   );
 }
 function normalizeAssetGroupsInState(definition, values) {
-  const bindings = resolveAssetGroups(definition);
-  if (bindings.length === 0) {
+  const bindings2 = resolveAssetGroups(definition);
+  if (bindings2.length === 0) {
     return values;
   }
   let changed = false;
   const nextValues = { ...values };
-  bindings.forEach((binding) => {
+  bindings2.forEach((binding) => {
     const rawGroupValue = values[binding.path];
     const groups = normalizeAssetGroupsAtPath(rawGroupValue);
     if (groups.length === 0) {
@@ -268257,639 +268392,584 @@ import { createHash } from "node:crypto";
 // src/components/StarSky/shared/performance/builtinGeometryArtifacts.generated.json
 var builtinGeometryArtifacts_generated_default = {
   "00cd2010b5e94f8c0cdeba5cf32306adbedd2ebb258443bca521b234721a17d0": {
-    url: "/plugin-builtins/display-0820f6cd828f7908fc24f3321c02dbc469ab3b64dfe0d17ddc25b4da92e93b67.bin",
-    sha256: "0820f6cd828f7908fc24f3321c02dbc469ab3b64dfe0d17ddc25b4da92e93b67",
-    bytes: 278076
+    url: "/plugin-builtins/display-aa69ed72589ecf01c3e0f42fa12fa724b0a326f748ca2e665ae719c72ad9d13f.bin",
+    sha256: "aa69ed72589ecf01c3e0f42fa12fa724b0a326f748ca2e665ae719c72ad9d13f",
+    bytes: 234540
   },
   "0115f4c3c3cc2b634b9ef15f56ff86dedd41fcb70bb28d5eabd6a81e2038fb09": {
-    url: "/plugin-builtins/display-0820f6cd828f7908fc24f3321c02dbc469ab3b64dfe0d17ddc25b4da92e93b67.bin",
-    sha256: "0820f6cd828f7908fc24f3321c02dbc469ab3b64dfe0d17ddc25b4da92e93b67",
-    bytes: 278076
+    url: "/plugin-builtins/display-aa69ed72589ecf01c3e0f42fa12fa724b0a326f748ca2e665ae719c72ad9d13f.bin",
+    sha256: "aa69ed72589ecf01c3e0f42fa12fa724b0a326f748ca2e665ae719c72ad9d13f",
+    bytes: 234540
   },
-  "017dc158921cd1d86877ed616ed164244263bd4510456d54acc8e2b797651c9d": {
-    url: "/plugin-builtins/display-c1060a9050cde762d14744736d58804f46cab3c35e2beb6b8bb8150c1914e94b.bin",
-    sha256: "c1060a9050cde762d14744736d58804f46cab3c35e2beb6b8bb8150c1914e94b",
-    bytes: 55383
+  "01b1b39870fd3f5eb317f7036fff7d7b35e10d70b3f4a929668422d9f25844b0": {
+    url: "/plugin-builtins/display-c10d014623cbbdc0b39fcbe5b374992524c3dab49a64bee97f299cf9c2731e6a.bin",
+    sha256: "c10d014623cbbdc0b39fcbe5b374992524c3dab49a64bee97f299cf9c2731e6a",
+    bytes: 89026
+  },
+  "01d1674464c846facfe140d7a42182c885d002bec6fcf53c1ad98140385d7a6d": {
+    url: "/plugin-builtins/display-973ba5783fe3c5dd785260285de48980baf29f54a4dc71b012adc32ba16b9dea.bin",
+    sha256: "973ba5783fe3c5dd785260285de48980baf29f54a4dc71b012adc32ba16b9dea",
+    bytes: 91952
   },
   "027af73db7bad49037551895bbf0b61371274574b7a0033613b18a3137d02586": {
-    url: "/plugin-builtins/display-4f0df52a5c0ae2027b40f5c84cba6687efeacb9e52762580c75d52e63158463c.bin",
-    sha256: "4f0df52a5c0ae2027b40f5c84cba6687efeacb9e52762580c75d52e63158463c",
-    bytes: 75473
+    url: "/plugin-builtins/display-111f062d4c00c69cc17efa6bc2fec2a071057b71d50bccc4190a6f6a8944d871.bin",
+    sha256: "111f062d4c00c69cc17efa6bc2fec2a071057b71d50bccc4190a6f6a8944d871",
+    bytes: 140271
   },
   "03b3515cdbeae67e8e66240c61f91edf245718b7d4289d7ba7ddfe2551d5730a": {
-    url: "/plugin-builtins/display-bff032f43f0ba17276d6038d2d3515a2a3d8070730a8262b181c223b1e1723fe.bin",
-    sha256: "bff032f43f0ba17276d6038d2d3515a2a3d8070730a8262b181c223b1e1723fe",
-    bytes: 168540
+    url: "/plugin-builtins/display-121827ddbc8ed2b3709c51a158f06e011c71f82af97c9f10e42bc9acdcc0190b.bin",
+    sha256: "121827ddbc8ed2b3709c51a158f06e011c71f82af97c9f10e42bc9acdcc0190b",
+    bytes: 168626
   },
   "03e30f325b949b1afc538b70c8412777458e162d2242eee1e102bcf4c6a6d165": {
-    url: "/plugin-builtins/display-bff032f43f0ba17276d6038d2d3515a2a3d8070730a8262b181c223b1e1723fe.bin",
-    sha256: "bff032f43f0ba17276d6038d2d3515a2a3d8070730a8262b181c223b1e1723fe",
-    bytes: 168540
+    url: "/plugin-builtins/display-121827ddbc8ed2b3709c51a158f06e011c71f82af97c9f10e42bc9acdcc0190b.bin",
+    sha256: "121827ddbc8ed2b3709c51a158f06e011c71f82af97c9f10e42bc9acdcc0190b",
+    bytes: 168626
   },
   "041c27a3fc79176ed36464e1df4d4a1ef3796cf2d2fd018702a908797258e844": {
-    url: "/plugin-builtins/display-bff032f43f0ba17276d6038d2d3515a2a3d8070730a8262b181c223b1e1723fe.bin",
-    sha256: "bff032f43f0ba17276d6038d2d3515a2a3d8070730a8262b181c223b1e1723fe",
-    bytes: 168540
+    url: "/plugin-builtins/display-121827ddbc8ed2b3709c51a158f06e011c71f82af97c9f10e42bc9acdcc0190b.bin",
+    sha256: "121827ddbc8ed2b3709c51a158f06e011c71f82af97c9f10e42bc9acdcc0190b",
+    bytes: 168626
   },
-  "04990593dab8177b7497b691bd580e940ccd00467b1cd4ff90c1d21c6f5362ad": {
-    url: "/plugin-builtins/display-ed746526d7dd2b2f80d7ff88a5aaf73a65af3cdfb473d443765f31044d5b3604.bin",
-    sha256: "ed746526d7dd2b2f80d7ff88a5aaf73a65af3cdfb473d443765f31044d5b3604",
-    bytes: 1978416
+  "066202196a358830faa19cfafc5935ad0ba0a977296283e733bfdde225b170ea": {
+    url: "/plugin-builtins/display-c10d014623cbbdc0b39fcbe5b374992524c3dab49a64bee97f299cf9c2731e6a.bin",
+    sha256: "c10d014623cbbdc0b39fcbe5b374992524c3dab49a64bee97f299cf9c2731e6a",
+    bytes: 89026
   },
-  "04dcb805bd49eda12f3c5e315c44e115db937b23745607caa20d4deffc92ab98": {
-    url: "/plugin-builtins/display-dec3a377eca385e11c49d961c3e529650b74457b9c8b9229bc18aa5534aeff8e.bin",
-    sha256: "dec3a377eca385e11c49d961c3e529650b74457b9c8b9229bc18aa5534aeff8e",
-    bytes: 168476
-  },
-  "060ec0444a0b4a9cd80ee05a47b0653a687d5b24c48df0932e07765d87666a65": {
-    url: "/plugin-builtins/display-631fb557ea96006f07e2ebac26aabac50f5a992fa2a72084e2d0ef203e4c823b.bin",
-    sha256: "631fb557ea96006f07e2ebac26aabac50f5a992fa2a72084e2d0ef203e4c823b",
-    bytes: 325822
+  "06bbaafe4dc6b12a9d1b79008af58ca44884b84a48d078352af4873f19cc7870": {
+    url: "/plugin-builtins/display-973ba5783fe3c5dd785260285de48980baf29f54a4dc71b012adc32ba16b9dea.bin",
+    sha256: "973ba5783fe3c5dd785260285de48980baf29f54a4dc71b012adc32ba16b9dea",
+    bytes: 91952
   },
   "06db354f463022f459664856a3cf89aaf3db3b5416f792b43e3d82ecb7a776d2": {
-    url: "/plugin-builtins/display-0820f6cd828f7908fc24f3321c02dbc469ab3b64dfe0d17ddc25b4da92e93b67.bin",
-    sha256: "0820f6cd828f7908fc24f3321c02dbc469ab3b64dfe0d17ddc25b4da92e93b67",
-    bytes: 278076
+    url: "/plugin-builtins/display-0da605a686939af0b09a0803cdbd839144486c66a0ef61729bca361a38027bbc.bin",
+    sha256: "0da605a686939af0b09a0803cdbd839144486c66a0ef61729bca361a38027bbc",
+    bytes: 134003
   },
   "0706b4a29a6e53b31dec75378f6177aa9102987c229be43e64ca3bc62a2a60a4": {
-    url: "/plugin-builtins/display-a555350728c89e08f5be92b4a66c5d4c27e612f6c24d8ea3410ca6d8501dbe84.bin",
-    sha256: "a555350728c89e08f5be92b4a66c5d4c27e612f6c24d8ea3410ca6d8501dbe84",
-    bytes: 79401
+    url: "/plugin-builtins/display-0da605a686939af0b09a0803cdbd839144486c66a0ef61729bca361a38027bbc.bin",
+    sha256: "0da605a686939af0b09a0803cdbd839144486c66a0ef61729bca361a38027bbc",
+    bytes: 134003
   },
   "07245328248b15d48d5a7b71a8c61da00873a9d046517196549844449df85bd9": {
-    url: "/plugin-builtins/display-bff032f43f0ba17276d6038d2d3515a2a3d8070730a8262b181c223b1e1723fe.bin",
-    sha256: "bff032f43f0ba17276d6038d2d3515a2a3d8070730a8262b181c223b1e1723fe",
-    bytes: 168540
+    url: "/plugin-builtins/display-121827ddbc8ed2b3709c51a158f06e011c71f82af97c9f10e42bc9acdcc0190b.bin",
+    sha256: "121827ddbc8ed2b3709c51a158f06e011c71f82af97c9f10e42bc9acdcc0190b",
+    bytes: 168626
   },
-  "076c9615806edf4c50632daa5bc1388527a60131b838cf0df95b740f2d393502": {
-    url: "/plugin-builtins/display-a555350728c89e08f5be92b4a66c5d4c27e612f6c24d8ea3410ca6d8501dbe84.bin",
-    sha256: "a555350728c89e08f5be92b4a66c5d4c27e612f6c24d8ea3410ca6d8501dbe84",
-    bytes: 79401
+  "0768cc66546b4ba68a128496b60f521f90069fd7905086293a5ddc2d4289c006": {
+    url: "/plugin-builtins/display-6aca7787c40eadc5ce98fc7dd3234fd59990cc44fcc570b2b9335f788fa4d430.bin",
+    sha256: "6aca7787c40eadc5ce98fc7dd3234fd59990cc44fcc570b2b9335f788fa4d430",
+    bytes: 1885783
   },
-  "07f9c79c7e1ff2b28d8ee1f04b90a9d4c69b6e9898e4326546aecd7336133571": {
-    url: "/plugin-builtins/display-a7f3333210bd97c4c61b8b15dc455ab57dcb3ca8a601c598ba33526d652e8f94.bin",
-    sha256: "a7f3333210bd97c4c61b8b15dc455ab57dcb3ca8a601c598ba33526d652e8f94",
-    bytes: 2352796
+  "0775eb605f35bd45a827119a4326c60c6d32224bc46d2f4a6c61a3aabc2ec66c": {
+    url: "/plugin-builtins/display-973ba5783fe3c5dd785260285de48980baf29f54a4dc71b012adc32ba16b9dea.bin",
+    sha256: "973ba5783fe3c5dd785260285de48980baf29f54a4dc71b012adc32ba16b9dea",
+    bytes: 91952
+  },
+  "08d5263a8f64461b5f8860f090ee6fc2d96894e33b81512e8f8684bf0001d5c9": {
+    url: "/plugin-builtins/display-111f062d4c00c69cc17efa6bc2fec2a071057b71d50bccc4190a6f6a8944d871.bin",
+    sha256: "111f062d4c00c69cc17efa6bc2fec2a071057b71d50bccc4190a6f6a8944d871",
+    bytes: 140271
   },
   "0917c5a95bdc6637e4857e0e3c7a3864a9fc3916745b0e2607cbe968a1b1d9d2": {
-    url: "/plugin-builtins/display-bff032f43f0ba17276d6038d2d3515a2a3d8070730a8262b181c223b1e1723fe.bin",
-    sha256: "bff032f43f0ba17276d6038d2d3515a2a3d8070730a8262b181c223b1e1723fe",
-    bytes: 168540
+    url: "/plugin-builtins/display-121827ddbc8ed2b3709c51a158f06e011c71f82af97c9f10e42bc9acdcc0190b.bin",
+    sha256: "121827ddbc8ed2b3709c51a158f06e011c71f82af97c9f10e42bc9acdcc0190b",
+    bytes: 168626
+  },
+  "0b540bf92aebf6831aeff33e2b67b3a7e00c31387e999d3a3acf35905f5f6b84": {
+    url: "/plugin-builtins/display-973ba5783fe3c5dd785260285de48980baf29f54a4dc71b012adc32ba16b9dea.bin",
+    sha256: "973ba5783fe3c5dd785260285de48980baf29f54a4dc71b012adc32ba16b9dea",
+    bytes: 91952
   },
   "0b6198a629f433029b7de9552ea5b552de849e30c7fefcc62a376fd78ae54f51": {
-    url: "/plugin-builtins/display-bff032f43f0ba17276d6038d2d3515a2a3d8070730a8262b181c223b1e1723fe.bin",
-    sha256: "bff032f43f0ba17276d6038d2d3515a2a3d8070730a8262b181c223b1e1723fe",
-    bytes: 168540
+    url: "/plugin-builtins/display-121827ddbc8ed2b3709c51a158f06e011c71f82af97c9f10e42bc9acdcc0190b.bin",
+    sha256: "121827ddbc8ed2b3709c51a158f06e011c71f82af97c9f10e42bc9acdcc0190b",
+    bytes: 168626
   },
   "0b71ac52ddb28e041701b88c306175a3d8c37681280a183e575cbbcc5de07e28": {
-    url: "/plugin-builtins/display-bff032f43f0ba17276d6038d2d3515a2a3d8070730a8262b181c223b1e1723fe.bin",
-    sha256: "bff032f43f0ba17276d6038d2d3515a2a3d8070730a8262b181c223b1e1723fe",
-    bytes: 168540
+    url: "/plugin-builtins/display-121827ddbc8ed2b3709c51a158f06e011c71f82af97c9f10e42bc9acdcc0190b.bin",
+    sha256: "121827ddbc8ed2b3709c51a158f06e011c71f82af97c9f10e42bc9acdcc0190b",
+    bytes: 168626
   },
-  "0d4df42e425665dfff6932e256326a416e10941e79f7db45f28abb207cb407ad": {
-    url: "/plugin-builtins/display-97b40399bcd06f9a8abce25cb4d266dd978ea732a5da040445e7a3c332e206b8.bin",
-    sha256: "97b40399bcd06f9a8abce25cb4d266dd978ea732a5da040445e7a3c332e206b8",
-    bytes: 1538332
-  },
-  "0d655d284b007cbad7c7353e5e8953aa0242a9be523f0456a0c9ce9f30137888": {
-    url: "/plugin-builtins/display-a555350728c89e08f5be92b4a66c5d4c27e612f6c24d8ea3410ca6d8501dbe84.bin",
-    sha256: "a555350728c89e08f5be92b4a66c5d4c27e612f6c24d8ea3410ca6d8501dbe84",
-    bytes: 79401
-  },
-  "0edf61416a407b23b72f89b4d1c82440414a3a12ed19f82f2365f1e45477ac9a": {
-    url: "/plugin-builtins/display-c1060a9050cde762d14744736d58804f46cab3c35e2beb6b8bb8150c1914e94b.bin",
-    sha256: "c1060a9050cde762d14744736d58804f46cab3c35e2beb6b8bb8150c1914e94b",
-    bytes: 55383
+  "0c85f1c5c5599be0a701f44914439e2db8902584cd599064faa40bb1051b05ad": {
+    url: "/plugin-builtins/display-c10d014623cbbdc0b39fcbe5b374992524c3dab49a64bee97f299cf9c2731e6a.bin",
+    sha256: "c10d014623cbbdc0b39fcbe5b374992524c3dab49a64bee97f299cf9c2731e6a",
+    bytes: 89026
   },
   "106271acc0168efba1d359d3485e21686b46f59b918cb7bc8b89285bd98cbe1e": {
-    url: "/plugin-builtins/display-4f0df52a5c0ae2027b40f5c84cba6687efeacb9e52762580c75d52e63158463c.bin",
-    sha256: "4f0df52a5c0ae2027b40f5c84cba6687efeacb9e52762580c75d52e63158463c",
-    bytes: 75473
+    url: "/plugin-builtins/display-111f062d4c00c69cc17efa6bc2fec2a071057b71d50bccc4190a6f6a8944d871.bin",
+    sha256: "111f062d4c00c69cc17efa6bc2fec2a071057b71d50bccc4190a6f6a8944d871",
+    bytes: 140271
   },
   "10f7fa40f04cd059902fbb72061951c8095f53fa1a4b3124810359db90b313d2": {
-    url: "/plugin-builtins/display-0820f6cd828f7908fc24f3321c02dbc469ab3b64dfe0d17ddc25b4da92e93b67.bin",
-    sha256: "0820f6cd828f7908fc24f3321c02dbc469ab3b64dfe0d17ddc25b4da92e93b67",
-    bytes: 278076
+    url: "/plugin-builtins/display-aa69ed72589ecf01c3e0f42fa12fa724b0a326f748ca2e665ae719c72ad9d13f.bin",
+    sha256: "aa69ed72589ecf01c3e0f42fa12fa724b0a326f748ca2e665ae719c72ad9d13f",
+    bytes: 234540
   },
-  "1100563fc2497dd47e5c270b6d80c01f31eddb4f3f0b4389d5c47ee9c817eb88": {
-    url: "/plugin-builtins/display-4eebc513f0f6e2493c8b9dde3731418ffc7221207f1909107c0fc77791053436.bin",
-    sha256: "4eebc513f0f6e2493c8b9dde3731418ffc7221207f1909107c0fc77791053436",
-    bytes: 26778
+  "111d0912bc208dc65ec13a60f844f0ed289de25f65bdf921ead6f1a9172e7a6e": {
+    url: "/plugin-builtins/display-8df79680290567f281a924eb4c62372dde1b8483eddc60b8c3f40906b8e469e7.bin",
+    sha256: "8df79680290567f281a924eb4c62372dde1b8483eddc60b8c3f40906b8e469e7",
+    bytes: 1028194
   },
   "11652610be3b86a3c140810d44fe6270ab7052a4d67dfacc02a3254e63d10dd7": {
-    url: "/plugin-builtins/display-0820f6cd828f7908fc24f3321c02dbc469ab3b64dfe0d17ddc25b4da92e93b67.bin",
-    sha256: "0820f6cd828f7908fc24f3321c02dbc469ab3b64dfe0d17ddc25b4da92e93b67",
-    bytes: 278076
+    url: "/plugin-builtins/display-aa69ed72589ecf01c3e0f42fa12fa724b0a326f748ca2e665ae719c72ad9d13f.bin",
+    sha256: "aa69ed72589ecf01c3e0f42fa12fa724b0a326f748ca2e665ae719c72ad9d13f",
+    bytes: 234540
   },
   "116ece005b7f3ea59b437d5a09af17df400691a2ea0e9f55bdc6cdc63f3f3b29": {
-    url: "/plugin-builtins/display-bff032f43f0ba17276d6038d2d3515a2a3d8070730a8262b181c223b1e1723fe.bin",
-    sha256: "bff032f43f0ba17276d6038d2d3515a2a3d8070730a8262b181c223b1e1723fe",
-    bytes: 168540
+    url: "/plugin-builtins/display-121827ddbc8ed2b3709c51a158f06e011c71f82af97c9f10e42bc9acdcc0190b.bin",
+    sha256: "121827ddbc8ed2b3709c51a158f06e011c71f82af97c9f10e42bc9acdcc0190b",
+    bytes: 168626
   },
   "1192284226501c9ff2c11c5c5d8483035e23ee8246e1107297d8ca3bff30f290": {
-    url: "/plugin-builtins/display-dec3a377eca385e11c49d961c3e529650b74457b9c8b9229bc18aa5534aeff8e.bin",
-    sha256: "dec3a377eca385e11c49d961c3e529650b74457b9c8b9229bc18aa5534aeff8e",
-    bytes: 168476
+    url: "/plugin-builtins/display-ea29ecdab933e4767d87853cb6d2ea63ba0ff60a5d203dda7db7fbd0a400ac8a.bin",
+    sha256: "ea29ecdab933e4767d87853cb6d2ea63ba0ff60a5d203dda7db7fbd0a400ac8a",
+    bytes: 70677
   },
-  "134a70fa0e1143b984b5c6cf178cd21b4cdc0056adb7da3e2f84ad6d4c9e9d56": {
-    url: "/plugin-builtins/display-6ea2c3ae5634eca3bdb3cf9ecc9a3d0d5c8fe4dd05f9bb9f20280cc8a2f7746d.bin",
-    sha256: "6ea2c3ae5634eca3bdb3cf9ecc9a3d0d5c8fe4dd05f9bb9f20280cc8a2f7746d",
-    bytes: 297400
+  "1511248c954f90e086b35d28cb60a331e7a9095ca7b284aeda5159f17ed3ced5": {
+    url: "/plugin-builtins/display-88f40bff54c193e7e8159ea2798ceed3a49ab92ce24e0f01d7616d74eacce77a.bin",
+    sha256: "88f40bff54c193e7e8159ea2798ceed3a49ab92ce24e0f01d7616d74eacce77a",
+    bytes: 905302
   },
   "158fe9a8b903a0ea042206efad377533dc1a72eb76414ca57bb56ec33c046cc8": {
-    url: "/plugin-builtins/display-bff032f43f0ba17276d6038d2d3515a2a3d8070730a8262b181c223b1e1723fe.bin",
-    sha256: "bff032f43f0ba17276d6038d2d3515a2a3d8070730a8262b181c223b1e1723fe",
-    bytes: 168540
-  },
-  "15ee1775847150cf379e5b249c752db39349b72ab3dcc783bf5c3cf3056c18b5": {
-    url: "/plugin-builtins/display-97b40399bcd06f9a8abce25cb4d266dd978ea732a5da040445e7a3c332e206b8.bin",
-    sha256: "97b40399bcd06f9a8abce25cb4d266dd978ea732a5da040445e7a3c332e206b8",
-    bytes: 1538332
+    url: "/plugin-builtins/display-121827ddbc8ed2b3709c51a158f06e011c71f82af97c9f10e42bc9acdcc0190b.bin",
+    sha256: "121827ddbc8ed2b3709c51a158f06e011c71f82af97c9f10e42bc9acdcc0190b",
+    bytes: 168626
   },
   "1664a93293d726821fb49806f32535d01ae9e58f77af5deefeeff353b2a5b1f6": {
-    url: "/plugin-builtins/display-bff032f43f0ba17276d6038d2d3515a2a3d8070730a8262b181c223b1e1723fe.bin",
-    sha256: "bff032f43f0ba17276d6038d2d3515a2a3d8070730a8262b181c223b1e1723fe",
-    bytes: 168540
-  },
-  "169d52a07170ab5930efdfe26a35172447b742789aa6600bd892cef4b08aba31": {
-    url: "/plugin-builtins/display-8c5a5aa11910a08b9d66c7302a73d6bb669dd690ee4a53e2782d2af2943c6525.bin",
-    sha256: "8c5a5aa11910a08b9d66c7302a73d6bb669dd690ee4a53e2782d2af2943c6525",
-    bytes: 420879
+    url: "/plugin-builtins/display-121827ddbc8ed2b3709c51a158f06e011c71f82af97c9f10e42bc9acdcc0190b.bin",
+    sha256: "121827ddbc8ed2b3709c51a158f06e011c71f82af97c9f10e42bc9acdcc0190b",
+    bytes: 168626
   },
   "1849457f88a3994f561c2726b879c16d515644f1e4415fa78736aaeca20920ed": {
-    url: "/plugin-builtins/display-bff032f43f0ba17276d6038d2d3515a2a3d8070730a8262b181c223b1e1723fe.bin",
-    sha256: "bff032f43f0ba17276d6038d2d3515a2a3d8070730a8262b181c223b1e1723fe",
-    bytes: 168540
+    url: "/plugin-builtins/display-121827ddbc8ed2b3709c51a158f06e011c71f82af97c9f10e42bc9acdcc0190b.bin",
+    sha256: "121827ddbc8ed2b3709c51a158f06e011c71f82af97c9f10e42bc9acdcc0190b",
+    bytes: 168626
   },
   "1872d6d56f571d8b658fa8fb9cd3142fecbca64feeb394f2ba4dd07665c785b4": {
-    url: "/plugin-builtins/display-a555350728c89e08f5be92b4a66c5d4c27e612f6c24d8ea3410ca6d8501dbe84.bin",
-    sha256: "a555350728c89e08f5be92b4a66c5d4c27e612f6c24d8ea3410ca6d8501dbe84",
-    bytes: 79401
+    url: "/plugin-builtins/display-121827ddbc8ed2b3709c51a158f06e011c71f82af97c9f10e42bc9acdcc0190b.bin",
+    sha256: "121827ddbc8ed2b3709c51a158f06e011c71f82af97c9f10e42bc9acdcc0190b",
+    bytes: 168626
   },
   "189101653346188281c1e0a6af1673fe95920a745267a436875764ce743d9d85": {
-    url: "/plugin-builtins/display-0820f6cd828f7908fc24f3321c02dbc469ab3b64dfe0d17ddc25b4da92e93b67.bin",
-    sha256: "0820f6cd828f7908fc24f3321c02dbc469ab3b64dfe0d17ddc25b4da92e93b67",
-    bytes: 278076
-  },
-  "189a59410179f5723d27ec7a1549d3a6bd6ef2c58e1597c3ec53a97157bc8a2f": {
-    url: "/plugin-builtins/display-e041ad0342d47e6a405dc05faf7496ab6718d6d7e71cc51350d324f8f688363f.bin",
-    sha256: "e041ad0342d47e6a405dc05faf7496ab6718d6d7e71cc51350d324f8f688363f",
-    bytes: 2083826
-  },
-  "19953a5d10ad9dea79b1e365d0a04a4835e43857a0a311603a9e6a176670201c": {
-    url: "/plugin-builtins/display-10b57f56e7bb1b70bf86147c82ab3b6ec13424264a472c7b17e79382d63cbadf.bin",
-    sha256: "10b57f56e7bb1b70bf86147c82ab3b6ec13424264a472c7b17e79382d63cbadf",
-    bytes: 534021
-  },
-  "1adc7a36679a1b6eb3b00fc4156a7f1a23db1c258a3b00530667ba05354a0580": {
-    url: "/plugin-builtins/display-97b40399bcd06f9a8abce25cb4d266dd978ea732a5da040445e7a3c332e206b8.bin",
-    sha256: "97b40399bcd06f9a8abce25cb4d266dd978ea732a5da040445e7a3c332e206b8",
-    bytes: 1538332
+    url: "/plugin-builtins/display-aa69ed72589ecf01c3e0f42fa12fa724b0a326f748ca2e665ae719c72ad9d13f.bin",
+    sha256: "aa69ed72589ecf01c3e0f42fa12fa724b0a326f748ca2e665ae719c72ad9d13f",
+    bytes: 234540
   },
   "1adebe625644480591a7baa5e67b5e81344fb3d722f668b542751583d2f76fe2": {
-    url: "/plugin-builtins/display-bff032f43f0ba17276d6038d2d3515a2a3d8070730a8262b181c223b1e1723fe.bin",
-    sha256: "bff032f43f0ba17276d6038d2d3515a2a3d8070730a8262b181c223b1e1723fe",
-    bytes: 168540
+    url: "/plugin-builtins/display-121827ddbc8ed2b3709c51a158f06e011c71f82af97c9f10e42bc9acdcc0190b.bin",
+    sha256: "121827ddbc8ed2b3709c51a158f06e011c71f82af97c9f10e42bc9acdcc0190b",
+    bytes: 168626
   },
   "1b446db05b5460c98b7db92ad45795ad44499ae5da33063e7ee30d66bb1800e6": {
-    url: "/plugin-builtins/display-0820f6cd828f7908fc24f3321c02dbc469ab3b64dfe0d17ddc25b4da92e93b67.bin",
-    sha256: "0820f6cd828f7908fc24f3321c02dbc469ab3b64dfe0d17ddc25b4da92e93b67",
-    bytes: 278076
+    url: "/plugin-builtins/display-aa69ed72589ecf01c3e0f42fa12fa724b0a326f748ca2e665ae719c72ad9d13f.bin",
+    sha256: "aa69ed72589ecf01c3e0f42fa12fa724b0a326f748ca2e665ae719c72ad9d13f",
+    bytes: 234540
+  },
+  "1b813a799c15ae3659d6cb2b3eeeca98067ea89f6bc2531b32991c16714f3ae6": {
+    url: "/plugin-builtins/display-0da605a686939af0b09a0803cdbd839144486c66a0ef61729bca361a38027bbc.bin",
+    sha256: "0da605a686939af0b09a0803cdbd839144486c66a0ef61729bca361a38027bbc",
+    bytes: 134003
   },
   "1bd6bc3333caa442061a1644a12a97822ce93613beaeb0547417dd9a781b521b": {
-    url: "/plugin-builtins/display-0820f6cd828f7908fc24f3321c02dbc469ab3b64dfe0d17ddc25b4da92e93b67.bin",
-    sha256: "0820f6cd828f7908fc24f3321c02dbc469ab3b64dfe0d17ddc25b4da92e93b67",
-    bytes: 278076
+    url: "/plugin-builtins/display-aa69ed72589ecf01c3e0f42fa12fa724b0a326f748ca2e665ae719c72ad9d13f.bin",
+    sha256: "aa69ed72589ecf01c3e0f42fa12fa724b0a326f748ca2e665ae719c72ad9d13f",
+    bytes: 234540
   },
   "1bd9bf4c5ff8e17e514ca8f9858fd5905eef67679e12fde51dff628b940f602a": {
-    url: "/plugin-builtins/display-bff032f43f0ba17276d6038d2d3515a2a3d8070730a8262b181c223b1e1723fe.bin",
-    sha256: "bff032f43f0ba17276d6038d2d3515a2a3d8070730a8262b181c223b1e1723fe",
-    bytes: 168540
+    url: "/plugin-builtins/display-121827ddbc8ed2b3709c51a158f06e011c71f82af97c9f10e42bc9acdcc0190b.bin",
+    sha256: "121827ddbc8ed2b3709c51a158f06e011c71f82af97c9f10e42bc9acdcc0190b",
+    bytes: 168626
   },
-  "1db5f20c87e77c522b09235f174dca0734c4d4aedfd77c969f7cd6dd945afbd3": {
-    url: "/plugin-builtins/display-ed746526d7dd2b2f80d7ff88a5aaf73a65af3cdfb473d443765f31044d5b3604.bin",
-    sha256: "ed746526d7dd2b2f80d7ff88a5aaf73a65af3cdfb473d443765f31044d5b3604",
-    bytes: 1978416
+  "1eb53142950ec0bcf041fe68650cd1d2daaaf3679ad112b92ca109da23627a73": {
+    url: "/plugin-builtins/display-121827ddbc8ed2b3709c51a158f06e011c71f82af97c9f10e42bc9acdcc0190b.bin",
+    sha256: "121827ddbc8ed2b3709c51a158f06e011c71f82af97c9f10e42bc9acdcc0190b",
+    bytes: 168626
   },
   "1ecc84dc79bbf8cd8dc050daf853fc231835a731eed1afa3f4ad52175fd08f0e": {
-    url: "/plugin-builtins/display-0820f6cd828f7908fc24f3321c02dbc469ab3b64dfe0d17ddc25b4da92e93b67.bin",
-    sha256: "0820f6cd828f7908fc24f3321c02dbc469ab3b64dfe0d17ddc25b4da92e93b67",
-    bytes: 278076
-  },
-  "200752463d7331852b09ac16210a8ac8bcd7f46123815ec714ffea7055e02b59": {
-    url: "/plugin-builtins/display-a7f3333210bd97c4c61b8b15dc455ab57dcb3ca8a601c598ba33526d652e8f94.bin",
-    sha256: "a7f3333210bd97c4c61b8b15dc455ab57dcb3ca8a601c598ba33526d652e8f94",
-    bytes: 2352796
-  },
-  "20ec00add92b9e622d51893f5288eedb8b41fc5d616d9d5e872c0d05935e707b": {
-    url: "/plugin-builtins/display-4eebc513f0f6e2493c8b9dde3731418ffc7221207f1909107c0fc77791053436.bin",
-    sha256: "4eebc513f0f6e2493c8b9dde3731418ffc7221207f1909107c0fc77791053436",
-    bytes: 26778
+    url: "/plugin-builtins/display-aa69ed72589ecf01c3e0f42fa12fa724b0a326f748ca2e665ae719c72ad9d13f.bin",
+    sha256: "aa69ed72589ecf01c3e0f42fa12fa724b0a326f748ca2e665ae719c72ad9d13f",
+    bytes: 234540
   },
   "214f567504ba4cddd1f438f8dc0c1817a3b90e451c0ab1343ffd2f531e5e3010": {
-    url: "/plugin-builtins/display-ccd08906d71a5ad1cb439d81310bb89c249ea3e0d88afd0e6e1962cee0ae23ff.bin",
-    sha256: "ccd08906d71a5ad1cb439d81310bb89c249ea3e0d88afd0e6e1962cee0ae23ff",
-    bytes: 7148
+    url: "/plugin-builtins/display-973ba5783fe3c5dd785260285de48980baf29f54a4dc71b012adc32ba16b9dea.bin",
+    sha256: "973ba5783fe3c5dd785260285de48980baf29f54a4dc71b012adc32ba16b9dea",
+    bytes: 91952
   },
-  "241db05c860888c307908c73abb9a4c6dd78034afdcebebcf1239110d84e8dcb": {
-    url: "/plugin-builtins/display-bff032f43f0ba17276d6038d2d3515a2a3d8070730a8262b181c223b1e1723fe.bin",
-    sha256: "bff032f43f0ba17276d6038d2d3515a2a3d8070730a8262b181c223b1e1723fe",
-    bytes: 168540
+  "2285180e3f6423525291c5c4bc54337c8148086d8c33bc15faba4c8fe8fd4a30": {
+    url: "/plugin-builtins/display-f5945eec0ac68e5ffc50487f0ecc39744cdcf57867ff34547491745232311160.bin",
+    sha256: "f5945eec0ac68e5ffc50487f0ecc39744cdcf57867ff34547491745232311160",
+    bytes: 142532
+  },
+  "25012fce2fe0c2dca2d610d5761e4b7db479d8a52bfe8f87ef82e25b12a12ebf": {
+    url: "/plugin-builtins/display-f5945eec0ac68e5ffc50487f0ecc39744cdcf57867ff34547491745232311160.bin",
+    sha256: "f5945eec0ac68e5ffc50487f0ecc39744cdcf57867ff34547491745232311160",
+    bytes: 142532
+  },
+  "2504b76536886a90909368ba9d5e34d84930057c8dc53f630362773ae433c5be": {
+    url: "/plugin-builtins/display-88f40bff54c193e7e8159ea2798ceed3a49ab92ce24e0f01d7616d74eacce77a.bin",
+    sha256: "88f40bff54c193e7e8159ea2798ceed3a49ab92ce24e0f01d7616d74eacce77a",
+    bytes: 905302
+  },
+  "2636b38aa0ed355161133ff8f7c5390433d177afa433333bdc8b7c99cdd266c7": {
+    url: "/plugin-builtins/display-0da605a686939af0b09a0803cdbd839144486c66a0ef61729bca361a38027bbc.bin",
+    sha256: "0da605a686939af0b09a0803cdbd839144486c66a0ef61729bca361a38027bbc",
+    bytes: 134003
   },
   "271d99099fc9cfb7a57770fe0e208dd946db389b508fe1cf41a3d81234792b6c": {
-    url: "/plugin-builtins/display-bff032f43f0ba17276d6038d2d3515a2a3d8070730a8262b181c223b1e1723fe.bin",
-    sha256: "bff032f43f0ba17276d6038d2d3515a2a3d8070730a8262b181c223b1e1723fe",
-    bytes: 168540
+    url: "/plugin-builtins/display-121827ddbc8ed2b3709c51a158f06e011c71f82af97c9f10e42bc9acdcc0190b.bin",
+    sha256: "121827ddbc8ed2b3709c51a158f06e011c71f82af97c9f10e42bc9acdcc0190b",
+    bytes: 168626
+  },
+  "277dbd97dca4d32fb5fa5d879d48365c10a76285bba5d12b685aabfc8f43d54c": {
+    url: "/plugin-builtins/display-0da605a686939af0b09a0803cdbd839144486c66a0ef61729bca361a38027bbc.bin",
+    sha256: "0da605a686939af0b09a0803cdbd839144486c66a0ef61729bca361a38027bbc",
+    bytes: 134003
   },
   "279c637ceeaf667c377cd51ff7ee6a146958d026b227eaac6fd225d1ca0af114": {
-    url: "/plugin-builtins/display-bff032f43f0ba17276d6038d2d3515a2a3d8070730a8262b181c223b1e1723fe.bin",
-    sha256: "bff032f43f0ba17276d6038d2d3515a2a3d8070730a8262b181c223b1e1723fe",
-    bytes: 168540
+    url: "/plugin-builtins/display-121827ddbc8ed2b3709c51a158f06e011c71f82af97c9f10e42bc9acdcc0190b.bin",
+    sha256: "121827ddbc8ed2b3709c51a158f06e011c71f82af97c9f10e42bc9acdcc0190b",
+    bytes: 168626
   },
   "2916a5e45ae9950bbc0fbfc4b6538bf5fc4229ee8c5282442caa2f6fcd0ff912": {
-    url: "/plugin-builtins/display-a555350728c89e08f5be92b4a66c5d4c27e612f6c24d8ea3410ca6d8501dbe84.bin",
-    sha256: "a555350728c89e08f5be92b4a66c5d4c27e612f6c24d8ea3410ca6d8501dbe84",
-    bytes: 79401
+    url: "/plugin-builtins/display-0da605a686939af0b09a0803cdbd839144486c66a0ef61729bca361a38027bbc.bin",
+    sha256: "0da605a686939af0b09a0803cdbd839144486c66a0ef61729bca361a38027bbc",
+    bytes: 134003
   },
   "29ed55a370d3c1a24e2c4ae10c2d788a2da5b171a3751b7baac98445e4943919": {
-    url: "/plugin-builtins/display-0820f6cd828f7908fc24f3321c02dbc469ab3b64dfe0d17ddc25b4da92e93b67.bin",
-    sha256: "0820f6cd828f7908fc24f3321c02dbc469ab3b64dfe0d17ddc25b4da92e93b67",
-    bytes: 278076
-  },
-  "2a02f46cd956f18bfdf7fee9d5f0564c2dd6530c5b0e9bfcbb5819fbaa8a0de8": {
-    url: "/plugin-builtins/display-a7f3333210bd97c4c61b8b15dc455ab57dcb3ca8a601c598ba33526d652e8f94.bin",
-    sha256: "a7f3333210bd97c4c61b8b15dc455ab57dcb3ca8a601c598ba33526d652e8f94",
-    bytes: 2352796
+    url: "/plugin-builtins/display-aa69ed72589ecf01c3e0f42fa12fa724b0a326f748ca2e665ae719c72ad9d13f.bin",
+    sha256: "aa69ed72589ecf01c3e0f42fa12fa724b0a326f748ca2e665ae719c72ad9d13f",
+    bytes: 234540
   },
   "2aa28508d2396ea433be3cd8c400324d37e62d10519c76dfab043e49e7089bb1": {
-    url: "/plugin-builtins/display-bff032f43f0ba17276d6038d2d3515a2a3d8070730a8262b181c223b1e1723fe.bin",
-    sha256: "bff032f43f0ba17276d6038d2d3515a2a3d8070730a8262b181c223b1e1723fe",
-    bytes: 168540
-  },
-  "2b8eb273e2efb7bf88e2bd03ed73356349630e60c1e9bd877eb7ba4823d7c673": {
-    url: "/plugin-builtins/display-c1060a9050cde762d14744736d58804f46cab3c35e2beb6b8bb8150c1914e94b.bin",
-    sha256: "c1060a9050cde762d14744736d58804f46cab3c35e2beb6b8bb8150c1914e94b",
-    bytes: 55383
+    url: "/plugin-builtins/display-121827ddbc8ed2b3709c51a158f06e011c71f82af97c9f10e42bc9acdcc0190b.bin",
+    sha256: "121827ddbc8ed2b3709c51a158f06e011c71f82af97c9f10e42bc9acdcc0190b",
+    bytes: 168626
   },
   "2e95981edca328e2dcaefc6c5dc499e095beb59f4c072fb58a02d89e72503c49": {
-    url: "/plugin-builtins/display-0820f6cd828f7908fc24f3321c02dbc469ab3b64dfe0d17ddc25b4da92e93b67.bin",
-    sha256: "0820f6cd828f7908fc24f3321c02dbc469ab3b64dfe0d17ddc25b4da92e93b67",
-    bytes: 278076
+    url: "/plugin-builtins/display-aa69ed72589ecf01c3e0f42fa12fa724b0a326f748ca2e665ae719c72ad9d13f.bin",
+    sha256: "aa69ed72589ecf01c3e0f42fa12fa724b0a326f748ca2e665ae719c72ad9d13f",
+    bytes: 234540
   },
   "2e98d1d157a68858f7780e36d5b8d373ae2674e0ced62b7d71270c5d26cbf889": {
-    url: "/plugin-builtins/display-bff032f43f0ba17276d6038d2d3515a2a3d8070730a8262b181c223b1e1723fe.bin",
-    sha256: "bff032f43f0ba17276d6038d2d3515a2a3d8070730a8262b181c223b1e1723fe",
-    bytes: 168540
+    url: "/plugin-builtins/display-121827ddbc8ed2b3709c51a158f06e011c71f82af97c9f10e42bc9acdcc0190b.bin",
+    sha256: "121827ddbc8ed2b3709c51a158f06e011c71f82af97c9f10e42bc9acdcc0190b",
+    bytes: 168626
   },
-  "2e9d0be04cca851839ddc4d0a081c9cfd4532380576b298519f6c66138328e4c": {
-    url: "/plugin-builtins/display-c1060a9050cde762d14744736d58804f46cab3c35e2beb6b8bb8150c1914e94b.bin",
-    sha256: "c1060a9050cde762d14744736d58804f46cab3c35e2beb6b8bb8150c1914e94b",
-    bytes: 55383
-  },
-  "2ece8e565350cc8291d8de27a0fbf993f5e634b01b6d125fa4a084328ac2afb7": {
-    url: "/plugin-builtins/display-631fb557ea96006f07e2ebac26aabac50f5a992fa2a72084e2d0ef203e4c823b.bin",
-    sha256: "631fb557ea96006f07e2ebac26aabac50f5a992fa2a72084e2d0ef203e4c823b",
-    bytes: 325822
+  "2ec75cd67a10b29a5ce9b493eb8d13f44860bca0cfea238eab61e5a6b2421667": {
+    url: "/plugin-builtins/display-0da605a686939af0b09a0803cdbd839144486c66a0ef61729bca361a38027bbc.bin",
+    sha256: "0da605a686939af0b09a0803cdbd839144486c66a0ef61729bca361a38027bbc",
+    bytes: 134003
   },
   "2f44e1d82daf9d32ec2a074ea3fdcd9a68fc1dc35180a91708f0e8dd31d29625": {
-    url: "/plugin-builtins/display-0820f6cd828f7908fc24f3321c02dbc469ab3b64dfe0d17ddc25b4da92e93b67.bin",
-    sha256: "0820f6cd828f7908fc24f3321c02dbc469ab3b64dfe0d17ddc25b4da92e93b67",
-    bytes: 278076
+    url: "/plugin-builtins/display-aa69ed72589ecf01c3e0f42fa12fa724b0a326f748ca2e665ae719c72ad9d13f.bin",
+    sha256: "aa69ed72589ecf01c3e0f42fa12fa724b0a326f748ca2e665ae719c72ad9d13f",
+    bytes: 234540
   },
   "2fee27dd4f6392e50ac8af4bfdcdaf2f974d06f0a1270f74f4948ebd203bec78": {
-    url: "/plugin-builtins/display-0820f6cd828f7908fc24f3321c02dbc469ab3b64dfe0d17ddc25b4da92e93b67.bin",
-    sha256: "0820f6cd828f7908fc24f3321c02dbc469ab3b64dfe0d17ddc25b4da92e93b67",
-    bytes: 278076
+    url: "/plugin-builtins/display-aa69ed72589ecf01c3e0f42fa12fa724b0a326f748ca2e665ae719c72ad9d13f.bin",
+    sha256: "aa69ed72589ecf01c3e0f42fa12fa724b0a326f748ca2e665ae719c72ad9d13f",
+    bytes: 234540
   },
   "301134e875d436bfc8e11b06931022a09f8e8218129a7dd5d6c5f3dda96068ae": {
-    url: "/plugin-builtins/display-0820f6cd828f7908fc24f3321c02dbc469ab3b64dfe0d17ddc25b4da92e93b67.bin",
-    sha256: "0820f6cd828f7908fc24f3321c02dbc469ab3b64dfe0d17ddc25b4da92e93b67",
-    bytes: 278076
-  },
-  "305fed7ceffb6606102e2a9cc50b203cdc55659e5f8654cc0e415367375ed259": {
-    url: "/plugin-builtins/display-0820f6cd828f7908fc24f3321c02dbc469ab3b64dfe0d17ddc25b4da92e93b67.bin",
-    sha256: "0820f6cd828f7908fc24f3321c02dbc469ab3b64dfe0d17ddc25b4da92e93b67",
-    bytes: 278076
+    url: "/plugin-builtins/display-aa69ed72589ecf01c3e0f42fa12fa724b0a326f748ca2e665ae719c72ad9d13f.bin",
+    sha256: "aa69ed72589ecf01c3e0f42fa12fa724b0a326f748ca2e665ae719c72ad9d13f",
+    bytes: 234540
   },
   "30a65d6decd7f327bb9f7d9524f5ae95f070df7d4fa956eff3cc4538afa65dc4": {
-    url: "/plugin-builtins/display-bff032f43f0ba17276d6038d2d3515a2a3d8070730a8262b181c223b1e1723fe.bin",
-    sha256: "bff032f43f0ba17276d6038d2d3515a2a3d8070730a8262b181c223b1e1723fe",
-    bytes: 168540
+    url: "/plugin-builtins/display-121827ddbc8ed2b3709c51a158f06e011c71f82af97c9f10e42bc9acdcc0190b.bin",
+    sha256: "121827ddbc8ed2b3709c51a158f06e011c71f82af97c9f10e42bc9acdcc0190b",
+    bytes: 168626
   },
   "31b18ba6da71669500adadae494232fc816b636502bb15bbb520051735f3e9a4": {
-    url: "/plugin-builtins/display-0820f6cd828f7908fc24f3321c02dbc469ab3b64dfe0d17ddc25b4da92e93b67.bin",
-    sha256: "0820f6cd828f7908fc24f3321c02dbc469ab3b64dfe0d17ddc25b4da92e93b67",
-    bytes: 278076
+    url: "/plugin-builtins/display-aa69ed72589ecf01c3e0f42fa12fa724b0a326f748ca2e665ae719c72ad9d13f.bin",
+    sha256: "aa69ed72589ecf01c3e0f42fa12fa724b0a326f748ca2e665ae719c72ad9d13f",
+    bytes: 234540
   },
   "330c54dc53669def61b523452e29245b669f83664ebdf171c497372d686c1a4f": {
-    url: "/plugin-builtins/display-0820f6cd828f7908fc24f3321c02dbc469ab3b64dfe0d17ddc25b4da92e93b67.bin",
-    sha256: "0820f6cd828f7908fc24f3321c02dbc469ab3b64dfe0d17ddc25b4da92e93b67",
-    bytes: 278076
+    url: "/plugin-builtins/display-aa69ed72589ecf01c3e0f42fa12fa724b0a326f748ca2e665ae719c72ad9d13f.bin",
+    sha256: "aa69ed72589ecf01c3e0f42fa12fa724b0a326f748ca2e665ae719c72ad9d13f",
+    bytes: 234540
   },
   "33c09d35659f4132fae15865a0ed948b95979af582be01d53f6704d1175e02bb": {
-    url: "/plugin-builtins/display-0820f6cd828f7908fc24f3321c02dbc469ab3b64dfe0d17ddc25b4da92e93b67.bin",
-    sha256: "0820f6cd828f7908fc24f3321c02dbc469ab3b64dfe0d17ddc25b4da92e93b67",
-    bytes: 278076
+    url: "/plugin-builtins/display-aa69ed72589ecf01c3e0f42fa12fa724b0a326f748ca2e665ae719c72ad9d13f.bin",
+    sha256: "aa69ed72589ecf01c3e0f42fa12fa724b0a326f748ca2e665ae719c72ad9d13f",
+    bytes: 234540
   },
   "344bb07f45bbd9ba30a3a774126ceda5b1a6022c206994002d3a382bbd5011b2": {
-    url: "/plugin-builtins/display-0820f6cd828f7908fc24f3321c02dbc469ab3b64dfe0d17ddc25b4da92e93b67.bin",
-    sha256: "0820f6cd828f7908fc24f3321c02dbc469ab3b64dfe0d17ddc25b4da92e93b67",
-    bytes: 278076
+    url: "/plugin-builtins/display-aa69ed72589ecf01c3e0f42fa12fa724b0a326f748ca2e665ae719c72ad9d13f.bin",
+    sha256: "aa69ed72589ecf01c3e0f42fa12fa724b0a326f748ca2e665ae719c72ad9d13f",
+    bytes: 234540
   },
-  "345285d583616b87e11bcc3e3fc8611249688c4519b86efc3d04320e18129304": {
-    url: "/plugin-builtins/display-4f0df52a5c0ae2027b40f5c84cba6687efeacb9e52762580c75d52e63158463c.bin",
-    sha256: "4f0df52a5c0ae2027b40f5c84cba6687efeacb9e52762580c75d52e63158463c",
-    bytes: 75473
-  },
-  "35d501d29a8638e1887a889433b2fc3467c4d4a6a3e304161a6f5e55e56fceed": {
-    url: "/plugin-builtins/display-a7f3333210bd97c4c61b8b15dc455ab57dcb3ca8a601c598ba33526d652e8f94.bin",
-    sha256: "a7f3333210bd97c4c61b8b15dc455ab57dcb3ca8a601c598ba33526d652e8f94",
-    bytes: 2352796
+  "357d02d008741cf7b42bf1f03136dd1a986c0b4b40f5f5f595fb760121d68085": {
+    url: "/plugin-builtins/display-111f062d4c00c69cc17efa6bc2fec2a071057b71d50bccc4190a6f6a8944d871.bin",
+    sha256: "111f062d4c00c69cc17efa6bc2fec2a071057b71d50bccc4190a6f6a8944d871",
+    bytes: 140271
   },
   "35f1f2d1aef5bfe247883aeff707d075699f785f3d6f957e3c9ddf9bfb019d22": {
-    url: "/plugin-builtins/display-bff032f43f0ba17276d6038d2d3515a2a3d8070730a8262b181c223b1e1723fe.bin",
-    sha256: "bff032f43f0ba17276d6038d2d3515a2a3d8070730a8262b181c223b1e1723fe",
-    bytes: 168540
+    url: "/plugin-builtins/display-121827ddbc8ed2b3709c51a158f06e011c71f82af97c9f10e42bc9acdcc0190b.bin",
+    sha256: "121827ddbc8ed2b3709c51a158f06e011c71f82af97c9f10e42bc9acdcc0190b",
+    bytes: 168626
   },
-  "375160929952a22679a18e5e17a2304ca8721baee492a40bcd4dc3555f5bc327": {
-    url: "/plugin-builtins/display-a555350728c89e08f5be92b4a66c5d4c27e612f6c24d8ea3410ca6d8501dbe84.bin",
-    sha256: "a555350728c89e08f5be92b4a66c5d4c27e612f6c24d8ea3410ca6d8501dbe84",
-    bytes: 79401
+  "3658c3e19663bdbb607304003b28daff9e971504007a923720cadb59bdfda05a": {
+    url: "/plugin-builtins/display-88f40bff54c193e7e8159ea2798ceed3a49ab92ce24e0f01d7616d74eacce77a.bin",
+    sha256: "88f40bff54c193e7e8159ea2798ceed3a49ab92ce24e0f01d7616d74eacce77a",
+    bytes: 905302
   },
-  "3acfd3252ee36f35d1788ccf8c58e3e9bdc1f4c2ebfdfec3ee6a49d5fbc18c77": {
-    url: "/plugin-builtins/display-a7f3333210bd97c4c61b8b15dc455ab57dcb3ca8a601c598ba33526d652e8f94.bin",
-    sha256: "a7f3333210bd97c4c61b8b15dc455ab57dcb3ca8a601c598ba33526d652e8f94",
-    bytes: 2352796
+  "38ee66d52bd3474fecacca5d829c40e08a3f33ca16f598b57a1c3b63433b6e04": {
+    url: "/plugin-builtins/display-973ba5783fe3c5dd785260285de48980baf29f54a4dc71b012adc32ba16b9dea.bin",
+    sha256: "973ba5783fe3c5dd785260285de48980baf29f54a4dc71b012adc32ba16b9dea",
+    bytes: 91952
   },
   "3b85d76078a04e79fd5a020ce7c715644e20f24ab76d8c77a344aba89c38a758": {
-    url: "/plugin-builtins/display-bff032f43f0ba17276d6038d2d3515a2a3d8070730a8262b181c223b1e1723fe.bin",
-    sha256: "bff032f43f0ba17276d6038d2d3515a2a3d8070730a8262b181c223b1e1723fe",
-    bytes: 168540
+    url: "/plugin-builtins/display-121827ddbc8ed2b3709c51a158f06e011c71f82af97c9f10e42bc9acdcc0190b.bin",
+    sha256: "121827ddbc8ed2b3709c51a158f06e011c71f82af97c9f10e42bc9acdcc0190b",
+    bytes: 168626
   },
-  "3c460b6315cf951c462eb9760fa6d3dcae2645cb4b72906596f94b5a952acefb": {
-    url: "/plugin-builtins/display-a7f3333210bd97c4c61b8b15dc455ab57dcb3ca8a601c598ba33526d652e8f94.bin",
-    sha256: "a7f3333210bd97c4c61b8b15dc455ab57dcb3ca8a601c598ba33526d652e8f94",
-    bytes: 2352796
+  "3c4928e83c765c7f537da664263bc1ae2378dde4be4afd6ed473c94e8d2e3b32": {
+    url: "/plugin-builtins/display-c10d014623cbbdc0b39fcbe5b374992524c3dab49a64bee97f299cf9c2731e6a.bin",
+    sha256: "c10d014623cbbdc0b39fcbe5b374992524c3dab49a64bee97f299cf9c2731e6a",
+    bytes: 89026
   },
-  "3c8c4d02f34ba841071c73c3ba9e285aa2c942d27856e035f9df48d6435f01be": {
-    url: "/plugin-builtins/display-10b57f56e7bb1b70bf86147c82ab3b6ec13424264a472c7b17e79382d63cbadf.bin",
-    sha256: "10b57f56e7bb1b70bf86147c82ab3b6ec13424264a472c7b17e79382d63cbadf",
-    bytes: 534021
+  "3c6df3595aeafae92ac6bf48d799f84caed5fc489f79d2330174d45b203b1b6c": {
+    url: "/plugin-builtins/display-b7f6a37ff69d095c18886869c16002b57efdf6a9ab6070941ac10ac354c36a3b.bin",
+    sha256: "b7f6a37ff69d095c18886869c16002b57efdf6a9ab6070941ac10ac354c36a3b",
+    bytes: 2099453
+  },
+  "3d4ef75480c787a403da299862efcd45fa5b912187ef5fe2ca36025e43e06f9e": {
+    url: "/plugin-builtins/display-89b7d5eeab2fd71d937f760f1dc6daa8faef5a3c1cddca6b476b3439325ef546.bin",
+    sha256: "89b7d5eeab2fd71d937f760f1dc6daa8faef5a3c1cddca6b476b3439325ef546",
+    bytes: 743960
   },
   "3ee86d02758792dd0ea47eb9f405edf36dea97ca6e2ea6cb3e847ca65a66f137": {
-    url: "/plugin-builtins/display-bff032f43f0ba17276d6038d2d3515a2a3d8070730a8262b181c223b1e1723fe.bin",
-    sha256: "bff032f43f0ba17276d6038d2d3515a2a3d8070730a8262b181c223b1e1723fe",
-    bytes: 168540
+    url: "/plugin-builtins/display-121827ddbc8ed2b3709c51a158f06e011c71f82af97c9f10e42bc9acdcc0190b.bin",
+    sha256: "121827ddbc8ed2b3709c51a158f06e011c71f82af97c9f10e42bc9acdcc0190b",
+    bytes: 168626
   },
   "3f0d8e467529d4a27fd2871b1dab47293a66abdd768e874cdf3548853c90d2cb": {
-    url: "/plugin-builtins/display-0820f6cd828f7908fc24f3321c02dbc469ab3b64dfe0d17ddc25b4da92e93b67.bin",
-    sha256: "0820f6cd828f7908fc24f3321c02dbc469ab3b64dfe0d17ddc25b4da92e93b67",
-    bytes: 278076
+    url: "/plugin-builtins/display-aa69ed72589ecf01c3e0f42fa12fa724b0a326f748ca2e665ae719c72ad9d13f.bin",
+    sha256: "aa69ed72589ecf01c3e0f42fa12fa724b0a326f748ca2e665ae719c72ad9d13f",
+    bytes: 234540
   },
   "3f1eb4202d410b5953ce4d96f0199edf14903d1125e90a0c8c452a2dbe36d6d5": {
-    url: "/plugin-builtins/display-a555350728c89e08f5be92b4a66c5d4c27e612f6c24d8ea3410ca6d8501dbe84.bin",
-    sha256: "a555350728c89e08f5be92b4a66c5d4c27e612f6c24d8ea3410ca6d8501dbe84",
-    bytes: 79401
+    url: "/plugin-builtins/display-0da605a686939af0b09a0803cdbd839144486c66a0ef61729bca361a38027bbc.bin",
+    sha256: "0da605a686939af0b09a0803cdbd839144486c66a0ef61729bca361a38027bbc",
+    bytes: 134003
   },
   "3f74d5b8065ebaf7e060e3c82b65e259562b5415053a833ba7a97df387283ba7": {
-    url: "/plugin-builtins/display-bff032f43f0ba17276d6038d2d3515a2a3d8070730a8262b181c223b1e1723fe.bin",
-    sha256: "bff032f43f0ba17276d6038d2d3515a2a3d8070730a8262b181c223b1e1723fe",
-    bytes: 168540
+    url: "/plugin-builtins/display-121827ddbc8ed2b3709c51a158f06e011c71f82af97c9f10e42bc9acdcc0190b.bin",
+    sha256: "121827ddbc8ed2b3709c51a158f06e011c71f82af97c9f10e42bc9acdcc0190b",
+    bytes: 168626
+  },
+  "3f768555a9331875161b354b966bc1c0fe67df47bdd0f57b39afa4b36698e968": {
+    url: "/plugin-builtins/display-62dacd832b108eaae351ac8cad84bbcfbacdc4ec712892c28ccc21a83a18cf7e.bin",
+    sha256: "62dacd832b108eaae351ac8cad84bbcfbacdc4ec712892c28ccc21a83a18cf7e",
+    bytes: 1568909
   },
   "3f82bc27f6fa7e83696a7371dfe9a8f6f1d13337fe2a3018d875fca4670cf00a": {
-    url: "/plugin-builtins/display-4f0df52a5c0ae2027b40f5c84cba6687efeacb9e52762580c75d52e63158463c.bin",
-    sha256: "4f0df52a5c0ae2027b40f5c84cba6687efeacb9e52762580c75d52e63158463c",
-    bytes: 75473
+    url: "/plugin-builtins/display-111f062d4c00c69cc17efa6bc2fec2a071057b71d50bccc4190a6f6a8944d871.bin",
+    sha256: "111f062d4c00c69cc17efa6bc2fec2a071057b71d50bccc4190a6f6a8944d871",
+    bytes: 140271
   },
   "405f726232d65bbbb9731239ffdaa09d2e61e71042a8a1ba91e600182727eda0": {
-    url: "/plugin-builtins/display-2c2df17abd7ca56e131f768f5dbff81af2542c439154015ec4f1b6bf599ff446.bin",
-    sha256: "2c2df17abd7ca56e131f768f5dbff81af2542c439154015ec4f1b6bf599ff446",
-    bytes: 119216
+    url: "/plugin-builtins/display-cbf9b56c93f7a1aeaf63213d749f779b38335d7d372664ad19dba434aecb3798.bin",
+    sha256: "cbf9b56c93f7a1aeaf63213d749f779b38335d7d372664ad19dba434aecb3798",
+    bytes: 163941
+  },
+  "410e60f8af41d3654d9e669a35011eb0a6486cade8fd5db0f09ad78a9ffc4c7a": {
+    url: "/plugin-builtins/display-3d4e3bfd983361556e79a885e8dfd0948c3aa4839edea238d5a43341f0afca7e.bin",
+    sha256: "3d4e3bfd983361556e79a885e8dfd0948c3aa4839edea238d5a43341f0afca7e",
+    bytes: 139801
   },
   "4203b70de3f8d0ec9108973d46b39464f9bdbcc59875f14b26c8b3e0ee3b8260": {
-    url: "/plugin-builtins/display-9ec4d7b6883e3c6d631cbb4d12587c72812b26006b679c2945cb100992a3bb24.bin",
-    sha256: "9ec4d7b6883e3c6d631cbb4d12587c72812b26006b679c2945cb100992a3bb24",
-    bytes: 248495
+    url: "/plugin-builtins/display-66a20900e11db26e2f4ed5849a095aba9907bf44289fdac29ec88b1554006d94.bin",
+    sha256: "66a20900e11db26e2f4ed5849a095aba9907bf44289fdac29ec88b1554006d94",
+    bytes: 240948
   },
-  "42caaee3db0b0130e2cb69a4fd7f1df9db2b5d1b9afb49d579f68c7cadbae0e1": {
-    url: "/plugin-builtins/display-10b57f56e7bb1b70bf86147c82ab3b6ec13424264a472c7b17e79382d63cbadf.bin",
-    sha256: "10b57f56e7bb1b70bf86147c82ab3b6ec13424264a472c7b17e79382d63cbadf",
-    bytes: 534021
+  "428adc362eecce31bb813629821e871cd8e4847d8a6a44a491add505fbb88b13": {
+    url: "/plugin-builtins/display-b7f6a37ff69d095c18886869c16002b57efdf6a9ab6070941ac10ac354c36a3b.bin",
+    sha256: "b7f6a37ff69d095c18886869c16002b57efdf6a9ab6070941ac10ac354c36a3b",
+    bytes: 2099453
   },
   "42d4c5da69393dc09486f0aa6326452f9d597f877a21a1fd4505eeeb29b28dc8": {
-    url: "/plugin-builtins/display-9ec4d7b6883e3c6d631cbb4d12587c72812b26006b679c2945cb100992a3bb24.bin",
-    sha256: "9ec4d7b6883e3c6d631cbb4d12587c72812b26006b679c2945cb100992a3bb24",
-    bytes: 248495
+    url: "/plugin-builtins/display-66a20900e11db26e2f4ed5849a095aba9907bf44289fdac29ec88b1554006d94.bin",
+    sha256: "66a20900e11db26e2f4ed5849a095aba9907bf44289fdac29ec88b1554006d94",
+    bytes: 240948
   },
   "42f3ed1f7eea8a7c7de45499313ed58769d1d7914d7da764d920f14fe007bf20": {
-    url: "/plugin-builtins/display-2c2df17abd7ca56e131f768f5dbff81af2542c439154015ec4f1b6bf599ff446.bin",
-    sha256: "2c2df17abd7ca56e131f768f5dbff81af2542c439154015ec4f1b6bf599ff446",
-    bytes: 119216
+    url: "/plugin-builtins/display-cbf9b56c93f7a1aeaf63213d749f779b38335d7d372664ad19dba434aecb3798.bin",
+    sha256: "cbf9b56c93f7a1aeaf63213d749f779b38335d7d372664ad19dba434aecb3798",
+    bytes: 163941
   },
   "4381719e9fedcdcae1b9a70686be4584101ffb206c24500b19cbd92667a38f9d": {
-    url: "/plugin-builtins/display-2c2df17abd7ca56e131f768f5dbff81af2542c439154015ec4f1b6bf599ff446.bin",
-    sha256: "2c2df17abd7ca56e131f768f5dbff81af2542c439154015ec4f1b6bf599ff446",
-    bytes: 119216
+    url: "/plugin-builtins/display-cbf9b56c93f7a1aeaf63213d749f779b38335d7d372664ad19dba434aecb3798.bin",
+    sha256: "cbf9b56c93f7a1aeaf63213d749f779b38335d7d372664ad19dba434aecb3798",
+    bytes: 163941
   },
   "4442c9ec4589450b3e1cae4e80820e22844fcc7699a62e1806a12102eabf1395": {
     url: "/plugin-builtins/display-b6260a04e2ad72732d220b2b2a007d388524ff11dee5a0982224eaa4e09ac0e2.bin",
     sha256: "b6260a04e2ad72732d220b2b2a007d388524ff11dee5a0982224eaa4e09ac0e2",
     bytes: 19311
   },
-  "45d5191619b3fcfa227a670f04b8c486ac7cf65d7df74e08bb5eedbeb271d1e8": {
-    url: "/plugin-builtins/display-dacbe7d81558b0c6a9cea160e5e0350b1b077408925912693195dfaf46c7176f.bin",
-    sha256: "dacbe7d81558b0c6a9cea160e5e0350b1b077408925912693195dfaf46c7176f",
-    bytes: 132617
-  },
-  "475ce756b758d625fbf85ed34c3003baea725f21a9f7dd633306c40336401943": {
-    url: "/plugin-builtins/display-dacbe7d81558b0c6a9cea160e5e0350b1b077408925912693195dfaf46c7176f.bin",
-    sha256: "dacbe7d81558b0c6a9cea160e5e0350b1b077408925912693195dfaf46c7176f",
-    bytes: 132617
+  "4730d25aeae5ed9ba240bdf61dd2f5c9d54e459029d9bdf41d34c7986229c70b": {
+    url: "/plugin-builtins/display-3d4e3bfd983361556e79a885e8dfd0948c3aa4839edea238d5a43341f0afca7e.bin",
+    sha256: "3d4e3bfd983361556e79a885e8dfd0948c3aa4839edea238d5a43341f0afca7e",
+    bytes: 139801
   },
   "47fc4517576b2d899448a4ba8e65885f3bfc90a8befb2f1263a8fb0b659d4aaa": {
-    url: "/plugin-builtins/display-9ec4d7b6883e3c6d631cbb4d12587c72812b26006b679c2945cb100992a3bb24.bin",
-    sha256: "9ec4d7b6883e3c6d631cbb4d12587c72812b26006b679c2945cb100992a3bb24",
-    bytes: 248495
-  },
-  "487094f8b9c2ea69563ecb197c2a5a1db47e81f7f927202450646ba600f3b60f": {
-    url: "/plugin-builtins/display-d5b175ceb133510f3b81fed82b24faa1fb611e1f33518a6b78f856fa784270b0.bin",
-    sha256: "d5b175ceb133510f3b81fed82b24faa1fb611e1f33518a6b78f856fa784270b0",
-    bytes: 15870
+    url: "/plugin-builtins/display-66a20900e11db26e2f4ed5849a095aba9907bf44289fdac29ec88b1554006d94.bin",
+    sha256: "66a20900e11db26e2f4ed5849a095aba9907bf44289fdac29ec88b1554006d94",
+    bytes: 240948
   },
   "498a565e77ed7b0a5a6aff1eac3855b447b36939d99e3a0d301c197f205c5d8b": {
-    url: "/plugin-builtins/display-9ec4d7b6883e3c6d631cbb4d12587c72812b26006b679c2945cb100992a3bb24.bin",
-    sha256: "9ec4d7b6883e3c6d631cbb4d12587c72812b26006b679c2945cb100992a3bb24",
-    bytes: 248495
-  },
-  "49a4b3691c31493bd6095169b401297aae5b9c43e2a50b82be8c98e7b497aa73": {
-    url: "/plugin-builtins/display-e041ad0342d47e6a405dc05faf7496ab6718d6d7e71cc51350d324f8f688363f.bin",
-    sha256: "e041ad0342d47e6a405dc05faf7496ab6718d6d7e71cc51350d324f8f688363f",
-    bytes: 2083826
-  },
-  "4a28d2fb2f7e9190ab1fb9335211d166b92ee0b03df803498e20c341fd9470b0": {
-    url: "/plugin-builtins/display-6ea2c3ae5634eca3bdb3cf9ecc9a3d0d5c8fe4dd05f9bb9f20280cc8a2f7746d.bin",
-    sha256: "6ea2c3ae5634eca3bdb3cf9ecc9a3d0d5c8fe4dd05f9bb9f20280cc8a2f7746d",
-    bytes: 297400
+    url: "/plugin-builtins/display-66a20900e11db26e2f4ed5849a095aba9907bf44289fdac29ec88b1554006d94.bin",
+    sha256: "66a20900e11db26e2f4ed5849a095aba9907bf44289fdac29ec88b1554006d94",
+    bytes: 240948
   },
   "4a5f561126c7412fe3f2795236571feee448647d0e1ea8eafccbb5fecc6892cb": {
-    url: "/plugin-builtins/display-2c2df17abd7ca56e131f768f5dbff81af2542c439154015ec4f1b6bf599ff446.bin",
-    sha256: "2c2df17abd7ca56e131f768f5dbff81af2542c439154015ec4f1b6bf599ff446",
-    bytes: 119216
+    url: "/plugin-builtins/display-cbf9b56c93f7a1aeaf63213d749f779b38335d7d372664ad19dba434aecb3798.bin",
+    sha256: "cbf9b56c93f7a1aeaf63213d749f779b38335d7d372664ad19dba434aecb3798",
+    bytes: 163941
+  },
+  "4aca3c1aa7734ec09da4a54b805b264a754a57ca73a1ad59a4b0888c026b3805": {
+    url: "/plugin-builtins/display-89b7d5eeab2fd71d937f760f1dc6daa8faef5a3c1cddca6b476b3439325ef546.bin",
+    sha256: "89b7d5eeab2fd71d937f760f1dc6daa8faef5a3c1cddca6b476b3439325ef546",
+    bytes: 743960
   },
   "4b0ba0f465d6dc01496c95b2b7d716d80938c3c270e7957516471a83cbf575bf": {
-    url: "/plugin-builtins/display-9ec4d7b6883e3c6d631cbb4d12587c72812b26006b679c2945cb100992a3bb24.bin",
-    sha256: "9ec4d7b6883e3c6d631cbb4d12587c72812b26006b679c2945cb100992a3bb24",
-    bytes: 248495
+    url: "/plugin-builtins/display-66a20900e11db26e2f4ed5849a095aba9907bf44289fdac29ec88b1554006d94.bin",
+    sha256: "66a20900e11db26e2f4ed5849a095aba9907bf44289fdac29ec88b1554006d94",
+    bytes: 240948
   },
-  "4cc5f6611293e09a874e3e87c11029da14d06f59f1b6c520df31260905150f47": {
-    url: "/plugin-builtins/display-a4c6bc95217dd647124909db755844a7986d4f69de684a60dd86697cc25ff7a3.bin",
-    sha256: "a4c6bc95217dd647124909db755844a7986d4f69de684a60dd86697cc25ff7a3",
-    bytes: 52353
+  "4d91c3e3666aad91a268d4312a3e79b4dd822042a5307f4db31e2e5ae33d3a4a": {
+    url: "/plugin-builtins/display-670cb59c9cd59b59709e6dd635b18b0ceb86feb5a44177a68aace0344a61e943.bin",
+    sha256: "670cb59c9cd59b59709e6dd635b18b0ceb86feb5a44177a68aace0344a61e943",
+    bytes: 166506
   },
-  "4e073f90057c6683cdac9e1cffdb7ecfa3e54930393393980a6e5811367f3880": {
-    url: "/plugin-builtins/display-dacbe7d81558b0c6a9cea160e5e0350b1b077408925912693195dfaf46c7176f.bin",
-    sha256: "dacbe7d81558b0c6a9cea160e5e0350b1b077408925912693195dfaf46c7176f",
-    bytes: 132617
+  "4dd5c5c5b0ba8985965e9044a7261961c99053483a583090d71cfdbf62ee3889": {
+    url: "/plugin-builtins/display-cbf9b56c93f7a1aeaf63213d749f779b38335d7d372664ad19dba434aecb3798.bin",
+    sha256: "cbf9b56c93f7a1aeaf63213d749f779b38335d7d372664ad19dba434aecb3798",
+    bytes: 163941
   },
   "4ea6863df8f55611e441c0942f4440e055486436c3b93732473e3b0c9a149cf1": {
-    url: "/plugin-builtins/display-53dfe158c72af7924feba33ab749cf918b1a6d3e33356747e7b255474f548772.bin",
-    sha256: "53dfe158c72af7924feba33ab749cf918b1a6d3e33356747e7b255474f548772",
-    bytes: 136229
+    url: "/plugin-builtins/display-1b8467f0ab638ba688039a56e9713c6218c9e1cc504d2ed6a0e814739fa77cc1.bin",
+    sha256: "1b8467f0ab638ba688039a56e9713c6218c9e1cc504d2ed6a0e814739fa77cc1",
+    bytes: 29319
   },
   "4fd9d88a1d3a2ed2c9efbbfd2866bb0cabdc39474d126d37fa35e5bda4e84afb": {
-    url: "/plugin-builtins/display-2c2df17abd7ca56e131f768f5dbff81af2542c439154015ec4f1b6bf599ff446.bin",
-    sha256: "2c2df17abd7ca56e131f768f5dbff81af2542c439154015ec4f1b6bf599ff446",
-    bytes: 119216
+    url: "/plugin-builtins/display-cbf9b56c93f7a1aeaf63213d749f779b38335d7d372664ad19dba434aecb3798.bin",
+    sha256: "cbf9b56c93f7a1aeaf63213d749f779b38335d7d372664ad19dba434aecb3798",
+    bytes: 163941
   },
   "520645d362fb98c52c73df8e7433f694c329d7ec05322eb16e4ad2a42be6a5c8": {
-    url: "/plugin-builtins/display-dacbe7d81558b0c6a9cea160e5e0350b1b077408925912693195dfaf46c7176f.bin",
-    sha256: "dacbe7d81558b0c6a9cea160e5e0350b1b077408925912693195dfaf46c7176f",
-    bytes: 132617
-  },
-  "523a4ffda90b15de1669c367341328fafd9c0f298a0287c4285d1b34e114e4e7": {
-    url: "/plugin-builtins/display-a7f3333210bd97c4c61b8b15dc455ab57dcb3ca8a601c598ba33526d652e8f94.bin",
-    sha256: "a7f3333210bd97c4c61b8b15dc455ab57dcb3ca8a601c598ba33526d652e8f94",
-    bytes: 2352796
+    url: "/plugin-builtins/display-670cb59c9cd59b59709e6dd635b18b0ceb86feb5a44177a68aace0344a61e943.bin",
+    sha256: "670cb59c9cd59b59709e6dd635b18b0ceb86feb5a44177a68aace0344a61e943",
+    bytes: 166506
   },
   "525f44e68a28753bd32e6a3c3528924665adaaeb9d3e021e0557a59da79fa523": {
-    url: "/plugin-builtins/display-9ec4d7b6883e3c6d631cbb4d12587c72812b26006b679c2945cb100992a3bb24.bin",
-    sha256: "9ec4d7b6883e3c6d631cbb4d12587c72812b26006b679c2945cb100992a3bb24",
-    bytes: 248495
+    url: "/plugin-builtins/display-66a20900e11db26e2f4ed5849a095aba9907bf44289fdac29ec88b1554006d94.bin",
+    sha256: "66a20900e11db26e2f4ed5849a095aba9907bf44289fdac29ec88b1554006d94",
+    bytes: 240948
   },
   "5417ec2643fa083e675c48acbc0735db91a3b5de6483c1a7cbde07e52b17f4fd": {
-    url: "/plugin-builtins/display-dacbe7d81558b0c6a9cea160e5e0350b1b077408925912693195dfaf46c7176f.bin",
-    sha256: "dacbe7d81558b0c6a9cea160e5e0350b1b077408925912693195dfaf46c7176f",
-    bytes: 132617
-  },
-  "5452b5fb0a8ab14e5490ee829d018844f1e4137b3f3eed12a5b5580ff2c19075": {
-    url: "/plugin-builtins/display-8c5a5aa11910a08b9d66c7302a73d6bb669dd690ee4a53e2782d2af2943c6525.bin",
-    sha256: "8c5a5aa11910a08b9d66c7302a73d6bb669dd690ee4a53e2782d2af2943c6525",
-    bytes: 420879
-  },
-  "551ced5c7b65f316ec40ca10912b85157715e48c03d19a8bb140f8648cb52d80": {
-    url: "/plugin-builtins/display-53dfe158c72af7924feba33ab749cf918b1a6d3e33356747e7b255474f548772.bin",
-    sha256: "53dfe158c72af7924feba33ab749cf918b1a6d3e33356747e7b255474f548772",
-    bytes: 136229
-  },
-  "55921afe26c67bccd45b6e58baccd363b051dab9fd114cb2dfc1e94bbd3d4ff2": {
-    url: "/plugin-builtins/display-d5b175ceb133510f3b81fed82b24faa1fb611e1f33518a6b78f856fa784270b0.bin",
-    sha256: "d5b175ceb133510f3b81fed82b24faa1fb611e1f33518a6b78f856fa784270b0",
-    bytes: 15870
+    url: "/plugin-builtins/display-670cb59c9cd59b59709e6dd635b18b0ceb86feb5a44177a68aace0344a61e943.bin",
+    sha256: "670cb59c9cd59b59709e6dd635b18b0ceb86feb5a44177a68aace0344a61e943",
+    bytes: 166506
   },
   "55b38602df81381893811dd737b757e96f98f64b0bb7cca53225298d115e0415": {
-    url: "/plugin-builtins/display-2c2df17abd7ca56e131f768f5dbff81af2542c439154015ec4f1b6bf599ff446.bin",
-    sha256: "2c2df17abd7ca56e131f768f5dbff81af2542c439154015ec4f1b6bf599ff446",
-    bytes: 119216
+    url: "/plugin-builtins/display-cbf9b56c93f7a1aeaf63213d749f779b38335d7d372664ad19dba434aecb3798.bin",
+    sha256: "cbf9b56c93f7a1aeaf63213d749f779b38335d7d372664ad19dba434aecb3798",
+    bytes: 163941
   },
   "569677532ab637137ccebece0626ccfe733d4af4bb512ff9d32d4fe839e51352": {
-    url: "/plugin-builtins/display-dacbe7d81558b0c6a9cea160e5e0350b1b077408925912693195dfaf46c7176f.bin",
-    sha256: "dacbe7d81558b0c6a9cea160e5e0350b1b077408925912693195dfaf46c7176f",
-    bytes: 132617
+    url: "/plugin-builtins/display-670cb59c9cd59b59709e6dd635b18b0ceb86feb5a44177a68aace0344a61e943.bin",
+    sha256: "670cb59c9cd59b59709e6dd635b18b0ceb86feb5a44177a68aace0344a61e943",
+    bytes: 166506
+  },
+  "5709745def06c80f5159a38e5b6f651b941b080daf9e788c5d858da7a46cfd5a": {
+    url: "/plugin-builtins/display-3d4e3bfd983361556e79a885e8dfd0948c3aa4839edea238d5a43341f0afca7e.bin",
+    sha256: "3d4e3bfd983361556e79a885e8dfd0948c3aa4839edea238d5a43341f0afca7e",
+    bytes: 139801
   },
   "5815f06cf8e969c287ae5e1f87dfd12130e0b50f167f310a23d4f2620d6d88b4": {
-    url: "/plugin-builtins/display-9ec4d7b6883e3c6d631cbb4d12587c72812b26006b679c2945cb100992a3bb24.bin",
-    sha256: "9ec4d7b6883e3c6d631cbb4d12587c72812b26006b679c2945cb100992a3bb24",
-    bytes: 248495
+    url: "/plugin-builtins/display-66a20900e11db26e2f4ed5849a095aba9907bf44289fdac29ec88b1554006d94.bin",
+    sha256: "66a20900e11db26e2f4ed5849a095aba9907bf44289fdac29ec88b1554006d94",
+    bytes: 240948
   },
   "59e9005d64ca709afe85fcadafbebe84fbf8a1c60977679749b7788f71bcbc2b": {
-    url: "/plugin-builtins/display-9ec4d7b6883e3c6d631cbb4d12587c72812b26006b679c2945cb100992a3bb24.bin",
-    sha256: "9ec4d7b6883e3c6d631cbb4d12587c72812b26006b679c2945cb100992a3bb24",
-    bytes: 248495
+    url: "/plugin-builtins/display-66a20900e11db26e2f4ed5849a095aba9907bf44289fdac29ec88b1554006d94.bin",
+    sha256: "66a20900e11db26e2f4ed5849a095aba9907bf44289fdac29ec88b1554006d94",
+    bytes: 240948
   },
-  "5aed020b905dd36f07e79af9644956d1889567daa432855044da7a476f2ca9d2": {
-    url: "/plugin-builtins/display-dacbe7d81558b0c6a9cea160e5e0350b1b077408925912693195dfaf46c7176f.bin",
-    sha256: "dacbe7d81558b0c6a9cea160e5e0350b1b077408925912693195dfaf46c7176f",
-    bytes: 132617
-  },
-  "5c09229669d23adac697e21a4ca4b82e51dceb53579316f09f9c75c7e595e49a": {
-    url: "/plugin-builtins/display-a7f3333210bd97c4c61b8b15dc455ab57dcb3ca8a601c598ba33526d652e8f94.bin",
-    sha256: "a7f3333210bd97c4c61b8b15dc455ab57dcb3ca8a601c598ba33526d652e8f94",
-    bytes: 2352796
-  },
-  "5d02971076300aee7bf6d36d7ca65ae742078665b01b0c9e264cb83ce159e3bc": {
-    url: "/plugin-builtins/display-e041ad0342d47e6a405dc05faf7496ab6718d6d7e71cc51350d324f8f688363f.bin",
-    sha256: "e041ad0342d47e6a405dc05faf7496ab6718d6d7e71cc51350d324f8f688363f",
-    bytes: 2083826
+  "5d2ce99220de0b08bab5114ae9c6e135c5dc2a0ab62c3acb423948f144d0fe80": {
+    url: "/plugin-builtins/display-8df79680290567f281a924eb4c62372dde1b8483eddc60b8c3f40906b8e469e7.bin",
+    sha256: "8df79680290567f281a924eb4c62372dde1b8483eddc60b8c3f40906b8e469e7",
+    bytes: 1028194
   },
   "5d665957ec9e0eea84b2f0d59f16e5b5240a818344b18bb48b3c947763eb2ea4": {
-    url: "/plugin-builtins/display-9ec4d7b6883e3c6d631cbb4d12587c72812b26006b679c2945cb100992a3bb24.bin",
-    sha256: "9ec4d7b6883e3c6d631cbb4d12587c72812b26006b679c2945cb100992a3bb24",
-    bytes: 248495
-  },
-  "5d749699aac8e466f081559a3ba73125f92392bb644057b219579464ef6d3393": {
-    url: "/plugin-builtins/display-d5b175ceb133510f3b81fed82b24faa1fb611e1f33518a6b78f856fa784270b0.bin",
-    sha256: "d5b175ceb133510f3b81fed82b24faa1fb611e1f33518a6b78f856fa784270b0",
-    bytes: 15870
+    url: "/plugin-builtins/display-66a20900e11db26e2f4ed5849a095aba9907bf44289fdac29ec88b1554006d94.bin",
+    sha256: "66a20900e11db26e2f4ed5849a095aba9907bf44289fdac29ec88b1554006d94",
+    bytes: 240948
   },
   "5d9a1703f1b0a991a0f3a29599d136fc7dfbaf140f9cdabce3d969a2ce7ce7e4": {
-    url: "/plugin-builtins/display-9ec4d7b6883e3c6d631cbb4d12587c72812b26006b679c2945cb100992a3bb24.bin",
-    sha256: "9ec4d7b6883e3c6d631cbb4d12587c72812b26006b679c2945cb100992a3bb24",
-    bytes: 248495
+    url: "/plugin-builtins/display-66a20900e11db26e2f4ed5849a095aba9907bf44289fdac29ec88b1554006d94.bin",
+    sha256: "66a20900e11db26e2f4ed5849a095aba9907bf44289fdac29ec88b1554006d94",
+    bytes: 240948
   },
-  "5e0a7b0f292318ab95055b3a5a0c5928aea83afaa94e6f9a3fa2848243004a4b": {
-    url: "/plugin-builtins/display-5168a7167812debb9e82bfc29056bfa02caf8d9f3e1b82932b68292ca5714f34.bin",
-    sha256: "5168a7167812debb9e82bfc29056bfa02caf8d9f3e1b82932b68292ca5714f34",
-    bytes: 1273
+  "5e7563239997b3cd8c09a8e417d61c83c96319ed0f144e5822125b53bef20c26": {
+    url: "/plugin-builtins/display-3d4e3bfd983361556e79a885e8dfd0948c3aa4839edea238d5a43341f0afca7e.bin",
+    sha256: "3d4e3bfd983361556e79a885e8dfd0948c3aa4839edea238d5a43341f0afca7e",
+    bytes: 139801
   },
-  "60bf21a6aa5e121f8341176fda76618210d38079b63d529f294f138f803afe95": {
-    url: "/plugin-builtins/display-8c5a5aa11910a08b9d66c7302a73d6bb669dd690ee4a53e2782d2af2943c6525.bin",
-    sha256: "8c5a5aa11910a08b9d66c7302a73d6bb669dd690ee4a53e2782d2af2943c6525",
-    bytes: 420879
+  "5eb839df46b928058a88009d4e14be778ea2f2adf435276afbaf633161c019f1": {
+    url: "/plugin-builtins/display-b7f6a37ff69d095c18886869c16002b57efdf6a9ab6070941ac10ac354c36a3b.bin",
+    sha256: "b7f6a37ff69d095c18886869c16002b57efdf6a9ab6070941ac10ac354c36a3b",
+    bytes: 2099453
   },
-  "618a4dee843c02bbbdf4b712a737db764070d514698a62bd95cd495778659fc8": {
-    url: "/plugin-builtins/display-dacbe7d81558b0c6a9cea160e5e0350b1b077408925912693195dfaf46c7176f.bin",
-    sha256: "dacbe7d81558b0c6a9cea160e5e0350b1b077408925912693195dfaf46c7176f",
-    bytes: 132617
+  "614775adeb20c2bde714a3bfcb900cd5ae4dee4aff7e45eb491fc945e3ffdf3f": {
+    url: "/plugin-builtins/display-670cb59c9cd59b59709e6dd635b18b0ceb86feb5a44177a68aace0344a61e943.bin",
+    sha256: "670cb59c9cd59b59709e6dd635b18b0ceb86feb5a44177a68aace0344a61e943",
+    bytes: 166506
   },
   "61aa9ed71304b92f4cbd897edaf75e1fa302ec401361aa51dd06192f392a8bf8": {
-    url: "/plugin-builtins/display-2c2df17abd7ca56e131f768f5dbff81af2542c439154015ec4f1b6bf599ff446.bin",
-    sha256: "2c2df17abd7ca56e131f768f5dbff81af2542c439154015ec4f1b6bf599ff446",
-    bytes: 119216
+    url: "/plugin-builtins/display-cbf9b56c93f7a1aeaf63213d749f779b38335d7d372664ad19dba434aecb3798.bin",
+    sha256: "cbf9b56c93f7a1aeaf63213d749f779b38335d7d372664ad19dba434aecb3798",
+    bytes: 163941
   },
   "61c6418d52ee20899ebcacc84b23a10b35038802c9abc691b56ba75dd293954b": {
-    url: "/plugin-builtins/display-2c2df17abd7ca56e131f768f5dbff81af2542c439154015ec4f1b6bf599ff446.bin",
-    sha256: "2c2df17abd7ca56e131f768f5dbff81af2542c439154015ec4f1b6bf599ff446",
-    bytes: 119216
+    url: "/plugin-builtins/display-cbf9b56c93f7a1aeaf63213d749f779b38335d7d372664ad19dba434aecb3798.bin",
+    sha256: "cbf9b56c93f7a1aeaf63213d749f779b38335d7d372664ad19dba434aecb3798",
+    bytes: 163941
   },
   "624c798fa86b0dadeb5480afc3b171c5a2dd433924002702e8350b9101d5c9ba": {
-    url: "/plugin-builtins/display-d5b175ceb133510f3b81fed82b24faa1fb611e1f33518a6b78f856fa784270b0.bin",
-    sha256: "d5b175ceb133510f3b81fed82b24faa1fb611e1f33518a6b78f856fa784270b0",
-    bytes: 15870
+    url: "/plugin-builtins/display-3d4e3bfd983361556e79a885e8dfd0948c3aa4839edea238d5a43341f0afca7e.bin",
+    sha256: "3d4e3bfd983361556e79a885e8dfd0948c3aa4839edea238d5a43341f0afca7e",
+    bytes: 139801
+  },
+  "6331eeafba214157ff471f6e6dc7687837b937501973e4a723e74f026798c32f": {
+    url: "/plugin-builtins/display-0d45d509f2a98f6b47fbfb093d43540faeda7c56eb323dfdead91735057b631d.bin",
+    sha256: "0d45d509f2a98f6b47fbfb093d43540faeda7c56eb323dfdead91735057b631d",
+    bytes: 24066
+  },
+  "644caed1add8ff48a9c886ac6f17a031de20e8022d80ef0745a4f7af1c8576b7": {
+    url: "/plugin-builtins/display-16bee8a1f7ebaf722bd0b75c706331042c69e858c016ce997db87363dcd4ee76.bin",
+    sha256: "16bee8a1f7ebaf722bd0b75c706331042c69e858c016ce997db87363dcd4ee76",
+    bytes: 1527867
   },
   "64a7268212e08c128d64b90648bdd5c1204cf09ffc7c8bce2f34bb9b93950f37": {
-    url: "/plugin-builtins/display-9ec4d7b6883e3c6d631cbb4d12587c72812b26006b679c2945cb100992a3bb24.bin",
-    sha256: "9ec4d7b6883e3c6d631cbb4d12587c72812b26006b679c2945cb100992a3bb24",
-    bytes: 248495
+    url: "/plugin-builtins/display-66a20900e11db26e2f4ed5849a095aba9907bf44289fdac29ec88b1554006d94.bin",
+    sha256: "66a20900e11db26e2f4ed5849a095aba9907bf44289fdac29ec88b1554006d94",
+    bytes: 240948
+  },
+  "64d1621ca36ca44caa3facefda06c8a1b8456b02a7bc23fc810b6d85884ee3e2": {
+    url: "/plugin-builtins/display-8df79680290567f281a924eb4c62372dde1b8483eddc60b8c3f40906b8e469e7.bin",
+    sha256: "8df79680290567f281a924eb4c62372dde1b8483eddc60b8c3f40906b8e469e7",
+    bytes: 1028194
   },
   "650d7a311b50a9d4e05ab15e9c0e07349c84cefa7e7ccf0c2053310aefab6a79": {
     url: "/plugin-builtins/display-b6260a04e2ad72732d220b2b2a007d388524ff11dee5a0982224eaa4e09ac0e2.bin",
     sha256: "b6260a04e2ad72732d220b2b2a007d388524ff11dee5a0982224eaa4e09ac0e2",
     bytes: 19311
-  },
-  "65ef3f09f75f185dab2552d9986acdd65820bea06c508b6f99c78e45f05aa8f0": {
-    url: "/plugin-builtins/display-ed746526d7dd2b2f80d7ff88a5aaf73a65af3cdfb473d443765f31044d5b3604.bin",
-    sha256: "ed746526d7dd2b2f80d7ff88a5aaf73a65af3cdfb473d443765f31044d5b3604",
-    bytes: 1978416
   },
   "6721ccce3126587184109a385f820245e5cf59b58a2b01d931ee66a6e826ec1f": {
     url: "/plugin-builtins/display-b6260a04e2ad72732d220b2b2a007d388524ff11dee5a0982224eaa4e09ac0e2.bin",
@@ -268897,39 +268977,39 @@ var builtinGeometryArtifacts_generated_default = {
     bytes: 19311
   },
   "6746ecec3137bcc6323adc6568bb10d59ec8e080aa5669c68a5aa8c09fc3f68b": {
-    url: "/plugin-builtins/display-9ec4d7b6883e3c6d631cbb4d12587c72812b26006b679c2945cb100992a3bb24.bin",
-    sha256: "9ec4d7b6883e3c6d631cbb4d12587c72812b26006b679c2945cb100992a3bb24",
-    bytes: 248495
+    url: "/plugin-builtins/display-66a20900e11db26e2f4ed5849a095aba9907bf44289fdac29ec88b1554006d94.bin",
+    sha256: "66a20900e11db26e2f4ed5849a095aba9907bf44289fdac29ec88b1554006d94",
+    bytes: 240948
+  },
+  "6aeaf71c15f80904655370a519b6fe26ca314afe2a329506d11af5724970a2ff": {
+    url: "/plugin-builtins/display-3d4e3bfd983361556e79a885e8dfd0948c3aa4839edea238d5a43341f0afca7e.bin",
+    sha256: "3d4e3bfd983361556e79a885e8dfd0948c3aa4839edea238d5a43341f0afca7e",
+    bytes: 139801
+  },
+  "6b809e7e3fad41fc7495f4ee6c04f41dc59c1959028042b6a2c250288d5058d6": {
+    url: "/plugin-builtins/display-1b8467f0ab638ba688039a56e9713c6218c9e1cc504d2ed6a0e814739fa77cc1.bin",
+    sha256: "1b8467f0ab638ba688039a56e9713c6218c9e1cc504d2ed6a0e814739fa77cc1",
+    bytes: 29319
   },
   "6c3cd8d943acaedeec3c1e5fa2c49e0a0a219a0300a222b679fb86445fdc2c6a": {
-    url: "/plugin-builtins/display-2c2df17abd7ca56e131f768f5dbff81af2542c439154015ec4f1b6bf599ff446.bin",
-    sha256: "2c2df17abd7ca56e131f768f5dbff81af2542c439154015ec4f1b6bf599ff446",
-    bytes: 119216
-  },
-  "6c98dfad530067bda847d2b0bc1eabe176aca3d936f46d2d7c66779357cb409f": {
-    url: "/plugin-builtins/display-a7f3333210bd97c4c61b8b15dc455ab57dcb3ca8a601c598ba33526d652e8f94.bin",
-    sha256: "a7f3333210bd97c4c61b8b15dc455ab57dcb3ca8a601c598ba33526d652e8f94",
-    bytes: 2352796
+    url: "/plugin-builtins/display-cbf9b56c93f7a1aeaf63213d749f779b38335d7d372664ad19dba434aecb3798.bin",
+    sha256: "cbf9b56c93f7a1aeaf63213d749f779b38335d7d372664ad19dba434aecb3798",
+    bytes: 163941
   },
   "70756a5fecb09e1311175feaa52ba3b52af826f54bc7133cc6d6ad7de880a93c": {
-    url: "/plugin-builtins/display-9ec4d7b6883e3c6d631cbb4d12587c72812b26006b679c2945cb100992a3bb24.bin",
-    sha256: "9ec4d7b6883e3c6d631cbb4d12587c72812b26006b679c2945cb100992a3bb24",
-    bytes: 248495
+    url: "/plugin-builtins/display-66a20900e11db26e2f4ed5849a095aba9907bf44289fdac29ec88b1554006d94.bin",
+    sha256: "66a20900e11db26e2f4ed5849a095aba9907bf44289fdac29ec88b1554006d94",
+    bytes: 240948
   },
   "709cfdee65194dfc9dafe6f6102c583373ffed6afdd512648e48732a73be184f": {
-    url: "/plugin-builtins/display-9ec4d7b6883e3c6d631cbb4d12587c72812b26006b679c2945cb100992a3bb24.bin",
-    sha256: "9ec4d7b6883e3c6d631cbb4d12587c72812b26006b679c2945cb100992a3bb24",
-    bytes: 248495
-  },
-  "71bfdb53f55a2d5e6d3de07c765acf05dc1804e808744e47bebaf4b99bbb2008": {
-    url: "/plugin-builtins/display-dacbe7d81558b0c6a9cea160e5e0350b1b077408925912693195dfaf46c7176f.bin",
-    sha256: "dacbe7d81558b0c6a9cea160e5e0350b1b077408925912693195dfaf46c7176f",
-    bytes: 132617
+    url: "/plugin-builtins/display-66a20900e11db26e2f4ed5849a095aba9907bf44289fdac29ec88b1554006d94.bin",
+    sha256: "66a20900e11db26e2f4ed5849a095aba9907bf44289fdac29ec88b1554006d94",
+    bytes: 240948
   },
   "729908bb4e9bad4667220ffc91d6a1dbc4372df9f70941ece39685ffeaa479e4": {
-    url: "/plugin-builtins/display-2c2df17abd7ca56e131f768f5dbff81af2542c439154015ec4f1b6bf599ff446.bin",
-    sha256: "2c2df17abd7ca56e131f768f5dbff81af2542c439154015ec4f1b6bf599ff446",
-    bytes: 119216
+    url: "/plugin-builtins/display-cbf9b56c93f7a1aeaf63213d749f779b38335d7d372664ad19dba434aecb3798.bin",
+    sha256: "cbf9b56c93f7a1aeaf63213d749f779b38335d7d372664ad19dba434aecb3798",
+    bytes: 163941
   },
   "73a25654d917ac9b5e0dab5cb506ecc643071a5394c1ff3aa964eafae17359ac": {
     url: "/plugin-builtins/display-b6260a04e2ad72732d220b2b2a007d388524ff11dee5a0982224eaa4e09ac0e2.bin",
@@ -268937,729 +269017,814 @@ var builtinGeometryArtifacts_generated_default = {
     bytes: 19311
   },
   "743567551b35b6322e55ccf712cec7c492e1e276e9d365484b2c5ec3d493862e": {
-    url: "/plugin-builtins/display-53dfe158c72af7924feba33ab749cf918b1a6d3e33356747e7b255474f548772.bin",
-    sha256: "53dfe158c72af7924feba33ab749cf918b1a6d3e33356747e7b255474f548772",
-    bytes: 136229
-  },
-  "74558b0d3c78cd855f824ef8e3a96efff1110f28db2ab902308dc175e1984536": {
-    url: "/plugin-builtins/display-ed746526d7dd2b2f80d7ff88a5aaf73a65af3cdfb473d443765f31044d5b3604.bin",
-    sha256: "ed746526d7dd2b2f80d7ff88a5aaf73a65af3cdfb473d443765f31044d5b3604",
-    bytes: 1978416
+    url: "/plugin-builtins/display-1b8467f0ab638ba688039a56e9713c6218c9e1cc504d2ed6a0e814739fa77cc1.bin",
+    sha256: "1b8467f0ab638ba688039a56e9713c6218c9e1cc504d2ed6a0e814739fa77cc1",
+    bytes: 29319
   },
   "747770e7d03bc22a47462b8277cccd5017e198e4e1033331ea374e3e4e0b8f93": {
-    url: "/plugin-builtins/display-9ec4d7b6883e3c6d631cbb4d12587c72812b26006b679c2945cb100992a3bb24.bin",
-    sha256: "9ec4d7b6883e3c6d631cbb4d12587c72812b26006b679c2945cb100992a3bb24",
-    bytes: 248495
-  },
-  "74b29d03987725616a150867f0faea40d6fb45c1255abc213e8536ba60362ba0": {
-    url: "/plugin-builtins/display-dacbe7d81558b0c6a9cea160e5e0350b1b077408925912693195dfaf46c7176f.bin",
-    sha256: "dacbe7d81558b0c6a9cea160e5e0350b1b077408925912693195dfaf46c7176f",
-    bytes: 132617
+    url: "/plugin-builtins/display-66a20900e11db26e2f4ed5849a095aba9907bf44289fdac29ec88b1554006d94.bin",
+    sha256: "66a20900e11db26e2f4ed5849a095aba9907bf44289fdac29ec88b1554006d94",
+    bytes: 240948
   },
   "750952397afc00ee4c5d32bac73dae6bf24823407d6058c1103bfe4ca4bff1d8": {
-    url: "/plugin-builtins/display-2c2df17abd7ca56e131f768f5dbff81af2542c439154015ec4f1b6bf599ff446.bin",
-    sha256: "2c2df17abd7ca56e131f768f5dbff81af2542c439154015ec4f1b6bf599ff446",
-    bytes: 119216
+    url: "/plugin-builtins/display-cbf9b56c93f7a1aeaf63213d749f779b38335d7d372664ad19dba434aecb3798.bin",
+    sha256: "cbf9b56c93f7a1aeaf63213d749f779b38335d7d372664ad19dba434aecb3798",
+    bytes: 163941
   },
-  "77f06dbd0bd4669c494f3fadd50cb2dcbb8f5db9c6297e1d123b89388ccb9a0b": {
-    url: "/plugin-builtins/display-a7f3333210bd97c4c61b8b15dc455ab57dcb3ca8a601c598ba33526d652e8f94.bin",
-    sha256: "a7f3333210bd97c4c61b8b15dc455ab57dcb3ca8a601c598ba33526d652e8f94",
-    bytes: 2352796
+  "759b46c7eb27d7b79a5a93beb9eb4137b5a008ae9e38d457559885b7a721dbbe": {
+    url: "/plugin-builtins/display-cbf9b56c93f7a1aeaf63213d749f779b38335d7d372664ad19dba434aecb3798.bin",
+    sha256: "cbf9b56c93f7a1aeaf63213d749f779b38335d7d372664ad19dba434aecb3798",
+    bytes: 163941
+  },
+  "75e8cc7ff65c0242ee259c5df0f78394512c2e583fba6ab7139f9dcc35827e33": {
+    url: "/plugin-builtins/display-3d4e3bfd983361556e79a885e8dfd0948c3aa4839edea238d5a43341f0afca7e.bin",
+    sha256: "3d4e3bfd983361556e79a885e8dfd0948c3aa4839edea238d5a43341f0afca7e",
+    bytes: 139801
+  },
+  "761cb5879e77981dbb56a0d139e5e7539e7ea14d7941ec3425c845454864e53c": {
+    url: "/plugin-builtins/display-3d4e3bfd983361556e79a885e8dfd0948c3aa4839edea238d5a43341f0afca7e.bin",
+    sha256: "3d4e3bfd983361556e79a885e8dfd0948c3aa4839edea238d5a43341f0afca7e",
+    bytes: 139801
+  },
+  "763d62cb9a985bcd7b550340a5254b1bea211db61057ee1385c69cc0e06a15d4": {
+    url: "/plugin-builtins/display-0d45d509f2a98f6b47fbfb093d43540faeda7c56eb323dfdead91735057b631d.bin",
+    sha256: "0d45d509f2a98f6b47fbfb093d43540faeda7c56eb323dfdead91735057b631d",
+    bytes: 24066
+  },
+  "776cbe9a13fe951189f78296fc428ad6c0aa9add1f25674fd23a5303cd67d41d": {
+    url: "/plugin-builtins/display-8df79680290567f281a924eb4c62372dde1b8483eddc60b8c3f40906b8e469e7.bin",
+    sha256: "8df79680290567f281a924eb4c62372dde1b8483eddc60b8c3f40906b8e469e7",
+    bytes: 1028194
+  },
+  "785f4c6b7cf238591340fad431829bee0fc89e0cbc732b50d8ec04e27ead30df": {
+    url: "/plugin-builtins/display-670cb59c9cd59b59709e6dd635b18b0ceb86feb5a44177a68aace0344a61e943.bin",
+    sha256: "670cb59c9cd59b59709e6dd635b18b0ceb86feb5a44177a68aace0344a61e943",
+    bytes: 166506
   },
   "791f693ba470a459dfd6143bab559b76528d0f5a0a931234769ea696ee49de1d": {
-    url: "/plugin-builtins/display-9ec4d7b6883e3c6d631cbb4d12587c72812b26006b679c2945cb100992a3bb24.bin",
-    sha256: "9ec4d7b6883e3c6d631cbb4d12587c72812b26006b679c2945cb100992a3bb24",
-    bytes: 248495
-  },
-  "792c4e5590bf6d8dc8a1c44ddbf51261a7bc03891ae3ec7acbb1f3f892f23783": {
-    url: "/plugin-builtins/display-e041ad0342d47e6a405dc05faf7496ab6718d6d7e71cc51350d324f8f688363f.bin",
-    sha256: "e041ad0342d47e6a405dc05faf7496ab6718d6d7e71cc51350d324f8f688363f",
-    bytes: 2083826
-  },
-  "797487c92dc77239b86935fd3fcd365f3b1da52faa7fbcc48528f70e368c2be3": {
-    url: "/plugin-builtins/display-a7f3333210bd97c4c61b8b15dc455ab57dcb3ca8a601c598ba33526d652e8f94.bin",
-    sha256: "a7f3333210bd97c4c61b8b15dc455ab57dcb3ca8a601c598ba33526d652e8f94",
-    bytes: 2352796
+    url: "/plugin-builtins/display-66a20900e11db26e2f4ed5849a095aba9907bf44289fdac29ec88b1554006d94.bin",
+    sha256: "66a20900e11db26e2f4ed5849a095aba9907bf44289fdac29ec88b1554006d94",
+    bytes: 240948
   },
   "7a6e3384e961bacdc8e2f3062e67990b592dab83f9e35d9823ad8e39607e3926": {
-    url: "/plugin-builtins/display-dacbe7d81558b0c6a9cea160e5e0350b1b077408925912693195dfaf46c7176f.bin",
-    sha256: "dacbe7d81558b0c6a9cea160e5e0350b1b077408925912693195dfaf46c7176f",
-    bytes: 132617
+    url: "/plugin-builtins/display-670cb59c9cd59b59709e6dd635b18b0ceb86feb5a44177a68aace0344a61e943.bin",
+    sha256: "670cb59c9cd59b59709e6dd635b18b0ceb86feb5a44177a68aace0344a61e943",
+    bytes: 166506
+  },
+  "7ad0b473a29610750140d1e32ab68a931938f5cc02fd8739c9f71a684b4a408e": {
+    url: "/plugin-builtins/display-3d4e3bfd983361556e79a885e8dfd0948c3aa4839edea238d5a43341f0afca7e.bin",
+    sha256: "3d4e3bfd983361556e79a885e8dfd0948c3aa4839edea238d5a43341f0afca7e",
+    bytes: 139801
   },
   "7bfc82fee73cbddbf381472a596c472b2c85c46290ad4a0cc11db69df4dadf54": {
-    url: "/plugin-builtins/display-e041ad0342d47e6a405dc05faf7496ab6718d6d7e71cc51350d324f8f688363f.bin",
-    sha256: "e041ad0342d47e6a405dc05faf7496ab6718d6d7e71cc51350d324f8f688363f",
-    bytes: 2083826
+    url: "/plugin-builtins/display-b7f6a37ff69d095c18886869c16002b57efdf6a9ab6070941ac10ac354c36a3b.bin",
+    sha256: "b7f6a37ff69d095c18886869c16002b57efdf6a9ab6070941ac10ac354c36a3b",
+    bytes: 2099453
   },
   "7d400a65663b66824429eff9a1dad8f7f218b9dffa2eeb107a17ca2df37c8053": {
-    url: "/plugin-builtins/display-9ec4d7b6883e3c6d631cbb4d12587c72812b26006b679c2945cb100992a3bb24.bin",
-    sha256: "9ec4d7b6883e3c6d631cbb4d12587c72812b26006b679c2945cb100992a3bb24",
-    bytes: 248495
-  },
-  "7f700d920f046bdf19da3e61461df0406e939a6fb76742d494539823bdf81f70": {
-    url: "/plugin-builtins/display-631fb557ea96006f07e2ebac26aabac50f5a992fa2a72084e2d0ef203e4c823b.bin",
-    sha256: "631fb557ea96006f07e2ebac26aabac50f5a992fa2a72084e2d0ef203e4c823b",
-    bytes: 325822
-  },
-  "7fa5dafcb21632ac542d1c64f5269c386dfb86fcb3392f4f967cf472e816f8ac": {
-    url: "/plugin-builtins/display-ed746526d7dd2b2f80d7ff88a5aaf73a65af3cdfb473d443765f31044d5b3604.bin",
-    sha256: "ed746526d7dd2b2f80d7ff88a5aaf73a65af3cdfb473d443765f31044d5b3604",
-    bytes: 1978416
-  },
-  "805c3f154d54cfe3aa0c9ab616c9581311c61973f13ea84b0bb4d490eb32d352": {
-    url: "/plugin-builtins/display-ed746526d7dd2b2f80d7ff88a5aaf73a65af3cdfb473d443765f31044d5b3604.bin",
-    sha256: "ed746526d7dd2b2f80d7ff88a5aaf73a65af3cdfb473d443765f31044d5b3604",
-    bytes: 1978416
+    url: "/plugin-builtins/display-66a20900e11db26e2f4ed5849a095aba9907bf44289fdac29ec88b1554006d94.bin",
+    sha256: "66a20900e11db26e2f4ed5849a095aba9907bf44289fdac29ec88b1554006d94",
+    bytes: 240948
   },
   "80d7e7b17990d5c9da6be496eb6fbe909011e9bffebe4a92c9a12aa90117ef4a": {
-    url: "/plugin-builtins/display-58dcfef2c2216feb67a2787dcb4f22a0bc321f3548260833b356eaef7872bec6.bin",
-    sha256: "58dcfef2c2216feb67a2787dcb4f22a0bc321f3548260833b356eaef7872bec6",
-    bytes: 107253
+    url: "/plugin-builtins/display-5030666ef08bdd4a8d750ead5420b40e544c6a8d45e7f0eda72ce8cd1e0aa25f.bin",
+    sha256: "5030666ef08bdd4a8d750ead5420b40e544c6a8d45e7f0eda72ce8cd1e0aa25f",
+    bytes: 61472
   },
   "80dc67a60ce6cce8f4d1a4be20698f234a43cc91621c252e2e5af9a17633dc69": {
-    url: "/plugin-builtins/display-322de0c1e9560e8124ef98291c8c0e1f16205236b081e8e9bf9abf61942e4a8b.bin",
-    sha256: "322de0c1e9560e8124ef98291c8c0e1f16205236b081e8e9bf9abf61942e4a8b",
-    bytes: 7899
+    url: "/plugin-builtins/display-1c18198985054bc360cefbcb81364d2e5612474a4c1f8682d9dbc9244de832fe.bin",
+    sha256: "1c18198985054bc360cefbcb81364d2e5612474a4c1f8682d9dbc9244de832fe",
+    bytes: 163770
+  },
+  "811fdcdc04d49b54bd71d42307a924ea2c2615728ca7bef3d1c6e79e640ab025": {
+    url: "/plugin-builtins/display-16bee8a1f7ebaf722bd0b75c706331042c69e858c016ce997db87363dcd4ee76.bin",
+    sha256: "16bee8a1f7ebaf722bd0b75c706331042c69e858c016ce997db87363dcd4ee76",
+    bytes: 1527867
   },
   "822ec2e6cba7ed32166f940c774974ded527f1b065e9bed10115c404f255be04": {
-    url: "/plugin-builtins/display-8f5d262c295cdeda30c81c794d7d736e89ddd793915c0c1090e5e42b95b1f60c.bin",
-    sha256: "8f5d262c295cdeda30c81c794d7d736e89ddd793915c0c1090e5e42b95b1f60c",
-    bytes: 93035
+    url: "/plugin-builtins/display-79c9d8bf9eb14e406137def0cedb13455f6eadd93a179bb104c9f30e56ac7ffe.bin",
+    sha256: "79c9d8bf9eb14e406137def0cedb13455f6eadd93a179bb104c9f30e56ac7ffe",
+    bytes: 54824
   },
   "828f9f3577f1e39032186639e16970f6302a188f9baf40de588db9ceea0465ab": {
-    url: "/plugin-builtins/display-8f5d262c295cdeda30c81c794d7d736e89ddd793915c0c1090e5e42b95b1f60c.bin",
-    sha256: "8f5d262c295cdeda30c81c794d7d736e89ddd793915c0c1090e5e42b95b1f60c",
-    bytes: 93035
+    url: "/plugin-builtins/display-79c9d8bf9eb14e406137def0cedb13455f6eadd93a179bb104c9f30e56ac7ffe.bin",
+    sha256: "79c9d8bf9eb14e406137def0cedb13455f6eadd93a179bb104c9f30e56ac7ffe",
+    bytes: 54824
   },
   "8356dcb03d9aa83bcb4c18027c45dfb14c2c368cdd865884cc505327d86b6ac4": {
-    url: "/plugin-builtins/display-48e005692b3bbe018e90908a61f4fa0ca873bac6151c2024ce5f7bcc85b621fd.bin",
-    sha256: "48e005692b3bbe018e90908a61f4fa0ca873bac6151c2024ce5f7bcc85b621fd",
-    bytes: 168498
+    url: "/plugin-builtins/display-f206fd31ad2e13621591219b00955439ada3c84f74ff5388c0fb5440f8628884.bin",
+    sha256: "f206fd31ad2e13621591219b00955439ada3c84f74ff5388c0fb5440f8628884",
+    bytes: 168585
   },
-  "86e00278b837c90980d858e64aa2422e1c79a6323e806b76f540c2d748e140ea": {
-    url: "/plugin-builtins/display-4e26f9ed3feb4f3a2cefa297f16cfc147bac5dd48fb83f2bc0662dca8d97d28d.bin",
-    sha256: "4e26f9ed3feb4f3a2cefa297f16cfc147bac5dd48fb83f2bc0662dca8d97d28d",
-    bytes: 9403
+  "83b5022bcf6fa76397c4cffe5a77df3d65628af8f7646c1f11c76bc31345ec9c": {
+    url: "/plugin-builtins/display-a7da39800f5565f9b077eca1ace6a4391a84f98400c990d9969eb0ed3702a918.bin",
+    sha256: "a7da39800f5565f9b077eca1ace6a4391a84f98400c990d9969eb0ed3702a918",
+    bytes: 167700
+  },
+  "84f2a66892a3ea4556c30d50fe36f6054d4975e91b686e18d22fc86383897a24": {
+    url: "/plugin-builtins/display-a7da39800f5565f9b077eca1ace6a4391a84f98400c990d9969eb0ed3702a918.bin",
+    sha256: "a7da39800f5565f9b077eca1ace6a4391a84f98400c990d9969eb0ed3702a918",
+    bytes: 167700
+  },
+  "855e93cf084bf4cca9612cab547e883d533c9f7a687487111c0b66e21a4486d5": {
+    url: "/plugin-builtins/display-a7da39800f5565f9b077eca1ace6a4391a84f98400c990d9969eb0ed3702a918.bin",
+    sha256: "a7da39800f5565f9b077eca1ace6a4391a84f98400c990d9969eb0ed3702a918",
+    bytes: 167700
   },
   "8700316fe5532060a87a566aac2c44ba1fa02cb32d835aea774d7c80b2ae6f1a": {
-    url: "/plugin-builtins/display-8f5d262c295cdeda30c81c794d7d736e89ddd793915c0c1090e5e42b95b1f60c.bin",
-    sha256: "8f5d262c295cdeda30c81c794d7d736e89ddd793915c0c1090e5e42b95b1f60c",
-    bytes: 93035
+    url: "/plugin-builtins/display-79c9d8bf9eb14e406137def0cedb13455f6eadd93a179bb104c9f30e56ac7ffe.bin",
+    sha256: "79c9d8bf9eb14e406137def0cedb13455f6eadd93a179bb104c9f30e56ac7ffe",
+    bytes: 54824
   },
   "87513360b0e24305d763b0c2f1b96147eadd65bda5d188ea401a91e2fc73435a": {
-    url: "/plugin-builtins/display-48e005692b3bbe018e90908a61f4fa0ca873bac6151c2024ce5f7bcc85b621fd.bin",
-    sha256: "48e005692b3bbe018e90908a61f4fa0ca873bac6151c2024ce5f7bcc85b621fd",
-    bytes: 168498
+    url: "/plugin-builtins/display-f206fd31ad2e13621591219b00955439ada3c84f74ff5388c0fb5440f8628884.bin",
+    sha256: "f206fd31ad2e13621591219b00955439ada3c84f74ff5388c0fb5440f8628884",
+    bytes: 168585
   },
-  "8a6143d1b45f0410d4662934aa02725c5637ffcbe3e6766c0b3f7e35b6c9093e": {
-    url: "/plugin-builtins/display-a7f3333210bd97c4c61b8b15dc455ab57dcb3ca8a601c598ba33526d652e8f94.bin",
-    sha256: "a7f3333210bd97c4c61b8b15dc455ab57dcb3ca8a601c598ba33526d652e8f94",
-    bytes: 2352796
+  "888202ec6ebb62691d775800ce34034d1ace45d874a270336d74153291e3693c": {
+    url: "/plugin-builtins/display-a7da39800f5565f9b077eca1ace6a4391a84f98400c990d9969eb0ed3702a918.bin",
+    sha256: "a7da39800f5565f9b077eca1ace6a4391a84f98400c990d9969eb0ed3702a918",
+    bytes: 167700
+  },
+  "89d04d12a3c4dd7fad751118744cf153a388b41062df2cebe53811680414271f": {
+    url: "/plugin-builtins/display-dc56cb7a688087210356d1d6b83fbc37f04b258a40e854ab76aa22b6e06a0e05.bin",
+    sha256: "dc56cb7a688087210356d1d6b83fbc37f04b258a40e854ab76aa22b6e06a0e05",
+    bytes: 1266092
   },
   "8a90b4b7551025345e45158b3ec26890dc5c1a645614a70e4dadaa3797940b65": {
-    url: "/plugin-builtins/display-58dcfef2c2216feb67a2787dcb4f22a0bc321f3548260833b356eaef7872bec6.bin",
-    sha256: "58dcfef2c2216feb67a2787dcb4f22a0bc321f3548260833b356eaef7872bec6",
-    bytes: 107253
-  },
-  "8c757db77cc9a89279036ef420280443ab94b492cee7fa6bd27afc2fe784546a": {
-    url: "/plugin-builtins/display-ed746526d7dd2b2f80d7ff88a5aaf73a65af3cdfb473d443765f31044d5b3604.bin",
-    sha256: "ed746526d7dd2b2f80d7ff88a5aaf73a65af3cdfb473d443765f31044d5b3604",
-    bytes: 1978416
+    url: "/plugin-builtins/display-5030666ef08bdd4a8d750ead5420b40e544c6a8d45e7f0eda72ce8cd1e0aa25f.bin",
+    sha256: "5030666ef08bdd4a8d750ead5420b40e544c6a8d45e7f0eda72ce8cd1e0aa25f",
+    bytes: 61472
   },
   "8dae932788846a66cf36381aee39b3a12a26c1824010a6e95c1c18d76f313ded": {
-    url: "/plugin-builtins/display-8f5d262c295cdeda30c81c794d7d736e89ddd793915c0c1090e5e42b95b1f60c.bin",
-    sha256: "8f5d262c295cdeda30c81c794d7d736e89ddd793915c0c1090e5e42b95b1f60c",
-    bytes: 93035
+    url: "/plugin-builtins/display-79c9d8bf9eb14e406137def0cedb13455f6eadd93a179bb104c9f30e56ac7ffe.bin",
+    sha256: "79c9d8bf9eb14e406137def0cedb13455f6eadd93a179bb104c9f30e56ac7ffe",
+    bytes: 54824
   },
-  "8e91fec4908774d877487670fcb30a444af6df5234e6175a5f29893c2837368c": {
-    url: "/plugin-builtins/display-97b40399bcd06f9a8abce25cb4d266dd978ea732a5da040445e7a3c332e206b8.bin",
-    sha256: "97b40399bcd06f9a8abce25cb4d266dd978ea732a5da040445e7a3c332e206b8",
-    bytes: 1538332
-  },
-  "8f8b09df9262e4e417486e324197af8f0389c4a95d4273f0e050f76c427d2b91": {
-    url: "/plugin-builtins/display-58dcfef2c2216feb67a2787dcb4f22a0bc321f3548260833b356eaef7872bec6.bin",
-    sha256: "58dcfef2c2216feb67a2787dcb4f22a0bc321f3548260833b356eaef7872bec6",
-    bytes: 107253
-  },
-  "8fcb9bf80da1e465c10868df52ade79d22640ec2d140f8f122991b2b79c16474": {
-    url: "/plugin-builtins/display-631fb557ea96006f07e2ebac26aabac50f5a992fa2a72084e2d0ef203e4c823b.bin",
-    sha256: "631fb557ea96006f07e2ebac26aabac50f5a992fa2a72084e2d0ef203e4c823b",
-    bytes: 325822
-  },
-  "903015c52e3e901c06fe9478d78a6083e9cf4be0deb853ffadd6d6e8259c6953": {
-    url: "/plugin-builtins/display-2d8ea5bc2a0c40598aa5e9e6e2721c95a8e0b353d70826278025889e42599df8.bin",
-    sha256: "2d8ea5bc2a0c40598aa5e9e6e2721c95a8e0b353d70826278025889e42599df8",
-    bytes: 69760
+  "8e68ca1868bd1c02d200289f262accaea09e131142365ebe1c175f60127a3a61": {
+    url: "/plugin-builtins/display-a7da39800f5565f9b077eca1ace6a4391a84f98400c990d9969eb0ed3702a918.bin",
+    sha256: "a7da39800f5565f9b077eca1ace6a4391a84f98400c990d9969eb0ed3702a918",
+    bytes: 167700
   },
   "90adbea1ed1ecaba257c501a8145b70eb755b3cd5528c9a801f11883370608a9": {
-    url: "/plugin-builtins/display-8f5d262c295cdeda30c81c794d7d736e89ddd793915c0c1090e5e42b95b1f60c.bin",
-    sha256: "8f5d262c295cdeda30c81c794d7d736e89ddd793915c0c1090e5e42b95b1f60c",
-    bytes: 93035
+    url: "/plugin-builtins/display-79c9d8bf9eb14e406137def0cedb13455f6eadd93a179bb104c9f30e56ac7ffe.bin",
+    sha256: "79c9d8bf9eb14e406137def0cedb13455f6eadd93a179bb104c9f30e56ac7ffe",
+    bytes: 54824
   },
   "90ff19911b88db2d95a61c9f632f082becf1cf12faed9ec2757c1aa2e99585c9": {
-    url: "/plugin-builtins/display-8f5d262c295cdeda30c81c794d7d736e89ddd793915c0c1090e5e42b95b1f60c.bin",
-    sha256: "8f5d262c295cdeda30c81c794d7d736e89ddd793915c0c1090e5e42b95b1f60c",
-    bytes: 93035
+    url: "/plugin-builtins/display-79c9d8bf9eb14e406137def0cedb13455f6eadd93a179bb104c9f30e56ac7ffe.bin",
+    sha256: "79c9d8bf9eb14e406137def0cedb13455f6eadd93a179bb104c9f30e56ac7ffe",
+    bytes: 54824
   },
   "91bd2e16d4e5bde4253ce99c4d116e14b29c37ea62b51ae1fec4fb3bff6e6e66": {
-    url: "/plugin-builtins/display-e2608af27172fc8e7ae58aad82b19e6e08290e4b9d0c186677780b39395f8607.bin",
-    sha256: "e2608af27172fc8e7ae58aad82b19e6e08290e4b9d0c186677780b39395f8607",
-    bytes: 64840
+    url: "/plugin-builtins/display-3f04e3531a85eb8df600c3ab49a98d684c0478ba0d6c726a6178be6aac7c0679.bin",
+    sha256: "3f04e3531a85eb8df600c3ab49a98d684c0478ba0d6c726a6178be6aac7c0679",
+    bytes: 196498
   },
-  "9205b34f70ff822e39c669f8f0d82a96354d6f9e73ea3ffb6951222258928fbb": {
-    url: "/plugin-builtins/display-ed746526d7dd2b2f80d7ff88a5aaf73a65af3cdfb473d443765f31044d5b3604.bin",
-    sha256: "ed746526d7dd2b2f80d7ff88a5aaf73a65af3cdfb473d443765f31044d5b3604",
-    bytes: 1978416
+  "91f3f90db57f7e20e16a0d152cb741407ebc55c9ca12fa4f5102915b9be0e0d9": {
+    url: "/plugin-builtins/display-6fe375f73ed93bb6f968dc7012f07576d54d1be0307ae12ca0ff8d4c3b4e894c.bin",
+    sha256: "6fe375f73ed93bb6f968dc7012f07576d54d1be0307ae12ca0ff8d4c3b4e894c",
+    bytes: 131447
   },
   "9399c7d41ca5031f2355d688ab95f64dfdf13bbd23c63d77855e72dad1c39965": {
-    url: "/plugin-builtins/display-48e005692b3bbe018e90908a61f4fa0ca873bac6151c2024ce5f7bcc85b621fd.bin",
-    sha256: "48e005692b3bbe018e90908a61f4fa0ca873bac6151c2024ce5f7bcc85b621fd",
-    bytes: 168498
-  },
-  "93aa8dee41d3c1d5c19be704880cf13a604fc8fb8681741aff012edc0800e717": {
-    url: "/plugin-builtins/display-e3e07bc6170dd71685f3c34bdeedfdc02256a5214537de4bd0613a3b2a30a9aa.bin",
-    sha256: "e3e07bc6170dd71685f3c34bdeedfdc02256a5214537de4bd0613a3b2a30a9aa",
-    bytes: 8538
+    url: "/plugin-builtins/display-f206fd31ad2e13621591219b00955439ada3c84f74ff5388c0fb5440f8628884.bin",
+    sha256: "f206fd31ad2e13621591219b00955439ada3c84f74ff5388c0fb5440f8628884",
+    bytes: 168585
   },
   "94095f1ad530b7230065c5a5380a11220bcbeeceded956f14997d3c488013d4d": {
-    url: "/plugin-builtins/display-48e005692b3bbe018e90908a61f4fa0ca873bac6151c2024ce5f7bcc85b621fd.bin",
-    sha256: "48e005692b3bbe018e90908a61f4fa0ca873bac6151c2024ce5f7bcc85b621fd",
-    bytes: 168498
+    url: "/plugin-builtins/display-f206fd31ad2e13621591219b00955439ada3c84f74ff5388c0fb5440f8628884.bin",
+    sha256: "f206fd31ad2e13621591219b00955439ada3c84f74ff5388c0fb5440f8628884",
+    bytes: 168585
   },
-  "9502eb5e1da160a17b80d46071fe47c8e76a6d1d0a663c5c63fdc3f619b60296": {
-    url: "/plugin-builtins/display-ed746526d7dd2b2f80d7ff88a5aaf73a65af3cdfb473d443765f31044d5b3604.bin",
-    sha256: "ed746526d7dd2b2f80d7ff88a5aaf73a65af3cdfb473d443765f31044d5b3604",
-    bytes: 1978416
+  "9424e4f625ae8b45a9f06bae66a9c25488610b7ed49b1194e7abb154bfb69fc8": {
+    url: "/plugin-builtins/display-1c18198985054bc360cefbcb81364d2e5612474a4c1f8682d9dbc9244de832fe.bin",
+    sha256: "1c18198985054bc360cefbcb81364d2e5612474a4c1f8682d9dbc9244de832fe",
+    bytes: 163770
+  },
+  "942e1b0648546c0e90878b250c160b25d2c8e54e2a80db29a5432f142f01fb69": {
+    url: "/plugin-builtins/display-1c18198985054bc360cefbcb81364d2e5612474a4c1f8682d9dbc9244de832fe.bin",
+    sha256: "1c18198985054bc360cefbcb81364d2e5612474a4c1f8682d9dbc9244de832fe",
+    bytes: 163770
   },
   "95574dc63f8396acf33d82c6907b914e9a6d96027d7d7b65bc48944a10fa71f7": {
-    url: "/plugin-builtins/display-58dcfef2c2216feb67a2787dcb4f22a0bc321f3548260833b356eaef7872bec6.bin",
-    sha256: "58dcfef2c2216feb67a2787dcb4f22a0bc321f3548260833b356eaef7872bec6",
-    bytes: 107253
+    url: "/plugin-builtins/display-5030666ef08bdd4a8d750ead5420b40e544c6a8d45e7f0eda72ce8cd1e0aa25f.bin",
+    sha256: "5030666ef08bdd4a8d750ead5420b40e544c6a8d45e7f0eda72ce8cd1e0aa25f",
+    bytes: 61472
+  },
+  "958bb6f753f42f403cba041f73e928e2999d75a19c6b2583314d28663a1a89aa": {
+    url: "/plugin-builtins/display-1c18198985054bc360cefbcb81364d2e5612474a4c1f8682d9dbc9244de832fe.bin",
+    sha256: "1c18198985054bc360cefbcb81364d2e5612474a4c1f8682d9dbc9244de832fe",
+    bytes: 163770
   },
   "9602d865817238f021df37c28f17bd35eb69ccf95f5bb6a7a23c164d799fdcbe": {
-    url: "/plugin-builtins/display-48e005692b3bbe018e90908a61f4fa0ca873bac6151c2024ce5f7bcc85b621fd.bin",
-    sha256: "48e005692b3bbe018e90908a61f4fa0ca873bac6151c2024ce5f7bcc85b621fd",
-    bytes: 168498
+    url: "/plugin-builtins/display-f206fd31ad2e13621591219b00955439ada3c84f74ff5388c0fb5440f8628884.bin",
+    sha256: "f206fd31ad2e13621591219b00955439ada3c84f74ff5388c0fb5440f8628884",
+    bytes: 168585
   },
-  "967f661a0957f684a190bf874de064ea19df6169a5b2eaf409cb9561d3693c50": {
-    url: "/plugin-builtins/display-6ea2c3ae5634eca3bdb3cf9ecc9a3d0d5c8fe4dd05f9bb9f20280cc8a2f7746d.bin",
-    sha256: "6ea2c3ae5634eca3bdb3cf9ecc9a3d0d5c8fe4dd05f9bb9f20280cc8a2f7746d",
-    bytes: 297400
+  "966f308ec8493f154e94d6e2b9ae70e95e4f0da14041dc71f51cfb92f95141ca": {
+    url: "/plugin-builtins/display-5030666ef08bdd4a8d750ead5420b40e544c6a8d45e7f0eda72ce8cd1e0aa25f.bin",
+    sha256: "5030666ef08bdd4a8d750ead5420b40e544c6a8d45e7f0eda72ce8cd1e0aa25f",
+    bytes: 61472
   },
   "96c267805e28df99d119b2c763f4ce152e57b5b5969f156bc7fed117a555b0a0": {
-    url: "/plugin-builtins/display-58dcfef2c2216feb67a2787dcb4f22a0bc321f3548260833b356eaef7872bec6.bin",
-    sha256: "58dcfef2c2216feb67a2787dcb4f22a0bc321f3548260833b356eaef7872bec6",
-    bytes: 107253
+    url: "/plugin-builtins/display-5030666ef08bdd4a8d750ead5420b40e544c6a8d45e7f0eda72ce8cd1e0aa25f.bin",
+    sha256: "5030666ef08bdd4a8d750ead5420b40e544c6a8d45e7f0eda72ce8cd1e0aa25f",
+    bytes: 61472
+  },
+  "988266a687f2ceda70d8452c48b4b1e1ca00f597c689948a498be454b3edb6ad": {
+    url: "/plugin-builtins/display-1c18198985054bc360cefbcb81364d2e5612474a4c1f8682d9dbc9244de832fe.bin",
+    sha256: "1c18198985054bc360cefbcb81364d2e5612474a4c1f8682d9dbc9244de832fe",
+    bytes: 163770
+  },
+  "990fa49bc6ae9ee8e80a5ccb514fef9ff3a5c711631aabe6a63b2fc5277fa82a": {
+    url: "/plugin-builtins/display-a7da39800f5565f9b077eca1ace6a4391a84f98400c990d9969eb0ed3702a918.bin",
+    sha256: "a7da39800f5565f9b077eca1ace6a4391a84f98400c990d9969eb0ed3702a918",
+    bytes: 167700
   },
   "9c69d15468beb5cf69a64bc347e66f59b22c8990b1af74eb3e25175b4fe7a63a": {
-    url: "/plugin-builtins/display-48e005692b3bbe018e90908a61f4fa0ca873bac6151c2024ce5f7bcc85b621fd.bin",
-    sha256: "48e005692b3bbe018e90908a61f4fa0ca873bac6151c2024ce5f7bcc85b621fd",
-    bytes: 168498
+    url: "/plugin-builtins/display-f206fd31ad2e13621591219b00955439ada3c84f74ff5388c0fb5440f8628884.bin",
+    sha256: "f206fd31ad2e13621591219b00955439ada3c84f74ff5388c0fb5440f8628884",
+    bytes: 168585
+  },
+  "9c99edcd02900b15dc4e32e55095f66a2adb0e6bcf159b49a837f0eece7a540d": {
+    url: "/plugin-builtins/display-89b7d5eeab2fd71d937f760f1dc6daa8faef5a3c1cddca6b476b3439325ef546.bin",
+    sha256: "89b7d5eeab2fd71d937f760f1dc6daa8faef5a3c1cddca6b476b3439325ef546",
+    bytes: 743960
+  },
+  "9cabc579599b18c1fcc1919958c241a5d5776281ad71d1fef7a5dba4f054b700": {
+    url: "/plugin-builtins/display-62dacd832b108eaae351ac8cad84bbcfbacdc4ec712892c28ccc21a83a18cf7e.bin",
+    sha256: "62dacd832b108eaae351ac8cad84bbcfbacdc4ec712892c28ccc21a83a18cf7e",
+    bytes: 1568909
   },
   "9d89db173ef9862143c0cc73104810b0197dc68a76e6128bab4912d7d7725c53": {
-    url: "/plugin-builtins/display-8f5d262c295cdeda30c81c794d7d736e89ddd793915c0c1090e5e42b95b1f60c.bin",
-    sha256: "8f5d262c295cdeda30c81c794d7d736e89ddd793915c0c1090e5e42b95b1f60c",
-    bytes: 93035
+    url: "/plugin-builtins/display-79c9d8bf9eb14e406137def0cedb13455f6eadd93a179bb104c9f30e56ac7ffe.bin",
+    sha256: "79c9d8bf9eb14e406137def0cedb13455f6eadd93a179bb104c9f30e56ac7ffe",
+    bytes: 54824
   },
   "9e29592477ee7049b4c49445ff05bbed0964ad12da6e78bff341bddeb6e4ff58": {
-    url: "/plugin-builtins/display-48e005692b3bbe018e90908a61f4fa0ca873bac6151c2024ce5f7bcc85b621fd.bin",
-    sha256: "48e005692b3bbe018e90908a61f4fa0ca873bac6151c2024ce5f7bcc85b621fd",
-    bytes: 168498
+    url: "/plugin-builtins/display-f206fd31ad2e13621591219b00955439ada3c84f74ff5388c0fb5440f8628884.bin",
+    sha256: "f206fd31ad2e13621591219b00955439ada3c84f74ff5388c0fb5440f8628884",
+    bytes: 168585
+  },
+  "9e4393c925af78ba0c4a355c9895856c592f0eaa8eb329d7198539d5a226057c": {
+    url: "/plugin-builtins/display-b7f6a37ff69d095c18886869c16002b57efdf6a9ab6070941ac10ac354c36a3b.bin",
+    sha256: "b7f6a37ff69d095c18886869c16002b57efdf6a9ab6070941ac10ac354c36a3b",
+    bytes: 2099453
   },
   "9e9af5e9c930bc7980aaddf04f009b8729656ed64d12edeaa4033e70882dc975": {
-    url: "/plugin-builtins/display-8f5d262c295cdeda30c81c794d7d736e89ddd793915c0c1090e5e42b95b1f60c.bin",
-    sha256: "8f5d262c295cdeda30c81c794d7d736e89ddd793915c0c1090e5e42b95b1f60c",
-    bytes: 93035
+    url: "/plugin-builtins/display-79c9d8bf9eb14e406137def0cedb13455f6eadd93a179bb104c9f30e56ac7ffe.bin",
+    sha256: "79c9d8bf9eb14e406137def0cedb13455f6eadd93a179bb104c9f30e56ac7ffe",
+    bytes: 54824
   },
   "9f1e05e77f27c6b3e3e90df5549c80bfb78ced0313303aba80ed9f40a5a3200b": {
-    url: "/plugin-builtins/display-48e005692b3bbe018e90908a61f4fa0ca873bac6151c2024ce5f7bcc85b621fd.bin",
-    sha256: "48e005692b3bbe018e90908a61f4fa0ca873bac6151c2024ce5f7bcc85b621fd",
-    bytes: 168498
+    url: "/plugin-builtins/display-a7da39800f5565f9b077eca1ace6a4391a84f98400c990d9969eb0ed3702a918.bin",
+    sha256: "a7da39800f5565f9b077eca1ace6a4391a84f98400c990d9969eb0ed3702a918",
+    bytes: 167700
   },
-  "9fc2b38d6d15140c0ff5b6435213fa76f5a143f3007582d0d3db7dd94426b331": {
-    url: "/plugin-builtins/display-48e005692b3bbe018e90908a61f4fa0ca873bac6151c2024ce5f7bcc85b621fd.bin",
-    sha256: "48e005692b3bbe018e90908a61f4fa0ca873bac6151c2024ce5f7bcc85b621fd",
-    bytes: 168498
+  a13bb355e573c6dc7941f138fc28502a9468f0d2e1d08f82c8c33958c6f80456: {
+    url: "/plugin-builtins/display-62dacd832b108eaae351ac8cad84bbcfbacdc4ec712892c28ccc21a83a18cf7e.bin",
+    sha256: "62dacd832b108eaae351ac8cad84bbcfbacdc4ec712892c28ccc21a83a18cf7e",
+    bytes: 1568909
   },
-  a326b6a9fb27f8ed6cf3a59e62a9a061226b363fd49b404626b6c1da7f195939: {
-    url: "/plugin-builtins/display-a7f3333210bd97c4c61b8b15dc455ab57dcb3ca8a601c598ba33526d652e8f94.bin",
-    sha256: "a7f3333210bd97c4c61b8b15dc455ab57dcb3ca8a601c598ba33526d652e8f94",
-    bytes: 2352796
+  a27ce07efced9a60d1a98ea73bd11d7389a32e3294e4c14e4a37d8b3c91bbd94: {
+    url: "/plugin-builtins/display-1c18198985054bc360cefbcb81364d2e5612474a4c1f8682d9dbc9244de832fe.bin",
+    sha256: "1c18198985054bc360cefbcb81364d2e5612474a4c1f8682d9dbc9244de832fe",
+    bytes: 163770
+  },
+  a2b65562f3b9784aea2ea927b9847ca0c0578ddc167c239f5b77a6dd827c1bbd: {
+    url: "/plugin-builtins/display-1c18198985054bc360cefbcb81364d2e5612474a4c1f8682d9dbc9244de832fe.bin",
+    sha256: "1c18198985054bc360cefbcb81364d2e5612474a4c1f8682d9dbc9244de832fe",
+    bytes: 163770
+  },
+  a334a4665703493bafbbf4f6b6bc139c971a419131e77777c5b610770eefbc8d: {
+    url: "/plugin-builtins/display-1803b2d56efd042e7f190967ed1ca8da0b5ad31046ae5d814187a0a3c5c8a1a3.bin",
+    sha256: "1803b2d56efd042e7f190967ed1ca8da0b5ad31046ae5d814187a0a3c5c8a1a3",
+    bytes: 86916
   },
   a34ec1db5a9c2b7ba07bf33b412f3165b81403ef1d82e629b1a8f9da66cf391c: {
-    url: "/plugin-builtins/display-48e005692b3bbe018e90908a61f4fa0ca873bac6151c2024ce5f7bcc85b621fd.bin",
-    sha256: "48e005692b3bbe018e90908a61f4fa0ca873bac6151c2024ce5f7bcc85b621fd",
-    bytes: 168498
+    url: "/plugin-builtins/display-f206fd31ad2e13621591219b00955439ada3c84f74ff5388c0fb5440f8628884.bin",
+    sha256: "f206fd31ad2e13621591219b00955439ada3c84f74ff5388c0fb5440f8628884",
+    bytes: 168585
   },
-  a4007462463e595aa8d1bc0f2c4dd79b5a0f2e60fbfaf7586c677f26982404b0: {
-    url: "/plugin-builtins/display-10b57f56e7bb1b70bf86147c82ab3b6ec13424264a472c7b17e79382d63cbadf.bin",
-    sha256: "10b57f56e7bb1b70bf86147c82ab3b6ec13424264a472c7b17e79382d63cbadf",
-    bytes: 534021
-  },
-  a45f89216c4932274936b6dcbc9414daebd8c06929e6875ad4f8f806674e6c6b: {
-    url: "/plugin-builtins/display-322de0c1e9560e8124ef98291c8c0e1f16205236b081e8e9bf9abf61942e4a8b.bin",
-    sha256: "322de0c1e9560e8124ef98291c8c0e1f16205236b081e8e9bf9abf61942e4a8b",
-    bytes: 7899
+  a4d35ca64be104c6eb8905dc442c8298f5f4769b1c4b95c1fce2ed0906cde6a3: {
+    url: "/plugin-builtins/display-6fe375f73ed93bb6f968dc7012f07576d54d1be0307ae12ca0ff8d4c3b4e894c.bin",
+    sha256: "6fe375f73ed93bb6f968dc7012f07576d54d1be0307ae12ca0ff8d4c3b4e894c",
+    bytes: 131447
   },
   a6a2a53c56b02fa39fd246e3fe4a0d9cb76ac07ae59eeea0e4b036b239bbfb67: {
-    url: "/plugin-builtins/display-8f5d262c295cdeda30c81c794d7d736e89ddd793915c0c1090e5e42b95b1f60c.bin",
-    sha256: "8f5d262c295cdeda30c81c794d7d736e89ddd793915c0c1090e5e42b95b1f60c",
-    bytes: 93035
+    url: "/plugin-builtins/display-79c9d8bf9eb14e406137def0cedb13455f6eadd93a179bb104c9f30e56ac7ffe.bin",
+    sha256: "79c9d8bf9eb14e406137def0cedb13455f6eadd93a179bb104c9f30e56ac7ffe",
+    bytes: 54824
   },
   a6a8c1dce4a67251a9ad20a7e5911e81f3c63631388de5da5798dff2cf8ba48c: {
-    url: "/plugin-builtins/display-48e005692b3bbe018e90908a61f4fa0ca873bac6151c2024ce5f7bcc85b621fd.bin",
-    sha256: "48e005692b3bbe018e90908a61f4fa0ca873bac6151c2024ce5f7bcc85b621fd",
-    bytes: 168498
+    url: "/plugin-builtins/display-f206fd31ad2e13621591219b00955439ada3c84f74ff5388c0fb5440f8628884.bin",
+    sha256: "f206fd31ad2e13621591219b00955439ada3c84f74ff5388c0fb5440f8628884",
+    bytes: 168585
+  },
+  a6e5bf463b03e2828e4ba22f31fbdc0376032ee649b46686dd5ec0ad62609630: {
+    url: "/plugin-builtins/display-a7da39800f5565f9b077eca1ace6a4391a84f98400c990d9969eb0ed3702a918.bin",
+    sha256: "a7da39800f5565f9b077eca1ace6a4391a84f98400c990d9969eb0ed3702a918",
+    bytes: 167700
+  },
+  a78e3869768ad847ab12e0e03557a1f67542d6b2066ba8a8e08f005d487b4997: {
+    url: "/plugin-builtins/display-a7da39800f5565f9b077eca1ace6a4391a84f98400c990d9969eb0ed3702a918.bin",
+    sha256: "a7da39800f5565f9b077eca1ace6a4391a84f98400c990d9969eb0ed3702a918",
+    bytes: 167700
   },
   a87898c1ad3ce460959db8b425d1da83563721874eedd61a1ed4003aa4f5f9a0: {
-    url: "/plugin-builtins/display-e3e07bc6170dd71685f3c34bdeedfdc02256a5214537de4bd0613a3b2a30a9aa.bin",
-    sha256: "e3e07bc6170dd71685f3c34bdeedfdc02256a5214537de4bd0613a3b2a30a9aa",
-    bytes: 8538
+    url: "/plugin-builtins/display-a7da39800f5565f9b077eca1ace6a4391a84f98400c990d9969eb0ed3702a918.bin",
+    sha256: "a7da39800f5565f9b077eca1ace6a4391a84f98400c990d9969eb0ed3702a918",
+    bytes: 167700
+  },
+  a881d78c968d75b02878b8a7edc8e369d712c3b6e6356e4ed2a0186d2fa12054: {
+    url: "/plugin-builtins/display-1c18198985054bc360cefbcb81364d2e5612474a4c1f8682d9dbc9244de832fe.bin",
+    sha256: "1c18198985054bc360cefbcb81364d2e5612474a4c1f8682d9dbc9244de832fe",
+    bytes: 163770
+  },
+  a909bffcb9e25b3cac4b042d5c0f9bb163563772c45aceb1134315278b0efdda: {
+    url: "/plugin-builtins/display-16bee8a1f7ebaf722bd0b75c706331042c69e858c016ce997db87363dcd4ee76.bin",
+    sha256: "16bee8a1f7ebaf722bd0b75c706331042c69e858c016ce997db87363dcd4ee76",
+    bytes: 1527867
+  },
+  a9683c3c16330b42d2aa7cc4638549dd77b1053dd9c02eee516c30928d15564c: {
+    url: "/plugin-builtins/display-b7f6a37ff69d095c18886869c16002b57efdf6a9ab6070941ac10ac354c36a3b.bin",
+    sha256: "b7f6a37ff69d095c18886869c16002b57efdf6a9ab6070941ac10ac354c36a3b",
+    bytes: 2099453
   },
   a9cc0ea08d3c34e2d67cfc44aa805ca645452105c2ea469c496a03feeb6c9fba: {
-    url: "/plugin-builtins/display-8f5d262c295cdeda30c81c794d7d736e89ddd793915c0c1090e5e42b95b1f60c.bin",
-    sha256: "8f5d262c295cdeda30c81c794d7d736e89ddd793915c0c1090e5e42b95b1f60c",
-    bytes: 93035
-  },
-  aa4f2ad5cd9bb70f12d7b17ee04b3820a40a01c90853eb5e57dcd6d8b1c598e2: {
-    url: "/plugin-builtins/display-a7f3333210bd97c4c61b8b15dc455ab57dcb3ca8a601c598ba33526d652e8f94.bin",
-    sha256: "a7f3333210bd97c4c61b8b15dc455ab57dcb3ca8a601c598ba33526d652e8f94",
-    bytes: 2352796
+    url: "/plugin-builtins/display-79c9d8bf9eb14e406137def0cedb13455f6eadd93a179bb104c9f30e56ac7ffe.bin",
+    sha256: "79c9d8bf9eb14e406137def0cedb13455f6eadd93a179bb104c9f30e56ac7ffe",
+    bytes: 54824
   },
   aa94b6508fce7f1089ae8a5e6219b3804692f949f3d25df4e53c423205a1f65f: {
-    url: "/plugin-builtins/display-8f5d262c295cdeda30c81c794d7d736e89ddd793915c0c1090e5e42b95b1f60c.bin",
-    sha256: "8f5d262c295cdeda30c81c794d7d736e89ddd793915c0c1090e5e42b95b1f60c",
-    bytes: 93035
+    url: "/plugin-builtins/display-79c9d8bf9eb14e406137def0cedb13455f6eadd93a179bb104c9f30e56ac7ffe.bin",
+    sha256: "79c9d8bf9eb14e406137def0cedb13455f6eadd93a179bb104c9f30e56ac7ffe",
+    bytes: 54824
   },
-  ab0914d092ca58cd75c63e19a3f8f1cef4d5111627d6b37a96d33909cd93c2cb: {
-    url: "/plugin-builtins/display-e041ad0342d47e6a405dc05faf7496ab6718d6d7e71cc51350d324f8f688363f.bin",
-    sha256: "e041ad0342d47e6a405dc05faf7496ab6718d6d7e71cc51350d324f8f688363f",
-    bytes: 2083826
+  acbc0b042bf09af7fef452da2fa31be7e768b731de53bf3e05bcf85dfa463e4d: {
+    url: "/plugin-builtins/display-3f04e3531a85eb8df600c3ab49a98d684c0478ba0d6c726a6178be6aac7c0679.bin",
+    sha256: "3f04e3531a85eb8df600c3ab49a98d684c0478ba0d6c726a6178be6aac7c0679",
+    bytes: 196498
   },
-  abbbee55b722e2695e976d10efe87a2cadc5f76acd2a138e4a3c255ae43303a3: {
-    url: "/plugin-builtins/display-a7f3333210bd97c4c61b8b15dc455ab57dcb3ca8a601c598ba33526d652e8f94.bin",
-    sha256: "a7f3333210bd97c4c61b8b15dc455ab57dcb3ca8a601c598ba33526d652e8f94",
-    bytes: 2352796
-  },
-  ac72e07e56750d9281d162aff951f9b681f3cb4ff325fe7049bb00249a203a3c: {
-    url: "/plugin-builtins/display-2d8ea5bc2a0c40598aa5e9e6e2721c95a8e0b353d70826278025889e42599df8.bin",
-    sha256: "2d8ea5bc2a0c40598aa5e9e6e2721c95a8e0b353d70826278025889e42599df8",
-    bytes: 69760
-  },
-  adfa4e24deea8f0c3eded555c51c5849494e6d0a98c686fb98777df993356aa1: {
-    url: "/plugin-builtins/display-631fb557ea96006f07e2ebac26aabac50f5a992fa2a72084e2d0ef203e4c823b.bin",
-    sha256: "631fb557ea96006f07e2ebac26aabac50f5a992fa2a72084e2d0ef203e4c823b",
-    bytes: 325822
-  },
-  ae75d8f8946144ac9b57bb08c5f66fce5f4f63ab0132dcaca2d296631a6899cf: {
-    url: "/plugin-builtins/display-631fb557ea96006f07e2ebac26aabac50f5a992fa2a72084e2d0ef203e4c823b.bin",
-    sha256: "631fb557ea96006f07e2ebac26aabac50f5a992fa2a72084e2d0ef203e4c823b",
-    bytes: 325822
+  ad0c92064a8ece31fb478decc03a14c6bc49297ef2daeeba3c6835575cb5950a: {
+    url: "/plugin-builtins/display-1c18198985054bc360cefbcb81364d2e5612474a4c1f8682d9dbc9244de832fe.bin",
+    sha256: "1c18198985054bc360cefbcb81364d2e5612474a4c1f8682d9dbc9244de832fe",
+    bytes: 163770
   },
   aee64a387a958accf6e33f4f8be31a9bbea8dc1f80f4571ccc7bc184f32f5348: {
-    url: "/plugin-builtins/display-8f5d262c295cdeda30c81c794d7d736e89ddd793915c0c1090e5e42b95b1f60c.bin",
-    sha256: "8f5d262c295cdeda30c81c794d7d736e89ddd793915c0c1090e5e42b95b1f60c",
-    bytes: 93035
+    url: "/plugin-builtins/display-79c9d8bf9eb14e406137def0cedb13455f6eadd93a179bb104c9f30e56ac7ffe.bin",
+    sha256: "79c9d8bf9eb14e406137def0cedb13455f6eadd93a179bb104c9f30e56ac7ffe",
+    bytes: 54824
+  },
+  aef9ea4beb54624c92fcb8a56dd7db7cd76233b5dd442db2939c8ef8c0bf7620: {
+    url: "/plugin-builtins/display-1c18198985054bc360cefbcb81364d2e5612474a4c1f8682d9dbc9244de832fe.bin",
+    sha256: "1c18198985054bc360cefbcb81364d2e5612474a4c1f8682d9dbc9244de832fe",
+    bytes: 163770
   },
   af070a2059e4f1e4dd6df9a409588bd8941eef964ab492041c7f40d243d0275d: {
-    url: "/plugin-builtins/display-8f5d262c295cdeda30c81c794d7d736e89ddd793915c0c1090e5e42b95b1f60c.bin",
-    sha256: "8f5d262c295cdeda30c81c794d7d736e89ddd793915c0c1090e5e42b95b1f60c",
-    bytes: 93035
+    url: "/plugin-builtins/display-79c9d8bf9eb14e406137def0cedb13455f6eadd93a179bb104c9f30e56ac7ffe.bin",
+    sha256: "79c9d8bf9eb14e406137def0cedb13455f6eadd93a179bb104c9f30e56ac7ffe",
+    bytes: 54824
   },
-  b032a91c8016279e154875ba79c21968ea6ef056e59923334a190b93dfb50cc9: {
-    url: "/plugin-builtins/display-322de0c1e9560e8124ef98291c8c0e1f16205236b081e8e9bf9abf61942e4a8b.bin",
-    sha256: "322de0c1e9560e8124ef98291c8c0e1f16205236b081e8e9bf9abf61942e4a8b",
-    bytes: 7899
+  b1e530bbae9960b4ba8971b65516a4c689fbdc27c3c6ebd8fd394c683d2267a1: {
+    url: "/plugin-builtins/display-1803b2d56efd042e7f190967ed1ca8da0b5ad31046ae5d814187a0a3c5c8a1a3.bin",
+    sha256: "1803b2d56efd042e7f190967ed1ca8da0b5ad31046ae5d814187a0a3c5c8a1a3",
+    bytes: 86916
   },
-  b0a0b267f1ba647cb4a227198e5c338fb578c9c9ac57c5eeeea613c5831465b7: {
-    url: "/plugin-builtins/display-2d8ea5bc2a0c40598aa5e9e6e2721c95a8e0b353d70826278025889e42599df8.bin",
-    sha256: "2d8ea5bc2a0c40598aa5e9e6e2721c95a8e0b353d70826278025889e42599df8",
-    bytes: 69760
+  b22bcf3ccee12c73c2b2de5ade3014db09e467f70db00c982212f782013e9cde: {
+    url: "/plugin-builtins/display-a7da39800f5565f9b077eca1ace6a4391a84f98400c990d9969eb0ed3702a918.bin",
+    sha256: "a7da39800f5565f9b077eca1ace6a4391a84f98400c990d9969eb0ed3702a918",
+    bytes: 167700
   },
   b2bdf4958c195930096ec506936fc3b7013f848a3fac7b5026580acefccca1ca: {
-    url: "/plugin-builtins/display-48e005692b3bbe018e90908a61f4fa0ca873bac6151c2024ce5f7bcc85b621fd.bin",
-    sha256: "48e005692b3bbe018e90908a61f4fa0ca873bac6151c2024ce5f7bcc85b621fd",
-    bytes: 168498
+    url: "/plugin-builtins/display-f206fd31ad2e13621591219b00955439ada3c84f74ff5388c0fb5440f8628884.bin",
+    sha256: "f206fd31ad2e13621591219b00955439ada3c84f74ff5388c0fb5440f8628884",
+    bytes: 168585
   },
   b397d817344416d6cfec391b65f0163d46d4c380c59356397250026bb56c621f: {
-    url: "/plugin-builtins/display-48e005692b3bbe018e90908a61f4fa0ca873bac6151c2024ce5f7bcc85b621fd.bin",
-    sha256: "48e005692b3bbe018e90908a61f4fa0ca873bac6151c2024ce5f7bcc85b621fd",
-    bytes: 168498
+    url: "/plugin-builtins/display-f206fd31ad2e13621591219b00955439ada3c84f74ff5388c0fb5440f8628884.bin",
+    sha256: "f206fd31ad2e13621591219b00955439ada3c84f74ff5388c0fb5440f8628884",
+    bytes: 168585
   },
   b3b6dfceb483aded9021d48c63b74afabfa27a3821b41c80cbd6c387133e1b6d: {
-    url: "/plugin-builtins/display-8f5d262c295cdeda30c81c794d7d736e89ddd793915c0c1090e5e42b95b1f60c.bin",
-    sha256: "8f5d262c295cdeda30c81c794d7d736e89ddd793915c0c1090e5e42b95b1f60c",
-    bytes: 93035
+    url: "/plugin-builtins/display-79c9d8bf9eb14e406137def0cedb13455f6eadd93a179bb104c9f30e56ac7ffe.bin",
+    sha256: "79c9d8bf9eb14e406137def0cedb13455f6eadd93a179bb104c9f30e56ac7ffe",
+    bytes: 54824
   },
   b3c2ec301fbe001a9a48c5fb918f1b9da083a2e687f00ac1efdc25f93e30d044: {
-    url: "/plugin-builtins/display-8f5d262c295cdeda30c81c794d7d736e89ddd793915c0c1090e5e42b95b1f60c.bin",
-    sha256: "8f5d262c295cdeda30c81c794d7d736e89ddd793915c0c1090e5e42b95b1f60c",
-    bytes: 93035
+    url: "/plugin-builtins/display-79c9d8bf9eb14e406137def0cedb13455f6eadd93a179bb104c9f30e56ac7ffe.bin",
+    sha256: "79c9d8bf9eb14e406137def0cedb13455f6eadd93a179bb104c9f30e56ac7ffe",
+    bytes: 54824
   },
-  b4f08c9b5cb2e53aaca9ddd61eab36caebd9cc5da6ec8fd55d947def549a0935: {
-    url: "/plugin-builtins/display-10b57f56e7bb1b70bf86147c82ab3b6ec13424264a472c7b17e79382d63cbadf.bin",
-    sha256: "10b57f56e7bb1b70bf86147c82ab3b6ec13424264a472c7b17e79382d63cbadf",
-    bytes: 534021
+  b4701d21ec9ff951a4f12059f78cda04cd37c845944235834b15e819624f7f35: {
+    url: "/plugin-builtins/display-1803b2d56efd042e7f190967ed1ca8da0b5ad31046ae5d814187a0a3c5c8a1a3.bin",
+    sha256: "1803b2d56efd042e7f190967ed1ca8da0b5ad31046ae5d814187a0a3c5c8a1a3",
+    bytes: 86916
   },
-  b4ffb23fdb298683ce3eaacf0b1b93e17e0ace88dac6fe930df43394859d3aec: {
-    url: "/plugin-builtins/display-a7f3333210bd97c4c61b8b15dc455ab57dcb3ca8a601c598ba33526d652e8f94.bin",
-    sha256: "a7f3333210bd97c4c61b8b15dc455ab57dcb3ca8a601c598ba33526d652e8f94",
-    bytes: 2352796
+  b5c933be8a8e8a7fe9cec69bfdc956d56bc380a11ad2b1843927241787bcc0a0: {
+    url: "/plugin-builtins/display-1c18198985054bc360cefbcb81364d2e5612474a4c1f8682d9dbc9244de832fe.bin",
+    sha256: "1c18198985054bc360cefbcb81364d2e5612474a4c1f8682d9dbc9244de832fe",
+    bytes: 163770
   },
   b868ec0156b3ffa836278756ce6d13f1f3ef59dd3deec7f787a4c7635cdd63c8: {
-    url: "/plugin-builtins/display-8f5d262c295cdeda30c81c794d7d736e89ddd793915c0c1090e5e42b95b1f60c.bin",
-    sha256: "8f5d262c295cdeda30c81c794d7d736e89ddd793915c0c1090e5e42b95b1f60c",
-    bytes: 93035
+    url: "/plugin-builtins/display-79c9d8bf9eb14e406137def0cedb13455f6eadd93a179bb104c9f30e56ac7ffe.bin",
+    sha256: "79c9d8bf9eb14e406137def0cedb13455f6eadd93a179bb104c9f30e56ac7ffe",
+    bytes: 54824
   },
   b8c78b1b5855823a002a5ef8e7877d4916da4578af81632b2da27b7b71f9e2b4: {
-    url: "/plugin-builtins/display-8f5d262c295cdeda30c81c794d7d736e89ddd793915c0c1090e5e42b95b1f60c.bin",
-    sha256: "8f5d262c295cdeda30c81c794d7d736e89ddd793915c0c1090e5e42b95b1f60c",
-    bytes: 93035
+    url: "/plugin-builtins/display-79c9d8bf9eb14e406137def0cedb13455f6eadd93a179bb104c9f30e56ac7ffe.bin",
+    sha256: "79c9d8bf9eb14e406137def0cedb13455f6eadd93a179bb104c9f30e56ac7ffe",
+    bytes: 54824
+  },
+  b8dd209575c2f0862f4c3e862d3a8deb9b86c83783cd4a1040fdc05dca0cd3a0: {
+    url: "/plugin-builtins/display-6fe375f73ed93bb6f968dc7012f07576d54d1be0307ae12ca0ff8d4c3b4e894c.bin",
+    sha256: "6fe375f73ed93bb6f968dc7012f07576d54d1be0307ae12ca0ff8d4c3b4e894c",
+    bytes: 131447
   },
   b9145d37e8fb4628492ad525817af6597b0da1f4afabc4f85fe8591e1981bad0: {
-    url: "/plugin-builtins/display-58dcfef2c2216feb67a2787dcb4f22a0bc321f3548260833b356eaef7872bec6.bin",
-    sha256: "58dcfef2c2216feb67a2787dcb4f22a0bc321f3548260833b356eaef7872bec6",
-    bytes: 107253
+    url: "/plugin-builtins/display-5030666ef08bdd4a8d750ead5420b40e544c6a8d45e7f0eda72ce8cd1e0aa25f.bin",
+    sha256: "5030666ef08bdd4a8d750ead5420b40e544c6a8d45e7f0eda72ce8cd1e0aa25f",
+    bytes: 61472
   },
   b9181fae4f1c3fd751fdbf8dfc02421fcf8424c84c6ddd80734b80738c8544da: {
-    url: "/plugin-builtins/display-48e005692b3bbe018e90908a61f4fa0ca873bac6151c2024ce5f7bcc85b621fd.bin",
-    sha256: "48e005692b3bbe018e90908a61f4fa0ca873bac6151c2024ce5f7bcc85b621fd",
-    bytes: 168498
+    url: "/plugin-builtins/display-f206fd31ad2e13621591219b00955439ada3c84f74ff5388c0fb5440f8628884.bin",
+    sha256: "f206fd31ad2e13621591219b00955439ada3c84f74ff5388c0fb5440f8628884",
+    bytes: 168585
+  },
+  b9c373078fdc701866a7ad5cbdd73d317d98a2dda6f02c7288e7894bc80920ac: {
+    url: "/plugin-builtins/display-dc56cb7a688087210356d1d6b83fbc37f04b258a40e854ab76aa22b6e06a0e05.bin",
+    sha256: "dc56cb7a688087210356d1d6b83fbc37f04b258a40e854ab76aa22b6e06a0e05",
+    bytes: 1266092
+  },
+  ba114b512c4aab754f91fcaae22c0da7bd35f23b16ab2b37558ff77c93fe243e: {
+    url: "/plugin-builtins/display-f206fd31ad2e13621591219b00955439ada3c84f74ff5388c0fb5440f8628884.bin",
+    sha256: "f206fd31ad2e13621591219b00955439ada3c84f74ff5388c0fb5440f8628884",
+    bytes: 168585
   },
   bb43988c9877d1cae78d0df2192c48addfb75d7693c8b8210c186770605dd3c3: {
-    url: "/plugin-builtins/display-8f5d262c295cdeda30c81c794d7d736e89ddd793915c0c1090e5e42b95b1f60c.bin",
-    sha256: "8f5d262c295cdeda30c81c794d7d736e89ddd793915c0c1090e5e42b95b1f60c",
-    bytes: 93035
+    url: "/plugin-builtins/display-79c9d8bf9eb14e406137def0cedb13455f6eadd93a179bb104c9f30e56ac7ffe.bin",
+    sha256: "79c9d8bf9eb14e406137def0cedb13455f6eadd93a179bb104c9f30e56ac7ffe",
+    bytes: 54824
   },
   bba5e16887e7698e1d8fae796b23ccae049b7a53020b0838e87023b6d9e0024e: {
-    url: "/plugin-builtins/display-58dcfef2c2216feb67a2787dcb4f22a0bc321f3548260833b356eaef7872bec6.bin",
-    sha256: "58dcfef2c2216feb67a2787dcb4f22a0bc321f3548260833b356eaef7872bec6",
-    bytes: 107253
+    url: "/plugin-builtins/display-5030666ef08bdd4a8d750ead5420b40e544c6a8d45e7f0eda72ce8cd1e0aa25f.bin",
+    sha256: "5030666ef08bdd4a8d750ead5420b40e544c6a8d45e7f0eda72ce8cd1e0aa25f",
+    bytes: 61472
   },
   bbcc0c56c2c13bda038709a6167e49700d5a6abdd954a5c80512a9b1cc92ee90: {
-    url: "/plugin-builtins/display-8f5d262c295cdeda30c81c794d7d736e89ddd793915c0c1090e5e42b95b1f60c.bin",
-    sha256: "8f5d262c295cdeda30c81c794d7d736e89ddd793915c0c1090e5e42b95b1f60c",
-    bytes: 93035
+    url: "/plugin-builtins/display-79c9d8bf9eb14e406137def0cedb13455f6eadd93a179bb104c9f30e56ac7ffe.bin",
+    sha256: "79c9d8bf9eb14e406137def0cedb13455f6eadd93a179bb104c9f30e56ac7ffe",
+    bytes: 54824
   },
-  be131324bed759378b337e22fd7691444aef9f2867e56a730c7bcb8f3907084b: {
-    url: "/plugin-builtins/display-8f5d262c295cdeda30c81c794d7d736e89ddd793915c0c1090e5e42b95b1f60c.bin",
-    sha256: "8f5d262c295cdeda30c81c794d7d736e89ddd793915c0c1090e5e42b95b1f60c",
-    bytes: 93035
-  },
-  be40e857f8ae0b91e3c70ddcd6c65ceb638ab67b639d0030595d251ccbf52f04: {
-    url: "/plugin-builtins/display-e3e07bc6170dd71685f3c34bdeedfdc02256a5214537de4bd0613a3b2a30a9aa.bin",
-    sha256: "e3e07bc6170dd71685f3c34bdeedfdc02256a5214537de4bd0613a3b2a30a9aa",
-    bytes: 8538
-  },
-  be4ac58f0602f9fa10dc778c07ac6968e8d66b3b7fb56c61f6cbbcf94480096f: {
-    url: "/plugin-builtins/display-ed746526d7dd2b2f80d7ff88a5aaf73a65af3cdfb473d443765f31044d5b3604.bin",
-    sha256: "ed746526d7dd2b2f80d7ff88a5aaf73a65af3cdfb473d443765f31044d5b3604",
-    bytes: 1978416
+  bd8834aaed6ef3b5542e47a76ade7264a758e4b2402e3dcf64dbf8bf1dd4caf4: {
+    url: "/plugin-builtins/display-6aca7787c40eadc5ce98fc7dd3234fd59990cc44fcc570b2b9335f788fa4d430.bin",
+    sha256: "6aca7787c40eadc5ce98fc7dd3234fd59990cc44fcc570b2b9335f788fa4d430",
+    bytes: 1885783
   },
   bedbb20ee290bf71614ad66d9ad6c6c70ffaa78914c2842cc6b6114162d823ac: {
-    url: "/plugin-builtins/display-e3e07bc6170dd71685f3c34bdeedfdc02256a5214537de4bd0613a3b2a30a9aa.bin",
-    sha256: "e3e07bc6170dd71685f3c34bdeedfdc02256a5214537de4bd0613a3b2a30a9aa",
-    bytes: 8538
+    url: "/plugin-builtins/display-a7da39800f5565f9b077eca1ace6a4391a84f98400c990d9969eb0ed3702a918.bin",
+    sha256: "a7da39800f5565f9b077eca1ace6a4391a84f98400c990d9969eb0ed3702a918",
+    bytes: 167700
   },
-  bf282a17a519f5ff005fcba386d92eea2e9121777b10f258f58374e75ded4b7c: {
-    url: "/plugin-builtins/display-a7f3333210bd97c4c61b8b15dc455ab57dcb3ca8a601c598ba33526d652e8f94.bin",
-    sha256: "a7f3333210bd97c4c61b8b15dc455ab57dcb3ca8a601c598ba33526d652e8f94",
-    bytes: 2352796
+  c2c3131e85f6c4a52f5e6d96a60cfccfb39c39c0223b09a9842b3f474e9d3a37: {
+    url: "/plugin-builtins/display-8df79680290567f281a924eb4c62372dde1b8483eddc60b8c3f40906b8e469e7.bin",
+    sha256: "8df79680290567f281a924eb4c62372dde1b8483eddc60b8c3f40906b8e469e7",
+    bytes: 1028194
   },
-  c242041e983bf2a42cfe28d8cee9786fc65d542a9f7c1b9ff03232fb283d4ac6: {
-    url: "/plugin-builtins/display-ed746526d7dd2b2f80d7ff88a5aaf73a65af3cdfb473d443765f31044d5b3604.bin",
-    sha256: "ed746526d7dd2b2f80d7ff88a5aaf73a65af3cdfb473d443765f31044d5b3604",
-    bytes: 1978416
-  },
-  c4dad0f152e10f15364b276c9047b9f1ebad2a21228869040871ba5b29c52156: {
-    url: "/plugin-builtins/display-a7f3333210bd97c4c61b8b15dc455ab57dcb3ca8a601c598ba33526d652e8f94.bin",
-    sha256: "a7f3333210bd97c4c61b8b15dc455ab57dcb3ca8a601c598ba33526d652e8f94",
-    bytes: 2352796
+  c31bfaaf834169c1db706ce1cd896c0f0ea762d612f47a198cc90736f8947235: {
+    url: "/plugin-builtins/display-dc56cb7a688087210356d1d6b83fbc37f04b258a40e854ab76aa22b6e06a0e05.bin",
+    sha256: "dc56cb7a688087210356d1d6b83fbc37f04b258a40e854ab76aa22b6e06a0e05",
+    bytes: 1266092
   },
   c674f9a19bd98232fe718b86fff31ed480b8654e82f441148699239a3fab05a7: {
-    url: "/plugin-builtins/display-7a613444a580fe12cf354097451f6aebe405bb10f2068f57eba4f3915591e15f.bin",
-    sha256: "7a613444a580fe12cf354097451f6aebe405bb10f2068f57eba4f3915591e15f",
-    bytes: 43077
+    url: "/plugin-builtins/display-03f92accce91ee349159f3f384e8234ab3f9f382b678a2101a1d387d0fb7c509.bin",
+    sha256: "03f92accce91ee349159f3f384e8234ab3f9f382b678a2101a1d387d0fb7c509",
+    bytes: 57359
   },
-  c9dc02c66f4bc7b6079ee1cf741cce1bca3aee324125a41cbd43812f5896043c: {
-    url: "/plugin-builtins/display-a1ab2e333724d954579bd8c133e2a75d82a4689f64926ba5d4f654e499f18df1.bin",
-    sha256: "a1ab2e333724d954579bd8c133e2a75d82a4689f64926ba5d4f654e499f18df1",
-    bytes: 15878
+  c69341b90bc4e8465a6fded76385b077e299028361c0e243fc2d9b4d9a352944: {
+    url: "/plugin-builtins/display-dc56cb7a688087210356d1d6b83fbc37f04b258a40e854ab76aa22b6e06a0e05.bin",
+    sha256: "dc56cb7a688087210356d1d6b83fbc37f04b258a40e854ab76aa22b6e06a0e05",
+    bytes: 1266092
+  },
+  c728c3def7b8de5e65bbe56115578414be10113e40af440e7edccf52b5e59f73: {
+    url: "/plugin-builtins/display-7f69ea678bb4382ffe785f71224b9f7b008bba023d6fd9b09085af0439b9e94b.bin",
+    sha256: "7f69ea678bb4382ffe785f71224b9f7b008bba023d6fd9b09085af0439b9e94b",
+    bytes: 37700
+  },
+  c83b3c4815054dd26583ad107ec814938e1fce340d5c2639b93db56e8f555a9a: {
+    url: "/plugin-builtins/display-dc56cb7a688087210356d1d6b83fbc37f04b258a40e854ab76aa22b6e06a0e05.bin",
+    sha256: "dc56cb7a688087210356d1d6b83fbc37f04b258a40e854ab76aa22b6e06a0e05",
+    bytes: 1266092
+  },
+  c941e8f3df82a82bf333412e34d4c106865789398dfe204786067b4f132f1fca: {
+    url: "/plugin-builtins/display-eb28ac7ab958ceca16f529aa16fd9cd078db01e2f9db4f40a03457e831837c49.bin",
+    sha256: "eb28ac7ab958ceca16f529aa16fd9cd078db01e2f9db4f40a03457e831837c49",
+    bytes: 116299
+  },
+  c96d211499dfffb151a3403c328a600ef35942f1fd72b1dfffe6e0e747ba9e6b: {
+    url: "/plugin-builtins/display-10213b20faaed5daed25406429624eb4168b63ef28e9b0074ae020e54e68f9a8.bin",
+    sha256: "10213b20faaed5daed25406429624eb4168b63ef28e9b0074ae020e54e68f9a8",
+    bytes: 82434
+  },
+  cbf615119e680125510020402a4ed6601497b3e2ddf59dc757143e0d40d16f1d: {
+    url: "/plugin-builtins/display-b7f6a37ff69d095c18886869c16002b57efdf6a9ab6070941ac10ac354c36a3b.bin",
+    sha256: "b7f6a37ff69d095c18886869c16002b57efdf6a9ab6070941ac10ac354c36a3b",
+    bytes: 2099453
   },
   cc1cdf0495c44b002d543f3629bc0fd28724636a7face7701bc3aa7c528326e8: {
-    url: "/plugin-builtins/display-7a613444a580fe12cf354097451f6aebe405bb10f2068f57eba4f3915591e15f.bin",
-    sha256: "7a613444a580fe12cf354097451f6aebe405bb10f2068f57eba4f3915591e15f",
-    bytes: 43077
+    url: "/plugin-builtins/display-03f92accce91ee349159f3f384e8234ab3f9f382b678a2101a1d387d0fb7c509.bin",
+    sha256: "03f92accce91ee349159f3f384e8234ab3f9f382b678a2101a1d387d0fb7c509",
+    bytes: 57359
   },
   cc5f04645276ab1b1bb5740deba77c8e2c5b3ba121c7a00ee1d4c222e3664868: {
-    url: "/plugin-builtins/display-9b123349a5f06cdb8663f151a46f094291954f0a9d13b2a486310d2cf72fbf65.bin",
-    sha256: "9b123349a5f06cdb8663f151a46f094291954f0a9d13b2a486310d2cf72fbf65",
-    bytes: 76623
-  },
-  cc91d77c5d00de3f723546c642f0b8f45af0a57642a17b42f564f4b998f7d0ae: {
-    url: "/plugin-builtins/display-a7f3333210bd97c4c61b8b15dc455ab57dcb3ca8a601c598ba33526d652e8f94.bin",
-    sha256: "a7f3333210bd97c4c61b8b15dc455ab57dcb3ca8a601c598ba33526d652e8f94",
-    bytes: 2352796
+    url: "/plugin-builtins/display-87b19f60879b2173dd1d5916f12012e77d633124bb6b58756f8ea8a8f69debd9.bin",
+    sha256: "87b19f60879b2173dd1d5916f12012e77d633124bb6b58756f8ea8a8f69debd9",
+    bytes: 129130
   },
   ce167a34d232e0345f4e0074bef9f3f4e5f1c20f4b269118fd6658ecb3b279c5: {
-    url: "/plugin-builtins/display-9b123349a5f06cdb8663f151a46f094291954f0a9d13b2a486310d2cf72fbf65.bin",
-    sha256: "9b123349a5f06cdb8663f151a46f094291954f0a9d13b2a486310d2cf72fbf65",
-    bytes: 76623
-  },
-  ce43dced521b73bef847dc33202ca263c6be6b4bec79e2854c302bd2c1405313: {
-    url: "/plugin-builtins/display-8c5a5aa11910a08b9d66c7302a73d6bb669dd690ee4a53e2782d2af2943c6525.bin",
-    sha256: "8c5a5aa11910a08b9d66c7302a73d6bb669dd690ee4a53e2782d2af2943c6525",
-    bytes: 420879
-  },
-  ceaca3c04cc210a2e9e5320130617d9335ea76c04d9f41ba462e5cc0c057151e: {
-    url: "/plugin-builtins/display-10b57f56e7bb1b70bf86147c82ab3b6ec13424264a472c7b17e79382d63cbadf.bin",
-    sha256: "10b57f56e7bb1b70bf86147c82ab3b6ec13424264a472c7b17e79382d63cbadf",
-    bytes: 534021
-  },
-  ced8265242344fc70e2ab24d1a190f7f015a51a2c76a0084655e8c0dc3585333: {
-    url: "/plugin-builtins/display-ee31e42d49b72a7d2f3392e72b69d52c3533516860b791cc42b79bcf323268f5.bin",
-    sha256: "ee31e42d49b72a7d2f3392e72b69d52c3533516860b791cc42b79bcf323268f5",
-    bytes: 32727
+    url: "/plugin-builtins/display-87b19f60879b2173dd1d5916f12012e77d633124bb6b58756f8ea8a8f69debd9.bin",
+    sha256: "87b19f60879b2173dd1d5916f12012e77d633124bb6b58756f8ea8a8f69debd9",
+    bytes: 129130
   },
   cefdcfa4192efb6f04aa1da85691b2896859b4f0004d0d135b47661efc859df0: {
-    url: "/plugin-builtins/display-9b123349a5f06cdb8663f151a46f094291954f0a9d13b2a486310d2cf72fbf65.bin",
-    sha256: "9b123349a5f06cdb8663f151a46f094291954f0a9d13b2a486310d2cf72fbf65",
-    bytes: 76623
-  },
-  cf443f4787bb6dcfc13332ef6352a5a2b337e744b05278d327eb3b64cf43e57f: {
-    url: "/plugin-builtins/display-945916452b4bea98b4433491953ecc42ec1640adea2d0f0f434fbc93e4100e4d.bin",
-    sha256: "945916452b4bea98b4433491953ecc42ec1640adea2d0f0f434fbc93e4100e4d",
-    bytes: 48321
-  },
-  d218648f72b76f60a32786ef4836eba01e56aa17e7375c04b7a1d36e700ea7d5: {
-    url: "/plugin-builtins/display-a7f3333210bd97c4c61b8b15dc455ab57dcb3ca8a601c598ba33526d652e8f94.bin",
-    sha256: "a7f3333210bd97c4c61b8b15dc455ab57dcb3ca8a601c598ba33526d652e8f94",
-    bytes: 2352796
+    url: "/plugin-builtins/display-87b19f60879b2173dd1d5916f12012e77d633124bb6b58756f8ea8a8f69debd9.bin",
+    sha256: "87b19f60879b2173dd1d5916f12012e77d633124bb6b58756f8ea8a8f69debd9",
+    bytes: 129130
   },
   d3923bfe0638fab3b027c69dd38c9566b49be4ff3b7f34087970e2d7f29b0a24: {
-    url: "/plugin-builtins/display-945916452b4bea98b4433491953ecc42ec1640adea2d0f0f434fbc93e4100e4d.bin",
-    sha256: "945916452b4bea98b4433491953ecc42ec1640adea2d0f0f434fbc93e4100e4d",
-    bytes: 48321
+    url: "/plugin-builtins/display-7f69ea678bb4382ffe785f71224b9f7b008bba023d6fd9b09085af0439b9e94b.bin",
+    sha256: "7f69ea678bb4382ffe785f71224b9f7b008bba023d6fd9b09085af0439b9e94b",
+    bytes: 37700
+  },
+  d3b0d47ade7070d216c846027c95b8d734893a58591b191360f7593ba2947533: {
+    url: "/plugin-builtins/display-10213b20faaed5daed25406429624eb4168b63ef28e9b0074ae020e54e68f9a8.bin",
+    sha256: "10213b20faaed5daed25406429624eb4168b63ef28e9b0074ae020e54e68f9a8",
+    bytes: 82434
+  },
+  d3c316060d28ffb83cb4aec56dc50828987a562b40e3de892e74695469188edc: {
+    url: "/plugin-builtins/display-10213b20faaed5daed25406429624eb4168b63ef28e9b0074ae020e54e68f9a8.bin",
+    sha256: "10213b20faaed5daed25406429624eb4168b63ef28e9b0074ae020e54e68f9a8",
+    bytes: 82434
   },
   d4778d0bf99fb9be186153c9b3fbf6d1c340d960d6fcc67798cadf3696a228b2: {
-    url: "/plugin-builtins/display-7a613444a580fe12cf354097451f6aebe405bb10f2068f57eba4f3915591e15f.bin",
-    sha256: "7a613444a580fe12cf354097451f6aebe405bb10f2068f57eba4f3915591e15f",
-    bytes: 43077
+    url: "/plugin-builtins/display-03f92accce91ee349159f3f384e8234ab3f9f382b678a2101a1d387d0fb7c509.bin",
+    sha256: "03f92accce91ee349159f3f384e8234ab3f9f382b678a2101a1d387d0fb7c509",
+    bytes: 57359
   },
   d4f24831506145c6edaefbc310734cb2e28e3c4be15fc07c8633461806d18694: {
-    url: "/plugin-builtins/display-945916452b4bea98b4433491953ecc42ec1640adea2d0f0f434fbc93e4100e4d.bin",
-    sha256: "945916452b4bea98b4433491953ecc42ec1640adea2d0f0f434fbc93e4100e4d",
-    bytes: 48321
+    url: "/plugin-builtins/display-7f69ea678bb4382ffe785f71224b9f7b008bba023d6fd9b09085af0439b9e94b.bin",
+    sha256: "7f69ea678bb4382ffe785f71224b9f7b008bba023d6fd9b09085af0439b9e94b",
+    bytes: 37700
+  },
+  d5f05bf3686ecf5e03fa1e22a5647e2aa15ed1d1d416bcdde0890e829d091ade: {
+    url: "/plugin-builtins/display-10213b20faaed5daed25406429624eb4168b63ef28e9b0074ae020e54e68f9a8.bin",
+    sha256: "10213b20faaed5daed25406429624eb4168b63ef28e9b0074ae020e54e68f9a8",
+    bytes: 82434
+  },
+  d79e80f7c91f000f28b494c658244dc1f7e4d7d3d7b1063fca0327848ce6ccbd: {
+    url: "/plugin-builtins/display-7f69ea678bb4382ffe785f71224b9f7b008bba023d6fd9b09085af0439b9e94b.bin",
+    sha256: "7f69ea678bb4382ffe785f71224b9f7b008bba023d6fd9b09085af0439b9e94b",
+    bytes: 37700
   },
   d93345c8c74cd87a66aa061cfe4262007e90ddf8424e86a175d7b80b47c885c5: {
-    url: "/plugin-builtins/display-9b123349a5f06cdb8663f151a46f094291954f0a9d13b2a486310d2cf72fbf65.bin",
-    sha256: "9b123349a5f06cdb8663f151a46f094291954f0a9d13b2a486310d2cf72fbf65",
-    bytes: 76623
+    url: "/plugin-builtins/display-87b19f60879b2173dd1d5916f12012e77d633124bb6b58756f8ea8a8f69debd9.bin",
+    sha256: "87b19f60879b2173dd1d5916f12012e77d633124bb6b58756f8ea8a8f69debd9",
+    bytes: 129130
   },
-  d9e5353361d0196d0981352849882b1376f9abaf5064a31301b51b0843334c43: {
-    url: "/plugin-builtins/display-945916452b4bea98b4433491953ecc42ec1640adea2d0f0f434fbc93e4100e4d.bin",
-    sha256: "945916452b4bea98b4433491953ecc42ec1640adea2d0f0f434fbc93e4100e4d",
-    bytes: 48321
-  },
-  db0107efa91b0524bc54be2da90889d8ea7dacea4dc9880d3ab443a3385c679b: {
-    url: "/plugin-builtins/display-14151ea753ea671c0a4d2753cc32ec6035d2a286dafeac71bda8391de5291ada.bin",
-    sha256: "14151ea753ea671c0a4d2753cc32ec6035d2a286dafeac71bda8391de5291ada",
-    bytes: 38368
+  da2fb164c0f725d57f36038e2da2b30c8fb6d11e2ca3842ef99c304d45386599: {
+    url: "/plugin-builtins/display-ab4e64fdb5b7a7480ce9447cdb1c02655e6b78a368d7eb8ff266929a61c155f5.bin",
+    sha256: "ab4e64fdb5b7a7480ce9447cdb1c02655e6b78a368d7eb8ff266929a61c155f5",
+    bytes: 381369
   },
   dd2d564d17a22dca6df26204cb8e7b7acd2b78604462c481e11fd9e977da0912: {
-    url: "/plugin-builtins/display-7a613444a580fe12cf354097451f6aebe405bb10f2068f57eba4f3915591e15f.bin",
-    sha256: "7a613444a580fe12cf354097451f6aebe405bb10f2068f57eba4f3915591e15f",
-    bytes: 43077
+    url: "/plugin-builtins/display-03f92accce91ee349159f3f384e8234ab3f9f382b678a2101a1d387d0fb7c509.bin",
+    sha256: "03f92accce91ee349159f3f384e8234ab3f9f382b678a2101a1d387d0fb7c509",
+    bytes: 57359
   },
-  dedb03dd5edeca8b5cf4fb8b3949a3edc9521cac99caebf5d2f2b6755a14b512: {
-    url: "/plugin-builtins/display-a806edc3dfddbf65e745de20d0bf629f7192321d008ddae4f5660e71ed2f23a7.bin",
-    sha256: "a806edc3dfddbf65e745de20d0bf629f7192321d008ddae4f5660e71ed2f23a7",
-    bytes: 477
+  de15bcca7c39238a58311f216cf90920543e2abd1f9e54ac8f3e76b80bf53922: {
+    url: "/plugin-builtins/display-82c3a60a6ef0df6e0c168c99b0e7fcaaf9558db8d6df46172cb1f69cffc8ccce.bin",
+    sha256: "82c3a60a6ef0df6e0c168c99b0e7fcaaf9558db8d6df46172cb1f69cffc8ccce",
+    bytes: 181425
+  },
+  df88df2d0643387af4ee2b90bc13d0ecbdace7d0922d73bf25149f6bae659ca6: {
+    url: "/plugin-builtins/display-ab4e64fdb5b7a7480ce9447cdb1c02655e6b78a368d7eb8ff266929a61c155f5.bin",
+    sha256: "ab4e64fdb5b7a7480ce9447cdb1c02655e6b78a368d7eb8ff266929a61c155f5",
+    bytes: 381369
   },
   dff15e8b98d51dae952f96d9d630e388ed98113ee48b374e677d50978fdd2fbb: {
-    url: "/plugin-builtins/display-9b123349a5f06cdb8663f151a46f094291954f0a9d13b2a486310d2cf72fbf65.bin",
-    sha256: "9b123349a5f06cdb8663f151a46f094291954f0a9d13b2a486310d2cf72fbf65",
-    bytes: 76623
+    url: "/plugin-builtins/display-87b19f60879b2173dd1d5916f12012e77d633124bb6b58756f8ea8a8f69debd9.bin",
+    sha256: "87b19f60879b2173dd1d5916f12012e77d633124bb6b58756f8ea8a8f69debd9",
+    bytes: 129130
   },
   e0184d9ecf94269d68c536d5c081f0e8b5f32b190b24d88d3f24cb9f2a516b5c: {
-    url: "/plugin-builtins/display-7a613444a580fe12cf354097451f6aebe405bb10f2068f57eba4f3915591e15f.bin",
-    sha256: "7a613444a580fe12cf354097451f6aebe405bb10f2068f57eba4f3915591e15f",
-    bytes: 43077
+    url: "/plugin-builtins/display-03f92accce91ee349159f3f384e8234ab3f9f382b678a2101a1d387d0fb7c509.bin",
+    sha256: "03f92accce91ee349159f3f384e8234ab3f9f382b678a2101a1d387d0fb7c509",
+    bytes: 57359
+  },
+  e03306863d3dde861036d9da6d26bf4b58c50deac392ac8254224cbffa562322: {
+    url: "/plugin-builtins/display-6aca7787c40eadc5ce98fc7dd3234fd59990cc44fcc570b2b9335f788fa4d430.bin",
+    sha256: "6aca7787c40eadc5ce98fc7dd3234fd59990cc44fcc570b2b9335f788fa4d430",
+    bytes: 1885783
   },
   e0da96b6160a97b705574e93f63b361f04c7548b7892e6f49445256a0c1fa18e: {
-    url: "/plugin-builtins/display-ec02b6e9cc2fadfc29c9dfa9d13bb5195f947a5763c24f69f05319ade62c970f.bin",
-    sha256: "ec02b6e9cc2fadfc29c9dfa9d13bb5195f947a5763c24f69f05319ade62c970f",
-    bytes: 101073
+    url: "/plugin-builtins/display-82c3a60a6ef0df6e0c168c99b0e7fcaaf9558db8d6df46172cb1f69cffc8ccce.bin",
+    sha256: "82c3a60a6ef0df6e0c168c99b0e7fcaaf9558db8d6df46172cb1f69cffc8ccce",
+    bytes: 181425
   },
   e17c07f174cedbee1a148a441e480e9b66e55a137cefa62f74d9223475dbee70: {
-    url: "/plugin-builtins/display-9b123349a5f06cdb8663f151a46f094291954f0a9d13b2a486310d2cf72fbf65.bin",
-    sha256: "9b123349a5f06cdb8663f151a46f094291954f0a9d13b2a486310d2cf72fbf65",
-    bytes: 76623
+    url: "/plugin-builtins/display-87b19f60879b2173dd1d5916f12012e77d633124bb6b58756f8ea8a8f69debd9.bin",
+    sha256: "87b19f60879b2173dd1d5916f12012e77d633124bb6b58756f8ea8a8f69debd9",
+    bytes: 129130
   },
-  e309b0cb6f4427e4973bf1c8d3cb8f6678234e52661ba0a90bf9d66323c3f83a: {
-    url: "/plugin-builtins/display-e041ad0342d47e6a405dc05faf7496ab6718d6d7e71cc51350d324f8f688363f.bin",
-    sha256: "e041ad0342d47e6a405dc05faf7496ab6718d6d7e71cc51350d324f8f688363f",
-    bytes: 2083826
+  e230537cb72a753753114fbf11304186af00cde5c165a9167e16add118ad6a9a: {
+    url: "/plugin-builtins/display-ab4e64fdb5b7a7480ce9447cdb1c02655e6b78a368d7eb8ff266929a61c155f5.bin",
+    sha256: "ab4e64fdb5b7a7480ce9447cdb1c02655e6b78a368d7eb8ff266929a61c155f5",
+    bytes: 381369
   },
-  e6ab36023401639ac41bdf73f087d7cf41af0a0008a53fccc1f9da81ac0e7ef2: {
-    url: "/plugin-builtins/display-e041ad0342d47e6a405dc05faf7496ab6718d6d7e71cc51350d324f8f688363f.bin",
-    sha256: "e041ad0342d47e6a405dc05faf7496ab6718d6d7e71cc51350d324f8f688363f",
-    bytes: 2083826
+  e2ed777a053ab301cd0f94355597cd62ed834c9f9233854e9da1c249bdfd1cab: {
+    url: "/plugin-builtins/display-10213b20faaed5daed25406429624eb4168b63ef28e9b0074ae020e54e68f9a8.bin",
+    sha256: "10213b20faaed5daed25406429624eb4168b63ef28e9b0074ae020e54e68f9a8",
+    bytes: 82434
+  },
+  e51b2b01c1c9bc44222b403b1904d103945eb8eebf431e17492deb21c74d8789: {
+    url: "/plugin-builtins/display-10213b20faaed5daed25406429624eb4168b63ef28e9b0074ae020e54e68f9a8.bin",
+    sha256: "10213b20faaed5daed25406429624eb4168b63ef28e9b0074ae020e54e68f9a8",
+    bytes: 82434
+  },
+  e721ac628e1d1960f5087e061b305ff183bd1f2e464991dc14030f68674ec4e5: {
+    url: "/plugin-builtins/display-8df79680290567f281a924eb4c62372dde1b8483eddc60b8c3f40906b8e469e7.bin",
+    sha256: "8df79680290567f281a924eb4c62372dde1b8483eddc60b8c3f40906b8e469e7",
+    bytes: 1028194
+  },
+  e72afcdf812b4e988c6852f26632079789a798eeea2b238b0da7e91760d263e3: {
+    url: "/plugin-builtins/display-10213b20faaed5daed25406429624eb4168b63ef28e9b0074ae020e54e68f9a8.bin",
+    sha256: "10213b20faaed5daed25406429624eb4168b63ef28e9b0074ae020e54e68f9a8",
+    bytes: 82434
+  },
+  e78ed6a461d7c8d23339278eff3b82b7d5977900eda95f0ae8c434fe26dad1ed: {
+    url: "/plugin-builtins/display-b7f6a37ff69d095c18886869c16002b57efdf6a9ab6070941ac10ac354c36a3b.bin",
+    sha256: "b7f6a37ff69d095c18886869c16002b57efdf6a9ab6070941ac10ac354c36a3b",
+    bytes: 2099453
   },
   e7c051d16732a844ceb0372718a081f73af032435c86031b8c4a4e509abba562: {
-    url: "/plugin-builtins/display-7a613444a580fe12cf354097451f6aebe405bb10f2068f57eba4f3915591e15f.bin",
-    sha256: "7a613444a580fe12cf354097451f6aebe405bb10f2068f57eba4f3915591e15f",
-    bytes: 43077
+    url: "/plugin-builtins/display-03f92accce91ee349159f3f384e8234ab3f9f382b678a2101a1d387d0fb7c509.bin",
+    sha256: "03f92accce91ee349159f3f384e8234ab3f9f382b678a2101a1d387d0fb7c509",
+    bytes: 57359
   },
   e8859244241093c8c9104de5f7dc85b33c5c76dda49f00c33ee44acf8ddc4ebb: {
-    url: "/plugin-builtins/display-a1ab2e333724d954579bd8c133e2a75d82a4689f64926ba5d4f654e499f18df1.bin",
-    sha256: "a1ab2e333724d954579bd8c133e2a75d82a4689f64926ba5d4f654e499f18df1",
-    bytes: 15878
+    url: "/plugin-builtins/display-5f2923dbc2ad9ac634958dbf0006a97bc78c42e87eb0b42073b0ab70ed08bb5d.bin",
+    sha256: "5f2923dbc2ad9ac634958dbf0006a97bc78c42e87eb0b42073b0ab70ed08bb5d",
+    bytes: 5032
   },
-  e8d39fe37ca4a5df2ea48fc6c347b5db00cd165417e1b7de92218c194631c051: {
-    url: "/plugin-builtins/display-10b57f56e7bb1b70bf86147c82ab3b6ec13424264a472c7b17e79382d63cbadf.bin",
-    sha256: "10b57f56e7bb1b70bf86147c82ab3b6ec13424264a472c7b17e79382d63cbadf",
-    bytes: 534021
+  e8d352ae0ba683df14c11de94fb23d67323a676ca5a9630efe9f2e449b7f579c: {
+    url: "/plugin-builtins/display-dc56cb7a688087210356d1d6b83fbc37f04b258a40e854ab76aa22b6e06a0e05.bin",
+    sha256: "dc56cb7a688087210356d1d6b83fbc37f04b258a40e854ab76aa22b6e06a0e05",
+    bytes: 1266092
   },
   ea11b9551680cffacf5d9f7c08833702ed89985ce91b93dd4f814790595abf36: {
-    url: "/plugin-builtins/display-7a613444a580fe12cf354097451f6aebe405bb10f2068f57eba4f3915591e15f.bin",
-    sha256: "7a613444a580fe12cf354097451f6aebe405bb10f2068f57eba4f3915591e15f",
-    bytes: 43077
+    url: "/plugin-builtins/display-03f92accce91ee349159f3f384e8234ab3f9f382b678a2101a1d387d0fb7c509.bin",
+    sha256: "03f92accce91ee349159f3f384e8234ab3f9f382b678a2101a1d387d0fb7c509",
+    bytes: 57359
+  },
+  ea25fd538b858796c0156d83c914068beec2d8d7905ccf88af18bc668192629d: {
+    url: "/plugin-builtins/display-10213b20faaed5daed25406429624eb4168b63ef28e9b0074ae020e54e68f9a8.bin",
+    sha256: "10213b20faaed5daed25406429624eb4168b63ef28e9b0074ae020e54e68f9a8",
+    bytes: 82434
+  },
+  eaa93404cdd3aa49ada348cb348a95a05aa16246e7ba8165bc8281e9f7bce8d8: {
+    url: "/plugin-builtins/display-eb28ac7ab958ceca16f529aa16fd9cd078db01e2f9db4f40a03457e831837c49.bin",
+    sha256: "eb28ac7ab958ceca16f529aa16fd9cd078db01e2f9db4f40a03457e831837c49",
+    bytes: 116299
   },
   eabe8e7c22bf1e9635e6d21dc2e655e2d0f1873647eb362044b23e65d24b2331: {
-    url: "/plugin-builtins/display-9b123349a5f06cdb8663f151a46f094291954f0a9d13b2a486310d2cf72fbf65.bin",
-    sha256: "9b123349a5f06cdb8663f151a46f094291954f0a9d13b2a486310d2cf72fbf65",
-    bytes: 76623
+    url: "/plugin-builtins/display-87b19f60879b2173dd1d5916f12012e77d633124bb6b58756f8ea8a8f69debd9.bin",
+    sha256: "87b19f60879b2173dd1d5916f12012e77d633124bb6b58756f8ea8a8f69debd9",
+    bytes: 129130
+  },
+  ec2bd678b782b19ccf8301a8131f2fee6e70ea4996b142fc5b4571ee4d00c2ae: {
+    url: "/plugin-builtins/display-b7f6a37ff69d095c18886869c16002b57efdf6a9ab6070941ac10ac354c36a3b.bin",
+    sha256: "b7f6a37ff69d095c18886869c16002b57efdf6a9ab6070941ac10ac354c36a3b",
+    bytes: 2099453
   },
   ec42485f2fb0945bf87b2aad337b1f324b84d1be20646453eb5c4f83a6f8866d: {
-    url: "/plugin-builtins/display-ec02b6e9cc2fadfc29c9dfa9d13bb5195f947a5763c24f69f05319ade62c970f.bin",
-    sha256: "ec02b6e9cc2fadfc29c9dfa9d13bb5195f947a5763c24f69f05319ade62c970f",
-    bytes: 101073
+    url: "/plugin-builtins/display-82c3a60a6ef0df6e0c168c99b0e7fcaaf9558db8d6df46172cb1f69cffc8ccce.bin",
+    sha256: "82c3a60a6ef0df6e0c168c99b0e7fcaaf9558db8d6df46172cb1f69cffc8ccce",
+    bytes: 181425
   },
   ec4923758403fb054874c471d5fd7503d46acce2ebb3aafb841240444f419dd5: {
-    url: "/plugin-builtins/display-7a613444a580fe12cf354097451f6aebe405bb10f2068f57eba4f3915591e15f.bin",
-    sha256: "7a613444a580fe12cf354097451f6aebe405bb10f2068f57eba4f3915591e15f",
-    bytes: 43077
+    url: "/plugin-builtins/display-03f92accce91ee349159f3f384e8234ab3f9f382b678a2101a1d387d0fb7c509.bin",
+    sha256: "03f92accce91ee349159f3f384e8234ab3f9f382b678a2101a1d387d0fb7c509",
+    bytes: 57359
   },
   ec6016d0f88ac08a183ce414855cb5a4408f2516f2aebb81391a65611f2a41b0: {
-    url: "/plugin-builtins/display-9b123349a5f06cdb8663f151a46f094291954f0a9d13b2a486310d2cf72fbf65.bin",
-    sha256: "9b123349a5f06cdb8663f151a46f094291954f0a9d13b2a486310d2cf72fbf65",
-    bytes: 76623
+    url: "/plugin-builtins/display-87b19f60879b2173dd1d5916f12012e77d633124bb6b58756f8ea8a8f69debd9.bin",
+    sha256: "87b19f60879b2173dd1d5916f12012e77d633124bb6b58756f8ea8a8f69debd9",
+    bytes: 129130
+  },
+  ecf52b66d6c66671c95d305613cfeeff114eac77040beb11a7051e2cb7a0faa5: {
+    url: "/plugin-builtins/display-88f40bff54c193e7e8159ea2798ceed3a49ab92ce24e0f01d7616d74eacce77a.bin",
+    sha256: "88f40bff54c193e7e8159ea2798ceed3a49ab92ce24e0f01d7616d74eacce77a",
+    bytes: 905302
   },
   ecf8af719dca178e17549b5f2f00488d49d543de20dcc01bf8a0264351d9726a: {
-    url: "/plugin-builtins/display-9b123349a5f06cdb8663f151a46f094291954f0a9d13b2a486310d2cf72fbf65.bin",
-    sha256: "9b123349a5f06cdb8663f151a46f094291954f0a9d13b2a486310d2cf72fbf65",
-    bytes: 76623
+    url: "/plugin-builtins/display-87b19f60879b2173dd1d5916f12012e77d633124bb6b58756f8ea8a8f69debd9.bin",
+    sha256: "87b19f60879b2173dd1d5916f12012e77d633124bb6b58756f8ea8a8f69debd9",
+    bytes: 129130
   },
   ed75d47bed59d81722bfb1f077815317c178887728b79138becf95844015481b: {
-    url: "/plugin-builtins/display-9b123349a5f06cdb8663f151a46f094291954f0a9d13b2a486310d2cf72fbf65.bin",
-    sha256: "9b123349a5f06cdb8663f151a46f094291954f0a9d13b2a486310d2cf72fbf65",
-    bytes: 76623
+    url: "/plugin-builtins/display-87b19f60879b2173dd1d5916f12012e77d633124bb6b58756f8ea8a8f69debd9.bin",
+    sha256: "87b19f60879b2173dd1d5916f12012e77d633124bb6b58756f8ea8a8f69debd9",
+    bytes: 129130
+  },
+  ed8a535c552c262c3dbdde56e0e54cb4f801ced3567b21694ccd66ea7c23f602: {
+    url: "/plugin-builtins/display-10213b20faaed5daed25406429624eb4168b63ef28e9b0074ae020e54e68f9a8.bin",
+    sha256: "10213b20faaed5daed25406429624eb4168b63ef28e9b0074ae020e54e68f9a8",
+    bytes: 82434
   },
   ee23870b91aeca1854f0dfbc8c1a015bd245f86882a28a2fa55c70512a2b4889: {
-    url: "/plugin-builtins/display-9b123349a5f06cdb8663f151a46f094291954f0a9d13b2a486310d2cf72fbf65.bin",
-    sha256: "9b123349a5f06cdb8663f151a46f094291954f0a9d13b2a486310d2cf72fbf65",
-    bytes: 76623
+    url: "/plugin-builtins/display-87b19f60879b2173dd1d5916f12012e77d633124bb6b58756f8ea8a8f69debd9.bin",
+    sha256: "87b19f60879b2173dd1d5916f12012e77d633124bb6b58756f8ea8a8f69debd9",
+    bytes: 129130
+  },
+  ee61c6a2068d1dc494d56892ffb34accbad9eb20343cdd5a0850c67152fff9d1: {
+    url: "/plugin-builtins/display-ab4e64fdb5b7a7480ce9447cdb1c02655e6b78a368d7eb8ff266929a61c155f5.bin",
+    sha256: "ab4e64fdb5b7a7480ce9447cdb1c02655e6b78a368d7eb8ff266929a61c155f5",
+    bytes: 381369
   },
   ef4d2de3b0d767d3af63ca0b56bf75f4c8a46ff35e7171fb759b6372b67f57fe: {
-    url: "/plugin-builtins/display-9b123349a5f06cdb8663f151a46f094291954f0a9d13b2a486310d2cf72fbf65.bin",
-    sha256: "9b123349a5f06cdb8663f151a46f094291954f0a9d13b2a486310d2cf72fbf65",
-    bytes: 76623
-  },
-  f02f4c4a34165794f1657c34342562273406a97fec8a6e88fb89818374d7a238: {
-    url: "/plugin-builtins/display-6ea2c3ae5634eca3bdb3cf9ecc9a3d0d5c8fe4dd05f9bb9f20280cc8a2f7746d.bin",
-    sha256: "6ea2c3ae5634eca3bdb3cf9ecc9a3d0d5c8fe4dd05f9bb9f20280cc8a2f7746d",
-    bytes: 297400
+    url: "/plugin-builtins/display-87b19f60879b2173dd1d5916f12012e77d633124bb6b58756f8ea8a8f69debd9.bin",
+    sha256: "87b19f60879b2173dd1d5916f12012e77d633124bb6b58756f8ea8a8f69debd9",
+    bytes: 129130
   },
   f08de717a3ecf1ffa15154c663a4c746f50d2ee72966f54cfda05d7e7e86f65e: {
-    url: "/plugin-builtins/display-9b123349a5f06cdb8663f151a46f094291954f0a9d13b2a486310d2cf72fbf65.bin",
-    sha256: "9b123349a5f06cdb8663f151a46f094291954f0a9d13b2a486310d2cf72fbf65",
-    bytes: 76623
+    url: "/plugin-builtins/display-87b19f60879b2173dd1d5916f12012e77d633124bb6b58756f8ea8a8f69debd9.bin",
+    sha256: "87b19f60879b2173dd1d5916f12012e77d633124bb6b58756f8ea8a8f69debd9",
+    bytes: 129130
   },
-  f318ea0ce27f6092a7cd10e8da61750f550e442403701225869056e060b312be: {
-    url: "/plugin-builtins/display-ed746526d7dd2b2f80d7ff88a5aaf73a65af3cdfb473d443765f31044d5b3604.bin",
-    sha256: "ed746526d7dd2b2f80d7ff88a5aaf73a65af3cdfb473d443765f31044d5b3604",
-    bytes: 1978416
+  f154919bddae2621e4385409242e2cbd07c059ecfa4b2c0857eb37ea5e2dfce1: {
+    url: "/plugin-builtins/display-87b19f60879b2173dd1d5916f12012e77d633124bb6b58756f8ea8a8f69debd9.bin",
+    sha256: "87b19f60879b2173dd1d5916f12012e77d633124bb6b58756f8ea8a8f69debd9",
+    bytes: 129130
   },
   f31f07dbf8bfaaf88ba9cfed6691bad88d9d8bbd44a9be2c041da5ec575bf9fd: {
-    url: "/plugin-builtins/display-7a613444a580fe12cf354097451f6aebe405bb10f2068f57eba4f3915591e15f.bin",
-    sha256: "7a613444a580fe12cf354097451f6aebe405bb10f2068f57eba4f3915591e15f",
-    bytes: 43077
-  },
-  f3acaf61086631bc820de025c3b0a4f7509628bdc8f19e91600f84554b555768: {
-    url: "/plugin-builtins/display-ec02b6e9cc2fadfc29c9dfa9d13bb5195f947a5763c24f69f05319ade62c970f.bin",
-    sha256: "ec02b6e9cc2fadfc29c9dfa9d13bb5195f947a5763c24f69f05319ade62c970f",
-    bytes: 101073
+    url: "/plugin-builtins/display-03f92accce91ee349159f3f384e8234ab3f9f382b678a2101a1d387d0fb7c509.bin",
+    sha256: "03f92accce91ee349159f3f384e8234ab3f9f382b678a2101a1d387d0fb7c509",
+    bytes: 57359
   },
   f3b3ffb40769420b74acb1100037209c54eca9274e18fc82ebd172268eacc1ab: {
-    url: "/plugin-builtins/display-7a613444a580fe12cf354097451f6aebe405bb10f2068f57eba4f3915591e15f.bin",
-    sha256: "7a613444a580fe12cf354097451f6aebe405bb10f2068f57eba4f3915591e15f",
-    bytes: 43077
+    url: "/plugin-builtins/display-03f92accce91ee349159f3f384e8234ab3f9f382b678a2101a1d387d0fb7c509.bin",
+    sha256: "03f92accce91ee349159f3f384e8234ab3f9f382b678a2101a1d387d0fb7c509",
+    bytes: 57359
   },
   f4a08ba275fbf44fe1d5dbb1a647fa6e3bb1403f938330019f3c047be33f2faa: {
-    url: "/plugin-builtins/display-9b123349a5f06cdb8663f151a46f094291954f0a9d13b2a486310d2cf72fbf65.bin",
-    sha256: "9b123349a5f06cdb8663f151a46f094291954f0a9d13b2a486310d2cf72fbf65",
-    bytes: 76623
+    url: "/plugin-builtins/display-87b19f60879b2173dd1d5916f12012e77d633124bb6b58756f8ea8a8f69debd9.bin",
+    sha256: "87b19f60879b2173dd1d5916f12012e77d633124bb6b58756f8ea8a8f69debd9",
+    bytes: 129130
   },
-  f4c73b09a000bda2578d7bbca986fa9bb9721ae3e75d4665f1fe3f1159c7c790: {
-    url: "/plugin-builtins/display-e041ad0342d47e6a405dc05faf7496ab6718d6d7e71cc51350d324f8f688363f.bin",
-    sha256: "e041ad0342d47e6a405dc05faf7496ab6718d6d7e71cc51350d324f8f688363f",
-    bytes: 2083826
+  f62825e068a9699feea4ada80f6aeca484030c631859efa8d151c9451b48425e: {
+    url: "/plugin-builtins/display-62dacd832b108eaae351ac8cad84bbcfbacdc4ec712892c28ccc21a83a18cf7e.bin",
+    sha256: "62dacd832b108eaae351ac8cad84bbcfbacdc4ec712892c28ccc21a83a18cf7e",
+    bytes: 1568909
   },
-  f663eabddd9bb605f2412f18cd66cb1006672710e33e4103c86f19af0f8c8b40: {
-    url: "/plugin-builtins/display-6ea2c3ae5634eca3bdb3cf9ecc9a3d0d5c8fe4dd05f9bb9f20280cc8a2f7746d.bin",
-    sha256: "6ea2c3ae5634eca3bdb3cf9ecc9a3d0d5c8fe4dd05f9bb9f20280cc8a2f7746d",
-    bytes: 297400
-  },
-  f73c76605088640743324e62a01e05390b1f01f1cba55abb0fe232ad47e0206c: {
-    url: "/plugin-builtins/display-ee31e42d49b72a7d2f3392e72b69d52c3533516860b791cc42b79bcf323268f5.bin",
-    sha256: "ee31e42d49b72a7d2f3392e72b69d52c3533516860b791cc42b79bcf323268f5",
-    bytes: 32727
-  },
-  f7f228a206cc0c837f49c851157944ed473fd8c21b7d5f1cff0b09d8cb2886fb: {
-    url: "/plugin-builtins/display-a7f3333210bd97c4c61b8b15dc455ab57dcb3ca8a601c598ba33526d652e8f94.bin",
-    sha256: "a7f3333210bd97c4c61b8b15dc455ab57dcb3ca8a601c598ba33526d652e8f94",
-    bytes: 2352796
-  },
-  f7f979bacf4d6102bc73ad72df4266fad5b1864d023d70f663a3d406bf9cae63: {
-    url: "/plugin-builtins/display-10b57f56e7bb1b70bf86147c82ab3b6ec13424264a472c7b17e79382d63cbadf.bin",
-    sha256: "10b57f56e7bb1b70bf86147c82ab3b6ec13424264a472c7b17e79382d63cbadf",
-    bytes: 534021
+  f800c04a39871a4176f668474e4ac0a6fc80f3fc92c2d57b9b88b62a533a5c7d: {
+    url: "/plugin-builtins/display-7f69ea678bb4382ffe785f71224b9f7b008bba023d6fd9b09085af0439b9e94b.bin",
+    sha256: "7f69ea678bb4382ffe785f71224b9f7b008bba023d6fd9b09085af0439b9e94b",
+    bytes: 37700
   },
   f88589b6f0ded0ff60819d509caf9e20b223b3d73bbeecbebe83792fc12cbeb0: {
-    url: "/plugin-builtins/display-9b123349a5f06cdb8663f151a46f094291954f0a9d13b2a486310d2cf72fbf65.bin",
-    sha256: "9b123349a5f06cdb8663f151a46f094291954f0a9d13b2a486310d2cf72fbf65",
-    bytes: 76623
+    url: "/plugin-builtins/display-87b19f60879b2173dd1d5916f12012e77d633124bb6b58756f8ea8a8f69debd9.bin",
+    sha256: "87b19f60879b2173dd1d5916f12012e77d633124bb6b58756f8ea8a8f69debd9",
+    bytes: 129130
   },
   f8ede6e9c72606e2ef5f3db97eff941c6c23c6f6e34f6f465b3c847d51a71491: {
-    url: "/plugin-builtins/display-9b123349a5f06cdb8663f151a46f094291954f0a9d13b2a486310d2cf72fbf65.bin",
-    sha256: "9b123349a5f06cdb8663f151a46f094291954f0a9d13b2a486310d2cf72fbf65",
-    bytes: 76623
+    url: "/plugin-builtins/display-87b19f60879b2173dd1d5916f12012e77d633124bb6b58756f8ea8a8f69debd9.bin",
+    sha256: "87b19f60879b2173dd1d5916f12012e77d633124bb6b58756f8ea8a8f69debd9",
+    bytes: 129130
+  },
+  f997d5db644656b476316e65b3ff88c1aee5d4501d6da787ddd104d875508081: {
+    url: "/plugin-builtins/display-7f69ea678bb4382ffe785f71224b9f7b008bba023d6fd9b09085af0439b9e94b.bin",
+    sha256: "7f69ea678bb4382ffe785f71224b9f7b008bba023d6fd9b09085af0439b9e94b",
+    bytes: 37700
   },
   fb07eedbe36e3fe3d0908813e07a95c00915edcb6899b69e439b92c898ee78ad: {
-    url: "/plugin-builtins/display-a1ab2e333724d954579bd8c133e2a75d82a4689f64926ba5d4f654e499f18df1.bin",
-    sha256: "a1ab2e333724d954579bd8c133e2a75d82a4689f64926ba5d4f654e499f18df1",
-    bytes: 15878
+    url: "/plugin-builtins/display-5f2923dbc2ad9ac634958dbf0006a97bc78c42e87eb0b42073b0ab70ed08bb5d.bin",
+    sha256: "5f2923dbc2ad9ac634958dbf0006a97bc78c42e87eb0b42073b0ab70ed08bb5d",
+    bytes: 5032
   },
   ff3738a036e001c2326507c7af52c5f4e76f5915845cef20075b091b618722a5: {
-    url: "/plugin-builtins/display-7a613444a580fe12cf354097451f6aebe405bb10f2068f57eba4f3915591e15f.bin",
-    sha256: "7a613444a580fe12cf354097451f6aebe405bb10f2068f57eba4f3915591e15f",
-    bytes: 43077
-  },
-  ff4676108e3b1fb229b83688bbe3c1a7606242c34879893051c79000cb0b8d62: {
-    url: "/plugin-builtins/display-ee31e42d49b72a7d2f3392e72b69d52c3533516860b791cc42b79bcf323268f5.bin",
-    sha256: "ee31e42d49b72a7d2f3392e72b69d52c3533516860b791cc42b79bcf323268f5",
-    bytes: 32727
+    url: "/plugin-builtins/display-03f92accce91ee349159f3f384e8234ab3f9f382b678a2101a1d387d0fb7c509.bin",
+    sha256: "03f92accce91ee349159f3f384e8234ab3f9f382b678a2101a1d387d0fb7c509",
+    bytes: 57359
   },
   ff69900572cb7db2737100c4773eb4da6b0bcec4edc9b80470cc360985773b5e: {
-    url: "/plugin-builtins/display-9b123349a5f06cdb8663f151a46f094291954f0a9d13b2a486310d2cf72fbf65.bin",
-    sha256: "9b123349a5f06cdb8663f151a46f094291954f0a9d13b2a486310d2cf72fbf65",
-    bytes: 76623
+    url: "/plugin-builtins/display-87b19f60879b2173dd1d5916f12012e77d633124bb6b58756f8ea8a8f69debd9.bin",
+    sha256: "87b19f60879b2173dd1d5916f12012e77d633124bb6b58756f8ea8a8f69debd9",
+    bytes: 129130
   },
   ff77e42449b35773f14c9bdff0f6e9641af17ebfae86e6524a10905288cb13d5: {
-    url: "/plugin-builtins/display-9b123349a5f06cdb8663f151a46f094291954f0a9d13b2a486310d2cf72fbf65.bin",
-    sha256: "9b123349a5f06cdb8663f151a46f094291954f0a9d13b2a486310d2cf72fbf65",
-    bytes: 76623
+    url: "/plugin-builtins/display-87b19f60879b2173dd1d5916f12012e77d633124bb6b58756f8ea8a8f69debd9.bin",
+    sha256: "87b19f60879b2173dd1d5916f12012e77d633124bb6b58756f8ea8a8f69debd9",
+    bytes: 129130
   }
 };
 
@@ -269671,6 +269836,7 @@ var STATIC_GEOMETRY_COMPILER_VERSION = 5;
 var BUILTIN_GEOMETRY_MAX_BYTES = 32 * 1024 * 1024;
 var BINARY_MAGIC = new Uint8Array([83, 71, 66, 80, 75, 71, 50, 0]);
 var BINARY_VERSION = 2;
+var BINARY_MANIFEST_VERSION = 3;
 var BINARY_HEADER_BYTES = 32;
 var constructors = { Float32Array, Float64Array, Uint8Array, Uint8ClampedArray, Int8Array, Uint16Array, Int16Array, Uint32Array, Int32Array };
 var builtinGeometryDigest = (reference) => /^(?:shape:|static-v\d+:)?sha256:([a-f0-9]{64})$/.exec(reference)?.[1];
@@ -269697,7 +269863,7 @@ function encodeBuiltinGeometryArtifact(records) {
   const encoder = new TextEncoder();
   const payload = [];
   const descriptors = [];
-  let payloadBytes = 0;
+  let payloadBytes = 0, version = BINARY_VERSION;
   for (const [key, record] of Object.entries(records).sort(([a], [b]) => a.localeCompare(b))) {
     const attributes = {};
     for (const [name, attribute] of Object.entries(record.attributes)) {
@@ -269714,6 +269880,17 @@ function encodeBuiltinGeometryArtifact(records) {
       payloadBytes += bytes.byteLength;
     }
     const descriptor = { attributes, index, groups: record.groups, bounds: record.bounds, metadata: record.metadata, bytes: record.bytes };
+    const text = record.metadata?.renderAsset;
+    if (typeof text === "string") {
+      const bytes = encoder.encode(text);
+      if (new TextDecoder("utf-8", { fatal: true }).decode(bytes) !== text) throw new Error("\u5185\u7F6E\u6E32\u67D3\u6E05\u5355\u539F\u6587\u7F16\u7801\u65E0\u6548");
+      descriptor.metadata = { ...record.metadata };
+      delete descriptor.metadata.renderAsset;
+      descriptor.renderAsset = { offset: payloadBytes, byteLength: bytes.byteLength };
+      payload.push(bytes);
+      payloadBytes += bytes.byteLength;
+      version = BINARY_MANIFEST_VERSION;
+    }
     descriptors.push({ key: encoder.encode(key), descriptor: encoder.encode(JSON.stringify(descriptor)) });
   }
   const three = encoder.encode(REVISION);
@@ -269722,7 +269899,7 @@ function encodeBuiltinGeometryArtifact(records) {
   if (totalBytes > BUILTIN_GEOMETRY_MAX_BYTES) throw new Error("\u5185\u7F6E\u663E\u793A\u4EA7\u7269\u8D85\u8FC7\u5927\u5C0F\u9650\u5236");
   const output = new Uint8Array(totalBytes), view = new DataView(output.buffer);
   output.set(BINARY_MAGIC, 0);
-  view.setUint16(8, BINARY_VERSION, true);
+  view.setUint16(8, version, true);
   view.setUint16(10, three.byteLength, true);
   view.setUint32(12, STATIC_GEOMETRY_COMPILER_VERSION, true);
   view.setUint32(16, TERRAIN_SHAPE_GENERATOR_VERSION, true);
@@ -269767,7 +269944,8 @@ function decodeBinary(input, validate) {
   assertLittleEndian();
   if (input.byteLength < BINARY_HEADER_BYTES || !BINARY_MAGIC.every((byte, index) => input[index] === byte)) throw new Error("\u5185\u7F6E\u663E\u793A\u4EA7\u7269\u683C\u5F0F\u65E0\u6548");
   const view = new DataView(input.buffer, input.byteOffset, input.byteLength);
-  if (view.getUint16(8, true) !== BINARY_VERSION) throw new Error("\u5185\u7F6E\u663E\u793A\u4EA7\u7269\u7248\u672C\u65E0\u6548");
+  const version = view.getUint16(8, true);
+  if (version !== BINARY_VERSION && version !== BINARY_MANIFEST_VERSION) throw new Error("\u5185\u7F6E\u663E\u793A\u4EA7\u7269\u7248\u672C\u65E0\u6548");
   const threeBytes = view.getUint16(10, true), compiler = view.getUint32(12, true), shape = view.getUint32(16, true), count = view.getUint32(20, true);
   const directoryBytes = view.getUint32(24, true), payloadBytes = view.getUint32(28, true);
   if (compiler !== STATIC_GEOMETRY_COMPILER_VERSION || shape !== TERRAIN_SHAPE_GENERATOR_VERSION || !count || count > 4096 || BINARY_HEADER_BYTES + threeBytes + directoryBytes + payloadBytes !== input.byteLength) throw new Error("\u5185\u7F6E\u663E\u793A\u4EA7\u7269\u76EE\u5F55\u65E0\u6548");
@@ -269798,12 +269976,18 @@ function decodeBinary(input, validate) {
       attributes[name] = { array: readArray(item, name), itemSize: item.itemSize, normalized: item.normalized };
     }
     if (!Object.keys(attributes).length) throw new Error("\u5185\u7F6E\u663E\u793A\u5C5E\u6027\u7F3A\u5931");
+    let metadata = descriptor.metadata;
+    if (descriptor.renderAsset !== void 0) {
+      const range = descriptor.renderAsset;
+      if (version !== BINARY_MANIFEST_VERSION || !range || typeof range !== "object" || !Number.isInteger(range.offset) || !Number.isInteger(range.byteLength) || range.offset < 0 || range.byteLength < 0 || range.offset + range.byteLength > payloadBytes || !metadata || typeof metadata !== "object" || Array.isArray(metadata) || Object.prototype.hasOwnProperty.call(metadata, "renderAsset")) throw new Error("\u5185\u7F6E\u6E32\u67D3\u6E05\u5355\u7F13\u51B2\u65E0\u6548");
+      metadata = { ...metadata, renderAsset: decoder.decode(input.subarray(payloadStart + range.offset, payloadStart + range.offset + range.byteLength)) };
+    }
     const record = {
       attributes,
       index: descriptor.index ? readArray(descriptor.index, "index") : null,
       groups: descriptor.groups,
       bounds: descriptor.bounds,
-      metadata: descriptor.metadata,
+      metadata,
       bytes: descriptor.bytes
     };
     if (records[key]) throw new Error("\u5185\u7F6E\u663E\u793A\u76EE\u5F55\u91CD\u590D");
@@ -269834,6 +270018,9 @@ var HIGH_FREQUENCY_EVENT_INTERVALS = {
   "planet-camera.update-performance": 1e3,
   "desktop.update-performance": 1e3,
   "plugin-surface.update-performance": 1e3,
+  "plugin.stack-support.followed": 1e3,
+  "plugin.stack-tilt.relative": 1e3,
+  "plugin.stack-placement.restored": 1e3,
   "starsky.idle-task.performance": 1e3,
   "browser.long-task": 500,
   "free-flight.update-performance": 1e3,
@@ -270180,6 +270367,7 @@ var IndexedDbClient = class {
 var CACHE_MAX_AGE_MS = 7 * 24 * 60 * 60 * 1e3;
 var CACHE_DIRECTORY_BYTES = 256;
 var CACHE_READ_TIMEOUT_MS = 3e3;
+var CACHE_TOUCH_COALESCE_MS = 64;
 function cacheVersions(source) {
   if (source.startsWith("shape:")) return { shapeVersion: TERRAIN_SHAPE_GENERATOR_VERSION };
   if (source.startsWith("static-v") || source.startsWith("assembly-display-"))
@@ -270261,18 +270449,13 @@ var CompiledGeometryCache = class {
   async read(source) {
     try {
       const key = await this.digest(source);
-      this.directory ??= this.database.getAll("metadata").then((rows) => {
-        this.knownKeys = new Set(rows.map((row) => row.key));
-        return this.knownKeys;
-      }).catch((error) => {
-        this.report(error);
-        this.directory = void 0;
-        return void 0;
-      });
-      const directory = await this.directory;
-      if (directory && !directory.has(key)) return this.readBuiltin(key);
       const existing = this.reads.get(key);
       if (existing) return existing;
+      if (!this.directory) return this.readInitial(source, key);
+      const directory = await this.directory;
+      if (directory && !directory.has(key)) return this.readBuiltin(key);
+      const shared = this.reads.get(key);
+      if (shared) return shared;
       const pending = new Promise((resolve) => this.pendingReads.set(key, { source, resolve })).finally(() => this.reads.delete(key));
       this.reads.set(key, pending);
       if (!this.readScheduled) {
@@ -270287,6 +270470,51 @@ var CompiledGeometryCache = class {
       return null;
     }
   }
+  /** 目录和首个资产在同一只读事务读取，不串行等待两次存储往返。 */
+  readInitial(source, key) {
+    const batch = this.database.runTransaction(["metadata", "geometry"], "readonly", (stores) => Promise.all([
+      requestToPromise(stores.metadata.getAll()),
+      requestToPromise(stores.geometry.get(key))
+    ]));
+    this.directory = batch.then(([rows]) => {
+      this.knownKeys = new Set(rows.map((row) => row.key));
+      return this.knownKeys;
+    }, () => {
+      this.directory = void 0;
+      return void 0;
+    });
+    const pending = batch.then(([, record]) => {
+      if (!this.knownKeys?.has(key)) return this.readBuiltin(key);
+      try {
+        const value = this.acceptRead(source, key, record?.value);
+        if (!this.maintenanceStarted || this.touches.size) {
+          this.maintenanceStarted = true;
+          this.scheduleWrite();
+        }
+        return value ?? this.readBuiltin(key);
+      } catch (error) {
+        void this.delete(source);
+        this.report(error);
+        return null;
+      }
+    }, (error) => {
+      this.report(error);
+      return null;
+    }).finally(() => {
+      if (this.reads.get(key) === pending) this.reads.delete(key);
+    });
+    this.reads.set(key, pending);
+    return pending;
+  }
+  /** 首读和批读沿用相同的内容校验、热命中标记与目录维护。 */
+  acceptRead(source, key, value) {
+    if (value) {
+      validateCachedGeometry(value, false);
+      this.persisted.add(value);
+      this.touches.set(key, { key, bytes: value.bytes + CACHE_DIRECTORY_BYTES, accessedAt: Date.now(), ...cacheVersions(source) });
+    } else this.knownKeys?.delete(key);
+    return value;
+  }
   /** 先提交整批只读请求，再安排维护；不让每次命中的 LRU 写事务插队。 */
   async readBatch() {
     this.readScheduled = false;
@@ -270295,14 +270523,8 @@ var CompiledGeometryCache = class {
     try {
       const records = await this.database.runTransaction(["geometry"], "readonly", (stores) => Promise.all(batch.map(([key]) => requestToPromise(stores.geometry.get(key)))));
       batch.forEach(([key, { source, resolve }], index) => {
-        const value = records[index]?.value;
         try {
-          if (value) {
-            validateCachedGeometry(value, false);
-            this.persisted.add(value);
-            this.touches.set(key, { key, bytes: value.bytes + CACHE_DIRECTORY_BYTES, accessedAt: Date.now(), ...cacheVersions(source) });
-          }
-          if (!value) this.knownKeys?.delete(key);
+          const value = this.acceptRead(source, key, records[index]?.value);
           if (value) resolve(value);
           else void this.readBuiltin(key).then(resolve);
         } catch (error) {
@@ -270363,9 +270585,14 @@ var CompiledGeometryCache = class {
   }
   /** 每轮最多写入 32 项；目录读取、排序和淘汰在同一个事务内完成。 */
   scheduleWrite() {
-    if (this.writeScheduled) return;
+    const urgent = this.pendingWrites.length > 0 || this.maintenancePending;
+    if (this.writeScheduled) {
+      if (!urgent || this.writeTimer === void 0) return;
+      clearTimeout(this.writeTimer);
+    }
     this.writeScheduled = true;
-    setTimeout(() => {
+    this.writeTimer = setTimeout(() => {
+      this.writeTimer = void 0;
       const batch = this.pendingWrites.splice(0, 32);
       const touches = Array.from(this.touches.values());
       this.touches.clear();
@@ -270430,7 +270657,7 @@ var CompiledGeometryCache = class {
         this.writeScheduled = false;
         if (this.pendingWrites.length || this.maintenancePending || this.touches.size) this.scheduleWrite();
       });
-    }, 0);
+    }, urgent ? 0 : CACHE_TOUCH_COALESCE_MS);
   }
   report(error) {
     if (this.warned) return;
@@ -270706,6 +270933,38 @@ function createScaledGeometryView(template, scale, transformNormals = false, off
   geometry.computeBoundingBox();
   geometry.computeBoundingSphere();
   templates.set(geometry, template);
+  return geometry;
+}
+var bufferSources = /* @__PURE__ */ new WeakMap();
+function getSharedGeometryBufferSource(geometry) {
+  const source = bufferSources.get(geometry);
+  if (!source || geometry.index !== source.index) return geometry;
+  const attributes = Object.keys(source.attributes);
+  if (Object.keys(geometry.attributes).length !== attributes.length) return geometry;
+  for (const name of attributes) if (geometry.attributes[name] !== source.attributes[name]) return geometry;
+  return source;
+}
+var GeometryRangeView = class extends BufferGeometry {
+  dispose() {
+    const attributes = this.attributes, index = this.index;
+    this.attributes = {};
+    this.index = null;
+    try {
+      super.dispose();
+    } finally {
+      this.attributes = attributes;
+      this.index = index;
+    }
+  }
+};
+function createGeometryRangeView(template, start, count, box, sphere) {
+  const geometry = new GeometryRangeView();
+  Object.entries(template.attributes).forEach(([name, attribute]) => geometry.setAttribute(name, attribute));
+  geometry.setIndex(template.index);
+  geometry.setDrawRange(start, count);
+  geometry.boundingBox = box.clone();
+  geometry.boundingSphere = sphere.clone();
+  bufferSources.set(geometry, template);
   return geometry;
 }
 
@@ -271270,6 +271529,16 @@ function hasSceneMotionRuntime(camera) {
 
 // src/components/StarSky/shared/performance/BatchMaterialExtension.ts
 var extensions = /* @__PURE__ */ new WeakMap();
+function registerBatchMaterialExtension(material, scope) {
+  const extension = { scope, compile: material.onBeforeCompile, programKey: material.customProgramCacheKey };
+  extensions.set(material, extension);
+  const release = () => {
+    if (extensions.get(material) === extension) extensions.delete(material);
+    material.removeEventListener("dispose", release);
+  };
+  material.addEventListener("dispose", release);
+  return release;
+}
 function batchMaterialExtensionScope(material) {
   const extension = extensions.get(material);
   if (extension) return material.onBeforeCompile === extension.compile && material.customProgramCacheKey === extension.programKey ? extension.scope : void 0;
@@ -271279,6 +271548,132 @@ function copyBatchMaterialExtension(source, target) {
   if (batchMaterialExtensionScope(source) === void 0) throw new Error("\u6750\u8D28\u6269\u5C55\u672A\u767B\u8BB0\u6216\u5DF2\u5931\u6548");
   target.onBeforeCompile = source.onBeforeCompile;
   target.customProgramCacheKey = source.customProgramCacheKey;
+}
+
+// src/components/StarSky/shared/performance/CanonicalPBRProgramParameters.ts
+var bindings = /* @__PURE__ */ new WeakMap();
+var renderers = /* @__PURE__ */ new WeakMap();
+var selection;
+function within(value, operation) {
+  const previous = selection;
+  selection = value;
+  try {
+    return operation();
+  } finally {
+    selection = previous;
+  }
+}
+function selected(material) {
+  return selection === material || selection instanceof Set && selection.has(material);
+}
+function registered(material) {
+  const binding = bindings.get(material);
+  return binding && material.onBeforeCompile === binding.compile && material.customProgramCacheKey === binding.key ? binding : void 0;
+}
+function originalPBRMaterialFlag(material, key) {
+  const previous = selection;
+  selection = void 0;
+  try {
+    return material[key];
+  } finally {
+    selection = previous;
+  }
+}
+function stockShadowDepthMaterial(material) {
+  if (material.constructor !== MeshDepthMaterial) return false;
+  const depth = material;
+  return depth.depthPacking === RGBADepthPacking && depth.alphaTest === 0 && !depth.alphaHash && !depth.alphaToCoverage && !depth.displacementMap && (!depth.defines || Object.keys(depth.defines).length === 0) && depth.onBeforeCompile === Material.prototype.onBeforeCompile && depth.customProgramCacheKey === Material.prototype.customProgramCacheKey && depth.onBeforeRender === Material.prototype.onBeforeRender;
+}
+function registerCanonicalPBRMaterial(material) {
+  registerMaterial(material, false);
+}
+function registerMaterial(material, shadow) {
+  if (REVISION !== "180" || bindings.has(material)) return;
+  const keys = shadow ? ["side", "map", "alphaMap"] : ["side", "blending", "toneMapped"];
+  const target = material;
+  if (keys.some((key) => {
+    const descriptor = Object.getOwnPropertyDescriptor(material, key);
+    return !descriptor?.configurable || !descriptor.writable || !("value" in descriptor);
+  })) return;
+  const binding = {
+    flags: {
+      side: material.side,
+      blending: material.blending,
+      toneMapped: material.toneMapped,
+      ...shadow ? { map: target.map, alphaMap: target.alphaMap } : {}
+    },
+    shadow,
+    compile: material.onBeforeCompile,
+    key: material.customProgramCacheKey
+  };
+  const canonical = { side: FrontSide, blending: NoBlending, toneMapped: true, map: null, alphaMap: null };
+  const getters = /* @__PURE__ */ new Map();
+  for (const key of keys) {
+    const get = () => {
+      return selected(material) ? canonical[key] : binding.flags[key];
+    };
+    getters.set(key, get);
+    Object.defineProperty(material, key, {
+      enumerable: true,
+      configurable: true,
+      get,
+      set(value) {
+        Object.assign(binding.flags, { [key]: value });
+      }
+    });
+  }
+  bindings.set(material, binding);
+  const release = () => {
+    if (bindings.get(material) !== binding) return;
+    bindings.delete(material);
+    for (const key of keys) if (Object.getOwnPropertyDescriptor(material, key)?.get === getters.get(key)) {
+      Object.defineProperty(material, key, { enumerable: true, configurable: true, writable: true, value: binding.flags[key] });
+    }
+    material.removeEventListener("dispose", release);
+  };
+  material.addEventListener("dispose", release);
+}
+function eligible(material) {
+  const binding = registered(material);
+  const side = originalPBRMaterialFlag(material, "side");
+  return Boolean(binding && (binding.shadow ? stockShadowDepthMaterial(material) : side !== BackSide && !(material.transparent && side === DoubleSide && !material.forceSinglePass)));
+}
+function prepareRenderer(renderer) {
+  const previous = renderers.get(renderer);
+  if (previous) return previous;
+  if (REVISION !== "180" || !renderer.state?.setMaterial || !renderer.renderBufferDirect) return;
+  const state = { excluded: /* @__PURE__ */ new WeakSet() };
+  const draw = renderer.renderBufferDirect, setMaterial = renderer.state.setMaterial;
+  renderer.renderBufferDirect = function(camera, scene, geometry, material, object, group) {
+    if (stockShadowDepthMaterial(material)) registerMaterial(material, true);
+    const scope = !state.excluded.has(material) && eligible(material) ? material : void 0;
+    return within(scope, () => draw.call(this, camera, scene, geometry, material, object, group));
+  };
+  renderer.state.setMaterial = function(...args) {
+    return within(void 0, () => setMaterial.apply(this, args));
+  };
+  renderers.set(renderer, state);
+  return state;
+}
+function compileWithCanonicalPBRParameters(renderer, root, compile) {
+  const state = prepareRenderer(renderer);
+  if (!state) return compile();
+  const candidates = /* @__PURE__ */ new Set();
+  let custom = false;
+  root.traverse((object) => {
+    const value = object.material;
+    if (!value) return;
+    for (const material of Array.isArray(value) ? value : [value]) {
+      if (stockShadowDepthMaterial(material)) registerMaterial(material, true);
+      if (eligible(material) && !state.excluded.has(material)) candidates.add(material);
+      else if (!registered(material) && (material.onBeforeCompile !== Material.prototype.onBeforeCompile || material.customProgramCacheKey !== Material.prototype.customProgramCacheKey)) custom = true;
+    }
+  });
+  if (custom) {
+    candidates.forEach((material) => state.excluded.add(material));
+    return within(void 0, compile);
+  }
+  return within(candidates, compile);
 }
 
 // src/components/StarSky/shared/performance/ScenePreparationPriority.ts
@@ -271492,13 +271887,42 @@ var contexts2 = /* @__PURE__ */ new WeakMap();
 var sequence = 0;
 var GEOMETRY_PREPARATION_BATCH_LIMIT = 4;
 var allocationSignatures = /* @__PURE__ */ new WeakMap();
-function allocationSignature(object) {
+var batchTextureSlots = ["_matricesTexture", "_indirectTexture", "_colorsTexture"];
+function matchesAllocationParts(object, parts, source) {
+  const mesh = object, geometry = mesh.geometry, instance = object;
+  if (parts[0] !== source.uuid || parts[1] !== resourceRevision(source) || parts[2] !== resourceRevision(geometry) || parts[3] !== geometryBufferIdentity(geometry.index)) return false;
+  let index = 5, attributes = 0;
+  for (const name in geometry.attributes) {
+    if (!Object.prototype.hasOwnProperty.call(geometry.attributes, name)) continue;
+    attributes++;
+    if (parts[index++] !== name || parts[index++] !== geometryBufferIdentity(geometry.attributes[name])) return false;
+  }
+  if (parts[4] !== attributes || parts[index++] !== Boolean(instance.isInstancedMesh)) return false;
+  if (instance.isInstancedMesh && (parts[index++] !== resourceRevision(instance) || parts[index++] !== geometryBufferIdentity(instance.instanceMatrix) || parts[index++] !== geometryBufferIdentity(instance.instanceColor))) return false;
+  const textureCountIndex = index++;
+  let textures = 0;
+  if (object.isBatchedMesh) {
+    const batch = object;
+    for (const slot of batchTextureSlots) {
+      const texture = batch[slot];
+      if (!texture) continue;
+      textures++;
+      if (parts[index++] !== texture.uuid || parts[index++] !== texturePreparationRevision(texture)) return false;
+    }
+  }
+  return parts[textureCountIndex] === textures && index === parts.length;
+}
+function getGeometryAllocation(object) {
   const mesh = object;
-  if (!mesh.geometry?.isBufferGeometry) return "";
+  if (!mesh.geometry?.isBufferGeometry) return void 0;
   const geometry = mesh.geometry, instance = object;
+  const bufferSource = getSharedGeometryBufferSource(geometry);
+  const previous = allocationSignatures.get(object);
+  if (previous && previous.source === bufferSource && matchesAllocationParts(object, previous.parts, bufferSource)) return previous;
   const attributes = Object.keys(geometry.attributes);
   const parts = [
-    geometry.uuid,
+    bufferSource.uuid,
+    resourceRevision(bufferSource),
     resourceRevision(geometry),
     geometryBufferIdentity(geometry.index),
     attributes.length
@@ -271513,13 +271937,9 @@ function allocationSignature(object) {
   const textures = collectBatchedMeshTextures(object);
   parts.push(textures.length);
   for (const texture of textures) parts.push(texture.uuid, texturePreparationRevision(texture));
-  const previous = allocationSignatures.get(object);
-  if (previous && previous.parts.length === parts.length && parts.every((value, index) => value === previous.parts[index])) {
-    return previous.signature;
-  }
-  const signature = JSON.stringify(parts);
-  allocationSignatures.set(object, { parts, signature });
-  return signature;
+  const allocation = { parts, signature: JSON.stringify(parts), source: bufferSource };
+  allocationSignatures.set(object, allocation);
+  return allocation;
 }
 function hasObjectBuffers(object) {
   return Boolean(object.isInstancedMesh || object.isBatchedMesh);
@@ -271529,6 +271949,7 @@ function getContext(renderer) {
   if (context) return context;
   const created = {
     target: new WebGLRenderTarget(1, 1, { depthBuffer: false, colorSpace: LinearSRGBColorSpace }),
+    programProbe: new Mesh(),
     material: new MeshBasicMaterial({ colorWrite: false, depthWrite: false, depthTest: false }),
     // 零顶点也保留有效的逐顶点属性，避免浏览器为属性 0 模拟缓冲或拒绝空 VAO。
     // WebGLObjects 仍上传所有属性及实例缓冲，renderBufferDirect 仍绑定真实索引。
@@ -271548,6 +271969,8 @@ function getContext(renderer) {
       created.entries = /* @__PURE__ */ new WeakMap();
       created.pending.clear();
       created.geometries = /* @__PURE__ */ new WeakMap();
+      created.uploadProgram = void 0;
+      created.confirmedUploadProgram = void 0;
     }
   };
   created.target.texture.name = "GeometryBufferPreparation";
@@ -271561,32 +271984,41 @@ function getPreparationRenderTarget(renderer) {
 }
 function isGeometryPreparationPass(renderer) {
   const context = contexts2.get(renderer);
-  return Boolean(context && renderer.getRenderTarget() === context.target);
+  return Boolean(context && (context.screenPass || renderer.getRenderTarget() === context.target));
 }
 function areGeometryBuffersPrepared(renderer, object) {
-  const signature = allocationSignature(object);
-  if (!signature) return true;
+  const allocation = getGeometryAllocation(object);
+  if (!allocation) return true;
+  const { signature, source } = allocation;
   const context = contexts2.get(renderer);
   const entry = context?.entries.get(object);
   if (entry?.ready && entry.signature === signature) return true;
-  const shared = !hasObjectBuffers(object) ? context?.geometries.get(object.geometry) : void 0;
+  const shared = !hasObjectBuffers(object) ? context?.geometries.get(source) : void 0;
   return shared?.ready === true && shared.signature === signature;
 }
-function prepareGeometryBuffers(renderer, object, camera, signal, scope, batchLimit = GEOMETRY_PREPARATION_BATCH_LIMIT) {
+function prepareGeometryBuffers(renderer, object, camera, signal, scope, batchLimit = GEOMETRY_PREPARATION_BATCH_LIMIT, onPrepared, canSubmit, screenScene, foreground = false) {
   if (signal.aborted) return Promise.reject(new DOMException("\u7F13\u51B2\u51C6\u5907\u5DF2\u53D6\u6D88", "AbortError"));
-  const signature = allocationSignature(object);
-  if (!signature) return Promise.resolve();
+  const allocation = getGeometryAllocation(object);
+  if (!allocation) return Promise.resolve();
+  const { signature } = allocation;
   const context = getContext(renderer);
-  const geometry = object.geometry;
+  const mesh = object;
+  const materials = Array.isArray(mesh.material) ? mesh.material : [mesh.material];
+  if (!canSubmit || renderer.getRenderTarget() || screenScene?.overrideMaterial || mesh.isSkinnedMesh || mesh.morphTexture || Object.values(mesh.geometry.morphAttributes).some((attributes) => attributes.length > 0) || materials.some((material) => !material.visible || material.onBeforeRender !== Material.prototype.onBeforeRender)) screenScene = void 0;
+  const geometry = mesh.geometry;
   if (!hasObjectBuffers(object)) {
-    const shared = context.geometries.get(object.geometry);
-    if (shared?.ready && shared.signature === signature) return shared.promise;
+    const shared = context.geometries.get(allocation.source);
+    if (shared?.ready && shared.signature === signature) {
+      onPrepared?.();
+      return shared.promise;
+    }
   }
   const previous = context.entries.get(object);
   if (previous?.signature === signature) {
     if (previous.ready && !hasObjectBuffers(object)) {
-      context.geometries.set(object.geometry, previous);
+      context.geometries.set(allocation.source, previous);
     }
+    if (onPrepared) void previous.promise.then(onPrepared, () => void 0);
     return previous.promise;
   }
   const scheduler = getFrameTaskScheduler(renderer);
@@ -271607,6 +272039,9 @@ function prepareGeometryBuffers(renderer, object, camera, signal, scope, batchLi
     ownerId: source.ownerId,
     scope,
     signal,
+    onPrepared,
+    canSubmit,
+    screenScene,
     batchLimit: Math.max(1, Math.floor(batchLimit)),
     resolve: resolvePreparation,
     reject: rejectPreparation
@@ -271614,9 +272049,6 @@ function prepareGeometryBuffers(renderer, object, camera, signal, scope, batchLi
   context.entries.set(object, entry);
   context.pending.add(entry);
   const gl = renderer.getContext();
-  const releaseBatch = (batch) => {
-    if (!batch.entries.size) gl.deleteSync(batch.fence);
-  };
   const failBatch = (batch, error) => {
     batch.entries.forEach((item) => {
       item.batch = void 0;
@@ -271627,10 +272059,24 @@ function prepareGeometryBuffers(renderer, object, camera, signal, scope, batchLi
     batch.entries.clear();
     gl.deleteSync(batch.fence);
   };
+  const releaseBatch = (batch) => {
+    if (!batch.entries.size) {
+      gl.deleteSync(batch.fence);
+      return;
+    }
+    if (batch.entries.has(batch.leader)) return;
+    const next = Array.from(batch.entries).find((item) => !item.signal?.aborted);
+    if (!next) return;
+    batch.leader = next;
+    if (!next.task || !scheduler.enqueue(next.task)) failBatch(batch, new Error("\u5171\u4EAB GPU \u5B8C\u6210\u68C0\u67E5\u65E0\u6CD5\u8FDB\u5165\u5171\u4EAB\u961F\u5217"));
+  };
   const complete = (item) => {
     item.ready = true;
-    if (!hasObjectBuffers(item.object)) context.geometries.set(item.object.geometry, item);
+    if (!hasObjectBuffers(item.object)) context.geometries.set(getSharedGeometryBufferSource(item.object.geometry), item);
+    const notify = item.onPrepared;
+    item.onPrepared = void 0;
     item.resolve?.();
+    notify?.();
   };
   const abort = () => {
     scheduler.cancel(source.ownerId, key);
@@ -271652,28 +272098,32 @@ function prepareGeometryBuffers(renderer, object, camera, signal, scope, batchLi
     key,
     source,
     kind: "preparation",
+    priority: foreground ? "completion" : void 0,
     scope,
     signal,
     viewPriority: createObjectPreparationPriority(object, camera),
     isValid: () => true,
+    // 程序依赖未完成时不消耗本帧派发机会；已提交的 fence 仍沿用每轮一次的真实查询。
+    canProgress: canSubmit ? () => Boolean(entry.fence || entry.batch || canSubmit()) : void 0,
     run: () => {
       let invalidated = false;
       try {
-        if (context.entries.get(object) !== entry || allocationSignature(object) !== signature) {
+        const currentAllocation = getGeometryAllocation(object);
+        if (context.entries.get(object) !== entry || !currentAllocation || currentAllocation.signature !== signature) {
           invalidated = true;
           throw new DOMException("\u7F13\u51B2\u5728\u51C6\u5907\u671F\u95F4\u5DF2\u66F4\u6362", "AbortError");
         }
         let batch = entry.batch;
         if (!batch && !entry.fence) {
-          const shared = !hasObjectBuffers(object) ? context.geometries.get(object.geometry) : void 0;
+          const shared = !hasObjectBuffers(object) ? context.geometries.get(currentAllocation.source) : void 0;
           if (shared?.ready && shared.signature === signature) {
             context.pending.delete(entry);
-            entry.ready = true;
-            resolvePreparation();
+            complete(entry);
             return true;
           }
           if (shared && shared !== entry && shared.signature === signature) return false;
           if (gl.isContextLost()) throw new Error("\u7F13\u51B2\u51C6\u5907\u5931\u8D25\uFF1AWebGL \u4E0A\u4E0B\u6587\u5DF2\u4E22\u5931");
+          if (entry.screenScene ? !entry.canSubmit?.() : !prepareBufferUploadProgram(renderer, camera, context, entry.canSubmit)) return false;
           const previousErrors = [];
           for (let i = 0; i < 16; i++) {
             const error2 = gl.getError();
@@ -271692,12 +272142,14 @@ function prepareGeometryBuffers(renderer, object, camera, signal, scope, batchLi
           const canBatch = context.pending.size > 1 && entry.batchLimit > 1;
           const batchEntries = [entry];
           const selectedGeometries = /* @__PURE__ */ new Set();
-          if (!hasObjectBuffers(object)) selectedGeometries.add(geometry);
+          if (!hasObjectBuffers(object)) selectedGeometries.add(currentAllocation.source);
           if (canBatch) for (const candidate of Array.from(context.pending)) {
             if (batchEntries.length >= entry.batchLimit) break;
-            if (candidate === entry || candidate.ready || candidate.batch || candidate.fence || candidate.batchLimit !== entry.batchLimit || candidate.ownerId !== entry.ownerId || candidate.scope !== entry.scope || candidate.camera !== camera || candidate.signal?.aborted || context.entries.get(candidate.object) !== candidate || allocationSignature(candidate.object) !== candidate.signature) continue;
+            if (candidate === entry || candidate.ready || candidate.batch || candidate.fence || candidate.batchLimit !== entry.batchLimit || candidate.ownerId !== entry.ownerId || candidate.scope !== entry.scope || candidate.camera !== camera || candidate.screenScene !== entry.screenScene || candidate.screenScene && !candidate.canSubmit?.() || candidate.signal?.aborted || context.entries.get(candidate.object) !== candidate) continue;
+            const candidateAllocation = getGeometryAllocation(candidate.object);
+            if (!candidateAllocation || candidateAllocation.signature !== candidate.signature) continue;
             if (!hasObjectBuffers(candidate.object)) {
-              const candidateGeometry = candidate.object.geometry;
+              const candidateGeometry = candidateAllocation.source;
               const submitted = context.geometries.get(candidateGeometry);
               if (selectedGeometries.has(candidateGeometry) || submitted && submitted !== candidate && submitted.signature === candidate.signature) continue;
               selectedGeometries.add(candidateGeometry);
@@ -271705,25 +272157,26 @@ function prepareGeometryBuffers(renderer, object, camera, signal, scope, batchLi
             batchEntries.push(candidate);
           }
           const merged = batchEntries.length > 1;
-          const submit = () => submitGeometryBuffers(renderer, merged ? batchEntries.map((candidate) => candidate.object) : object, camera, context);
+          const submit = () => submitGeometryBuffers(renderer, merged ? batchEntries.map((candidate) => candidate.object) : object, camera, context, entry.screenScene);
           const diagnostics = getPerformanceDiagnostics(renderer);
           if (diagnostics) diagnostics.measure("resource-submit", source, submit);
           else submit();
           const fence2 = gl.fenceSync(gl.SYNC_GPU_COMMANDS_COMPLETE, 0);
           if (!fence2) throw new Error("\u7F13\u51B2\u51C6\u5907\u5931\u8D25\uFF1A\u65E0\u6CD5\u521B\u5EFA GPU \u5B8C\u6210\u6807\u8BB0");
           if (merged) {
-            batch = { fence: fence2, entries: new Set(batchEntries) };
+            batch = { fence: fence2, entries: new Set(batchEntries), leader: entry };
             batchEntries.forEach((candidate) => {
               context.pending.delete(candidate);
               candidate.batch = batch;
               candidate.task.priority = "completion";
-              if (!hasObjectBuffers(candidate.object)) context.geometries.set(candidate.object.geometry, candidate);
+              if (candidate !== entry) scheduler.cancel(candidate.ownerId, candidate.task.key);
+              if (!hasObjectBuffers(candidate.object)) context.geometries.set(getSharedGeometryBufferSource(candidate.object.geometry), candidate);
             });
           } else {
             entry.fence = fence2;
             context.pending.delete(entry);
             entry.task.priority = "completion";
-            if (!hasObjectBuffers(object)) context.geometries.set(geometry, entry);
+            if (!hasObjectBuffers(object)) context.geometries.set(getSharedGeometryBufferSource(geometry), entry);
           }
           gl.flush();
           const error = gl.getError();
@@ -271746,7 +272199,7 @@ function prepareGeometryBuffers(renderer, object, camera, signal, scope, batchLi
         if (batch) {
           const confirmed = Array.from(batch.entries, (item) => ({
             item,
-            valid: !item.signal?.aborted && context.entries.get(item.object) === item && allocationSignature(item.object) === item.signature
+            valid: !item.signal?.aborted && context.entries.get(item.object) === item && getGeometryAllocation(item.object)?.signature === item.signature
           }));
           confirmed.forEach(({ item, valid }) => {
             batch.entries.delete(item);
@@ -271795,14 +272248,33 @@ function prepareGeometryBuffers(renderer, object, camera, signal, scope, batchLi
     rejectPreparation(new Error("\u7F13\u51B2\u51C6\u5907\u65E0\u6CD5\u8FDB\u5165\u5171\u4EAB\u961F\u5217"));
   }
   void promise.catch((error) => {
-    if (context.geometries.get(geometry) === entry) context.geometries.delete(geometry);
+    entry.onPrepared = void 0;
+    if (context.geometries.get(getSharedGeometryBufferSource(geometry)) === entry) context.geometries.delete(getSharedGeometryBufferSource(geometry));
     if (error instanceof DOMException && error.name === "AbortError" && context.entries.get(object) === entry) {
       context.entries.delete(object);
     }
   }).finally(() => signal.removeEventListener("abort", abort));
   return promise;
 }
-function submitGeometryBuffers(renderer, objects, camera, context) {
+function prepareBufferUploadProgram(renderer, camera, context, canSubmit) {
+  if (!context.uploadProgram) {
+    context.programProbe.material = context.bufferMaterial;
+    renderer.compile(context.programProbe, camera, context.scene);
+    context.uploadProgram = renderer.properties.get(context.bufferMaterial).currentProgram;
+    if (!context.uploadProgram) throw new Error("\u7F13\u51B2\u51C6\u5907\u5931\u8D25\uFF1A\u672A\u751F\u6210\u4E0A\u4F20\u7A0B\u5E8F");
+  }
+  if (canSubmit && !canSubmit()) return false;
+  const program = context.uploadProgram;
+  if (!program.program) throw new Error("\u7F13\u51B2\u51C6\u5907\u5931\u8D25\uFF1A\u4E0A\u4F20\u7A0B\u5E8F\u5DF2\u91CA\u653E");
+  if (context.confirmedUploadProgram === program.program) return true;
+  if (!program.isReady()) return false;
+  const gl = renderer.getContext();
+  if (!gl.getProgramParameter(program.program, gl.LINK_STATUS)) throw new Error("\u7F13\u51B2\u51C6\u5907\u5931\u8D25\uFF1A\u4E0A\u4F20\u7A0B\u5E8F\u94FE\u63A5\u5931\u8D25");
+  program.getUniforms();
+  context.confirmedUploadProgram = program.program;
+  return true;
+}
+function submitGeometryBuffers(renderer, objects, camera, context, screenScene) {
   const meshes = Array.isArray(objects) ? objects : [objects];
   const gl = renderer.getContext();
   if (gl.isContextLost()) throw new Error("\u7F13\u51B2\u51C6\u5907\u5931\u8D25\uFF1AWebGL \u4E0A\u4E0B\u6587\u5DF2\u4E22\u5931");
@@ -271816,9 +272288,18 @@ function submitGeometryBuffers(renderer, objects, camera, context) {
   const viewport = renderer.getViewport(new Vector4()), scissor = renderer.getScissor(new Vector4());
   const scissorTest = renderer.getScissorTest(), autoClear = renderer.autoClear, shadows = renderer.shadowMap.enabled;
   const autoReset = renderer.info.autoReset;
+  const shadowAutoUpdate = renderer.shadowMap.autoUpdate, shadowNeedsUpdate = renderer.shadowMap.needsUpdate;
+  const scene = screenScene ?? context.scene;
+  const sceneChildren = scene.children, sceneBackground = scene.background;
+  const sceneBefore = scene.onBeforeRender, sceneAfter = scene.onAfterRender;
+  const lights = [];
+  if (screenScene) scene.traverseVisible((object) => {
+    if (object.isLight) lights.push(object);
+  });
   const counters = { ...renderer.info.render };
   const states = meshes.map((mesh) => ({
     mesh,
+    geometry: mesh.geometry,
     children: mesh.children,
     visible: mesh.visible,
     culled: mesh.frustumCulled,
@@ -271837,6 +272318,7 @@ function submitGeometryBuffers(renderer, objects, camera, context) {
         if (texture.version === 0) texture.needsUpdate = true;
         if (!uploadPreparedTexture(renderer, texture)) throw new Error("\u77E9\u9635\u6279\u6B21\u7EB9\u7406\u5C1A\u672A\u5206\u914D");
       }
+      mesh.geometry = getSharedGeometryBufferSource(mesh.geometry);
       mesh.children = [];
       mesh.visible = true;
       mesh.frustumCulled = false;
@@ -271844,7 +272326,7 @@ function submitGeometryBuffers(renderer, objects, camera, context) {
       mesh.matrixWorldAutoUpdate = false;
       mesh.onBeforeRender = mesh.onAfterRender = () => void 0;
     }
-    renderer.renderBufferDirect = (drawCamera, scene, geometry, drawMaterial, object, group) => {
+    renderer.renderBufferDirect = (drawCamera, scene2, geometry, drawMaterial, object, group) => {
       const state = stateByObject.get(object);
       const batch = object;
       const count = batch._multiDrawCount;
@@ -271853,9 +272335,9 @@ function submitGeometryBuffers(renderer, objects, camera, context) {
         draw.call(
           renderer,
           drawCamera,
-          scene,
+          scene2,
           geometry,
-          state?.preparationMaterial ?? drawMaterial,
+          screenScene ? drawMaterial : state?.preparationMaterial ?? drawMaterial,
           object,
           state ? { start: geometry.drawRange.start, count: 0, materialIndex: 0 } : group
         );
@@ -271863,17 +272345,31 @@ function submitGeometryBuffers(renderer, objects, camera, context) {
         if (state && batch.isBatchedMesh) batch._multiDrawCount = count;
       }
     };
-    context.scene.children = [...meshes];
-    context.scene.overrideMaterial = context.bufferMaterial;
+    scene.children = [...lights, ...meshes];
+    if (screenScene) {
+      scene.background = null;
+      scene.onBeforeRender = scene.onAfterRender = () => void 0;
+      renderer.shadowMap.autoUpdate = renderer.shadowMap.needsUpdate = false;
+      context.screenPass = true;
+    } else {
+      context.scene.overrideMaterial = context.bufferMaterial;
+      renderer.shadowMap.enabled = false;
+      renderer.setRenderTarget(context.target);
+    }
     renderer.autoClear = false;
-    renderer.shadowMap.enabled = false;
     renderer.info.autoReset = false;
-    renderer.setRenderTarget(context.target);
-    renderer.render(context.scene, camera);
+    renderer.render(scene, camera);
   } finally {
-    context.scene.children = [];
+    scene.children = sceneChildren;
+    scene.background = sceneBackground;
+    scene.onBeforeRender = sceneBefore;
+    scene.onAfterRender = sceneAfter;
     context.scene.overrideMaterial = null;
+    context.screenPass = false;
+    renderer.shadowMap.autoUpdate = shadowAutoUpdate;
+    renderer.shadowMap.needsUpdate = shadowNeedsUpdate;
     states.forEach((state) => {
+      state.mesh.geometry = state.geometry;
       state.mesh.children = state.children;
       state.mesh.visible = state.visible;
       state.mesh.frustumCulled = state.culled;
@@ -271897,12 +272393,25 @@ function submitGeometryBuffers(renderer, objects, camera, context) {
 
 // src/components/StarSky/shared/performance/compileShaderWarmup.ts
 var finalizedPrograms = /* @__PURE__ */ new WeakMap();
+var flushedPrograms = /* @__PURE__ */ new WeakMap();
 var completedPreparations = /* @__PURE__ */ new WeakSet();
 var pendingPreparationPrograms = /* @__PURE__ */ new WeakMap();
+var compilingPrograms = /* @__PURE__ */ new WeakMap();
+function areSubmittedProgramsReady(renderer) {
+  for (const program of Array.from(compilingPrograms.get(renderer)?.keys() ?? [])) {
+    if (program.program && finalizedPrograms.get(program) !== program.program && !program.isReady()) return false;
+  }
+  return true;
+}
+function getPendingShaderPrograms(preparation) {
+  const programs = pendingPreparationPrograms.get(preparation);
+  if (!programs?.size) return programs;
+  return new Set(Array.from(programs).filter((program) => !program.program || finalizedPrograms.get(program) !== program.program));
+}
 function submitShaderWarmupPrograms(renderer, objects, camera, scene, mode = "screen-and-transmission") {
   const programs = /* @__PURE__ */ new Set();
   const collect = (root2) => {
-    renderer.compile(root2, camera, scene).forEach((material) => {
+    compileWithCanonicalPBRParameters(renderer, root2, () => renderer.compile(root2, camera, scene)).forEach((material) => {
       const properties = renderer.properties.get(material);
       if (properties.programs?.size) {
         properties.programs.forEach((program) => programs.add(program));
@@ -271949,7 +272458,8 @@ function submitShaderWarmupPrograms(renderer, objects, camera, scene, mode = "sc
   }
   return programs;
 }
-function compileShaderPrograms(renderer, objects, camera, scene, signal, bufferRoot = objects, scope, mode = "screen-and-transmission") {
+function compileShaderPrograms(renderer, objects, camera, scene, signal, bufferRoot = objects, scope, mode = "screen-and-transmission", _bufferObjects, options = {}) {
+  const { onProgress, waitForSubmittedPrograms = false, canFinalize } = options;
   if (signal.aborted)
     return Promise.reject(new DOMException("Shader \u9884\u70ED\u5DF2\u53D6\u6D88", "AbortError"));
   const scheduler = getFrameTaskScheduler(renderer);
@@ -271960,8 +272470,33 @@ function compileShaderPrograms(renderer, objects, camera, scene, signal, bufferR
   const diagnostics = getPerformanceDiagnostics(renderer);
   const source = diagnostics?.resourceSource(bufferRoot.uuid, "shader-finalize") ?? resolvePerformanceSource(bufferRoot);
   const key = `shader-finalize:${++warmupSequence}`;
+  const viewPriority = createObjectPreparationPriority(bufferRoot, camera);
+  const pending = compilingPrograms.get(renderer) ?? /* @__PURE__ */ new Map();
+  compilingPrograms.set(renderer, pending);
+  const owned = Array.from(programs);
+  if (options.flushSubmittedPrograms && owned.some((program) => program.program && flushedPrograms.get(program) !== program.program)) {
+    renderer.getContext().flush();
+    owned.forEach((program) => {
+      if (program.program) flushedPrograms.set(program, program.program);
+    });
+  }
+  owned.forEach((program) => pending.set(program, (pending.get(program) ?? 0) + 1));
+  let released = false;
+  const release = () => {
+    if (released) return;
+    released = true;
+    owned.forEach((program) => {
+      const refs = pending.get(program) ?? 0;
+      if (refs > 1) pending.set(program, refs - 1);
+      else pending.delete(program);
+    });
+  };
   const shaderReady = programs.size === 0 ? Promise.resolve() : new Promise((resolve, reject) => {
-    const cleanup = () => signal.removeEventListener("abort", abort);
+    const cleanup = () => {
+      signal.removeEventListener("abort", abort);
+      renderer.domElement.removeEventListener("webglcontextrestored", abort);
+      release();
+    };
     const abort = () => {
       scheduler.cancel(source.ownerId, key);
       cleanup();
@@ -271972,6 +272507,7 @@ function compileShaderPrograms(renderer, objects, camera, scene, signal, bufferR
       return;
     }
     signal.addEventListener("abort", abort, { once: true });
+    renderer.domElement.addEventListener("webglcontextrestored", abort, { once: true });
     const queued = scheduler.enqueue({
       key,
       source,
@@ -271979,10 +272515,13 @@ function compileShaderPrograms(renderer, objects, camera, scene, signal, bufferR
       priority: "completion",
       scope,
       signal,
-      viewPriority: createObjectPreparationPriority(bufferRoot, camera),
+      canProgress: canFinalize,
+      viewPriority: () => viewPriority() + (options.foreground ? 1e4 : 0),
       isValid: () => !signal.aborted,
       run: () => {
         try {
+          if (canFinalize && !canFinalize()) return false;
+          if (waitForSubmittedPrograms && !areSubmittedProgramsReady(renderer)) return false;
           const program = programs.values().next().value;
           if (program) {
             if (!program.program) throw new Error("Shader program \u5728\u9884\u70ED\u5B8C\u6210\u524D\u5DF2\u88AB\u91CA\u653E");
@@ -271996,6 +272535,7 @@ function compileShaderPrograms(renderer, objects, camera, scene, signal, bufferR
               finalizedPrograms.set(program, program.program);
             }
             programs.delete(program);
+            onProgress?.();
           }
           if (programs.size > 0) return "continue";
           cleanup();
@@ -272018,9 +272558,10 @@ function compileShaderPrograms(renderer, objects, camera, scene, signal, bufferR
   pendingPreparationPrograms.set(shaderReady, programs);
   return shaderReady;
 }
-function compileShaderWarmup(renderer, objects, camera, scene, signal, bufferRoot = objects, scope, mode = "screen-and-transmission", bufferObjects, geometryBatchLimit) {
+function compileShaderWarmup(renderer, objects, camera, scene, signal, bufferRoot = objects, scope, mode = "screen-and-transmission", bufferObjects, options = {}) {
+  const { geometryBatchLimit, onProgress, waitForSubmittedPrograms = true } = options;
   if (signal.aborted) return Promise.reject(new DOMException("Shader \u9884\u70ED\u5DF2\u53D6\u6D88", "AbortError"));
-  const shaderReady = compileShaderPrograms(renderer, objects, camera, scene, signal, bufferRoot, scope, mode);
+  const shaderReady = compileShaderPrograms(renderer, objects, camera, scene, signal, bufferRoot, scope, mode, bufferObjects, { ...options, waitForSubmittedPrograms: Boolean(onProgress) && waitForSubmittedPrograms });
   const buffers = [];
   const candidates = bufferObjects ?? (() => {
     const values = [];
@@ -272029,7 +272570,7 @@ function compileShaderWarmup(renderer, objects, camera, scene, signal, bufferRoo
   })();
   candidates.forEach((object) => {
     const mesh = object;
-    if (mesh.material && mesh.geometry?.isBufferGeometry) buffers.push(prepareGeometryBuffers(renderer, object, camera, signal, scope, geometryBatchLimit));
+    if (mesh.material && mesh.geometry?.isBufferGeometry) buffers.push(prepareGeometryBuffers(renderer, object, camera, signal, scope, geometryBatchLimit, onProgress, () => !onProgress || getPendingShaderPrograms(shaderReady)?.size === 0, options.screenBufferPreparation && mode === "current-target" ? scene : void 0, options.foreground));
   });
   const preparation = Promise.all([shaderReady, ...buffers]).then(() => {
     completedPreparations.add(preparation);
@@ -272041,6 +272582,7 @@ function compileShaderWarmup(renderer, objects, camera, scene, signal, bufferRoo
 var warmupSequence = 0;
 
 // src/components/StarSky/host/runtime/sandbox/Capabilities/CapabilityDisplaySource.ts
+var immutableInstanceBounds = /* @__PURE__ */ new WeakMap();
 var CapabilityDisplaySource = class extends Object3D {
   constructor(geometry, material, matrices) {
     super();
@@ -272055,9 +272597,21 @@ var CapabilityDisplaySource = class extends Object3D {
     this.count = matrices ? matrices.length / 16 : 1;
     if (matrices) {
       this.instanceMatrix = new InstancedBufferAttribute(new Float32Array(matrices), 16);
-      this.boundingBox = this.boundingSphere = null;
-      this.computeBoundingBox();
-      this.computeBoundingSphere();
+      const reusable = Object.isFrozen(matrices) && Boolean(getPooledGeometryKey(geometry)) && isPooledGeometryUnchanged(geometry);
+      const bounds = reusable ? immutableInstanceBounds.get(matrices)?.get(geometry) : void 0;
+      if (bounds) {
+        this.boundingBox = bounds.box.clone();
+        this.boundingSphere = bounds.sphere.clone();
+      } else {
+        this.boundingBox = this.boundingSphere = null;
+        this.computeBoundingBox();
+        this.computeBoundingSphere();
+        if (reusable) {
+          const layouts = immutableInstanceBounds.get(matrices) ?? /* @__PURE__ */ new WeakMap();
+          immutableInstanceBounds.set(matrices, layouts);
+          layouts.set(geometry, { box: this.boundingBox.clone(), sphere: this.boundingSphere.clone() });
+        }
+      }
     }
   }
   /** 完整资产的姿态 journal 负责标脏，旧源路径继续使用原矩阵更新语义。 */
@@ -272082,23 +272636,24 @@ var CapabilityDisplaySource = class extends Object3D {
       this.poseDirty = false;
     }
   }
-  /** 保留实例索引和原节点身份；临时射线网格不进入场景或 GPU 准备。 */
+  /** 保留实例索引和原节点身份，连续拾取不再反复构造或释放网格。 */
   raycast(raycaster, intersects2) {
-    const mesh = this.instanceMatrix ? new InstancedMesh(this.geometry, this.material, 0) : new Mesh(this.geometry, this.material);
-    mesh.matrixWorld.copy(this.matrixWorld);
-    if (mesh instanceof InstancedMesh) {
-      mesh.count = this.count;
-      mesh.instanceMatrix = this.instanceMatrix;
-      mesh.boundingBox = this.boundingBox ?? null;
-      mesh.boundingSphere = this.boundingSphere ?? null;
+    if (this.instanceMatrix) {
+      InstancedMesh.prototype.raycast.call(this, raycaster, intersects2);
+      return;
     }
-    const hits = [];
-    mesh.raycast(raycaster, hits);
-    hits.forEach((hit) => {
-      hit.object = this;
-      intersects2.push(hit);
-    });
-    if (mesh instanceof InstancedMesh) mesh.dispose();
+    const mesh = this.pickingMesh ??= new Mesh(this.geometry, this.material);
+    if (mesh.geometry !== this.geometry) {
+      mesh.geometry = this.geometry;
+      mesh.updateMorphTargets();
+    } else if ((mesh.morphTargetInfluences?.length ?? 0) !== (this.geometry.morphAttributes.position?.length ?? 0)) {
+      mesh.updateMorphTargets();
+    }
+    mesh.material = this.material;
+    mesh.matrixWorld.copy(this.matrixWorld);
+    const firstHit = intersects2.length;
+    mesh.raycast(raycaster, intersects2);
+    for (let index = firstHit; index < intersects2.length; index++) intersects2[index].object = this;
   }
   /** 失效后同一 CPU 身份恢复为源显示，不丢失拾取、父级或行为引用。 */
   reveal() {
@@ -272156,6 +272711,7 @@ var CapabilityDisplaySource = class extends Object3D {
   }
   /** 回源上传过的实例资源沿用 Three 的释放事件。 */
   dispose() {
+    this.pickingMesh = void 0;
     InstancedMesh.prototype.dispose.call(this);
   }
 };
@@ -272628,13 +273184,13 @@ function restoreCapabilityMatrixGeometry(mesh, cached, counts, pool) {
     throw error;
   }
 }
-function collectCapabilityMatrixGroups(root, eligible) {
+function collectCapabilityMatrixGroups(root, eligible2) {
   const groups = /* @__PURE__ */ new Map();
   const materialStates = /* @__PURE__ */ new Map();
   root.updateWorldMatrix(true, true);
   const inverse = root.matrixWorld.clone().invert(), local = new Matrix4(), instance = new Matrix4(), combined = new Matrix4();
   root.traverse((node) => {
-    if (!eligible(node) || !node.geometry.index) return;
+    if (!eligible2(node) || !node.geometry.index) return;
     if (node.material.transmission > 0) return;
     const count = isCapabilityInstancedMesh(node) ? node.count : 1;
     if (count > 256) return;
@@ -272659,7 +273215,7 @@ function collectCapabilityMatrixGroups(root, eligible) {
     sources.push(node);
     groups.set(key, sources);
   });
-  const selected = [];
+  const selected2 = [];
   for (const sources of Array.from(groups.values())) {
     let chunk = [], count = 0, bytes = 0;
     const geometries = /* @__PURE__ */ new Set();
@@ -272667,7 +273223,7 @@ function collectCapabilityMatrixGroups(root, eligible) {
       const size = geometries.has(source.geometry) ? 0 : Object.values(source.geometry.attributes).reduce((sum, a) => sum + a.array.byteLength, source.geometry.index.array.byteLength);
       const instances = isCapabilityInstancedMesh(source) ? source.count : 1;
       if (count + instances > 256 || bytes + size > 8 * 1024 * 1024) {
-        if (chunk.length >= 3) selected.push(chunk);
+        if (chunk.length >= 3) selected2.push(chunk);
         chunk = [];
         count = bytes = 0;
         geometries.clear();
@@ -272678,9 +273234,9 @@ function collectCapabilityMatrixGroups(root, eligible) {
       bytes += size;
       geometries.add(source.geometry);
     }
-    if (chunk.length >= 3) selected.push(chunk);
+    if (chunk.length >= 3) selected2.push(chunk);
   }
-  return selected;
+  return selected2;
 }
 function* createCapabilityMatrixBatch(sources, root, pool, cached, baked = [], revision) {
   const counts = sources.map((source, i) => baked[i] ? 1 : isCapabilityInstancedMesh(source) ? source.count : 1);
@@ -272975,6 +273531,8 @@ var CapabilityDrawFilter = class {
   constructor(renderer) {
     this.renderer = renderer;
     this.nodes = /* @__PURE__ */ new Set();
+    /** 只注销本消费者登记的准备器。 */
+    this.preparations = /* @__PURE__ */ new Set();
     this.disposed = false;
     let state = rendererFilters.get(renderer);
     if (!state) {
@@ -272984,14 +273542,22 @@ var CapabilityDrawFilter = class {
         state.submitting++;
         try {
           if (predicates.get(args[4])?.(args[0]) === false) return;
+          const material = args[3];
+          if (material.opacity === 0 && material.transparent && !material.depthWrite && !material.stencilWrite && material.blending === NormalBlending && material.onBeforeCompile === Material.prototype.onBeforeCompile && material.constructor === MeshBasicMaterial) return;
           return previous.apply(renderer, args);
         } finally {
           state.submitting--;
         }
       };
-      state = { predicates, previous, filtered, owners: 0, submitting: 0 };
+      const preparations = /* @__PURE__ */ new Set(), previousRender = renderer.render;
+      const preparedRender = (...args) => {
+        preparations.forEach((prepare) => prepare(...args));
+        return previousRender.apply(renderer, args);
+      };
+      state = { predicates, previous, filtered, owners: 0, submitting: 0, preparations, previousRender, preparedRender };
       rendererFilters.set(renderer, state);
       renderer.renderBufferDirect = filtered;
+      if (typeof previousRender === "function") renderer.render = preparedRender;
     }
     this.state = state;
     state.owners += 1;
@@ -273005,6 +273571,15 @@ var CapabilityDrawFilter = class {
       this.state.predicates.delete(node);
     };
   }
+  /** 准备回调先于 projectObject，不能延迟到 onBeforeRender 才改实例缓冲。 */
+  beforeRender(prepare) {
+    this.preparations.add(prepare);
+    this.state.preparations.add(prepare);
+    return () => {
+      this.preparations.delete(prepare);
+      this.state.preparations.delete(prepare);
+    };
+  }
   /** 提交中可立即拒绝旧表示，但场景树移除须等本轮同步渲染遍历结束。 */
   afterSubmission(cleanup) {
     if (this.state.submitting) queueMicrotask(cleanup);
@@ -273016,9 +273591,12 @@ var CapabilityDrawFilter = class {
     this.disposed = true;
     this.nodes.forEach((node) => this.state.predicates.delete(node));
     this.nodes.clear();
+    this.preparations.forEach((prepare) => this.state.preparations.delete(prepare));
+    this.preparations.clear();
     this.state.owners -= 1;
     if (this.state.owners === 0 && this.renderer.renderBufferDirect === this.state.filtered) {
       this.renderer.renderBufferDirect = this.state.previous;
+      if (this.renderer.render === this.state.preparedRender) this.renderer.render = this.state.previousRender;
       rendererFilters.delete(this.renderer);
     }
   }
@@ -273068,7 +273646,7 @@ function getCapabilityBatchRejectionReason(node, beforeRender = node.onBeforeRen
   if (!(node.material instanceof MeshStandardMaterial) && !(allowPhysicalMaterial && node.material instanceof MeshPhysicalMaterial) && !(matrixMode && node.material instanceof MeshBasicMaterial)) return "material-type";
   if (node.material.transparent || node.material.alphaTest !== 0 || node.material.alphaMap) return "transparent-or-alpha";
   if (mesh.customDepthMaterial || mesh.customDistanceMaterial) return "custom-depth";
-  if (matrixMode ? batchMaterialExtensionScope(node.material) === void 0 : node.material.onBeforeCompile !== Material.prototype.onBeforeCompile) return "custom-shader";
+  if (matrixMode ? batchMaterialExtensionScope(node.material) === void 0 : node.material.onBeforeCompile !== Material.prototype.onBeforeCompile && batchMaterialExtensionScope(node.material) !== "") return "custom-shader";
   if (beforeRender !== Object3D.prototype.onBeforeRender || node.onBeforeShadow !== Object3D.prototype.onBeforeShadow) return "custom-render-hook";
   if (!canCompileStaticGeometry(node.geometry)) return "geometry";
   return void 0;
@@ -273476,9 +274054,9 @@ var CapabilityRigidBatchRuntime = class {
     let changed = true;
     while (changed) {
       changed = false;
-      const selected = new Set(groups.flat()), excluded = /* @__PURE__ */ new Set();
+      const selected2 = new Set(groups.flat()), excluded = /* @__PURE__ */ new Set();
       this.batchMembers.forEach((members) => {
-        if (members.some((source) => selected.has(source)) && !members.every((source) => selected.has(source))) {
+        if (members.some((source) => selected2.has(source)) && !members.every((source) => selected2.has(source))) {
           members.forEach((source) => excluded.add(source));
         }
       });
@@ -273596,10 +274174,10 @@ var CapabilityRigidBatchRuntime = class {
     this.promotion = void 0;
     promotion.cleanup.forEach((dispose) => dispose());
     promotion.controller.abort();
-    const selected = new Set(promotion.groups.flat());
+    const selected2 = new Set(promotion.groups.flat());
     this.batches.forEach((values, parent) => {
       const retained = values.filter((dispose) => {
-        if (!this.batchMembers.get(dispose)?.every((source) => selected.has(source))) return true;
+        if (!this.batchMembers.get(dispose)?.every((source) => selected2.has(source))) return true;
         dispose();
         return false;
       });
@@ -273935,35 +274513,35 @@ var CapabilityRigidBatchRuntime = class {
     const discovery = this.discoveries.get(parent);
     const direct = this.preparedGroups.get(parent);
     this.preparedGroups.delete(parent);
-    const selected = direct?.sources ?? discovery?.selected ?? this.collectGroups(parent);
-    if (!selected.length) {
+    const selected2 = direct?.sources ?? discovery?.selected ?? this.collectGroups(parent);
+    if (!selected2.length) {
       this.releaseDiscovery(parent);
       return;
     }
-    selected.forEach((sources) => {
+    selected2.forEach((sources) => {
       const context = this.declarationSources.get(sources[0]);
       if (context && sources.every((source) => this.declarationSources.get(source) === context)) {
         context.expectedGroups.set(sources.map((source) => context.slots.get(source.userData.capabilityNodeId)).join(","), parent);
       }
     });
     const matrixMode = this.matrixRoot === parent;
-    const keys = direct?.keys ?? selected.map((sources) => {
+    const keys = direct?.keys ?? selected2.map((sources) => {
       return matrixMode ? capabilityMatrixSnapshotKey(sources) : this.snapshots.key(sources);
     });
-    let restored = direct?.restored ?? selected.map(() => void 0);
-    const reads = keys.map((key, index) => selected[index].every((node) => node.userData.capabilityDisplayCacheHit === true) ? key : void 0);
+    let restored = direct?.restored ?? selected2.map(() => void 0);
+    const reads = keys.map((key, index) => selected2[index].every((node) => node.userData.capabilityDisplayCacheHit === true) ? key : void 0);
     try {
       if (!direct && reads.some(Boolean)) {
         let ready2 = false;
-        void this.snapshots.read(reads, selected).then((value) => {
+        void this.snapshots.read(reads, selected2).then((value) => {
           restored = value;
           ready2 = true;
         });
         while (!ready2) yield "wait";
       }
-      for (let groupIndex = 0; groupIndex < selected.length; groupIndex++) {
+      for (let groupIndex = 0; groupIndex < selected2.length; groupIndex++) {
         const matrixMode2 = direct?.restored[groupIndex] ? Boolean(direct.restored[groupIndex].batched) : this.matrixRoot === parent;
-        const sources = selected[groupIndex];
+        const sources = selected2[groupIndex];
         const parameterized = !matrixMode2 && new Set(sources.map((source) => source.material)).size > 1;
         const sourceParents = sources.map((node) => node.parent);
         sources.forEach((node) => node.updateMatrix());
@@ -274272,13 +274850,13 @@ var CapabilityRigidBatchRuntime = class {
           const suppress = (node, compiled) => {
             const before = node.onBeforeRender;
             const unregister = this.drawFilter.register(node, (camera) => {
-              const selected2 = valid(this.renderer, camera);
-              if (compiled && selected2 && !saved) {
+              const selected3 = valid(this.renderer, camera);
+              if (compiled && selected3 && !saved) {
                 saved = true;
                 this.snapshots.save(keys[groupIndex], mesh, persistentProduct, currentMatrixBatch?.layout);
               }
-              if (compiled && selected2) this.recordFinalGroup(sources, keys[groupIndex], void 0, liveLayout);
-              return selected2 === compiled;
+              if (compiled && selected3) this.recordFinalGroup(sources, keys[groupIndex], void 0, liveLayout);
+              return selected3 === compiled;
             });
             const wrapped = (...args) => {
               if (compiled) syncMatrices();
@@ -274438,17 +275016,17 @@ function collectCapabilityRigidGroups(parent, dynamic = () => false, stats, expe
   });
   const candidates = Array.from(groups.values());
   if (stats) stats.candidateGroups = candidates.length;
-  const selected = candidates.filter((sources) => {
+  const selected2 = candidates.filter((sources) => {
     const accepted = sources.length >= (sources.every(isCapabilityInstancedMesh) ? 2 : 3);
     if (stats && !accepted) stats.droppedSmallGroups++;
     return accepted;
   });
   if (stats) {
-    stats.selectedGroups = selected.length;
-    stats.selectedMembers = selected.reduce((count, group) => count + group.length, 0);
-    stats.savedDraws = selected.reduce((count, group) => count + group.length - 1, 0);
+    stats.selectedGroups = selected2.length;
+    stats.selectedMembers = selected2.reduce((count, group) => count + group.length, 0);
+    stats.savedDraws = selected2.reduce((count, group) => count + group.length - 1, 0);
   }
-  return selected;
+  return selected2;
 }
 function expandCapabilityRigidSources(sources) {
   const parameterized = new Set(sources.map((source) => source.material)).size > 1;
@@ -274472,6 +275050,120 @@ function instanceMatrixCompatible(matrix) {
 }
 function canBatchCapabilitySource(node, beforeRender = node.onBeforeRender, matrixMode = false, allowPhysicalMaterial = false) {
   return getCapabilityBatchRejectionReason(node, beforeRender, matrixMode, allowPhysicalMaterial) === void 0;
+}
+
+// src/components/StarSky/host/runtime/sandbox/Capabilities/CapabilityRigidGeometryRanges.ts
+async function packCapabilityRigidGeometryRanges(groups, store) {
+  const keys = Array.from(new Set(groups.map((group) => group.layout.geometryKey)));
+  const records = await store.getMany(keys), buckets = /* @__PURE__ */ new Map();
+  for (const key of keys) {
+    const record = records.get(key);
+    if (!record?.index || record.groups.length || !Object.values(record.attributes).every((attribute) => attribute.array instanceof Float32Array)) continue;
+    const contract = JSON.stringify(Object.entries(record.attributes).map(([name, attribute]) => [name, attribute.itemSize, attribute.normalized]));
+    const bucket = buckets.get(contract) ?? [];
+    bucket.push({ key, record });
+    buckets.set(contract, bucket);
+  }
+  for (const bucket of Array.from(buckets.values())) {
+    if (bucket.length < 2 || bucket.reduce((sum, entry) => sum + entry.record.bytes, 0) > 8 * 1024 * 1024) continue;
+    const attributes = {}, ranges = [];
+    const vertices = bucket.reduce((sum, entry) => sum + entry.record.attributes.position.array.length / 3, 0);
+    const indices = bucket.reduce((sum, entry) => sum + entry.record.index.length, 0);
+    const index = vertices > 65535 ? new Uint32Array(indices) : new Uint16Array(indices);
+    for (const [name, descriptor] of Object.entries(bucket[0].record.attributes)) {
+      const array = new Float32Array(bucket.reduce((sum, entry) => sum + entry.record.attributes[name].array.length, 0));
+      let cursor = 0;
+      bucket.forEach((entry) => {
+        const values = entry.record.attributes[name].array;
+        array.set(values, cursor);
+        cursor += values.length;
+      });
+      attributes[name] = { array, itemSize: descriptor.itemSize, normalized: descriptor.normalized };
+    }
+    const box = new Box3();
+    let start = 0, firstVertex = 0;
+    for (const { key: key2, record: record2 } of bucket) {
+      const count = record2.index.length, vertexCount = record2.attributes.position.array.length / 3;
+      for (let i = 0; i < record2.index.length; i++) index[start + i] = record2.index[i] + firstVertex;
+      ranges.push({ key: key2, start, count, firstVertex, vertices: vertexCount, bounds: record2.bounds });
+      box.expandByPoint(new Vector3().fromArray(record2.bounds.min));
+      box.expandByPoint(new Vector3().fromArray(record2.bounds.max));
+      start += count;
+      firstVertex += vertexCount;
+    }
+    const center = box.getCenter(new Vector3());
+    let radius = 0;
+    const positions = attributes.position.array;
+    for (let i = 0; i < positions.length; i += 3) radius = Math.max(radius, center.distanceTo(new Vector3().fromArray(positions, i)));
+    const metadata = { capabilityRigidGeometryRanges: ranges };
+    const record = {
+      attributes,
+      index,
+      groups: [],
+      metadata,
+      bytes: index.byteLength + Object.values(attributes).reduce((sum, attribute) => sum + attribute.array.byteLength, 0) + new TextEncoder().encode(JSON.stringify(metadata)).byteLength,
+      bounds: { min: box.min.toArray(), max: box.max.toArray(), center: center.toArray(), radius }
+    };
+    const key = await store.reference(`plugin-rigid-shared-geometry-v1:three-r${REVISION}:${JSON.stringify(bucket.map((entry) => entry.key))}`);
+    if (!await store.putConfirmed(key, record)) throw new Error("\u9759\u6001\u673A\u6784\u5171\u4EAB\u7F13\u51B2\u5199\u5165\u5931\u8D25");
+    const packed = new Set(bucket.map((entry) => entry.key));
+    groups.forEach((group) => {
+      if (packed.has(group.layout.geometryKey)) group.layout = { geometryKey: key, sourceGeometryKey: group.layout.geometryKey };
+    });
+  }
+}
+function restoreCapabilityRigidGeometryRange(key, sourceKey2, cached, pool) {
+  const viewKey = `${key}:range:${sourceKey2}`;
+  return pool.acquire(viewKey, () => {
+    const borrower = pool.fork();
+    try {
+      const template = borrower.acquire(key, () => {
+        if (!cached) throw new Error("\u9759\u6001\u673A\u6784\u5171\u4EAB\u7F13\u51B2\u7F3A\u5931");
+        const geometry2 = decodeCachedGeometry(cached), ranges = geometry2.userData.capabilityRigidGeometryRanges;
+        if (!geometry2.index || !Array.isArray(ranges) || ranges.length < 2 || ranges.length > 256) throw new Error("\u9759\u6001\u673A\u6784\u5171\u4EAB\u8303\u56F4\u65E0\u6548");
+        for (const [name, size] of [["capabilitySurface", 2], ["capabilityEmissive", 3]]) {
+          const attribute = geometry2.getAttribute(name);
+          if (attribute && (attribute.itemSize !== size || attribute.normalized || attribute.array.some((value) => !Number.isFinite(value) || value < 0 || name === "capabilitySurface" && value > 1)))
+            throw new Error("\u9759\u6001 PBR \u9876\u70B9\u5C5E\u6027\u65E0\u6548");
+        }
+        let end = 0, vertexEnd = 0;
+        const keys = /* @__PURE__ */ new Set();
+        for (const range2 of ranges) {
+          if (!range2 || typeof range2.key !== "string" || keys.has(range2.key) || range2.start !== end || range2.firstVertex !== vertexEnd || !Number.isInteger(range2.count) || range2.count < 0 || range2.count % 3 || !Number.isInteger(range2.vertices) || range2.vertices < 0 || range2.start + range2.count > geometry2.index.count || range2.firstVertex + range2.vertices > geometry2.attributes.position.count || !range2.bounds || ![range2.bounds.min, range2.bounds.max, range2.bounds.center].every((values) => Array.isArray(values) && values.length === 3 && values.every(Number.isFinite)) || !Number.isFinite(range2.bounds.radius) || range2.bounds.radius < 0) throw new Error("\u9759\u6001\u673A\u6784\u5171\u4EAB\u8303\u56F4\u65E0\u6548");
+          for (let i = range2.start; i < range2.start + range2.count; i++) {
+            const vertex2 = geometry2.index.getX(i);
+            if (vertex2 < range2.firstVertex || vertex2 >= range2.firstVertex + range2.vertices) throw new Error("\u9759\u6001\u673A\u6784\u7D22\u5F15\u8D8A\u8FC7\u539F\u90E8\u4EF6\u8303\u56F4");
+          }
+          const position = geometry2.attributes.position, point = new Vector3();
+          const center = new Vector3().fromArray(range2.bounds.center);
+          for (let vertex2 = range2.firstVertex; vertex2 < range2.firstVertex + range2.vertices; vertex2++) {
+            point.fromBufferAttribute(position, vertex2);
+            if (point.x < range2.bounds.min[0] - 1e-5 || point.x > range2.bounds.max[0] + 1e-5 || point.y < range2.bounds.min[1] - 1e-5 || point.y > range2.bounds.max[1] + 1e-5 || point.z < range2.bounds.min[2] - 1e-5 || point.z > range2.bounds.max[2] + 1e-5 || point.distanceToSquared(center) > (range2.bounds.radius + 1e-5) ** 2) throw new Error("\u9759\u6001\u673A\u6784\u90E8\u4EF6\u5305\u56F4\u4F53\u65E0\u6548");
+          }
+          keys.add(range2.key);
+          end += range2.count;
+          vertexEnd += range2.vertices;
+        }
+        if (end !== geometry2.index.count || vertexEnd !== geometry2.attributes.position.count) throw new Error("\u9759\u6001\u673A\u6784\u5171\u4EAB\u8303\u56F4\u4E0D\u5B8C\u6574");
+        return geometry2;
+      });
+      const range = template.userData.capabilityRigidGeometryRanges.find((value) => value.key === sourceKey2);
+      if (!range) throw new Error("\u9759\u6001\u673A\u6784\u5171\u4EAB\u90E8\u4EF6\u7F3A\u5931");
+      const geometry = createGeometryRangeView(
+        template,
+        range.start,
+        range.count,
+        new Box3(new Vector3().fromArray(range.bounds.min), new Vector3().fromArray(range.bounds.max)),
+        new Sphere(new Vector3().fromArray(range.bounds.center), range.bounds.radius)
+      );
+      geometry.userData.capabilityRigidGeometryRange = range;
+      geometry.addEventListener("dispose", () => borrower.dispose());
+      return geometry;
+    } catch (error) {
+      borrower.dispose();
+      throw error;
+    }
+  });
 }
 
 // src/components/StarSky/host/runtime/sandbox/Capabilities/CapabilityMatrixBatchDisplay.ts
@@ -274517,20 +275209,78 @@ function validCapabilityMatrixBatchDisplay(display, count) {
 }
 
 // src/components/StarSky/host/runtime/sandbox/Capabilities/CapabilityRigidRenderAsset.ts
+var MAX_BAKED_INSTANCE_VERTICES = 8192;
 function materialParameters(source) {
   const material = source.material;
   return [material.roughness, material.metalness, ...material.emissive.clone().multiplyScalar(material.emissiveIntensity).toArray()];
 }
-function bindVertexParameters(material) {
+var staticShaderSources = [];
+function bindCapabilityStaticVertexParameters(value, baked = false, vertexColor = false) {
+  const material = value;
+  if (!material.isMeshStandardMaterial || !baked && (material.onBeforeCompile !== Material.prototype.onBeforeCompile || material.customProgramCacheKey !== Material.prototype.customProgramCacheKey)) return;
   const compile = material.onBeforeCompile, key = material.customProgramCacheKey();
-  const varyings2 = "flat varying vec2 vCapabilitySurface;\nflat varying vec3 vCapabilityEmissive;\n";
-  material.onBeforeCompile = (shader, renderer) => {
-    compile.call(material, shader, renderer);
-    if (!shader.vertexShader.includes("#include <begin_vertex>") || !["vec3 totalEmissiveRadiance = emissive;", "#include <roughnessmap_fragment>", "#include <metalnessmap_fragment>"].every((token) => shader.fragmentShader.includes(token))) throw new Error("\u5F53\u524D PBR \u7A0B\u5E8F\u4E0D\u652F\u6301\u9759\u6001\u9876\u70B9\u53C2\u6570");
-    shader.vertexShader = varyings2 + "attribute vec2 capabilitySurface;\nattribute vec3 capabilityEmissive;\n" + shader.vertexShader.replace("#include <begin_vertex>", "#include <begin_vertex>\nvCapabilitySurface = capabilitySurface;\nvCapabilityEmissive = capabilityEmissive;");
-    shader.fragmentShader = varyings2 + shader.fragmentShader.replace("vec3 totalEmissiveRadiance = emissive;", "vec3 totalEmissiveRadiance = vCapabilityEmissive;").replace("#include <roughnessmap_fragment>", ShaderChunk.roughnessmap_fragment.replace("= roughness;", "= vCapabilitySurface.x;")).replace("#include <metalnessmap_fragment>", ShaderChunk.metalnessmap_fragment.replace("= metalness;", "= vCapabilitySurface.y;"));
+  const nativeShader = compile === Material.prototype.onBeforeCompile && material.customProgramCacheKey === Material.prototype.customProgramCacheKey;
+  const varyings2 = "flat varying vec2 vCapabilityStaticSurface;\nflat varying vec3 vCapabilityStaticEmissive;\nvarying vec3 vCapabilityStaticColor;\n";
+  const select = (name, replacement, token) => `
+#define ${name} ${replacement}
+${token}
+#undef ${name}
+`;
+  material.onBeforeCompile = function(shader, renderer) {
+    const current = this;
+    compile.call(current, shader, renderer);
+    const toneMapping = nativeShader ? renderer.toneMapping ?? NoToneMapping : NoToneMapping;
+    const target = nativeShader ? renderer.getRenderTarget?.() : null;
+    const mapped = nativeShader && toneMapping !== NoToneMapping && (!target || "isXRRenderTarget" in target && target.isXRRenderTarget === true);
+    const variant = nativeShader ? mapped ? 2 : 1 : 0;
+    const vertex2 = shader.vertexShader, fragment2 = shader.fragmentShader, cached = staticShaderSources[variant];
+    const sourceHit = cached?.vertex === vertex2 && cached.fragment === fragment2;
+    if (!sourceHit && (!shader.vertexShader.includes("#include <begin_vertex>") || !["vec3 totalEmissiveRadiance = emissive;", "#include <roughnessmap_fragment>", "#include <metalnessmap_fragment>"].every((token) => shader.fragmentShader.includes(token)))) throw new Error("\u5F53\u524D PBR \u7A0B\u5E8F\u4E0D\u652F\u6301\u9759\u6001\u9876\u70B9\u53C2\u6570");
+    if (nativeShader) {
+      shader.doubleSided = originalPBRMaterialFlag(current, "side") !== BackSide;
+      shader.shaderName = "CapabilityStaticPBR";
+      if (mapped) {
+        shader.toneMapping = toneMapping;
+        shader.uniforms.capabilityToneMapping = { get value() {
+          const currentTarget = renderer.getRenderTarget();
+          return originalPBRMaterialFlag(current, "toneMapped") && renderer.toneMapping !== NoToneMapping && (!currentTarget || "isXRRenderTarget" in currentTarget && currentTarget.isXRRenderTarget === true) ? 1 : 0;
+        } };
+        if (!sourceHit) {
+          if (!shader.fragmentShader.includes("#include <tonemapping_fragment>")) throw new Error("\u5F53\u524D PBR \u7A0B\u5E8F\u4E0D\u652F\u6301\u6620\u5C04\u5F00\u5173");
+          shader.fragmentShader = "uniform float capabilityToneMapping;\n" + shader.fragmentShader.replace("#include <tonemapping_fragment>", "if (capabilityToneMapping > 0.5) {\n#include <tonemapping_fragment>\n}");
+        }
+      }
+      shader.opaque = false;
+      shader.uniforms.capabilityStaticOpaque = { get value() {
+        return !current.transparent && originalPBRMaterialFlag(current, "blending") === NormalBlending && !current.alphaToCoverage ? 1 : 0;
+      } };
+      if (!sourceHit) {
+        if (!shader.fragmentShader.includes("#include <opaque_fragment>")) throw new Error("\u5F53\u524D PBR \u7A0B\u5E8F\u4E0D\u652F\u6301\u4E0D\u900F\u660E\u53C2\u6570");
+        shader.fragmentShader = "uniform float capabilityStaticOpaque;\n" + shader.fragmentShader.replace("#include <opaque_fragment>", "if (capabilityStaticOpaque > 0.5) diffuseColor.a = 1.0;\n#include <opaque_fragment>");
+      }
+    }
+    shader.uniforms.capabilityStaticVertexParameters = { value: baked ? 1 : 0 };
+    shader.uniforms.capabilityStaticVertexColor = { value: vertexColor ? 1 : 0 };
+    if (sourceHit) {
+      shader.vertexShader = cached.transformedVertex;
+      shader.fragmentShader = cached.transformedFragment;
+      return;
+    }
+    shader.vertexShader = "uniform float capabilityStaticVertexParameters;\nuniform float capabilityStaticVertexColor;\nuniform float roughness;\nuniform float metalness;\nuniform vec3 emissive;\n" + varyings2 + "attribute vec2 capabilitySurface;\nattribute vec3 capabilityEmissive;\n#if !defined(USE_COLOR) && !defined(USE_COLOR_ALPHA)\nattribute vec3 color;\n#endif\n" + shader.vertexShader.replace("#include <begin_vertex>", "#include <begin_vertex>\nvCapabilityStaticSurface = capabilityStaticVertexParameters > 0.5 ? capabilitySurface : vec2(roughness, metalness);\nvCapabilityStaticEmissive = capabilityStaticVertexParameters > 0.5 ? capabilityEmissive : emissive;\nvCapabilityStaticColor = capabilityStaticVertexColor > 0.5 ? color.rgb : vec3(1.0);");
+    shader.fragmentShader = varyings2 + shader.fragmentShader.replace("vec3 totalEmissiveRadiance = emissive;", select("emissive", "vCapabilityStaticEmissive", "vec3 totalEmissiveRadiance = emissive;")).replace("#include <roughnessmap_fragment>", select("roughness", "vCapabilityStaticSurface.x", "#include <roughnessmap_fragment>")).replace("#include <metalnessmap_fragment>", select("metalness", "vCapabilityStaticSurface.y", "#include <metalnessmap_fragment>")).replace("#include <color_fragment>", "#include <color_fragment>\n#if !defined(USE_COLOR) && !defined(USE_COLOR_ALPHA)\ndiffuseColor.rgb *= vCapabilityStaticColor;\n#endif");
+    if (vertex2.length + fragment2.length <= 128 * 1024) {
+      staticShaderSources[variant] = {
+        vertex: vertex2,
+        fragment: fragment2,
+        transformedVertex: shader.vertexShader,
+        transformedFragment: shader.fragmentShader
+      };
+    }
   };
-  material.customProgramCacheKey = () => `${key}:capability-static-vertex-parameters-v1`;
+  material.customProgramCacheKey = () => `${key}:capability-static-vertex-parameters-v7:${nativeShader ? "canonical" : "custom"}`;
+  if (nativeShader) registerCanonicalPBRMaterial(material);
+  material.needsUpdate = true;
+  if (!baked && !vertexColor) registerBatchMaterialExtension(material, "");
 }
 function bakeParameters(geometry, parameters) {
   const result = geometry.clone(), slots = result.getAttribute("capabilityMaterialSlot");
@@ -274579,7 +275329,7 @@ async function buildCapabilityRigidRenderGroups(root, nodes, slots, asset, store
         groups.set(key, chunks);
       }
       for (const sources of Array.from(groups.values()).flat()) {
-        if (sources.length < 2) continue;
+        if (sources.length < 2 && (!instanced || !isCapabilityInstancedMesh(sources[0]) || vertices(sources[0]) > MAX_BAKED_INSTANCE_VERTICES)) continue;
         const first = sources[0];
         const motionInverse = motionRoot.matrixWorld.clone().invert();
         const colorBaked = sources.some((source) => !source.material.color.equals(first.material.color));
@@ -274598,7 +275348,8 @@ async function buildCapabilityRigidRenderGroups(root, nodes, slots, asset, store
             ...parametersBaked ? { materialSlot: slot } : {}
           };
         }));
-        if (instanced) {
+        const bakedInstanceVertices = inputs.reduce((sum, input) => sum + input.geometry.attributes.position.count, 0);
+        if (instanced && bakedInstanceVertices > MAX_BAKED_INSTANCE_VERTICES) {
           if (!inputs.every((input) => instanceMatrixCompatible(input.matrix))) continue;
           let geometryKey2 = sourceMap.get(slots.get(first.userData.capabilityNodeId)).node.geometryKey;
           if (getGeometryTemplateSource(first.geometry) !== first.geometry) {
@@ -274638,6 +275389,7 @@ async function buildCapabilityRigidRenderGroups(root, nodes, slots, asset, store
             counts: sources.map(count),
             motionRootSlot: slots.get(motionRoot.userData.capabilityNodeId) ?? null,
             layout: { geometryKey: await store.reference(key) },
+            ...instanced ? { bakedInstances: true } : {},
             matrix: new Matrix4().multiplyMatrices(inverse, motionRoot.matrixWorld).toArray(),
             colorBaked,
             parametersBaked,
@@ -274655,8 +275407,8 @@ async function buildCapabilityRigidRenderGroups(root, nodes, slots, asset, store
     compiler.dispose();
   }
 }
-function restoreCapabilityRigidRenderGroup(group, cached, base, pool) {
-  const geometry = pool.acquire(group.layout.geometryKey, () => {
+function restoreCapabilityRigidRenderGroup(group, cached, base, pool, shareOpaqueProgram = false, materials) {
+  const geometry = group.layout.sourceGeometryKey ? restoreCapabilityRigidGeometryRange(group.layout.geometryKey, group.layout.sourceGeometryKey, cached, pool) : pool.acquire(group.layout.geometryKey, () => {
     if (!cached) throw new Error("\u9759\u6001\u673A\u6784\u51E0\u4F55\u7F3A\u5931");
     for (const [name, size] of [["capabilitySurface", 2], ["capabilityEmissive", 3]]) {
       const attribute = cached.attributes[name];
@@ -274665,28 +275417,89 @@ function restoreCapabilityRigidRenderGroup(group, cached, base, pool) {
     }
     return decodeCachedGeometry(cached);
   });
+  const packed = geometry.userData.capabilityRigidGeometryRange;
+  if (group.bakedInstances && (packed?.vertices ?? geometry.attributes.position.count) > MAX_BAKED_INSTANCE_VERTICES) {
+    pool.release(geometry);
+    throw new Error("\u56FA\u5B9A\u5B9E\u4F8B\u70D8\u7119\u8D85\u51FA\u9876\u70B9\u5BB9\u91CF");
+  }
   const last = group.ranges[group.ranges.length - 1];
-  const triangles = (geometry.index?.count ?? geometry.attributes.position.count) / 3;
+  const triangles = (packed?.count ?? geometry.index?.count ?? geometry.attributes.position.count) / 3;
   if (!last || (group.instances ? group.ranges.some((range) => range.firstTriangle !== 0 || range.triangleCount !== triangles) : last.firstTriangle + last.triangleCount !== triangles || geometry.groups.length)) {
     pool.release(geometry);
     throw new Error("\u9759\u6001\u673A\u6784\u4E09\u89D2\u6620\u5C04\u65E0\u6548");
+  }
+  if (group.parametersBaked !== Boolean(geometry.attributes.capabilitySurface) || group.parametersBaked !== Boolean(geometry.attributes.capabilityEmissive)) {
+    pool.release(geometry);
+    throw new Error("\u9759\u6001 PBR \u9876\u70B9\u5C5E\u6027\u65E0\u6548");
   }
   const vertexColors = Boolean(geometry.attributes.color);
   const createMaterial = () => {
     const material2 = base.clone();
     if (group.colorBaked) material2.color.setRGB(1, 1, 1);
-    material2.vertexColors = vertexColors;
-    if (group.parametersBaked) bindVertexParameters(material2);
+    const staticVertexColor = vertexColors && geometry.attributes.color.itemSize === 3;
+    material2.vertexColors = vertexColors && !staticVertexColor;
+    bindCapabilityStaticVertexParameters(material2, group.parametersBaked, staticVertexColor);
+    const physical = material2;
+    if (shareOpaqueProgram && physical.isMeshPhysicalMaterial && physical.clearcoat > 0 && physical.transmission === 0 && !physical.transparent && physical.opacity === 1 && physical.side === DoubleSide && physical.blending === NormalBlending && !physical.map && !physical.alphaMap && physical.alphaTest === 0 && !physical.alphaHash && !physical.alphaToCoverage && !physical.premultipliedAlpha && !physical.vertexColors) {
+      physical.blending = NoBlending;
+      physical.needsUpdate = true;
+    }
     return material2;
   };
-  let material;
+  let material, releaseMaterial;
   try {
-    material = createMaterial();
+    if (!materials) {
+      material = createMaterial();
+      releaseMaterial = () => material.dispose();
+    } else {
+      const key = JSON.stringify([
+        group.colorBaked,
+        group.parametersBaked,
+        vertexColors,
+        geometry.attributes.color?.itemSize,
+        shareOpaqueProgram
+      ]);
+      let variants = materials.get(base), shared = variants?.get(key);
+      if (!shared || !shared.matches()) {
+        const source = base;
+        const values = () => [
+          source.color?.r,
+          source.color?.g,
+          source.color?.b,
+          source.roughness,
+          source.metalness,
+          source.emissive?.r,
+          source.emissive?.g,
+          source.emissive?.b,
+          source.emissiveIntensity
+        ];
+        const original = values(), snapshot = captureMatrixMaterial(base);
+        shared = { material: createMaterial(), refs: 0, matches: () => {
+          const current = values();
+          return snapshot.matches() && original.every((value, index) => Object.is(value, current[index]));
+        } };
+        if (!variants) {
+          variants = /* @__PURE__ */ new Map();
+          materials.set(base, variants);
+        }
+        variants.set(key, shared);
+      }
+      const entry = shared, entries = variants;
+      entry.refs++;
+      material = entry.material;
+      releaseMaterial = () => {
+        if (--entry.refs) return;
+        entry.material.dispose();
+        if (entries.get(key) === entry) entries.delete(key);
+        if (!entries.size && materials.get(base) === entries) materials.delete(base);
+      };
+    }
   } catch (error) {
     pool.release(geometry);
     throw error;
   }
   const mesh = group.instances ? new InstancedMesh(geometry, material, group.instances.length / 16) : new Mesh(geometry, material);
+  mesh.raycast = () => void 0;
   if (mesh instanceof InstancedMesh) {
     const matrix = new Matrix4();
     for (let i = 0; i < mesh.count; i++) mesh.setMatrixAt(i, matrix.fromArray(group.instances, i * 16));
@@ -274707,7 +275520,7 @@ function restoreCapabilityRigidRenderGroup(group, cached, base, pool) {
     disposed = true;
     mesh.removeFromParent();
     if (mesh instanceof InstancedMesh) mesh.dispose();
-    material.dispose();
+    releaseMaterial();
     pool.release(geometry);
   } };
 }
@@ -274817,6 +275630,7 @@ function createSharedCylinderGeometry(radiusTop, radiusBottom, height, segments,
 
 // src/components/StarSky/host/runtime/sandbox/Capabilities/GeometryRegistry.ts
 function getGeometryCacheKey(descriptor) {
+  if (prebuiltGeometryData.has(descriptor)) return resolveGeometryPlan(descriptor).key;
   const normalized = normalizeGeometryDescriptor(descriptor);
   return normalizedGeometryCacheKey(resolveGeometryTemplate(normalized)?.descriptor ?? normalized);
 }
@@ -274880,6 +275694,21 @@ function resolveStraightCircularLoft(geometry) {
 function normalizedGeometryCacheKey(normalized) {
   return getSharedGeometryKey(normalized);
 }
+var geometryPlanStringify = JSON.stringify;
+var immutableGeometryPlans = /* @__PURE__ */ new WeakMap();
+var prebuiltGeometryData = /* @__PURE__ */ new WeakSet();
+function resolveGeometryPlan(descriptor) {
+  const previous = immutableGeometryPlans.get(descriptor);
+  const circularSegments = descriptor.quality ? CYLINDER_SEGMENTS[descriptor.quality] : void 0;
+  const serializationUnchanged = JSON.stringify === geometryPlanStringify && !Object.getOwnPropertyDescriptor(Object.prototype, "toJSON") && !Object.getOwnPropertyDescriptor(Array.prototype, "toJSON");
+  if (previous && previous.circularSegments === circularSegments && serializationUnchanged) return previous;
+  const normalized = normalizeGeometryDescriptor(descriptor), template = resolveGeometryTemplate(normalized);
+  const source = template?.descriptor ?? normalized, key = normalizedGeometryCacheKey(source);
+  const viewKey = template && template.scale.some((value) => value !== 1) ? `geometry-view-v1:${normalizedGeometryCacheKey(normalized)}` : key;
+  const plan = { source, template, key, viewKey, circularSegments };
+  if (serializationUnchanged && prebuiltGeometryData.has(descriptor)) immutableGeometryPlans.set(descriptor, plan);
+  return plan;
+}
 var GeometryRegistry = class {
   constructor(renderer) {
     this.pool = new SharedGeometryPool(renderer);
@@ -274890,18 +275719,20 @@ var GeometryRegistry = class {
   }
   /** 获取匹配 descriptor 的几何资源，并持有独立引用。 */
   acquire(descriptor, restore) {
-    const normalized = normalizeGeometryDescriptor(descriptor);
-    const template = resolveGeometryTemplate(normalized);
-    const source = template?.descriptor ?? normalized;
-    const key = normalizedGeometryCacheKey(source);
+    const { template, source, key, viewKey } = resolveGeometryPlan(descriptor);
     const create = () => {
       const geometry = restore?.() ?? createGeometryFromDescriptor(source);
       geometry.userData.terrainCacheKey = key;
       return geometry;
     };
     if (!template) return this.pool.acquire(key, create);
-    const viewKey = `geometry-view-v1:${normalizedGeometryCacheKey(normalized)}`;
     return this.pool.acquireScaled(key, viewKey, template.scale, create, template.transformNormals);
+  }
+  /** 只查询完整物理尺寸对应的存活几何，调用方仍须独立持有引用。 */
+  peek(descriptor) {
+    const { viewKey } = resolveGeometryPlan(descriptor);
+    const geometry = this.pool.peek(viewKey);
+    return geometry && isPooledGeometryUnchanged(geometry) ? geometry : void 0;
   }
   /** 已核验清单的同一源几何只增加本注册表引用，不重新规范化描述。 */
   retain(geometry) {
@@ -275282,12 +276113,12 @@ function normalizeSceneGeometry(command, retainInstance = false, hasPreparedInst
     return retainInstance && !command.instances?.length ? { ...command, instances: [{}] } : command;
   }
   const explicitInstances = Boolean(command.instances?.length);
-  const eligible = explicitInstances;
-  if (!eligible && !retainInstance) return command;
+  const eligible2 = explicitInstances;
+  if (!eligible2 && !retainInstance) return command;
   const geometry = normalizeGeometryDescriptor(command.geometry ?? { kind: command.kind });
   let scale = { x: 1, y: 1, z: 1 };
-  let supported = eligible;
-  if (eligible) {
+  let supported = eligible2;
+  if (eligible2) {
     switch (geometry.kind) {
       case "box":
         scale = { x: geometry.width, y: geometry.height, z: geometry.depth };
@@ -277309,7 +278140,7 @@ function planCapabilityRenderAsset(input, behaviors) {
     const keepInstances = (members) => {
       for (let i = 0; i < members.length; i += 256) {
         const chunk = members.slice(i, i + 256);
-        if (chunk.length < 2) continue;
+        if (chunk.length < 2 && (fallback || !commands[chunk[0].slot].instances?.length || !chunk[0].triangles || chunk[0].triangles * (chunk[0].count - 1) > MAX_DUPLICATED_TRIANGLES_PER_DRAW)) continue;
         groups.push({ slots: chunk.map((member) => member.slot), motionRootSlot: chunk[0].root, representation: "instances" });
       }
     };
@@ -277352,7 +278183,7 @@ function renderAssetIdentityCommands(commands) {
 }
 function capabilityRenderAssetKey(commands, rigid = false, behaviorKey) {
   const effects = rigid ? `:${behaviorKey ?? planCapabilityRenderAsset(commands).behaviorKey}` : "";
-  return `${rigid ? "plugin-render-rigid-asset-v5" : "plugin-render-asset-v5"}:three-r${REVISION}:${stringifyDisplayCacheInput(renderAssetIdentityCommands(commands))}${effects}`;
+  return `${rigid ? "plugin-render-rigid-asset-v8" : "plugin-render-asset-v5"}:three-r${REVISION}:${stringifyDisplayCacheInput(renderAssetIdentityCommands(commands))}${effects}`;
 }
 function isCommandDescendant(commands, slot, ancestorSlot) {
   const target = `asset:${ancestorSlot}`;
@@ -277370,7 +278201,15 @@ function isCommandDescendant(commands, slot, ancestorSlot) {
 function validateCapabilityRenderAsset(value, prefix) {
   const asset = value;
   const requested = renderAssetIdentityCommands(prefix);
-  if (!asset || asset.version !== 2 || !Array.isArray(asset.commands) || asset.commands.length < requested.length || asset.commands.length > 2048 || stringifyDisplayCacheInput(renderAssetIdentityCommands(asset.commands.slice(0, requested.length))) !== stringifyDisplayCacheInput(requested) || !Array.isArray(asset.sources) || !Array.isArray(asset.groups) || !Array.isArray(asset.batches) || !asset.batches.length || asset.batches.some((count) => !Number.isInteger(count) || count < 1) || asset.batches.reduce((sum, count) => sum + count, 0) !== asset.commands.length)
+  const sameDeclarations = (commands) => {
+    const sources = renderAssetIdentityCommands(commands.slice(0, requested.length));
+    const shared = sources.length === requested.length && sources.every((source, i) => {
+      const target = requested[i], keys = Object.keys(source);
+      return keys.length === Object.keys(target).length && keys.every((key) => source[key] === target[key]);
+    });
+    return shared || stringifyDisplayCacheInput(sources) === stringifyDisplayCacheInput(requested);
+  };
+  if (!asset || asset.version !== 2 || !Array.isArray(asset.commands) || asset.commands.length < requested.length || asset.commands.length > 2048 || !sameDeclarations(asset.commands) || !Array.isArray(asset.sources) || !Array.isArray(asset.groups) || !Array.isArray(asset.batches) || !asset.batches.length || asset.batches.some((count) => !Number.isInteger(count) || count < 1) || asset.batches.reduce((sum, count) => sum + count, 0) !== asset.commands.length)
     throw new Error("\u5B8C\u6574\u6E32\u67D3\u8D44\u4EA7\u58F0\u660E\u65E0\u6548");
   const ids = /* @__PURE__ */ new Set(), slots = /* @__PURE__ */ new Set();
   asset.commands.forEach((node, i) => {
@@ -277395,7 +278234,11 @@ function validateCapabilityRenderAsset(value, prefix) {
   if (asset.rigidGroups !== void 0) {
     if (!Array.isArray(asset.rigidGroups) || asset.groups.length || typeof asset.behaviorKey !== "string") throw new Error("\u9759\u6001\u673A\u6784\u8868\u793A\u65E0\u6548");
     asset.rigidGroups.forEach((group) => {
-      if (!group || !Array.isArray(group.slots) || group.slots.length < 2 || group.slots.length > 256 || new Set(group.slots).size !== group.slots.length || group.slots.some((slot) => !slots.has(slot) || covered.has(slot) || (group.motionRootSlot === null ? Boolean(asset.commands[slot].parentId) : !isCommandDescendant(asset.commands, slot, group.motionRootSlot))) || !Array.isArray(group.counts) || group.counts.length !== group.slots.length || group.counts.some((count, i) => !Number.isInteger(count) || count < 1 || count !== (asset.commands[group.slots[i]].instances?.length || 1)) || group.motionRootSlot !== null && (!Number.isInteger(group.motionRootSlot) || !asset.commands[group.motionRootSlot]) || !group.layout || typeof group.layout.geometryKey !== "string" || typeof group.colorBaked !== "boolean" || typeof group.parametersBaked !== "boolean" || !validCapabilityDisplayRenderState(group.renderState) || !Array.isArray(group.matrix) || group.matrix.length !== 16 || !group.matrix.every(Number.isFinite) || group.matrix[3] !== 0 || group.matrix[7] !== 0 || group.matrix[11] !== 0 || group.matrix[15] !== 1 || !Array.isArray(group.ranges) || group.ranges.length !== group.counts.reduce((sum, count) => sum + count, 0)) throw new Error("\u9759\u6001\u673A\u6784\u5E03\u5C40\u65E0\u6548");
+      if (!group || !Array.isArray(group.slots) || group.slots.length < 1 || group.slots.length > 256 || new Set(group.slots).size !== group.slots.length || group.slots.some((slot) => !slots.has(slot) || covered.has(slot) || (group.motionRootSlot === null ? Boolean(asset.commands[slot].parentId) : !isCommandDescendant(asset.commands, slot, group.motionRootSlot))) || !Array.isArray(group.counts) || group.counts.length !== group.slots.length || group.counts.some((count, i) => !Number.isInteger(count) || count < 1 || count !== (asset.commands[group.slots[i]].instances?.length || 1)) || group.motionRootSlot !== null && (!Number.isInteger(group.motionRootSlot) || !asset.commands[group.motionRootSlot]) || !group.layout || typeof group.layout.geometryKey !== "string" || group.layout.sourceGeometryKey !== void 0 && typeof group.layout.sourceGeometryKey !== "string" || typeof group.colorBaked !== "boolean" || typeof group.parametersBaked !== "boolean" || !validCapabilityDisplayRenderState(group.renderState) || !Array.isArray(group.matrix) || group.matrix.length !== 16 || !group.matrix.every(Number.isFinite) || group.matrix[3] !== 0 || group.matrix[7] !== 0 || group.matrix[11] !== 0 || group.matrix[15] !== 1 || !Array.isArray(group.ranges) || group.ranges.length !== group.counts.reduce((sum, count) => sum + count, 0)) throw new Error("\u9759\u6001\u673A\u6784\u5E03\u5C40\u65E0\u6548");
+      if (group.slots.length === 1 && (!group.bakedInstances || !asset.commands[group.slots[0]].instances?.length))
+        throw new Error("\u5355\u6E90\u9759\u6001\u673A\u6784\u5FC5\u987B\u6765\u81EA\u56FA\u5B9A\u5B9E\u4F8B\u70D8\u7119");
+      if (group.bakedInstances !== void 0 && (group.bakedInstances !== true || group.instances !== void 0 || group.colorBaked || group.parametersBaked))
+        throw new Error("\u56FA\u5B9A\u5B9E\u4F8B\u70D8\u7119\u5E03\u5C40\u65E0\u6548");
       if (group.instances !== void 0 && (!Array.isArray(group.instances) || group.instances.length !== group.ranges.length * 16 || !group.instances.every(Number.isFinite) || group.instances.some((value2, i) => i % 16 === 15 ? value2 !== 1 : [3, 7, 11].includes(i % 16) && value2 !== 0) || group.colorBaked || group.parametersBaked))
         throw new Error("\u9759\u6001\u673A\u6784\u5B9E\u4F8B\u5E03\u5C40\u65E0\u6548");
       let end = 0;
@@ -277414,9 +278257,10 @@ async function readCapabilityRenderAsset(commands, store = terrainCompiledGeomet
   const entry = await store.get(capabilityRenderAssetKey(commands, rigid, behaviorKey));
   if (!entry) return null;
   const reference = entry.metadata.renderAssetReference;
-  if (reference !== void 0 && (typeof reference !== "string" || !/^(?:sha256:[a-f0-9]{64}|plugin-render-(?:asset-v5|rigid-asset-v5):)/.test(reference)))
+  if (reference !== void 0 && (typeof reference !== "string" || !/^(?:sha256:[a-f0-9]{64}|plugin-render-(?:asset-v5|rigid-asset-v8):)/.test(reference)))
     throw new Error("\u5B8C\u6574\u6E32\u67D3\u8D44\u4EA7\u5F15\u7528\u65E0\u6548");
-  const asset = reference ? (await store.get(reference))?.metadata.renderAsset : entry.metadata.renderAsset;
+  const stored = reference ? (await store.get(reference))?.metadata.renderAsset : entry.metadata.renderAsset;
+  const asset = typeof stored === "string" ? JSON.parse(stored) : stored;
   validateCapabilityRenderAsset(asset, completeCommands ?? commands);
   if (Boolean(asset.rigidGroups) !== rigid) throw new Error("\u5B8C\u6574\u6E32\u67D3\u8D44\u4EA7\u8868\u793A\u4E0D\u5339\u914D");
   if (plan) validateCapabilityRenderAssetPlan(asset, plan);
@@ -277426,7 +278270,7 @@ async function readCapabilityRenderAsset(commands, store = terrainCompiledGeomet
 }
 function validateCapabilityRenderAssetPlan(asset, plan) {
   if (asset.behaviorKey !== plan.behaviorKey) throw new Error("\u5B8C\u6574\u6E32\u67D3\u8D44\u4EA7\u884C\u4E3A\u8FB9\u754C\u4E0D\u5339\u914D");
-  if (asset.rigidGroups?.some((group) => !plan.groups.some((candidate) => candidate.motionRootSlot === group.motionRootSlot && candidate.representation === "instances" === Boolean(group.instances) && group.slots.every((slot) => candidate.slots.includes(slot))))) throw new Error("\u5B8C\u6574\u6E32\u67D3\u8D44\u4EA7\u8D85\u51FA\u58F0\u660E\u5408\u5E76\u8FB9\u754C");
+  if (asset.rigidGroups?.some((group) => !plan.groups.some((candidate) => candidate.motionRootSlot === group.motionRootSlot && (candidate.representation === "instances" ? Boolean(group.instances) || group.bakedInstances === true : !group.instances && !group.bakedInstances) && group.slots.every((slot) => candidate.slots.includes(slot))))) throw new Error("\u5B8C\u6574\u6E32\u67D3\u8D44\u4EA7\u8D85\u51FA\u58F0\u660E\u5408\u5E76\u8FB9\u754C");
 }
 
 // src/components/StarSky/host/runtime/sandbox/Capabilities/CapabilityRenderAssetEntry.ts
@@ -277569,6 +278413,8 @@ var CapabilityRenderAssetRuntime = class {
     this.validationRevision = 0;
     this.checkedRevision = -1;
     this.firstDisplay = false;
+    /** 正式加载在完整声明和实际行为核验前只准备资源，不发布预构建画面。 */
+    this.takeoverVerified = true;
     this.readyFrame = -1;
     this.readyRevision = -1;
     this.readyState = false;
@@ -277612,11 +278458,12 @@ var CapabilityRenderAssetRuntime = class {
    * 通过 prepare 的同一资产命中路径接管这些代理，避免显示后再造一套 Mesh。
    * @param prebuilt 已验证的预构建资产及当前实例节点绑定
    */
-  async preparePrebuilt(prebuilt) {
+  async preparePrebuilt(prebuilt, requireTakeoverValidation = false) {
     if (!this.port.enabled || !this.port.renderer || !prebuilt.asset.rigidGroups && !this.port.renderer.extensions?.has("WEBGL_multi_draw") || this.controller.signal.aborted || this.failed || !terrainCompiledGeometryCache.available) return false;
     const created = prebuilt.commands.filter((command) => command.type === "scene.createNode");
     if (!created.length) return Boolean(this.asset);
     if (this.asset) return this.prepareSupported(created);
+    this.takeoverVerified = !requireTakeoverValidation;
     this.allowPreDisplay = true;
     this.prebuiltOffset = 0;
     try {
@@ -277626,6 +278473,13 @@ var CapabilityRenderAssetRuntime = class {
       this.fallback();
       return false;
     }
+  }
+  /** 宿主验证完整正式声明与行为后开放显示；未接管节点不能提前放行。 */
+  confirmTakeover() {
+    if (!this.asset || this.failed || this.controller.signal.aborted || this.adoptedSlots.size !== this.asset.commands.length) return false;
+    this.takeoverVerified = true;
+    this.readyFrame = this.preparationFrame = -1;
+    return true;
   }
   async prepareSupported(commands) {
     const created = commands.filter((command) => command.type === "scene.createNode");
@@ -277702,6 +278556,8 @@ var CapabilityRenderAssetRuntime = class {
     this.commands = commands;
     this.bindCommands(commands, 0);
     this.deferredSources = true;
+    const hasTransmission = (material) => Boolean(material && (Number(material.transmission) > 0 || material.faceMaterials?.some(hasTransmission)));
+    this.port.root.userData.capabilityFinalDisplayRequiresTransmission = commands.some((command) => hasTransmission(command.material));
     this.resourceCleanup.push(bindFinalBatchPreparationRoot(
       this.port.renderer,
       this.port.root,
@@ -277713,40 +278569,79 @@ var CapabilityRenderAssetRuntime = class {
       this.displayTokens.set(source.slot, { userData: { capabilityNodeId: commands[source.slot].nodeId } });
     });
     const sidecars = asset.sources.filter((source) => !this.covered.has(source.slot) && source.renderState.visible && source.node.materials.some((material) => !material || material.visible !== false));
+    const displaySlots = /* @__PURE__ */ new Set([...asset.rigidGroups.map((group) => group.slots[0]), ...sidecars.map((source) => source.slot)]);
+    const releasePrefetch = this.port.prefetchDisplayTextures?.(commands.filter((_command, slot) => displaySlots.has(slot))) ?? (() => void 0);
+    this.resourceCleanup.push(releasePrefetch);
+    this.port.root.userData.capabilityFinalDisplayConstructed = false;
+    this.resourceCleanup.push(() => {
+      delete this.port.root.userData.capabilityFinalDisplayConstructed;
+    });
     const rigidKeys = asset.rigidGroups.map((group) => group.layout.geometryKey);
-    const sidecarKeys = sidecars.map((source) => source.node.geometryKey);
+    const residentSidecars = /* @__PURE__ */ new Map();
+    const borrowed = [];
+    let borrowedReleased = false;
+    const releaseBorrowed = () => {
+      if (borrowedReleased) return;
+      borrowedReleased = true;
+      borrowed.forEach((geometry) => this.pool.release(geometry));
+      borrowed.length = 0;
+    };
+    sidecars.forEach((source) => {
+      const geometry = this.port.peekDisplayGeometry?.(commands[source.slot]);
+      const key = geometry && getPooledGeometryKey(geometry);
+      if (!key || this.pool.peek(key) !== geometry || !isPooledGeometryUnchanged(geometry)) return;
+      const held = this.pool.acquire(key, () => geometry);
+      borrowed.push(held);
+      residentSidecars.set(source.slot, held);
+    });
+    this.resourceCleanup.push(releaseBorrowed);
+    const sidecarKeys = sidecars.filter((source) => !residentSidecars.has(source.slot)).map((source) => source.node.geometryKey);
+    const missingRigidKeys = rigidKeys.filter((key) => {
+      const geometry = this.pool.peek(key);
+      return !geometry || !isPooledGeometryUnchanged(geometry);
+    });
+    this.port.root.userData.capabilityFinalDisplayResident = missingRigidKeys.length === 0 && residentSidecars.size === sidecars.length;
     const keys = Array.from(/* @__PURE__ */ new Set([
-      ...rigidKeys.filter((key) => {
-        const geometry = this.pool.peek(key);
-        return !geometry || !isPooledGeometryUnchanged(geometry);
-      }),
+      ...missingRigidKeys,
       ...sidecarKeys
     ]));
     this.port.root.userData.capabilityFinalDisplayGeometryCount = keys.length;
-    const geometries = await terrainCompiledGeometryCache.getMany(keys);
+    this.port.root.userData.capabilityFinalDisplayObjectCount = asset.rigidGroups.length + sidecars.length;
+    this.resourceCleanup.push(() => {
+      delete this.port.root.userData.capabilityFinalDisplayObjectCount;
+    });
+    const geometries = keys.length ? await terrainCompiledGeometryCache.getMany(keys) : /* @__PURE__ */ new Map();
     if (this.controller.signal.aborted || this.failed) return false;
     if (keys.some((key) => !geometries.get(key))) throw new Error("\u5B8C\u6574\u6E32\u67D3\u8D44\u4EA7\u663E\u793A\u8D44\u6E90\u7F3A\u5931");
-    sidecars.forEach((source) => this.sourceGeometries.set(source.node.geometryKey, geometries.get(source.node.geometryKey)));
+    sidecars.forEach((source) => {
+      const geometry = geometries.get(source.node.geometryKey);
+      if (geometry) this.sourceGeometries.set(source.node.geometryKey, geometry);
+    });
     const sourceMap = new Map(asset.sources.map((source) => [source.slot, source]));
+    const opaquePhysical = asset.sources.filter((source) => {
+      const material = commands[source.slot].material;
+      return source.renderState.visible && material?.kind === "physical" && !material.transparent && (material.opacity ?? 1) === 1 && material.side === "double" && (material.clearcoat ?? 0) > 0 && !material.textureUrl;
+    });
+    const shareOpaqueProgram = opaquePhysical.length > 0 && opaquePhysical.every((source) => this.covered.has(source.slot)) && sidecars.some((source) => {
+      const material = commands[source.slot].material;
+      return source.renderState.visible && material?.kind === "physical" && material.transparent && !commands[source.slot].instances?.length && !material.faceMaterials?.length && (material.opacity ?? 1) <= 0.2 && material.side === "double" && material.depthWrite === false && (material.clearcoat ?? 0) > 0 && (material.transmission ?? 0) === 0 && !material.textureUrl;
+    });
+    const displayMaterials = /* @__PURE__ */ new Map();
     const steps = function* (runtime) {
-      for (const definition of asset.rigidGroups) {
-        const source = sourceMap.get(definition.slots[0]), command = commands[source.slot];
-        const base = runtime.port.acquireDisplayMaterial(command, { ...source.node, fromManifest: true });
-        runtime.displaySourceMaterials.push(base);
-        const restored = restoreCapabilityRigidRenderGroup(definition, geometries.get(definition.layout.geometryKey) ?? void 0, base, runtime.pool);
-        runtime.resourceCleanup.push(runtime.port.bindDisplayTextures(restored.mesh, command));
-        runtime.installDisplay({ poseRevision: 0, rigid: restored, meshes: [restored.mesh], slots: definition.slots, cleanup: [], valid: true });
-        restored.mesh.userData.capabilityBatchCounts = definition.counts;
-        runtime.port.root.add(restored.mesh);
+      let initialNotified = false, remaining = asset.rigidGroups.length + sidecars.length;
+      const notifyInitial = () => {
+        if (initialNotified) return;
+        initialNotified = true;
         notifyFinalBatchPreparationRoot(runtime.port.renderer, runtime.port.root, runtime.port.pluginId);
-        yield;
-      }
-      for (const source of sidecars) {
+      };
+      const createSidecar = (source) => {
         const mesh = runtime.port.create(commands[source.slot], {
           ...source.node,
           geometry: geometries.get(source.node.geometryKey),
+          sharedGeometry: residentSidecars.get(source.slot),
           fromManifest: true
         }, false);
+        (Array.isArray(mesh.material) ? mesh.material : [mesh.material]).forEach((material) => bindCapabilityStaticVertexParameters(material));
         runtime.nodes.set(source.slot, mesh);
         mesh.matrixAutoUpdate = false;
         mesh.matrix.fromArray(source.matrix);
@@ -277756,14 +278651,40 @@ var CapabilityRenderAssetRuntime = class {
         mesh.layers.mask = layers;
         runtime.installDisplay({ poseRevision: 0, meshes: [mesh], slots: [source.slot], cleanup: [], valid: true });
         runtime.port.root.add(mesh);
-        notifyFinalBatchPreparationRoot(runtime.port.renderer, runtime.port.root, runtime.port.pluginId);
-        yield;
+        notifyInitial();
+      };
+      const firstSlot = Math.min(...asset.rigidGroups.flatMap((group) => group.slots), ...sidecars.map((source) => source.slot));
+      const firstSidecar = sidecars.find((source) => source.slot === firstSlot);
+      if (firstSidecar) {
+        createSidecar(firstSidecar);
+        if (--remaining > 0) yield;
+      }
+      for (const definition of asset.rigidGroups) {
+        const source = sourceMap.get(definition.slots[0]), command = commands[source.slot];
+        const base = runtime.port.acquireDisplayMaterial(command, { ...source.node, fromManifest: true });
+        runtime.displaySourceMaterials.push(base);
+        const restored = restoreCapabilityRigidRenderGroup(definition, geometries.get(definition.layout.geometryKey) ?? void 0, base, runtime.pool, shareOpaqueProgram, displayMaterials);
+        runtime.resourceCleanup.push(runtime.port.bindDisplayTextures(restored.mesh, command));
+        runtime.installDisplay({ poseRevision: 0, rigid: restored, meshes: [restored.mesh], slots: definition.slots, cleanup: [], valid: true });
+        restored.mesh.userData.capabilityBatchCounts = definition.counts;
+        runtime.port.root.add(restored.mesh);
+        notifyInitial();
+        if (--remaining > 0) yield;
+      }
+      for (const source of sidecars) {
+        if (source === firstSidecar) continue;
+        createSidecar(source);
+        if (--remaining > 0) yield;
       }
       runtime.initialized = true;
+      runtime.port.root.userData.capabilityFinalDisplayConstructed = true;
+      notifyFinalBatchPreparationRoot(runtime.port.renderer, runtime.port.root, runtime.port.pluginId);
       runtime.stats.groups = asset.rigidGroups.length;
       runtime.stats.members = asset.sources.length;
     };
     await this.schedule(steps(this));
+    releasePrefetch();
+    releaseBorrowed();
     if (this.controller.signal.aborted || this.failed) return false;
     return true;
   }
@@ -278491,7 +279412,7 @@ var CapabilityRenderAssetRuntime = class {
     }
   }
   ready(group, publish = false) {
-    if (this.failed || this.controller.signal.aborted) return false;
+    if (this.failed || this.controller.signal.aborted || !this.takeoverVerified) return false;
     if (this.deferredSources) {
       if (group.meshes.some((mesh) => this.port.texturesFailed(mesh))) {
         this.fallback();
@@ -278683,6 +279604,134 @@ var CapabilityRenderAssetRuntime = class {
     this.geometryChecks.clear();
     this.pool.dispose();
     this.filter?.dispose();
+  }
+};
+
+// src/components/StarSky/host/runtime/sandbox/Capabilities/CapabilityFaceMaterialDisplay.ts
+var CapabilityFaceMaterialDisplay = class _CapabilityFaceMaterialDisplay {
+  constructor(renderer, source, materials, states) {
+    this.source = source;
+    /** 恢复源节点及注销资源监听。 */
+    this.cleanup = [];
+    /** 只在源节点确实属于本次场景时接管。 */
+    this.inScope = false;
+    /** 已释放的资源不能恢复旧显示。 */
+    this.invalid = false;
+    /** 卸载必须可重复调用。 */
+    this.disposed = false;
+    /** dispose 事件不依赖材质 version 递增。 */
+    this.invalidate = () => {
+      this.invalid = true;
+    };
+    const geometry = source.geometry, index = geometry.index, indexVersion = index.version;
+    const attributes = Object.entries(geometry.attributes);
+    const versions = attributes.map(([, attribute]) => "version" in attribute ? attribute.version : attribute.data.version);
+    const groups = geometry.groups.map((group) => ({ ...group })), colors = materials.map((material2) => material2.color.clone());
+    const bindings2 = materials.slice(), indexCount = index.count, distinctStates = Array.from(new Set(states));
+    const base = materials[0], roughness = base.roughness, metalness = base.metalness;
+    const emissive = base.emissive.clone(), intensity = base.emissiveIntensity;
+    this.matches = () => source.geometry === geometry && source.material === materials && !source.morphTargetInfluences && !source.customDepthMaterial && !source.customDistanceMaterial && Object.keys(geometry.morphAttributes).length === 0 && geometry.index === index && index.count === indexCount && index.version === indexVersion && geometry.drawRange.start === 0 && geometry.drawRange.count >= index.count && Object.keys(geometry.attributes).length === attributes.length && attributes.every(([name, attribute], slot) => geometry.attributes[name] === attribute && ("version" in attribute ? attribute.version : attribute.data.version) === versions[slot]) && geometry.groups.length === groups.length && groups.every((group, slot) => {
+      const current = geometry.groups[slot];
+      return current.start === group.start && current.count === group.count && current.materialIndex === group.materialIndex;
+    }) && distinctStates.every((state) => state.matches()) && materials.length === states.length && materials.every((material2, slot) => material2 === bindings2[slot] && material2.onBeforeRender === Material.prototype.onBeforeRender && material2.color.equals(colors[slot]) && material2.roughness === roughness && material2.metalness === metalness && material2.emissiveIntensity === intensity && material2.emissive.equals(emissive));
+    const createGeometry = () => {
+      const result = geometry.toNonIndexed(), values = new Float32Array(index.count * 3);
+      for (const group of groups) for (let vertex2 = group.start; vertex2 < group.start + group.count; vertex2++)
+        materials[group.materialIndex].color.toArray(values, vertex2 * 3);
+      result.setAttribute("color", new BufferAttribute(values, 3));
+      result.clearGroups();
+      return result;
+    };
+    const pooled = getPooledGeometryKey(geometry);
+    this.pool = pooled && isPooledGeometryUnchanged(geometry) ? new SharedGeometryPool(renderer) : void 0;
+    const key = `face-colors-v1:${pooled}:${JSON.stringify([groups, colors.map((color) => color.toArray())])}`;
+    const displayGeometry = this.pool?.acquire(key, createGeometry) ?? createGeometry();
+    const material = base.clone();
+    material.color.setRGB(1, 1, 1);
+    material.vertexColors = true;
+    this.mesh = new Mesh(displayGeometry, material);
+    this.mesh.name = "CapabilityFaceMaterialDisplay";
+    this.mesh.matrixAutoUpdate = false;
+    this.mesh.raycast = () => {
+    };
+    Object.assign(this.mesh.userData, { capabilityRigidBatch: true, capabilityBatchSources: [source] });
+    this.filter = new CapabilityDrawFilter(renderer);
+    this.filter.beforeRender((scene) => this.sync(scene));
+    this.filter.register(this.mesh, (camera) => isGeometryPreparationPass(renderer) || this.isPrepared() && this.mesh.layers.test(camera.layers));
+    this.filter.register(source, (camera) => isGeometryPreparationPass(renderer) || !this.isPrepared() || !this.mesh.layers.test(camera.layers));
+    this.cleanup.push(bindFinalBatchDisplay([source], () => this.isPrepared()));
+    const descriptor = Object.getOwnPropertyDescriptor(source, "isMesh");
+    if (descriptor?.configurable && descriptor.value === true) {
+      const renderable = () => isGeometryPreparationPass(renderer) || !this.isPrepared();
+      Object.defineProperty(source, "isMesh", { configurable: true, enumerable: descriptor.enumerable, get: renderable });
+      this.cleanup.push(() => {
+        if (Object.getOwnPropertyDescriptor(source, "isMesh")?.get === renderable) Object.defineProperty(source, "isMesh", descriptor);
+      });
+    }
+    [geometry, ...Array.from(new Set(materials))].forEach((resource) => {
+      resource.addEventListener("dispose", this.invalidate);
+      this.cleanup.push(() => resource.removeEventListener("dispose", this.invalidate));
+    });
+  }
+  /** 检查完整面覆盖及统一 PBR 配置，不合格仍使用原材质数组。 */
+  static create(renderer, source) {
+    const materials = source.material, geometry = source.geometry;
+    if (!Array.isArray(materials) || materials.length < 2 || materials.length > 32 || source.isInstancedMesh || source.isSkinnedMesh || !source.isMesh || source.morphTargetInfluences || source.customDepthMaterial || source.customDistanceMaterial || source.onBeforeRender !== Object3D.prototype.onBeforeRender || source.onAfterRender !== Object3D.prototype.onAfterRender || source.onBeforeShadow !== Object3D.prototype.onBeforeShadow || source.onAfterShadow !== Object3D.prototype.onAfterShadow || !geometry.index || geometry.index.count > 6144 || geometry.drawRange.start !== 0 || geometry.drawRange.count < geometry.index.count || geometry.groups.length < 2 || !canCompileStaticGeometry(geometry)) return;
+    if (!materials.every((material) => material instanceof MeshStandardMaterial && material.visible && !material.transparent && !material.vertexColors && material.depthTest && material.depthWrite && material.alphaTest === 0 && !material.alphaHash && !material.transmission && material.onBeforeRender === Material.prototype.onBeforeRender && batchMaterialExtensionScope(material) === "")) return;
+    const base = materials[0], statesByMaterial = /* @__PURE__ */ new Map();
+    materials.forEach((material) => {
+      if (!statesByMaterial.has(material)) statesByMaterial.set(material, captureMatrixMaterial(material));
+    });
+    const states = materials.map((material) => statesByMaterial.get(material));
+    if (states.some((state) => state.key !== states[0].key) || materials.some((material) => material.roughness !== base.roughness || material.metalness !== base.metalness || material.emissiveIntensity !== base.emissiveIntensity || !material.emissive.equals(base.emissive))) return;
+    let end = 0;
+    for (const group of geometry.groups) {
+      if (group.start !== end || !Number.isInteger(group.count) || group.count <= 0 || group.count % 3 || !Number.isInteger(group.materialIndex) || !materials[group.materialIndex]) return;
+      end += group.count;
+    }
+    if (end !== geometry.index.count) return;
+    return new _CapabilityFaceMaterialDisplay(renderer, source, materials, states);
+  }
+  /** 只同步本节点局部位姿；父级移动继续由原有世界矩阵链处理。 */
+  sync(scene) {
+    if (this.disposed) return;
+    if (this.invalid || !this.matches()) {
+      this.dispose();
+      return;
+    }
+    let root = this.source;
+    while (root && root !== scene) root = root.parent;
+    this.inScope = root === scene;
+    if (!this.inScope || !this.source.parent || this.disposed) return;
+    if (this.mesh.parent !== this.source.parent) this.source.parent.add(this.mesh);
+    if (this.source.matrixAutoUpdate) this.source.updateMatrix();
+    this.mesh.matrix.copy(this.source.matrix);
+    this.mesh.matrixWorldNeedsUpdate = true;
+    this.mesh.matrixWorldAutoUpdate = this.source.matrixWorldAutoUpdate;
+    if (!this.source.matrixWorldAutoUpdate) this.mesh.matrixWorld.copy(this.source.matrixWorld);
+    this.mesh.castShadow = this.source.castShadow;
+    this.mesh.receiveShadow = this.source.receiveShadow;
+    this.mesh.renderOrder = this.source.renderOrder;
+    this.mesh.layers.mask = this.source.layers.mask;
+    this.mesh.frustumCulled = this.source.frustumCulled;
+    if (this.source.geometry.boundingBox) this.mesh.geometry.boundingBox = this.source.geometry.boundingBox;
+    if (this.source.geometry.boundingSphere) this.mesh.geometry.boundingSphere = this.source.geometry.boundingSphere;
+    this.mesh.userData.pluginId = this.source.userData.pluginId;
+  }
+  /** 真实资源或回调变更立即回源，准备完成才允许替代原提交。 */
+  isPrepared() {
+    return !this.disposed && !this.invalid && this.inScope && this.mesh.visible && this.mesh.parent === this.source.parent && this.mesh.layers.mask === this.source.layers.mask && this.mesh.castShadow === this.source.castShadow && this.mesh.receiveShadow === this.source.receiveShadow && this.mesh.renderOrder === this.source.renderOrder && this.mesh.frustumCulled === this.source.frustumCulled && this.mesh.matrixWorldAutoUpdate === this.source.matrixWorldAutoUpdate && (this.source.matrixWorldAutoUpdate || this.mesh.matrixWorld.equals(this.source.matrixWorld)) && this.mesh.matrix.equals(this.source.matrix) && isFinalBatchSourceVisible(this.source) && this.source.onBeforeRender === Object3D.prototype.onBeforeRender && this.source.onAfterRender === Object3D.prototype.onAfterRender && this.source.onBeforeShadow === Object3D.prototype.onBeforeShadow && this.source.onAfterShadow === Object3D.prototype.onAfterShadow && this.matches() && getFinalBatchPreparation(this.mesh)?.() === true;
+  }
+  /** 仅释放自建显示资源，源材质与几何继续由原注册表管理。 */
+  dispose() {
+    if (this.disposed) return;
+    this.disposed = true;
+    this.cleanup.forEach((release) => release());
+    this.filter.dispose();
+    this.mesh.removeFromParent();
+    if (this.pool) this.pool.dispose();
+    else this.mesh.geometry.dispose();
+    this.mesh.material.dispose();
   }
 };
 
@@ -279012,6 +280061,8 @@ var CapabilitySceneRuntime = class {
   constructor(port) {
     this.port = port;
     this.nodeMap = /* @__PURE__ */ new Map();
+    /** 兼容面材质只替换显示，源节点仍持有正式资源与拾取身份。 */
+    this.faceMaterialDisplays = /* @__PURE__ */ new Map();
     /** 类型只在节点原型改变时重判；几何、面数和实例数仍逐次读取。 */
     this.triangleReaders = /* @__PURE__ */ new WeakMap();
     /** 仅同一次同步检查共享几何面数，下次检查重新读取实际缓冲计数。 */
@@ -279032,8 +280083,23 @@ var CapabilitySceneRuntime = class {
       texturesReady: (node) => this.collectMaterialTextureUrls(node.userData.capabilityMaterialDescriptor).every((url) => this.port.getTexture(url) !== null),
       texturesFailed: (node) => this.collectMaterialTextureUrls(node.userData.capabilityMaterialDescriptor).some((url) => this.port.hasTextureFailed?.(url) === true),
       create: (command, cached, proxy, geometry, elideInvisible) => this.createPreviewObject(command, cached, proxy, geometry, elideInvisible),
+      peekDisplayGeometry: (command) => {
+        const normalized = normalizeSceneGeometry(command, false, false);
+        if (normalized.kind === "group" || normalized.kind === "light") return void 0;
+        return port.peekGeometry?.(normalized.geometry ?? { kind: normalized.kind });
+      },
       acquireDisplayMaterial: (command, cached) => port.acquireMaterial(command.material, () => restoreDisplayMaterial(cached, 0)),
       releaseDisplayMaterial: (material) => port.releaseMaterial(material),
+      prefetchDisplayTextures: (commands) => {
+        const urls = new Set(commands.flatMap((command) => this.collectMaterialTextureUrls(command.material)));
+        let active = true;
+        urls.forEach((url) => port.acquireTexture(url, () => void 0, (next) => port.resolveTextureUrl(next)));
+        return () => {
+          if (!active) return;
+          active = false;
+          urls.forEach((url) => port.releaseTexture(url));
+        };
+      },
       bindDisplayTextures: (mesh, command) => {
         mesh.userData.capabilityMaterialDescriptor = command.material;
         const urls = this.collectMaterialTextureUrls(command.material);
@@ -279054,6 +280120,10 @@ var CapabilitySceneRuntime = class {
         if (textures && !textures.nodeId) textures.urls.forEach((url) => port.releaseTexture(url));
         this.previewTextures.delete(node);
         if (node instanceof Mesh || node instanceof CapabilityDisplaySource) {
+          if (node instanceof Mesh) {
+            this.faceMaterialDisplays.get(node)?.dispose();
+            this.faceMaterialDisplays.delete(node);
+          }
           port.releaseGeometry(node.geometry);
           (Array.isArray(node.material) ? node.material : [node.material]).forEach((material) => port.releaseMaterial(material));
           if (isCapabilityInstancedMesh(node)) node.dispose();
@@ -279063,7 +280133,7 @@ var CapabilitySceneRuntime = class {
   }
   /** 显示与拾取共用一次 CPU 恢复，正式命令只接管身份和行为。 */
   createPreviewObject(command, cached, proxy, sourceGeometries, elideInvisible = false) {
-    command = normalizeSceneGeometry(command, false, proxy && Boolean(cached?.matrices));
+    command = normalizeSceneGeometry(command, false, Boolean(cached?.matrices));
     const geometryIdentity = sourceGeometries ? JSON.stringify(command.geometry ?? { kind: command.kind }) : "";
     let node;
     if (proxy) {
@@ -279383,6 +280453,14 @@ var CapabilitySceneRuntime = class {
   }
   /** 递归释放节点上的几何和材质资源。 */
   disposeNodeResources(node) {
+    this.faceMaterialDisplays.forEach((display, source) => {
+      let ancestor = source;
+      while (ancestor && ancestor !== node) ancestor = ancestor.parent;
+      if (ancestor === node) {
+        display.dispose();
+        this.faceMaterialDisplays.delete(source);
+      }
+    });
     node.traverse((child) => {
       const mesh = this.asCapabilityMesh(child);
       if (!mesh) {
@@ -279395,6 +280473,8 @@ var CapabilitySceneRuntime = class {
   }
   /** 清理所有 capability 节点索引。 */
   clear() {
+    this.faceMaterialDisplays.forEach((display) => display.dispose());
+    this.faceMaterialDisplays.clear();
     this.renderAsset.dispose();
     this.previewTextures.clear();
     this.nodeMap.clear();
@@ -279407,7 +280487,7 @@ var CapabilitySceneRuntime = class {
     if (command.kind === "light") {
       return this.createLight(command.light, command.castShadow);
     }
-    const geometry = this.port.acquireGeometry(
+    const geometry = cached?.fromManifest && cached.sharedGeometry && this.port.retainGeometry?.(cached.sharedGeometry) || this.port.acquireGeometry(
       command.geometry || { kind: command.kind },
       cached ? () => restoreDisplayGeometry(cached) : void 0
     );
@@ -279426,7 +280506,12 @@ var CapabilitySceneRuntime = class {
         command.instances.length
       );
     }
-    return new Mesh(geometry, material);
+    const mesh = new Mesh(geometry, material);
+    if (this.port.renderer) {
+      const display = CapabilityFaceMaterialDisplay.create(this.port.renderer, mesh);
+      if (display) this.faceMaterialDisplays.set(mesh, display);
+    }
+    return mesh;
   }
   /** 把声明式局部变换写入实例矩阵。 */
   applyInstanceTransforms(node, transforms) {
@@ -279806,12 +280891,15 @@ async function buildRenderAsset(root, batches, sourceStore, store, rigid = false
       });
     }
   }
-  const displayRoot = new Group(), eligible = /* @__PURE__ */ new Set(), baked = /* @__PURE__ */ new Set();
+  const displayRoot = new Group(), eligible2 = /* @__PURE__ */ new Set(), baked = /* @__PURE__ */ new Set();
   const compiler = new StaticGeometryCompiler(8 * 1024 * 1024, false), pool = new SharedGeometryPool();
   const products = [];
   const indexedViews = /* @__PURE__ */ new Map();
   try {
-    if (rigid) asset.rigidGroups = await buildCapabilityRigidRenderGroups(root, nodes, slots, asset, store, renderPlan);
+    if (rigid) {
+      asset.rigidGroups = await buildCapabilityRigidRenderGroups(root, nodes, slots, asset, store, renderPlan);
+      await packCapabilityRigidGeometryRanges(asset.rigidGroups, store);
+    }
     for (const [slot, original] of rigid ? [] : Array.from(nodes)) {
       if (!canBatchCapabilitySource(original, original.onBeforeRender, true)) continue;
       let geometry = original.geometry;
@@ -279854,10 +280942,10 @@ async function buildRenderAsset(root, batches, sourceStore, store, rigid = false
       display.userData.slot = slot;
       display.userData.capabilityMaterialDescriptor = original.userData.capabilityMaterialDescriptor;
       displayRoot.add(display);
-      eligible.add(display);
+      eligible2.add(display);
       if (isCapabilityInstancedMesh(original)) baked.add(display);
     }
-    for (const sources of collectCapabilityMatrixGroups(displayRoot, (node) => eligible.has(node))) {
+    for (const sources of collectCapabilityMatrixGroups(displayRoot, (node) => eligible2.has(node))) {
       const job = createCapabilityMatrixBatch(sources, displayRoot, pool);
       let step = job.next();
       while (!step.done) step = job.next();
@@ -280118,6 +281206,21 @@ async function buildPluginDisplay(builder, options = {}) {
     for (const [reference, record] of Array.from(rigidAsset.entries())) {
       const asset2 = record.metadata?.renderAsset;
       if (!asset2) continue;
+      if (asset2.rigidGroups?.length) {
+        const covered = new Set(asset2.rigidGroups.flatMap((group) => group.slots));
+        const retained = /* @__PURE__ */ new Set([
+          reference,
+          ...asset2.rigidGroups.map((group) => group.layout.geometryKey),
+          ...asset2.sources.filter((source) => !covered.has(source.slot)).map((source) => source.node.geometryKey)
+        ]);
+        for (const source of asset2.sources) if (!retained.has(source.node.geometryKey)) {
+          assert.ok(
+            base.has(source.node.geometryKey) || rigid.has(source.node.geometryKey) || matrix.has(source.node.geometryKey),
+            "\u6E90\u6062\u590D\u51E0\u4F55\u7F3A\u5C11\u72EC\u7ACB\u4EA7\u7269"
+          );
+        }
+        for (const key of Array.from(rigidAsset.keys())) if (!retained.has(key)) rigidAsset.delete(key);
+      }
       renderEntries.push({
         version: CAPABILITY_RENDER_ASSET_ENTRY_VERSION,
         ...tier ? { tier } : {},
@@ -280154,6 +281257,12 @@ async function buildPluginDisplay(builder, options = {}) {
       }
     }
     for (const complete of [asset, rigidAsset]) if (complete.size) {
+      complete.forEach((record) => {
+        const manifest = record.metadata?.renderAsset;
+        if (manifest && typeof manifest === "object") {
+          record.metadata = { ...record.metadata, renderAsset: JSON.stringify(manifest) };
+        }
+      });
       const payload = encodeBuiltinGeometryArtifact(Object.fromEntries(Array.from(complete.entries()).sort(([a], [b]) => a.localeCompare(b))));
       const sha256 = digest(payload);
       artifacts.push({

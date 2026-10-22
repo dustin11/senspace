@@ -268392,69 +268392,44 @@ import { createHash } from "node:crypto";
 // src/components/StarSky/shared/performance/builtinGeometryArtifacts.generated.json
 var builtinGeometryArtifacts_generated_default = {
   "00cd2010b5e94f8c0cdeba5cf32306adbedd2ebb258443bca521b234721a17d0": {
-    url: "/plugin-builtins/display-aa69ed72589ecf01c3e0f42fa12fa724b0a326f748ca2e665ae719c72ad9d13f.bin",
-    sha256: "aa69ed72589ecf01c3e0f42fa12fa724b0a326f748ca2e665ae719c72ad9d13f",
-    bytes: 234540
+    url: "/plugin-builtins/display-6b4b11f924d96a0078856d27655da62a0416806ef9eb7001c4dd468271d78d7a.bin",
+    sha256: "6b4b11f924d96a0078856d27655da62a0416806ef9eb7001c4dd468271d78d7a",
+    bytes: 307218
   },
   "0115f4c3c3cc2b634b9ef15f56ff86dedd41fcb70bb28d5eabd6a81e2038fb09": {
-    url: "/plugin-builtins/display-aa69ed72589ecf01c3e0f42fa12fa724b0a326f748ca2e665ae719c72ad9d13f.bin",
-    sha256: "aa69ed72589ecf01c3e0f42fa12fa724b0a326f748ca2e665ae719c72ad9d13f",
-    bytes: 234540
-  },
-  "01b1b39870fd3f5eb317f7036fff7d7b35e10d70b3f4a929668422d9f25844b0": {
-    url: "/plugin-builtins/display-c10d014623cbbdc0b39fcbe5b374992524c3dab49a64bee97f299cf9c2731e6a.bin",
-    sha256: "c10d014623cbbdc0b39fcbe5b374992524c3dab49a64bee97f299cf9c2731e6a",
-    bytes: 89026
+    url: "/plugin-builtins/display-6b4b11f924d96a0078856d27655da62a0416806ef9eb7001c4dd468271d78d7a.bin",
+    sha256: "6b4b11f924d96a0078856d27655da62a0416806ef9eb7001c4dd468271d78d7a",
+    bytes: 307218
   },
   "01d1674464c846facfe140d7a42182c885d002bec6fcf53c1ad98140385d7a6d": {
-    url: "/plugin-builtins/display-973ba5783fe3c5dd785260285de48980baf29f54a4dc71b012adc32ba16b9dea.bin",
-    sha256: "973ba5783fe3c5dd785260285de48980baf29f54a4dc71b012adc32ba16b9dea",
-    bytes: 91952
-  },
-  "027af73db7bad49037551895bbf0b61371274574b7a0033613b18a3137d02586": {
-    url: "/plugin-builtins/display-111f062d4c00c69cc17efa6bc2fec2a071057b71d50bccc4190a6f6a8944d871.bin",
-    sha256: "111f062d4c00c69cc17efa6bc2fec2a071057b71d50bccc4190a6f6a8944d871",
-    bytes: 140271
+    url: "/plugin-builtins/display-0f140fe203bef5c1fb0fa3ee70026d367270c6ea9eb1c963a1a805cfd427433f.bin",
+    sha256: "0f140fe203bef5c1fb0fa3ee70026d367270c6ea9eb1c963a1a805cfd427433f",
+    bytes: 222314
   },
   "03b3515cdbeae67e8e66240c61f91edf245718b7d4289d7ba7ddfe2551d5730a": {
-    url: "/plugin-builtins/display-121827ddbc8ed2b3709c51a158f06e011c71f82af97c9f10e42bc9acdcc0190b.bin",
-    sha256: "121827ddbc8ed2b3709c51a158f06e011c71f82af97c9f10e42bc9acdcc0190b",
-    bytes: 168626
+    url: "/plugin-builtins/display-05fc73de27099f1bf42e754cfa901149ec99a8c7f1007ecf47bcb3130b9d4809.bin",
+    sha256: "05fc73de27099f1bf42e754cfa901149ec99a8c7f1007ecf47bcb3130b9d4809",
+    bytes: 210718
   },
   "03e30f325b949b1afc538b70c8412777458e162d2242eee1e102bcf4c6a6d165": {
-    url: "/plugin-builtins/display-121827ddbc8ed2b3709c51a158f06e011c71f82af97c9f10e42bc9acdcc0190b.bin",
-    sha256: "121827ddbc8ed2b3709c51a158f06e011c71f82af97c9f10e42bc9acdcc0190b",
-    bytes: 168626
+    url: "/plugin-builtins/display-05fc73de27099f1bf42e754cfa901149ec99a8c7f1007ecf47bcb3130b9d4809.bin",
+    sha256: "05fc73de27099f1bf42e754cfa901149ec99a8c7f1007ecf47bcb3130b9d4809",
+    bytes: 210718
   },
   "041c27a3fc79176ed36464e1df4d4a1ef3796cf2d2fd018702a908797258e844": {
-    url: "/plugin-builtins/display-121827ddbc8ed2b3709c51a158f06e011c71f82af97c9f10e42bc9acdcc0190b.bin",
-    sha256: "121827ddbc8ed2b3709c51a158f06e011c71f82af97c9f10e42bc9acdcc0190b",
-    bytes: 168626
-  },
-  "066202196a358830faa19cfafc5935ad0ba0a977296283e733bfdde225b170ea": {
-    url: "/plugin-builtins/display-c10d014623cbbdc0b39fcbe5b374992524c3dab49a64bee97f299cf9c2731e6a.bin",
-    sha256: "c10d014623cbbdc0b39fcbe5b374992524c3dab49a64bee97f299cf9c2731e6a",
-    bytes: 89026
-  },
-  "06bbaafe4dc6b12a9d1b79008af58ca44884b84a48d078352af4873f19cc7870": {
-    url: "/plugin-builtins/display-973ba5783fe3c5dd785260285de48980baf29f54a4dc71b012adc32ba16b9dea.bin",
-    sha256: "973ba5783fe3c5dd785260285de48980baf29f54a4dc71b012adc32ba16b9dea",
-    bytes: 91952
+    url: "/plugin-builtins/display-05fc73de27099f1bf42e754cfa901149ec99a8c7f1007ecf47bcb3130b9d4809.bin",
+    sha256: "05fc73de27099f1bf42e754cfa901149ec99a8c7f1007ecf47bcb3130b9d4809",
+    bytes: 210718
   },
   "06db354f463022f459664856a3cf89aaf3db3b5416f792b43e3d82ecb7a776d2": {
-    url: "/plugin-builtins/display-0da605a686939af0b09a0803cdbd839144486c66a0ef61729bca361a38027bbc.bin",
-    sha256: "0da605a686939af0b09a0803cdbd839144486c66a0ef61729bca361a38027bbc",
-    bytes: 134003
+    url: "/plugin-builtins/display-7976cbd73167a0fe1fc59071dbb6989d63b49a6ff05c2635e021796606ededa7.bin",
+    sha256: "7976cbd73167a0fe1fc59071dbb6989d63b49a6ff05c2635e021796606ededa7",
+    bytes: 475164
   },
   "0706b4a29a6e53b31dec75378f6177aa9102987c229be43e64ca3bc62a2a60a4": {
-    url: "/plugin-builtins/display-0da605a686939af0b09a0803cdbd839144486c66a0ef61729bca361a38027bbc.bin",
-    sha256: "0da605a686939af0b09a0803cdbd839144486c66a0ef61729bca361a38027bbc",
-    bytes: 134003
-  },
-  "07245328248b15d48d5a7b71a8c61da00873a9d046517196549844449df85bd9": {
-    url: "/plugin-builtins/display-121827ddbc8ed2b3709c51a158f06e011c71f82af97c9f10e42bc9acdcc0190b.bin",
-    sha256: "121827ddbc8ed2b3709c51a158f06e011c71f82af97c9f10e42bc9acdcc0190b",
-    bytes: 168626
+    url: "/plugin-builtins/display-7976cbd73167a0fe1fc59071dbb6989d63b49a6ff05c2635e021796606ededa7.bin",
+    sha256: "7976cbd73167a0fe1fc59071dbb6989d63b49a6ff05c2635e021796606ededa7",
+    bytes: 475164
   },
   "0768cc66546b4ba68a128496b60f521f90069fd7905086293a5ddc2d4289c006": {
     url: "/plugin-builtins/display-6aca7787c40eadc5ce98fc7dd3234fd59990cc44fcc570b2b9335f788fa4d430.bin",
@@ -268462,69 +268437,34 @@ var builtinGeometryArtifacts_generated_default = {
     bytes: 1885783
   },
   "0775eb605f35bd45a827119a4326c60c6d32224bc46d2f4a6c61a3aabc2ec66c": {
-    url: "/plugin-builtins/display-973ba5783fe3c5dd785260285de48980baf29f54a4dc71b012adc32ba16b9dea.bin",
-    sha256: "973ba5783fe3c5dd785260285de48980baf29f54a4dc71b012adc32ba16b9dea",
-    bytes: 91952
-  },
-  "08d5263a8f64461b5f8860f090ee6fc2d96894e33b81512e8f8684bf0001d5c9": {
-    url: "/plugin-builtins/display-111f062d4c00c69cc17efa6bc2fec2a071057b71d50bccc4190a6f6a8944d871.bin",
-    sha256: "111f062d4c00c69cc17efa6bc2fec2a071057b71d50bccc4190a6f6a8944d871",
-    bytes: 140271
+    url: "/plugin-builtins/display-0f140fe203bef5c1fb0fa3ee70026d367270c6ea9eb1c963a1a805cfd427433f.bin",
+    sha256: "0f140fe203bef5c1fb0fa3ee70026d367270c6ea9eb1c963a1a805cfd427433f",
+    bytes: 222314
   },
   "0917c5a95bdc6637e4857e0e3c7a3864a9fc3916745b0e2607cbe968a1b1d9d2": {
-    url: "/plugin-builtins/display-121827ddbc8ed2b3709c51a158f06e011c71f82af97c9f10e42bc9acdcc0190b.bin",
-    sha256: "121827ddbc8ed2b3709c51a158f06e011c71f82af97c9f10e42bc9acdcc0190b",
-    bytes: 168626
-  },
-  "0b540bf92aebf6831aeff33e2b67b3a7e00c31387e999d3a3acf35905f5f6b84": {
-    url: "/plugin-builtins/display-973ba5783fe3c5dd785260285de48980baf29f54a4dc71b012adc32ba16b9dea.bin",
-    sha256: "973ba5783fe3c5dd785260285de48980baf29f54a4dc71b012adc32ba16b9dea",
-    bytes: 91952
+    url: "/plugin-builtins/display-05fc73de27099f1bf42e754cfa901149ec99a8c7f1007ecf47bcb3130b9d4809.bin",
+    sha256: "05fc73de27099f1bf42e754cfa901149ec99a8c7f1007ecf47bcb3130b9d4809",
+    bytes: 210718
   },
   "0b6198a629f433029b7de9552ea5b552de849e30c7fefcc62a376fd78ae54f51": {
-    url: "/plugin-builtins/display-121827ddbc8ed2b3709c51a158f06e011c71f82af97c9f10e42bc9acdcc0190b.bin",
-    sha256: "121827ddbc8ed2b3709c51a158f06e011c71f82af97c9f10e42bc9acdcc0190b",
-    bytes: 168626
+    url: "/plugin-builtins/display-05fc73de27099f1bf42e754cfa901149ec99a8c7f1007ecf47bcb3130b9d4809.bin",
+    sha256: "05fc73de27099f1bf42e754cfa901149ec99a8c7f1007ecf47bcb3130b9d4809",
+    bytes: 210718
   },
   "0b71ac52ddb28e041701b88c306175a3d8c37681280a183e575cbbcc5de07e28": {
-    url: "/plugin-builtins/display-121827ddbc8ed2b3709c51a158f06e011c71f82af97c9f10e42bc9acdcc0190b.bin",
-    sha256: "121827ddbc8ed2b3709c51a158f06e011c71f82af97c9f10e42bc9acdcc0190b",
-    bytes: 168626
-  },
-  "0c85f1c5c5599be0a701f44914439e2db8902584cd599064faa40bb1051b05ad": {
-    url: "/plugin-builtins/display-c10d014623cbbdc0b39fcbe5b374992524c3dab49a64bee97f299cf9c2731e6a.bin",
-    sha256: "c10d014623cbbdc0b39fcbe5b374992524c3dab49a64bee97f299cf9c2731e6a",
-    bytes: 89026
-  },
-  "106271acc0168efba1d359d3485e21686b46f59b918cb7bc8b89285bd98cbe1e": {
-    url: "/plugin-builtins/display-111f062d4c00c69cc17efa6bc2fec2a071057b71d50bccc4190a6f6a8944d871.bin",
-    sha256: "111f062d4c00c69cc17efa6bc2fec2a071057b71d50bccc4190a6f6a8944d871",
-    bytes: 140271
-  },
-  "10f7fa40f04cd059902fbb72061951c8095f53fa1a4b3124810359db90b313d2": {
-    url: "/plugin-builtins/display-aa69ed72589ecf01c3e0f42fa12fa724b0a326f748ca2e665ae719c72ad9d13f.bin",
-    sha256: "aa69ed72589ecf01c3e0f42fa12fa724b0a326f748ca2e665ae719c72ad9d13f",
-    bytes: 234540
-  },
-  "111d0912bc208dc65ec13a60f844f0ed289de25f65bdf921ead6f1a9172e7a6e": {
-    url: "/plugin-builtins/display-8df79680290567f281a924eb4c62372dde1b8483eddc60b8c3f40906b8e469e7.bin",
-    sha256: "8df79680290567f281a924eb4c62372dde1b8483eddc60b8c3f40906b8e469e7",
-    bytes: 1028194
+    url: "/plugin-builtins/display-05fc73de27099f1bf42e754cfa901149ec99a8c7f1007ecf47bcb3130b9d4809.bin",
+    sha256: "05fc73de27099f1bf42e754cfa901149ec99a8c7f1007ecf47bcb3130b9d4809",
+    bytes: 210718
   },
   "11652610be3b86a3c140810d44fe6270ab7052a4d67dfacc02a3254e63d10dd7": {
-    url: "/plugin-builtins/display-aa69ed72589ecf01c3e0f42fa12fa724b0a326f748ca2e665ae719c72ad9d13f.bin",
-    sha256: "aa69ed72589ecf01c3e0f42fa12fa724b0a326f748ca2e665ae719c72ad9d13f",
-    bytes: 234540
+    url: "/plugin-builtins/display-6b4b11f924d96a0078856d27655da62a0416806ef9eb7001c4dd468271d78d7a.bin",
+    sha256: "6b4b11f924d96a0078856d27655da62a0416806ef9eb7001c4dd468271d78d7a",
+    bytes: 307218
   },
   "116ece005b7f3ea59b437d5a09af17df400691a2ea0e9f55bdc6cdc63f3f3b29": {
-    url: "/plugin-builtins/display-121827ddbc8ed2b3709c51a158f06e011c71f82af97c9f10e42bc9acdcc0190b.bin",
-    sha256: "121827ddbc8ed2b3709c51a158f06e011c71f82af97c9f10e42bc9acdcc0190b",
-    bytes: 168626
-  },
-  "1192284226501c9ff2c11c5c5d8483035e23ee8246e1107297d8ca3bff30f290": {
-    url: "/plugin-builtins/display-ea29ecdab933e4767d87853cb6d2ea63ba0ff60a5d203dda7db7fbd0a400ac8a.bin",
-    sha256: "ea29ecdab933e4767d87853cb6d2ea63ba0ff60a5d203dda7db7fbd0a400ac8a",
-    bytes: 70677
+    url: "/plugin-builtins/display-05fc73de27099f1bf42e754cfa901149ec99a8c7f1007ecf47bcb3130b9d4809.bin",
+    sha256: "05fc73de27099f1bf42e754cfa901149ec99a8c7f1007ecf47bcb3130b9d4809",
+    bytes: 210718
   },
   "1511248c954f90e086b35d28cb60a331e7a9095ca7b284aeda5159f17ed3ced5": {
     url: "/plugin-builtins/display-88f40bff54c193e7e8159ea2798ceed3a49ab92ce24e0f01d7616d74eacce77a.bin",
@@ -268532,79 +268472,54 @@ var builtinGeometryArtifacts_generated_default = {
     bytes: 905302
   },
   "158fe9a8b903a0ea042206efad377533dc1a72eb76414ca57bb56ec33c046cc8": {
-    url: "/plugin-builtins/display-121827ddbc8ed2b3709c51a158f06e011c71f82af97c9f10e42bc9acdcc0190b.bin",
-    sha256: "121827ddbc8ed2b3709c51a158f06e011c71f82af97c9f10e42bc9acdcc0190b",
-    bytes: 168626
+    url: "/plugin-builtins/display-05fc73de27099f1bf42e754cfa901149ec99a8c7f1007ecf47bcb3130b9d4809.bin",
+    sha256: "05fc73de27099f1bf42e754cfa901149ec99a8c7f1007ecf47bcb3130b9d4809",
+    bytes: 210718
   },
   "1664a93293d726821fb49806f32535d01ae9e58f77af5deefeeff353b2a5b1f6": {
-    url: "/plugin-builtins/display-121827ddbc8ed2b3709c51a158f06e011c71f82af97c9f10e42bc9acdcc0190b.bin",
-    sha256: "121827ddbc8ed2b3709c51a158f06e011c71f82af97c9f10e42bc9acdcc0190b",
-    bytes: 168626
-  },
-  "1849457f88a3994f561c2726b879c16d515644f1e4415fa78736aaeca20920ed": {
-    url: "/plugin-builtins/display-121827ddbc8ed2b3709c51a158f06e011c71f82af97c9f10e42bc9acdcc0190b.bin",
-    sha256: "121827ddbc8ed2b3709c51a158f06e011c71f82af97c9f10e42bc9acdcc0190b",
-    bytes: 168626
+    url: "/plugin-builtins/display-05fc73de27099f1bf42e754cfa901149ec99a8c7f1007ecf47bcb3130b9d4809.bin",
+    sha256: "05fc73de27099f1bf42e754cfa901149ec99a8c7f1007ecf47bcb3130b9d4809",
+    bytes: 210718
   },
   "1872d6d56f571d8b658fa8fb9cd3142fecbca64feeb394f2ba4dd07665c785b4": {
-    url: "/plugin-builtins/display-121827ddbc8ed2b3709c51a158f06e011c71f82af97c9f10e42bc9acdcc0190b.bin",
-    sha256: "121827ddbc8ed2b3709c51a158f06e011c71f82af97c9f10e42bc9acdcc0190b",
-    bytes: 168626
+    url: "/plugin-builtins/display-05fc73de27099f1bf42e754cfa901149ec99a8c7f1007ecf47bcb3130b9d4809.bin",
+    sha256: "05fc73de27099f1bf42e754cfa901149ec99a8c7f1007ecf47bcb3130b9d4809",
+    bytes: 210718
   },
   "189101653346188281c1e0a6af1673fe95920a745267a436875764ce743d9d85": {
-    url: "/plugin-builtins/display-aa69ed72589ecf01c3e0f42fa12fa724b0a326f748ca2e665ae719c72ad9d13f.bin",
-    sha256: "aa69ed72589ecf01c3e0f42fa12fa724b0a326f748ca2e665ae719c72ad9d13f",
-    bytes: 234540
+    url: "/plugin-builtins/display-6b4b11f924d96a0078856d27655da62a0416806ef9eb7001c4dd468271d78d7a.bin",
+    sha256: "6b4b11f924d96a0078856d27655da62a0416806ef9eb7001c4dd468271d78d7a",
+    bytes: 307218
   },
   "1adebe625644480591a7baa5e67b5e81344fb3d722f668b542751583d2f76fe2": {
-    url: "/plugin-builtins/display-121827ddbc8ed2b3709c51a158f06e011c71f82af97c9f10e42bc9acdcc0190b.bin",
-    sha256: "121827ddbc8ed2b3709c51a158f06e011c71f82af97c9f10e42bc9acdcc0190b",
-    bytes: 168626
+    url: "/plugin-builtins/display-05fc73de27099f1bf42e754cfa901149ec99a8c7f1007ecf47bcb3130b9d4809.bin",
+    sha256: "05fc73de27099f1bf42e754cfa901149ec99a8c7f1007ecf47bcb3130b9d4809",
+    bytes: 210718
   },
   "1b446db05b5460c98b7db92ad45795ad44499ae5da33063e7ee30d66bb1800e6": {
-    url: "/plugin-builtins/display-aa69ed72589ecf01c3e0f42fa12fa724b0a326f748ca2e665ae719c72ad9d13f.bin",
-    sha256: "aa69ed72589ecf01c3e0f42fa12fa724b0a326f748ca2e665ae719c72ad9d13f",
-    bytes: 234540
+    url: "/plugin-builtins/display-6b4b11f924d96a0078856d27655da62a0416806ef9eb7001c4dd468271d78d7a.bin",
+    sha256: "6b4b11f924d96a0078856d27655da62a0416806ef9eb7001c4dd468271d78d7a",
+    bytes: 307218
   },
   "1b813a799c15ae3659d6cb2b3eeeca98067ea89f6bc2531b32991c16714f3ae6": {
-    url: "/plugin-builtins/display-0da605a686939af0b09a0803cdbd839144486c66a0ef61729bca361a38027bbc.bin",
-    sha256: "0da605a686939af0b09a0803cdbd839144486c66a0ef61729bca361a38027bbc",
-    bytes: 134003
+    url: "/plugin-builtins/display-7976cbd73167a0fe1fc59071dbb6989d63b49a6ff05c2635e021796606ededa7.bin",
+    sha256: "7976cbd73167a0fe1fc59071dbb6989d63b49a6ff05c2635e021796606ededa7",
+    bytes: 475164
   },
   "1bd6bc3333caa442061a1644a12a97822ce93613beaeb0547417dd9a781b521b": {
-    url: "/plugin-builtins/display-aa69ed72589ecf01c3e0f42fa12fa724b0a326f748ca2e665ae719c72ad9d13f.bin",
-    sha256: "aa69ed72589ecf01c3e0f42fa12fa724b0a326f748ca2e665ae719c72ad9d13f",
-    bytes: 234540
+    url: "/plugin-builtins/display-6b4b11f924d96a0078856d27655da62a0416806ef9eb7001c4dd468271d78d7a.bin",
+    sha256: "6b4b11f924d96a0078856d27655da62a0416806ef9eb7001c4dd468271d78d7a",
+    bytes: 307218
   },
   "1bd9bf4c5ff8e17e514ca8f9858fd5905eef67679e12fde51dff628b940f602a": {
-    url: "/plugin-builtins/display-121827ddbc8ed2b3709c51a158f06e011c71f82af97c9f10e42bc9acdcc0190b.bin",
-    sha256: "121827ddbc8ed2b3709c51a158f06e011c71f82af97c9f10e42bc9acdcc0190b",
-    bytes: 168626
-  },
-  "1eb53142950ec0bcf041fe68650cd1d2daaaf3679ad112b92ca109da23627a73": {
-    url: "/plugin-builtins/display-121827ddbc8ed2b3709c51a158f06e011c71f82af97c9f10e42bc9acdcc0190b.bin",
-    sha256: "121827ddbc8ed2b3709c51a158f06e011c71f82af97c9f10e42bc9acdcc0190b",
-    bytes: 168626
+    url: "/plugin-builtins/display-05fc73de27099f1bf42e754cfa901149ec99a8c7f1007ecf47bcb3130b9d4809.bin",
+    sha256: "05fc73de27099f1bf42e754cfa901149ec99a8c7f1007ecf47bcb3130b9d4809",
+    bytes: 210718
   },
   "1ecc84dc79bbf8cd8dc050daf853fc231835a731eed1afa3f4ad52175fd08f0e": {
-    url: "/plugin-builtins/display-aa69ed72589ecf01c3e0f42fa12fa724b0a326f748ca2e665ae719c72ad9d13f.bin",
-    sha256: "aa69ed72589ecf01c3e0f42fa12fa724b0a326f748ca2e665ae719c72ad9d13f",
-    bytes: 234540
-  },
-  "214f567504ba4cddd1f438f8dc0c1817a3b90e451c0ab1343ffd2f531e5e3010": {
-    url: "/plugin-builtins/display-973ba5783fe3c5dd785260285de48980baf29f54a4dc71b012adc32ba16b9dea.bin",
-    sha256: "973ba5783fe3c5dd785260285de48980baf29f54a4dc71b012adc32ba16b9dea",
-    bytes: 91952
-  },
-  "2285180e3f6423525291c5c4bc54337c8148086d8c33bc15faba4c8fe8fd4a30": {
-    url: "/plugin-builtins/display-f5945eec0ac68e5ffc50487f0ecc39744cdcf57867ff34547491745232311160.bin",
-    sha256: "f5945eec0ac68e5ffc50487f0ecc39744cdcf57867ff34547491745232311160",
-    bytes: 142532
-  },
-  "25012fce2fe0c2dca2d610d5761e4b7db479d8a52bfe8f87ef82e25b12a12ebf": {
-    url: "/plugin-builtins/display-f5945eec0ac68e5ffc50487f0ecc39744cdcf57867ff34547491745232311160.bin",
-    sha256: "f5945eec0ac68e5ffc50487f0ecc39744cdcf57867ff34547491745232311160",
-    bytes: 142532
+    url: "/plugin-builtins/display-6b4b11f924d96a0078856d27655da62a0416806ef9eb7001c4dd468271d78d7a.bin",
+    sha256: "6b4b11f924d96a0078856d27655da62a0416806ef9eb7001c4dd468271d78d7a",
+    bytes: 307218
   },
   "2504b76536886a90909368ba9d5e34d84930057c8dc53f630362773ae433c5be": {
     url: "/plugin-builtins/display-88f40bff54c193e7e8159ea2798ceed3a49ab92ce24e0f01d7616d74eacce77a.bin",
@@ -268612,104 +268527,79 @@ var builtinGeometryArtifacts_generated_default = {
     bytes: 905302
   },
   "2636b38aa0ed355161133ff8f7c5390433d177afa433333bdc8b7c99cdd266c7": {
-    url: "/plugin-builtins/display-0da605a686939af0b09a0803cdbd839144486c66a0ef61729bca361a38027bbc.bin",
-    sha256: "0da605a686939af0b09a0803cdbd839144486c66a0ef61729bca361a38027bbc",
-    bytes: 134003
+    url: "/plugin-builtins/display-7976cbd73167a0fe1fc59071dbb6989d63b49a6ff05c2635e021796606ededa7.bin",
+    sha256: "7976cbd73167a0fe1fc59071dbb6989d63b49a6ff05c2635e021796606ededa7",
+    bytes: 475164
   },
   "271d99099fc9cfb7a57770fe0e208dd946db389b508fe1cf41a3d81234792b6c": {
-    url: "/plugin-builtins/display-121827ddbc8ed2b3709c51a158f06e011c71f82af97c9f10e42bc9acdcc0190b.bin",
-    sha256: "121827ddbc8ed2b3709c51a158f06e011c71f82af97c9f10e42bc9acdcc0190b",
-    bytes: 168626
+    url: "/plugin-builtins/display-05fc73de27099f1bf42e754cfa901149ec99a8c7f1007ecf47bcb3130b9d4809.bin",
+    sha256: "05fc73de27099f1bf42e754cfa901149ec99a8c7f1007ecf47bcb3130b9d4809",
+    bytes: 210718
   },
   "277dbd97dca4d32fb5fa5d879d48365c10a76285bba5d12b685aabfc8f43d54c": {
-    url: "/plugin-builtins/display-0da605a686939af0b09a0803cdbd839144486c66a0ef61729bca361a38027bbc.bin",
-    sha256: "0da605a686939af0b09a0803cdbd839144486c66a0ef61729bca361a38027bbc",
-    bytes: 134003
+    url: "/plugin-builtins/display-7976cbd73167a0fe1fc59071dbb6989d63b49a6ff05c2635e021796606ededa7.bin",
+    sha256: "7976cbd73167a0fe1fc59071dbb6989d63b49a6ff05c2635e021796606ededa7",
+    bytes: 475164
   },
   "279c637ceeaf667c377cd51ff7ee6a146958d026b227eaac6fd225d1ca0af114": {
-    url: "/plugin-builtins/display-121827ddbc8ed2b3709c51a158f06e011c71f82af97c9f10e42bc9acdcc0190b.bin",
-    sha256: "121827ddbc8ed2b3709c51a158f06e011c71f82af97c9f10e42bc9acdcc0190b",
-    bytes: 168626
+    url: "/plugin-builtins/display-05fc73de27099f1bf42e754cfa901149ec99a8c7f1007ecf47bcb3130b9d4809.bin",
+    sha256: "05fc73de27099f1bf42e754cfa901149ec99a8c7f1007ecf47bcb3130b9d4809",
+    bytes: 210718
   },
   "2916a5e45ae9950bbc0fbfc4b6538bf5fc4229ee8c5282442caa2f6fcd0ff912": {
-    url: "/plugin-builtins/display-0da605a686939af0b09a0803cdbd839144486c66a0ef61729bca361a38027bbc.bin",
-    sha256: "0da605a686939af0b09a0803cdbd839144486c66a0ef61729bca361a38027bbc",
-    bytes: 134003
-  },
-  "29ed55a370d3c1a24e2c4ae10c2d788a2da5b171a3751b7baac98445e4943919": {
-    url: "/plugin-builtins/display-aa69ed72589ecf01c3e0f42fa12fa724b0a326f748ca2e665ae719c72ad9d13f.bin",
-    sha256: "aa69ed72589ecf01c3e0f42fa12fa724b0a326f748ca2e665ae719c72ad9d13f",
-    bytes: 234540
+    url: "/plugin-builtins/display-7976cbd73167a0fe1fc59071dbb6989d63b49a6ff05c2635e021796606ededa7.bin",
+    sha256: "7976cbd73167a0fe1fc59071dbb6989d63b49a6ff05c2635e021796606ededa7",
+    bytes: 475164
   },
   "2aa28508d2396ea433be3cd8c400324d37e62d10519c76dfab043e49e7089bb1": {
-    url: "/plugin-builtins/display-121827ddbc8ed2b3709c51a158f06e011c71f82af97c9f10e42bc9acdcc0190b.bin",
-    sha256: "121827ddbc8ed2b3709c51a158f06e011c71f82af97c9f10e42bc9acdcc0190b",
-    bytes: 168626
-  },
-  "2e95981edca328e2dcaefc6c5dc499e095beb59f4c072fb58a02d89e72503c49": {
-    url: "/plugin-builtins/display-aa69ed72589ecf01c3e0f42fa12fa724b0a326f748ca2e665ae719c72ad9d13f.bin",
-    sha256: "aa69ed72589ecf01c3e0f42fa12fa724b0a326f748ca2e665ae719c72ad9d13f",
-    bytes: 234540
+    url: "/plugin-builtins/display-05fc73de27099f1bf42e754cfa901149ec99a8c7f1007ecf47bcb3130b9d4809.bin",
+    sha256: "05fc73de27099f1bf42e754cfa901149ec99a8c7f1007ecf47bcb3130b9d4809",
+    bytes: 210718
   },
   "2e98d1d157a68858f7780e36d5b8d373ae2674e0ced62b7d71270c5d26cbf889": {
-    url: "/plugin-builtins/display-121827ddbc8ed2b3709c51a158f06e011c71f82af97c9f10e42bc9acdcc0190b.bin",
-    sha256: "121827ddbc8ed2b3709c51a158f06e011c71f82af97c9f10e42bc9acdcc0190b",
-    bytes: 168626
+    url: "/plugin-builtins/display-05fc73de27099f1bf42e754cfa901149ec99a8c7f1007ecf47bcb3130b9d4809.bin",
+    sha256: "05fc73de27099f1bf42e754cfa901149ec99a8c7f1007ecf47bcb3130b9d4809",
+    bytes: 210718
   },
   "2ec75cd67a10b29a5ce9b493eb8d13f44860bca0cfea238eab61e5a6b2421667": {
-    url: "/plugin-builtins/display-0da605a686939af0b09a0803cdbd839144486c66a0ef61729bca361a38027bbc.bin",
-    sha256: "0da605a686939af0b09a0803cdbd839144486c66a0ef61729bca361a38027bbc",
-    bytes: 134003
+    url: "/plugin-builtins/display-7976cbd73167a0fe1fc59071dbb6989d63b49a6ff05c2635e021796606ededa7.bin",
+    sha256: "7976cbd73167a0fe1fc59071dbb6989d63b49a6ff05c2635e021796606ededa7",
+    bytes: 475164
   },
   "2f44e1d82daf9d32ec2a074ea3fdcd9a68fc1dc35180a91708f0e8dd31d29625": {
-    url: "/plugin-builtins/display-aa69ed72589ecf01c3e0f42fa12fa724b0a326f748ca2e665ae719c72ad9d13f.bin",
-    sha256: "aa69ed72589ecf01c3e0f42fa12fa724b0a326f748ca2e665ae719c72ad9d13f",
-    bytes: 234540
-  },
-  "2fee27dd4f6392e50ac8af4bfdcdaf2f974d06f0a1270f74f4948ebd203bec78": {
-    url: "/plugin-builtins/display-aa69ed72589ecf01c3e0f42fa12fa724b0a326f748ca2e665ae719c72ad9d13f.bin",
-    sha256: "aa69ed72589ecf01c3e0f42fa12fa724b0a326f748ca2e665ae719c72ad9d13f",
-    bytes: 234540
+    url: "/plugin-builtins/display-6b4b11f924d96a0078856d27655da62a0416806ef9eb7001c4dd468271d78d7a.bin",
+    sha256: "6b4b11f924d96a0078856d27655da62a0416806ef9eb7001c4dd468271d78d7a",
+    bytes: 307218
   },
   "301134e875d436bfc8e11b06931022a09f8e8218129a7dd5d6c5f3dda96068ae": {
-    url: "/plugin-builtins/display-aa69ed72589ecf01c3e0f42fa12fa724b0a326f748ca2e665ae719c72ad9d13f.bin",
-    sha256: "aa69ed72589ecf01c3e0f42fa12fa724b0a326f748ca2e665ae719c72ad9d13f",
-    bytes: 234540
+    url: "/plugin-builtins/display-6b4b11f924d96a0078856d27655da62a0416806ef9eb7001c4dd468271d78d7a.bin",
+    sha256: "6b4b11f924d96a0078856d27655da62a0416806ef9eb7001c4dd468271d78d7a",
+    bytes: 307218
   },
   "30a65d6decd7f327bb9f7d9524f5ae95f070df7d4fa956eff3cc4538afa65dc4": {
-    url: "/plugin-builtins/display-121827ddbc8ed2b3709c51a158f06e011c71f82af97c9f10e42bc9acdcc0190b.bin",
-    sha256: "121827ddbc8ed2b3709c51a158f06e011c71f82af97c9f10e42bc9acdcc0190b",
-    bytes: 168626
+    url: "/plugin-builtins/display-05fc73de27099f1bf42e754cfa901149ec99a8c7f1007ecf47bcb3130b9d4809.bin",
+    sha256: "05fc73de27099f1bf42e754cfa901149ec99a8c7f1007ecf47bcb3130b9d4809",
+    bytes: 210718
   },
   "31b18ba6da71669500adadae494232fc816b636502bb15bbb520051735f3e9a4": {
-    url: "/plugin-builtins/display-aa69ed72589ecf01c3e0f42fa12fa724b0a326f748ca2e665ae719c72ad9d13f.bin",
-    sha256: "aa69ed72589ecf01c3e0f42fa12fa724b0a326f748ca2e665ae719c72ad9d13f",
-    bytes: 234540
+    url: "/plugin-builtins/display-6b4b11f924d96a0078856d27655da62a0416806ef9eb7001c4dd468271d78d7a.bin",
+    sha256: "6b4b11f924d96a0078856d27655da62a0416806ef9eb7001c4dd468271d78d7a",
+    bytes: 307218
   },
   "330c54dc53669def61b523452e29245b669f83664ebdf171c497372d686c1a4f": {
-    url: "/plugin-builtins/display-aa69ed72589ecf01c3e0f42fa12fa724b0a326f748ca2e665ae719c72ad9d13f.bin",
-    sha256: "aa69ed72589ecf01c3e0f42fa12fa724b0a326f748ca2e665ae719c72ad9d13f",
-    bytes: 234540
-  },
-  "33c09d35659f4132fae15865a0ed948b95979af582be01d53f6704d1175e02bb": {
-    url: "/plugin-builtins/display-aa69ed72589ecf01c3e0f42fa12fa724b0a326f748ca2e665ae719c72ad9d13f.bin",
-    sha256: "aa69ed72589ecf01c3e0f42fa12fa724b0a326f748ca2e665ae719c72ad9d13f",
-    bytes: 234540
+    url: "/plugin-builtins/display-6b4b11f924d96a0078856d27655da62a0416806ef9eb7001c4dd468271d78d7a.bin",
+    sha256: "6b4b11f924d96a0078856d27655da62a0416806ef9eb7001c4dd468271d78d7a",
+    bytes: 307218
   },
   "344bb07f45bbd9ba30a3a774126ceda5b1a6022c206994002d3a382bbd5011b2": {
-    url: "/plugin-builtins/display-aa69ed72589ecf01c3e0f42fa12fa724b0a326f748ca2e665ae719c72ad9d13f.bin",
-    sha256: "aa69ed72589ecf01c3e0f42fa12fa724b0a326f748ca2e665ae719c72ad9d13f",
-    bytes: 234540
-  },
-  "357d02d008741cf7b42bf1f03136dd1a986c0b4b40f5f5f595fb760121d68085": {
-    url: "/plugin-builtins/display-111f062d4c00c69cc17efa6bc2fec2a071057b71d50bccc4190a6f6a8944d871.bin",
-    sha256: "111f062d4c00c69cc17efa6bc2fec2a071057b71d50bccc4190a6f6a8944d871",
-    bytes: 140271
+    url: "/plugin-builtins/display-6b4b11f924d96a0078856d27655da62a0416806ef9eb7001c4dd468271d78d7a.bin",
+    sha256: "6b4b11f924d96a0078856d27655da62a0416806ef9eb7001c4dd468271d78d7a",
+    bytes: 307218
   },
   "35f1f2d1aef5bfe247883aeff707d075699f785f3d6f957e3c9ddf9bfb019d22": {
-    url: "/plugin-builtins/display-121827ddbc8ed2b3709c51a158f06e011c71f82af97c9f10e42bc9acdcc0190b.bin",
-    sha256: "121827ddbc8ed2b3709c51a158f06e011c71f82af97c9f10e42bc9acdcc0190b",
-    bytes: 168626
+    url: "/plugin-builtins/display-05fc73de27099f1bf42e754cfa901149ec99a8c7f1007ecf47bcb3130b9d4809.bin",
+    sha256: "05fc73de27099f1bf42e754cfa901149ec99a8c7f1007ecf47bcb3130b9d4809",
+    bytes: 210718
   },
   "3658c3e19663bdbb607304003b28daff9e971504007a923720cadb59bdfda05a": {
     url: "/plugin-builtins/display-88f40bff54c193e7e8159ea2798ceed3a49ab92ce24e0f01d7616d74eacce77a.bin",
@@ -268717,119 +268607,64 @@ var builtinGeometryArtifacts_generated_default = {
     bytes: 905302
   },
   "38ee66d52bd3474fecacca5d829c40e08a3f33ca16f598b57a1c3b63433b6e04": {
-    url: "/plugin-builtins/display-973ba5783fe3c5dd785260285de48980baf29f54a4dc71b012adc32ba16b9dea.bin",
-    sha256: "973ba5783fe3c5dd785260285de48980baf29f54a4dc71b012adc32ba16b9dea",
-    bytes: 91952
+    url: "/plugin-builtins/display-0f140fe203bef5c1fb0fa3ee70026d367270c6ea9eb1c963a1a805cfd427433f.bin",
+    sha256: "0f140fe203bef5c1fb0fa3ee70026d367270c6ea9eb1c963a1a805cfd427433f",
+    bytes: 222314
   },
   "3b85d76078a04e79fd5a020ce7c715644e20f24ab76d8c77a344aba89c38a758": {
-    url: "/plugin-builtins/display-121827ddbc8ed2b3709c51a158f06e011c71f82af97c9f10e42bc9acdcc0190b.bin",
-    sha256: "121827ddbc8ed2b3709c51a158f06e011c71f82af97c9f10e42bc9acdcc0190b",
-    bytes: 168626
-  },
-  "3c4928e83c765c7f537da664263bc1ae2378dde4be4afd6ed473c94e8d2e3b32": {
-    url: "/plugin-builtins/display-c10d014623cbbdc0b39fcbe5b374992524c3dab49a64bee97f299cf9c2731e6a.bin",
-    sha256: "c10d014623cbbdc0b39fcbe5b374992524c3dab49a64bee97f299cf9c2731e6a",
-    bytes: 89026
-  },
-  "3c6df3595aeafae92ac6bf48d799f84caed5fc489f79d2330174d45b203b1b6c": {
-    url: "/plugin-builtins/display-b7f6a37ff69d095c18886869c16002b57efdf6a9ab6070941ac10ac354c36a3b.bin",
-    sha256: "b7f6a37ff69d095c18886869c16002b57efdf6a9ab6070941ac10ac354c36a3b",
-    bytes: 2099453
+    url: "/plugin-builtins/display-05fc73de27099f1bf42e754cfa901149ec99a8c7f1007ecf47bcb3130b9d4809.bin",
+    sha256: "05fc73de27099f1bf42e754cfa901149ec99a8c7f1007ecf47bcb3130b9d4809",
+    bytes: 210718
   },
   "3d4ef75480c787a403da299862efcd45fa5b912187ef5fe2ca36025e43e06f9e": {
     url: "/plugin-builtins/display-89b7d5eeab2fd71d937f760f1dc6daa8faef5a3c1cddca6b476b3439325ef546.bin",
     sha256: "89b7d5eeab2fd71d937f760f1dc6daa8faef5a3c1cddca6b476b3439325ef546",
     bytes: 743960
   },
-  "3ee86d02758792dd0ea47eb9f405edf36dea97ca6e2ea6cb3e847ca65a66f137": {
-    url: "/plugin-builtins/display-121827ddbc8ed2b3709c51a158f06e011c71f82af97c9f10e42bc9acdcc0190b.bin",
-    sha256: "121827ddbc8ed2b3709c51a158f06e011c71f82af97c9f10e42bc9acdcc0190b",
-    bytes: 168626
-  },
   "3f0d8e467529d4a27fd2871b1dab47293a66abdd768e874cdf3548853c90d2cb": {
-    url: "/plugin-builtins/display-aa69ed72589ecf01c3e0f42fa12fa724b0a326f748ca2e665ae719c72ad9d13f.bin",
-    sha256: "aa69ed72589ecf01c3e0f42fa12fa724b0a326f748ca2e665ae719c72ad9d13f",
-    bytes: 234540
+    url: "/plugin-builtins/display-6b4b11f924d96a0078856d27655da62a0416806ef9eb7001c4dd468271d78d7a.bin",
+    sha256: "6b4b11f924d96a0078856d27655da62a0416806ef9eb7001c4dd468271d78d7a",
+    bytes: 307218
   },
   "3f1eb4202d410b5953ce4d96f0199edf14903d1125e90a0c8c452a2dbe36d6d5": {
-    url: "/plugin-builtins/display-0da605a686939af0b09a0803cdbd839144486c66a0ef61729bca361a38027bbc.bin",
-    sha256: "0da605a686939af0b09a0803cdbd839144486c66a0ef61729bca361a38027bbc",
-    bytes: 134003
+    url: "/plugin-builtins/display-7976cbd73167a0fe1fc59071dbb6989d63b49a6ff05c2635e021796606ededa7.bin",
+    sha256: "7976cbd73167a0fe1fc59071dbb6989d63b49a6ff05c2635e021796606ededa7",
+    bytes: 475164
   },
   "3f74d5b8065ebaf7e060e3c82b65e259562b5415053a833ba7a97df387283ba7": {
-    url: "/plugin-builtins/display-121827ddbc8ed2b3709c51a158f06e011c71f82af97c9f10e42bc9acdcc0190b.bin",
-    sha256: "121827ddbc8ed2b3709c51a158f06e011c71f82af97c9f10e42bc9acdcc0190b",
-    bytes: 168626
-  },
-  "3f768555a9331875161b354b966bc1c0fe67df47bdd0f57b39afa4b36698e968": {
-    url: "/plugin-builtins/display-62dacd832b108eaae351ac8cad84bbcfbacdc4ec712892c28ccc21a83a18cf7e.bin",
-    sha256: "62dacd832b108eaae351ac8cad84bbcfbacdc4ec712892c28ccc21a83a18cf7e",
-    bytes: 1568909
-  },
-  "3f82bc27f6fa7e83696a7371dfe9a8f6f1d13337fe2a3018d875fca4670cf00a": {
-    url: "/plugin-builtins/display-111f062d4c00c69cc17efa6bc2fec2a071057b71d50bccc4190a6f6a8944d871.bin",
-    sha256: "111f062d4c00c69cc17efa6bc2fec2a071057b71d50bccc4190a6f6a8944d871",
-    bytes: 140271
-  },
-  "405f726232d65bbbb9731239ffdaa09d2e61e71042a8a1ba91e600182727eda0": {
-    url: "/plugin-builtins/display-cbf9b56c93f7a1aeaf63213d749f779b38335d7d372664ad19dba434aecb3798.bin",
-    sha256: "cbf9b56c93f7a1aeaf63213d749f779b38335d7d372664ad19dba434aecb3798",
-    bytes: 163941
+    url: "/plugin-builtins/display-05fc73de27099f1bf42e754cfa901149ec99a8c7f1007ecf47bcb3130b9d4809.bin",
+    sha256: "05fc73de27099f1bf42e754cfa901149ec99a8c7f1007ecf47bcb3130b9d4809",
+    bytes: 210718
   },
   "410e60f8af41d3654d9e669a35011eb0a6486cade8fd5db0f09ad78a9ffc4c7a": {
-    url: "/plugin-builtins/display-3d4e3bfd983361556e79a885e8dfd0948c3aa4839edea238d5a43341f0afca7e.bin",
-    sha256: "3d4e3bfd983361556e79a885e8dfd0948c3aa4839edea238d5a43341f0afca7e",
-    bytes: 139801
+    url: "/plugin-builtins/display-0f140fe203bef5c1fb0fa3ee70026d367270c6ea9eb1c963a1a805cfd427433f.bin",
+    sha256: "0f140fe203bef5c1fb0fa3ee70026d367270c6ea9eb1c963a1a805cfd427433f",
+    bytes: 222314
   },
   "4203b70de3f8d0ec9108973d46b39464f9bdbcc59875f14b26c8b3e0ee3b8260": {
-    url: "/plugin-builtins/display-66a20900e11db26e2f4ed5849a095aba9907bf44289fdac29ec88b1554006d94.bin",
-    sha256: "66a20900e11db26e2f4ed5849a095aba9907bf44289fdac29ec88b1554006d94",
-    bytes: 240948
-  },
-  "428adc362eecce31bb813629821e871cd8e4847d8a6a44a491add505fbb88b13": {
-    url: "/plugin-builtins/display-b7f6a37ff69d095c18886869c16002b57efdf6a9ab6070941ac10ac354c36a3b.bin",
-    sha256: "b7f6a37ff69d095c18886869c16002b57efdf6a9ab6070941ac10ac354c36a3b",
-    bytes: 2099453
+    url: "/plugin-builtins/display-05fc73de27099f1bf42e754cfa901149ec99a8c7f1007ecf47bcb3130b9d4809.bin",
+    sha256: "05fc73de27099f1bf42e754cfa901149ec99a8c7f1007ecf47bcb3130b9d4809",
+    bytes: 210718
   },
   "42d4c5da69393dc09486f0aa6326452f9d597f877a21a1fd4505eeeb29b28dc8": {
-    url: "/plugin-builtins/display-66a20900e11db26e2f4ed5849a095aba9907bf44289fdac29ec88b1554006d94.bin",
-    sha256: "66a20900e11db26e2f4ed5849a095aba9907bf44289fdac29ec88b1554006d94",
-    bytes: 240948
+    url: "/plugin-builtins/display-05fc73de27099f1bf42e754cfa901149ec99a8c7f1007ecf47bcb3130b9d4809.bin",
+    sha256: "05fc73de27099f1bf42e754cfa901149ec99a8c7f1007ecf47bcb3130b9d4809",
+    bytes: 210718
   },
   "42f3ed1f7eea8a7c7de45499313ed58769d1d7914d7da764d920f14fe007bf20": {
-    url: "/plugin-builtins/display-cbf9b56c93f7a1aeaf63213d749f779b38335d7d372664ad19dba434aecb3798.bin",
-    sha256: "cbf9b56c93f7a1aeaf63213d749f779b38335d7d372664ad19dba434aecb3798",
-    bytes: 163941
-  },
-  "4381719e9fedcdcae1b9a70686be4584101ffb206c24500b19cbd92667a38f9d": {
-    url: "/plugin-builtins/display-cbf9b56c93f7a1aeaf63213d749f779b38335d7d372664ad19dba434aecb3798.bin",
-    sha256: "cbf9b56c93f7a1aeaf63213d749f779b38335d7d372664ad19dba434aecb3798",
-    bytes: 163941
-  },
-  "4442c9ec4589450b3e1cae4e80820e22844fcc7699a62e1806a12102eabf1395": {
-    url: "/plugin-builtins/display-b6260a04e2ad72732d220b2b2a007d388524ff11dee5a0982224eaa4e09ac0e2.bin",
-    sha256: "b6260a04e2ad72732d220b2b2a007d388524ff11dee5a0982224eaa4e09ac0e2",
-    bytes: 19311
+    url: "/plugin-builtins/display-6b4b11f924d96a0078856d27655da62a0416806ef9eb7001c4dd468271d78d7a.bin",
+    sha256: "6b4b11f924d96a0078856d27655da62a0416806ef9eb7001c4dd468271d78d7a",
+    bytes: 307218
   },
   "4730d25aeae5ed9ba240bdf61dd2f5c9d54e459029d9bdf41d34c7986229c70b": {
-    url: "/plugin-builtins/display-3d4e3bfd983361556e79a885e8dfd0948c3aa4839edea238d5a43341f0afca7e.bin",
-    sha256: "3d4e3bfd983361556e79a885e8dfd0948c3aa4839edea238d5a43341f0afca7e",
-    bytes: 139801
+    url: "/plugin-builtins/display-0f140fe203bef5c1fb0fa3ee70026d367270c6ea9eb1c963a1a805cfd427433f.bin",
+    sha256: "0f140fe203bef5c1fb0fa3ee70026d367270c6ea9eb1c963a1a805cfd427433f",
+    bytes: 222314
   },
   "47fc4517576b2d899448a4ba8e65885f3bfc90a8befb2f1263a8fb0b659d4aaa": {
-    url: "/plugin-builtins/display-66a20900e11db26e2f4ed5849a095aba9907bf44289fdac29ec88b1554006d94.bin",
-    sha256: "66a20900e11db26e2f4ed5849a095aba9907bf44289fdac29ec88b1554006d94",
-    bytes: 240948
-  },
-  "498a565e77ed7b0a5a6aff1eac3855b447b36939d99e3a0d301c197f205c5d8b": {
-    url: "/plugin-builtins/display-66a20900e11db26e2f4ed5849a095aba9907bf44289fdac29ec88b1554006d94.bin",
-    sha256: "66a20900e11db26e2f4ed5849a095aba9907bf44289fdac29ec88b1554006d94",
-    bytes: 240948
-  },
-  "4a5f561126c7412fe3f2795236571feee448647d0e1ea8eafccbb5fecc6892cb": {
-    url: "/plugin-builtins/display-cbf9b56c93f7a1aeaf63213d749f779b38335d7d372664ad19dba434aecb3798.bin",
-    sha256: "cbf9b56c93f7a1aeaf63213d749f779b38335d7d372664ad19dba434aecb3798",
-    bytes: 163941
+    url: "/plugin-builtins/display-05fc73de27099f1bf42e754cfa901149ec99a8c7f1007ecf47bcb3130b9d4809.bin",
+    sha256: "05fc73de27099f1bf42e754cfa901149ec99a8c7f1007ecf47bcb3130b9d4809",
+    bytes: 210718
   },
   "4aca3c1aa7734ec09da4a54b805b264a754a57ca73a1ad59a4b0888c026b3805": {
     url: "/plugin-builtins/display-89b7d5eeab2fd71d937f760f1dc6daa8faef5a3c1cddca6b476b3439325ef546.bin",
@@ -268837,119 +268672,54 @@ var builtinGeometryArtifacts_generated_default = {
     bytes: 743960
   },
   "4b0ba0f465d6dc01496c95b2b7d716d80938c3c270e7957516471a83cbf575bf": {
-    url: "/plugin-builtins/display-66a20900e11db26e2f4ed5849a095aba9907bf44289fdac29ec88b1554006d94.bin",
-    sha256: "66a20900e11db26e2f4ed5849a095aba9907bf44289fdac29ec88b1554006d94",
-    bytes: 240948
+    url: "/plugin-builtins/display-05fc73de27099f1bf42e754cfa901149ec99a8c7f1007ecf47bcb3130b9d4809.bin",
+    sha256: "05fc73de27099f1bf42e754cfa901149ec99a8c7f1007ecf47bcb3130b9d4809",
+    bytes: 210718
   },
   "4d91c3e3666aad91a268d4312a3e79b4dd822042a5307f4db31e2e5ae33d3a4a": {
-    url: "/plugin-builtins/display-670cb59c9cd59b59709e6dd635b18b0ceb86feb5a44177a68aace0344a61e943.bin",
-    sha256: "670cb59c9cd59b59709e6dd635b18b0ceb86feb5a44177a68aace0344a61e943",
-    bytes: 166506
-  },
-  "4dd5c5c5b0ba8985965e9044a7261961c99053483a583090d71cfdbf62ee3889": {
-    url: "/plugin-builtins/display-cbf9b56c93f7a1aeaf63213d749f779b38335d7d372664ad19dba434aecb3798.bin",
-    sha256: "cbf9b56c93f7a1aeaf63213d749f779b38335d7d372664ad19dba434aecb3798",
-    bytes: 163941
-  },
-  "4ea6863df8f55611e441c0942f4440e055486436c3b93732473e3b0c9a149cf1": {
-    url: "/plugin-builtins/display-1b8467f0ab638ba688039a56e9713c6218c9e1cc504d2ed6a0e814739fa77cc1.bin",
-    sha256: "1b8467f0ab638ba688039a56e9713c6218c9e1cc504d2ed6a0e814739fa77cc1",
-    bytes: 29319
+    url: "/plugin-builtins/display-7976cbd73167a0fe1fc59071dbb6989d63b49a6ff05c2635e021796606ededa7.bin",
+    sha256: "7976cbd73167a0fe1fc59071dbb6989d63b49a6ff05c2635e021796606ededa7",
+    bytes: 475164
   },
   "4fd9d88a1d3a2ed2c9efbbfd2866bb0cabdc39474d126d37fa35e5bda4e84afb": {
-    url: "/plugin-builtins/display-cbf9b56c93f7a1aeaf63213d749f779b38335d7d372664ad19dba434aecb3798.bin",
-    sha256: "cbf9b56c93f7a1aeaf63213d749f779b38335d7d372664ad19dba434aecb3798",
-    bytes: 163941
+    url: "/plugin-builtins/display-6b4b11f924d96a0078856d27655da62a0416806ef9eb7001c4dd468271d78d7a.bin",
+    sha256: "6b4b11f924d96a0078856d27655da62a0416806ef9eb7001c4dd468271d78d7a",
+    bytes: 307218
   },
   "520645d362fb98c52c73df8e7433f694c329d7ec05322eb16e4ad2a42be6a5c8": {
-    url: "/plugin-builtins/display-670cb59c9cd59b59709e6dd635b18b0ceb86feb5a44177a68aace0344a61e943.bin",
-    sha256: "670cb59c9cd59b59709e6dd635b18b0ceb86feb5a44177a68aace0344a61e943",
-    bytes: 166506
+    url: "/plugin-builtins/display-7976cbd73167a0fe1fc59071dbb6989d63b49a6ff05c2635e021796606ededa7.bin",
+    sha256: "7976cbd73167a0fe1fc59071dbb6989d63b49a6ff05c2635e021796606ededa7",
+    bytes: 475164
   },
   "525f44e68a28753bd32e6a3c3528924665adaaeb9d3e021e0557a59da79fa523": {
-    url: "/plugin-builtins/display-66a20900e11db26e2f4ed5849a095aba9907bf44289fdac29ec88b1554006d94.bin",
-    sha256: "66a20900e11db26e2f4ed5849a095aba9907bf44289fdac29ec88b1554006d94",
-    bytes: 240948
-  },
-  "5417ec2643fa083e675c48acbc0735db91a3b5de6483c1a7cbde07e52b17f4fd": {
-    url: "/plugin-builtins/display-670cb59c9cd59b59709e6dd635b18b0ceb86feb5a44177a68aace0344a61e943.bin",
-    sha256: "670cb59c9cd59b59709e6dd635b18b0ceb86feb5a44177a68aace0344a61e943",
-    bytes: 166506
-  },
-  "55b38602df81381893811dd737b757e96f98f64b0bb7cca53225298d115e0415": {
-    url: "/plugin-builtins/display-cbf9b56c93f7a1aeaf63213d749f779b38335d7d372664ad19dba434aecb3798.bin",
-    sha256: "cbf9b56c93f7a1aeaf63213d749f779b38335d7d372664ad19dba434aecb3798",
-    bytes: 163941
-  },
-  "569677532ab637137ccebece0626ccfe733d4af4bb512ff9d32d4fe839e51352": {
-    url: "/plugin-builtins/display-670cb59c9cd59b59709e6dd635b18b0ceb86feb5a44177a68aace0344a61e943.bin",
-    sha256: "670cb59c9cd59b59709e6dd635b18b0ceb86feb5a44177a68aace0344a61e943",
-    bytes: 166506
+    url: "/plugin-builtins/display-05fc73de27099f1bf42e754cfa901149ec99a8c7f1007ecf47bcb3130b9d4809.bin",
+    sha256: "05fc73de27099f1bf42e754cfa901149ec99a8c7f1007ecf47bcb3130b9d4809",
+    bytes: 210718
   },
   "5709745def06c80f5159a38e5b6f651b941b080daf9e788c5d858da7a46cfd5a": {
-    url: "/plugin-builtins/display-3d4e3bfd983361556e79a885e8dfd0948c3aa4839edea238d5a43341f0afca7e.bin",
-    sha256: "3d4e3bfd983361556e79a885e8dfd0948c3aa4839edea238d5a43341f0afca7e",
-    bytes: 139801
+    url: "/plugin-builtins/display-0f140fe203bef5c1fb0fa3ee70026d367270c6ea9eb1c963a1a805cfd427433f.bin",
+    sha256: "0f140fe203bef5c1fb0fa3ee70026d367270c6ea9eb1c963a1a805cfd427433f",
+    bytes: 222314
   },
   "5815f06cf8e969c287ae5e1f87dfd12130e0b50f167f310a23d4f2620d6d88b4": {
-    url: "/plugin-builtins/display-66a20900e11db26e2f4ed5849a095aba9907bf44289fdac29ec88b1554006d94.bin",
-    sha256: "66a20900e11db26e2f4ed5849a095aba9907bf44289fdac29ec88b1554006d94",
-    bytes: 240948
-  },
-  "59e9005d64ca709afe85fcadafbebe84fbf8a1c60977679749b7788f71bcbc2b": {
-    url: "/plugin-builtins/display-66a20900e11db26e2f4ed5849a095aba9907bf44289fdac29ec88b1554006d94.bin",
-    sha256: "66a20900e11db26e2f4ed5849a095aba9907bf44289fdac29ec88b1554006d94",
-    bytes: 240948
-  },
-  "5d2ce99220de0b08bab5114ae9c6e135c5dc2a0ab62c3acb423948f144d0fe80": {
-    url: "/plugin-builtins/display-8df79680290567f281a924eb4c62372dde1b8483eddc60b8c3f40906b8e469e7.bin",
-    sha256: "8df79680290567f281a924eb4c62372dde1b8483eddc60b8c3f40906b8e469e7",
-    bytes: 1028194
-  },
-  "5d665957ec9e0eea84b2f0d59f16e5b5240a818344b18bb48b3c947763eb2ea4": {
-    url: "/plugin-builtins/display-66a20900e11db26e2f4ed5849a095aba9907bf44289fdac29ec88b1554006d94.bin",
-    sha256: "66a20900e11db26e2f4ed5849a095aba9907bf44289fdac29ec88b1554006d94",
-    bytes: 240948
+    url: "/plugin-builtins/display-05fc73de27099f1bf42e754cfa901149ec99a8c7f1007ecf47bcb3130b9d4809.bin",
+    sha256: "05fc73de27099f1bf42e754cfa901149ec99a8c7f1007ecf47bcb3130b9d4809",
+    bytes: 210718
   },
   "5d9a1703f1b0a991a0f3a29599d136fc7dfbaf140f9cdabce3d969a2ce7ce7e4": {
-    url: "/plugin-builtins/display-66a20900e11db26e2f4ed5849a095aba9907bf44289fdac29ec88b1554006d94.bin",
-    sha256: "66a20900e11db26e2f4ed5849a095aba9907bf44289fdac29ec88b1554006d94",
-    bytes: 240948
+    url: "/plugin-builtins/display-05fc73de27099f1bf42e754cfa901149ec99a8c7f1007ecf47bcb3130b9d4809.bin",
+    sha256: "05fc73de27099f1bf42e754cfa901149ec99a8c7f1007ecf47bcb3130b9d4809",
+    bytes: 210718
   },
   "5e7563239997b3cd8c09a8e417d61c83c96319ed0f144e5822125b53bef20c26": {
-    url: "/plugin-builtins/display-3d4e3bfd983361556e79a885e8dfd0948c3aa4839edea238d5a43341f0afca7e.bin",
-    sha256: "3d4e3bfd983361556e79a885e8dfd0948c3aa4839edea238d5a43341f0afca7e",
-    bytes: 139801
-  },
-  "5eb839df46b928058a88009d4e14be778ea2f2adf435276afbaf633161c019f1": {
-    url: "/plugin-builtins/display-b7f6a37ff69d095c18886869c16002b57efdf6a9ab6070941ac10ac354c36a3b.bin",
-    sha256: "b7f6a37ff69d095c18886869c16002b57efdf6a9ab6070941ac10ac354c36a3b",
-    bytes: 2099453
+    url: "/plugin-builtins/display-0f140fe203bef5c1fb0fa3ee70026d367270c6ea9eb1c963a1a805cfd427433f.bin",
+    sha256: "0f140fe203bef5c1fb0fa3ee70026d367270c6ea9eb1c963a1a805cfd427433f",
+    bytes: 222314
   },
   "614775adeb20c2bde714a3bfcb900cd5ae4dee4aff7e45eb491fc945e3ffdf3f": {
-    url: "/plugin-builtins/display-670cb59c9cd59b59709e6dd635b18b0ceb86feb5a44177a68aace0344a61e943.bin",
-    sha256: "670cb59c9cd59b59709e6dd635b18b0ceb86feb5a44177a68aace0344a61e943",
-    bytes: 166506
-  },
-  "61aa9ed71304b92f4cbd897edaf75e1fa302ec401361aa51dd06192f392a8bf8": {
-    url: "/plugin-builtins/display-cbf9b56c93f7a1aeaf63213d749f779b38335d7d372664ad19dba434aecb3798.bin",
-    sha256: "cbf9b56c93f7a1aeaf63213d749f779b38335d7d372664ad19dba434aecb3798",
-    bytes: 163941
-  },
-  "61c6418d52ee20899ebcacc84b23a10b35038802c9abc691b56ba75dd293954b": {
-    url: "/plugin-builtins/display-cbf9b56c93f7a1aeaf63213d749f779b38335d7d372664ad19dba434aecb3798.bin",
-    sha256: "cbf9b56c93f7a1aeaf63213d749f779b38335d7d372664ad19dba434aecb3798",
-    bytes: 163941
-  },
-  "624c798fa86b0dadeb5480afc3b171c5a2dd433924002702e8350b9101d5c9ba": {
-    url: "/plugin-builtins/display-3d4e3bfd983361556e79a885e8dfd0948c3aa4839edea238d5a43341f0afca7e.bin",
-    sha256: "3d4e3bfd983361556e79a885e8dfd0948c3aa4839edea238d5a43341f0afca7e",
-    bytes: 139801
-  },
-  "6331eeafba214157ff471f6e6dc7687837b937501973e4a723e74f026798c32f": {
-    url: "/plugin-builtins/display-0d45d509f2a98f6b47fbfb093d43540faeda7c56eb323dfdead91735057b631d.bin",
-    sha256: "0d45d509f2a98f6b47fbfb093d43540faeda7c56eb323dfdead91735057b631d",
-    bytes: 24066
+    url: "/plugin-builtins/display-7976cbd73167a0fe1fc59071dbb6989d63b49a6ff05c2635e021796606ededa7.bin",
+    sha256: "7976cbd73167a0fe1fc59071dbb6989d63b49a6ff05c2635e021796606ededa7",
+    bytes: 475164
   },
   "644caed1add8ff48a9c886ac6f17a031de20e8022d80ef0745a4f7af1c8576b7": {
     url: "/plugin-builtins/display-16bee8a1f7ebaf722bd0b75c706331042c69e858c016ce997db87363dcd4ee76.bin",
@@ -268957,144 +268727,74 @@ var builtinGeometryArtifacts_generated_default = {
     bytes: 1527867
   },
   "64a7268212e08c128d64b90648bdd5c1204cf09ffc7c8bce2f34bb9b93950f37": {
-    url: "/plugin-builtins/display-66a20900e11db26e2f4ed5849a095aba9907bf44289fdac29ec88b1554006d94.bin",
-    sha256: "66a20900e11db26e2f4ed5849a095aba9907bf44289fdac29ec88b1554006d94",
-    bytes: 240948
-  },
-  "64d1621ca36ca44caa3facefda06c8a1b8456b02a7bc23fc810b6d85884ee3e2": {
-    url: "/plugin-builtins/display-8df79680290567f281a924eb4c62372dde1b8483eddc60b8c3f40906b8e469e7.bin",
-    sha256: "8df79680290567f281a924eb4c62372dde1b8483eddc60b8c3f40906b8e469e7",
-    bytes: 1028194
-  },
-  "650d7a311b50a9d4e05ab15e9c0e07349c84cefa7e7ccf0c2053310aefab6a79": {
-    url: "/plugin-builtins/display-b6260a04e2ad72732d220b2b2a007d388524ff11dee5a0982224eaa4e09ac0e2.bin",
-    sha256: "b6260a04e2ad72732d220b2b2a007d388524ff11dee5a0982224eaa4e09ac0e2",
-    bytes: 19311
-  },
-  "6721ccce3126587184109a385f820245e5cf59b58a2b01d931ee66a6e826ec1f": {
-    url: "/plugin-builtins/display-b6260a04e2ad72732d220b2b2a007d388524ff11dee5a0982224eaa4e09ac0e2.bin",
-    sha256: "b6260a04e2ad72732d220b2b2a007d388524ff11dee5a0982224eaa4e09ac0e2",
-    bytes: 19311
-  },
-  "6746ecec3137bcc6323adc6568bb10d59ec8e080aa5669c68a5aa8c09fc3f68b": {
-    url: "/plugin-builtins/display-66a20900e11db26e2f4ed5849a095aba9907bf44289fdac29ec88b1554006d94.bin",
-    sha256: "66a20900e11db26e2f4ed5849a095aba9907bf44289fdac29ec88b1554006d94",
-    bytes: 240948
+    url: "/plugin-builtins/display-05fc73de27099f1bf42e754cfa901149ec99a8c7f1007ecf47bcb3130b9d4809.bin",
+    sha256: "05fc73de27099f1bf42e754cfa901149ec99a8c7f1007ecf47bcb3130b9d4809",
+    bytes: 210718
   },
   "6aeaf71c15f80904655370a519b6fe26ca314afe2a329506d11af5724970a2ff": {
-    url: "/plugin-builtins/display-3d4e3bfd983361556e79a885e8dfd0948c3aa4839edea238d5a43341f0afca7e.bin",
-    sha256: "3d4e3bfd983361556e79a885e8dfd0948c3aa4839edea238d5a43341f0afca7e",
-    bytes: 139801
-  },
-  "6b809e7e3fad41fc7495f4ee6c04f41dc59c1959028042b6a2c250288d5058d6": {
-    url: "/plugin-builtins/display-1b8467f0ab638ba688039a56e9713c6218c9e1cc504d2ed6a0e814739fa77cc1.bin",
-    sha256: "1b8467f0ab638ba688039a56e9713c6218c9e1cc504d2ed6a0e814739fa77cc1",
-    bytes: 29319
-  },
-  "6c3cd8d943acaedeec3c1e5fa2c49e0a0a219a0300a222b679fb86445fdc2c6a": {
-    url: "/plugin-builtins/display-cbf9b56c93f7a1aeaf63213d749f779b38335d7d372664ad19dba434aecb3798.bin",
-    sha256: "cbf9b56c93f7a1aeaf63213d749f779b38335d7d372664ad19dba434aecb3798",
-    bytes: 163941
+    url: "/plugin-builtins/display-0f140fe203bef5c1fb0fa3ee70026d367270c6ea9eb1c963a1a805cfd427433f.bin",
+    sha256: "0f140fe203bef5c1fb0fa3ee70026d367270c6ea9eb1c963a1a805cfd427433f",
+    bytes: 222314
   },
   "70756a5fecb09e1311175feaa52ba3b52af826f54bc7133cc6d6ad7de880a93c": {
-    url: "/plugin-builtins/display-66a20900e11db26e2f4ed5849a095aba9907bf44289fdac29ec88b1554006d94.bin",
-    sha256: "66a20900e11db26e2f4ed5849a095aba9907bf44289fdac29ec88b1554006d94",
-    bytes: 240948
+    url: "/plugin-builtins/display-05fc73de27099f1bf42e754cfa901149ec99a8c7f1007ecf47bcb3130b9d4809.bin",
+    sha256: "05fc73de27099f1bf42e754cfa901149ec99a8c7f1007ecf47bcb3130b9d4809",
+    bytes: 210718
   },
   "709cfdee65194dfc9dafe6f6102c583373ffed6afdd512648e48732a73be184f": {
-    url: "/plugin-builtins/display-66a20900e11db26e2f4ed5849a095aba9907bf44289fdac29ec88b1554006d94.bin",
-    sha256: "66a20900e11db26e2f4ed5849a095aba9907bf44289fdac29ec88b1554006d94",
-    bytes: 240948
+    url: "/plugin-builtins/display-05fc73de27099f1bf42e754cfa901149ec99a8c7f1007ecf47bcb3130b9d4809.bin",
+    sha256: "05fc73de27099f1bf42e754cfa901149ec99a8c7f1007ecf47bcb3130b9d4809",
+    bytes: 210718
   },
   "729908bb4e9bad4667220ffc91d6a1dbc4372df9f70941ece39685ffeaa479e4": {
-    url: "/plugin-builtins/display-cbf9b56c93f7a1aeaf63213d749f779b38335d7d372664ad19dba434aecb3798.bin",
-    sha256: "cbf9b56c93f7a1aeaf63213d749f779b38335d7d372664ad19dba434aecb3798",
-    bytes: 163941
-  },
-  "73a25654d917ac9b5e0dab5cb506ecc643071a5394c1ff3aa964eafae17359ac": {
-    url: "/plugin-builtins/display-b6260a04e2ad72732d220b2b2a007d388524ff11dee5a0982224eaa4e09ac0e2.bin",
-    sha256: "b6260a04e2ad72732d220b2b2a007d388524ff11dee5a0982224eaa4e09ac0e2",
-    bytes: 19311
-  },
-  "743567551b35b6322e55ccf712cec7c492e1e276e9d365484b2c5ec3d493862e": {
-    url: "/plugin-builtins/display-1b8467f0ab638ba688039a56e9713c6218c9e1cc504d2ed6a0e814739fa77cc1.bin",
-    sha256: "1b8467f0ab638ba688039a56e9713c6218c9e1cc504d2ed6a0e814739fa77cc1",
-    bytes: 29319
+    url: "/plugin-builtins/display-6b4b11f924d96a0078856d27655da62a0416806ef9eb7001c4dd468271d78d7a.bin",
+    sha256: "6b4b11f924d96a0078856d27655da62a0416806ef9eb7001c4dd468271d78d7a",
+    bytes: 307218
   },
   "747770e7d03bc22a47462b8277cccd5017e198e4e1033331ea374e3e4e0b8f93": {
-    url: "/plugin-builtins/display-66a20900e11db26e2f4ed5849a095aba9907bf44289fdac29ec88b1554006d94.bin",
-    sha256: "66a20900e11db26e2f4ed5849a095aba9907bf44289fdac29ec88b1554006d94",
-    bytes: 240948
+    url: "/plugin-builtins/display-05fc73de27099f1bf42e754cfa901149ec99a8c7f1007ecf47bcb3130b9d4809.bin",
+    sha256: "05fc73de27099f1bf42e754cfa901149ec99a8c7f1007ecf47bcb3130b9d4809",
+    bytes: 210718
   },
   "750952397afc00ee4c5d32bac73dae6bf24823407d6058c1103bfe4ca4bff1d8": {
-    url: "/plugin-builtins/display-cbf9b56c93f7a1aeaf63213d749f779b38335d7d372664ad19dba434aecb3798.bin",
-    sha256: "cbf9b56c93f7a1aeaf63213d749f779b38335d7d372664ad19dba434aecb3798",
-    bytes: 163941
+    url: "/plugin-builtins/display-6b4b11f924d96a0078856d27655da62a0416806ef9eb7001c4dd468271d78d7a.bin",
+    sha256: "6b4b11f924d96a0078856d27655da62a0416806ef9eb7001c4dd468271d78d7a",
+    bytes: 307218
   },
   "759b46c7eb27d7b79a5a93beb9eb4137b5a008ae9e38d457559885b7a721dbbe": {
-    url: "/plugin-builtins/display-cbf9b56c93f7a1aeaf63213d749f779b38335d7d372664ad19dba434aecb3798.bin",
-    sha256: "cbf9b56c93f7a1aeaf63213d749f779b38335d7d372664ad19dba434aecb3798",
-    bytes: 163941
-  },
-  "75e8cc7ff65c0242ee259c5df0f78394512c2e583fba6ab7139f9dcc35827e33": {
-    url: "/plugin-builtins/display-3d4e3bfd983361556e79a885e8dfd0948c3aa4839edea238d5a43341f0afca7e.bin",
-    sha256: "3d4e3bfd983361556e79a885e8dfd0948c3aa4839edea238d5a43341f0afca7e",
-    bytes: 139801
-  },
-  "761cb5879e77981dbb56a0d139e5e7539e7ea14d7941ec3425c845454864e53c": {
-    url: "/plugin-builtins/display-3d4e3bfd983361556e79a885e8dfd0948c3aa4839edea238d5a43341f0afca7e.bin",
-    sha256: "3d4e3bfd983361556e79a885e8dfd0948c3aa4839edea238d5a43341f0afca7e",
-    bytes: 139801
-  },
-  "763d62cb9a985bcd7b550340a5254b1bea211db61057ee1385c69cc0e06a15d4": {
-    url: "/plugin-builtins/display-0d45d509f2a98f6b47fbfb093d43540faeda7c56eb323dfdead91735057b631d.bin",
-    sha256: "0d45d509f2a98f6b47fbfb093d43540faeda7c56eb323dfdead91735057b631d",
-    bytes: 24066
-  },
-  "776cbe9a13fe951189f78296fc428ad6c0aa9add1f25674fd23a5303cd67d41d": {
-    url: "/plugin-builtins/display-8df79680290567f281a924eb4c62372dde1b8483eddc60b8c3f40906b8e469e7.bin",
-    sha256: "8df79680290567f281a924eb4c62372dde1b8483eddc60b8c3f40906b8e469e7",
-    bytes: 1028194
+    url: "/plugin-builtins/display-6b4b11f924d96a0078856d27655da62a0416806ef9eb7001c4dd468271d78d7a.bin",
+    sha256: "6b4b11f924d96a0078856d27655da62a0416806ef9eb7001c4dd468271d78d7a",
+    bytes: 307218
   },
   "785f4c6b7cf238591340fad431829bee0fc89e0cbc732b50d8ec04e27ead30df": {
-    url: "/plugin-builtins/display-670cb59c9cd59b59709e6dd635b18b0ceb86feb5a44177a68aace0344a61e943.bin",
-    sha256: "670cb59c9cd59b59709e6dd635b18b0ceb86feb5a44177a68aace0344a61e943",
-    bytes: 166506
+    url: "/plugin-builtins/display-7976cbd73167a0fe1fc59071dbb6989d63b49a6ff05c2635e021796606ededa7.bin",
+    sha256: "7976cbd73167a0fe1fc59071dbb6989d63b49a6ff05c2635e021796606ededa7",
+    bytes: 475164
   },
   "791f693ba470a459dfd6143bab559b76528d0f5a0a931234769ea696ee49de1d": {
-    url: "/plugin-builtins/display-66a20900e11db26e2f4ed5849a095aba9907bf44289fdac29ec88b1554006d94.bin",
-    sha256: "66a20900e11db26e2f4ed5849a095aba9907bf44289fdac29ec88b1554006d94",
-    bytes: 240948
+    url: "/plugin-builtins/display-05fc73de27099f1bf42e754cfa901149ec99a8c7f1007ecf47bcb3130b9d4809.bin",
+    sha256: "05fc73de27099f1bf42e754cfa901149ec99a8c7f1007ecf47bcb3130b9d4809",
+    bytes: 210718
   },
   "7a6e3384e961bacdc8e2f3062e67990b592dab83f9e35d9823ad8e39607e3926": {
-    url: "/plugin-builtins/display-670cb59c9cd59b59709e6dd635b18b0ceb86feb5a44177a68aace0344a61e943.bin",
-    sha256: "670cb59c9cd59b59709e6dd635b18b0ceb86feb5a44177a68aace0344a61e943",
-    bytes: 166506
+    url: "/plugin-builtins/display-7976cbd73167a0fe1fc59071dbb6989d63b49a6ff05c2635e021796606ededa7.bin",
+    sha256: "7976cbd73167a0fe1fc59071dbb6989d63b49a6ff05c2635e021796606ededa7",
+    bytes: 475164
   },
-  "7ad0b473a29610750140d1e32ab68a931938f5cc02fd8739c9f71a684b4a408e": {
-    url: "/plugin-builtins/display-3d4e3bfd983361556e79a885e8dfd0948c3aa4839edea238d5a43341f0afca7e.bin",
-    sha256: "3d4e3bfd983361556e79a885e8dfd0948c3aa4839edea238d5a43341f0afca7e",
-    bytes: 139801
-  },
-  "7bfc82fee73cbddbf381472a596c472b2c85c46290ad4a0cc11db69df4dadf54": {
-    url: "/plugin-builtins/display-b7f6a37ff69d095c18886869c16002b57efdf6a9ab6070941ac10ac354c36a3b.bin",
-    sha256: "b7f6a37ff69d095c18886869c16002b57efdf6a9ab6070941ac10ac354c36a3b",
-    bytes: 2099453
+  "7c6268535e6f54e15b38c399f0274b43ac6e419ca29565b65c697309cb30c745": {
+    url: "/plugin-builtins/display-0f140fe203bef5c1fb0fa3ee70026d367270c6ea9eb1c963a1a805cfd427433f.bin",
+    sha256: "0f140fe203bef5c1fb0fa3ee70026d367270c6ea9eb1c963a1a805cfd427433f",
+    bytes: 222314
   },
   "7d400a65663b66824429eff9a1dad8f7f218b9dffa2eeb107a17ca2df37c8053": {
-    url: "/plugin-builtins/display-66a20900e11db26e2f4ed5849a095aba9907bf44289fdac29ec88b1554006d94.bin",
-    sha256: "66a20900e11db26e2f4ed5849a095aba9907bf44289fdac29ec88b1554006d94",
-    bytes: 240948
-  },
-  "80d7e7b17990d5c9da6be496eb6fbe909011e9bffebe4a92c9a12aa90117ef4a": {
-    url: "/plugin-builtins/display-5030666ef08bdd4a8d750ead5420b40e544c6a8d45e7f0eda72ce8cd1e0aa25f.bin",
-    sha256: "5030666ef08bdd4a8d750ead5420b40e544c6a8d45e7f0eda72ce8cd1e0aa25f",
-    bytes: 61472
+    url: "/plugin-builtins/display-05fc73de27099f1bf42e754cfa901149ec99a8c7f1007ecf47bcb3130b9d4809.bin",
+    sha256: "05fc73de27099f1bf42e754cfa901149ec99a8c7f1007ecf47bcb3130b9d4809",
+    bytes: 210718
   },
   "80dc67a60ce6cce8f4d1a4be20698f234a43cc91621c252e2e5af9a17633dc69": {
-    url: "/plugin-builtins/display-1c18198985054bc360cefbcb81364d2e5612474a4c1f8682d9dbc9244de832fe.bin",
-    sha256: "1c18198985054bc360cefbcb81364d2e5612474a4c1f8682d9dbc9244de832fe",
-    bytes: 163770
+    url: "/plugin-builtins/display-0f140fe203bef5c1fb0fa3ee70026d367270c6ea9eb1c963a1a805cfd427433f.bin",
+    sha256: "0f140fe203bef5c1fb0fa3ee70026d367270c6ea9eb1c963a1a805cfd427433f",
+    bytes: 222314
   },
   "811fdcdc04d49b54bd71d42307a924ea2c2615728ca7bef3d1c6e79e640ab025": {
     url: "/plugin-builtins/display-16bee8a1f7ebaf722bd0b75c706331042c69e858c016ce997db87363dcd4ee76.bin",
@@ -269102,379 +268802,229 @@ var builtinGeometryArtifacts_generated_default = {
     bytes: 1527867
   },
   "822ec2e6cba7ed32166f940c774974ded527f1b065e9bed10115c404f255be04": {
-    url: "/plugin-builtins/display-79c9d8bf9eb14e406137def0cedb13455f6eadd93a179bb104c9f30e56ac7ffe.bin",
-    sha256: "79c9d8bf9eb14e406137def0cedb13455f6eadd93a179bb104c9f30e56ac7ffe",
-    bytes: 54824
+    url: "/plugin-builtins/display-05fc73de27099f1bf42e754cfa901149ec99a8c7f1007ecf47bcb3130b9d4809.bin",
+    sha256: "05fc73de27099f1bf42e754cfa901149ec99a8c7f1007ecf47bcb3130b9d4809",
+    bytes: 210718
   },
   "828f9f3577f1e39032186639e16970f6302a188f9baf40de588db9ceea0465ab": {
-    url: "/plugin-builtins/display-79c9d8bf9eb14e406137def0cedb13455f6eadd93a179bb104c9f30e56ac7ffe.bin",
-    sha256: "79c9d8bf9eb14e406137def0cedb13455f6eadd93a179bb104c9f30e56ac7ffe",
-    bytes: 54824
+    url: "/plugin-builtins/display-05fc73de27099f1bf42e754cfa901149ec99a8c7f1007ecf47bcb3130b9d4809.bin",
+    sha256: "05fc73de27099f1bf42e754cfa901149ec99a8c7f1007ecf47bcb3130b9d4809",
+    bytes: 210718
   },
   "8356dcb03d9aa83bcb4c18027c45dfb14c2c368cdd865884cc505327d86b6ac4": {
-    url: "/plugin-builtins/display-f206fd31ad2e13621591219b00955439ada3c84f74ff5388c0fb5440f8628884.bin",
-    sha256: "f206fd31ad2e13621591219b00955439ada3c84f74ff5388c0fb5440f8628884",
-    bytes: 168585
-  },
-  "83b5022bcf6fa76397c4cffe5a77df3d65628af8f7646c1f11c76bc31345ec9c": {
-    url: "/plugin-builtins/display-a7da39800f5565f9b077eca1ace6a4391a84f98400c990d9969eb0ed3702a918.bin",
-    sha256: "a7da39800f5565f9b077eca1ace6a4391a84f98400c990d9969eb0ed3702a918",
-    bytes: 167700
+    url: "/plugin-builtins/display-6b4b11f924d96a0078856d27655da62a0416806ef9eb7001c4dd468271d78d7a.bin",
+    sha256: "6b4b11f924d96a0078856d27655da62a0416806ef9eb7001c4dd468271d78d7a",
+    bytes: 307218
   },
   "84f2a66892a3ea4556c30d50fe36f6054d4975e91b686e18d22fc86383897a24": {
-    url: "/plugin-builtins/display-a7da39800f5565f9b077eca1ace6a4391a84f98400c990d9969eb0ed3702a918.bin",
-    sha256: "a7da39800f5565f9b077eca1ace6a4391a84f98400c990d9969eb0ed3702a918",
-    bytes: 167700
+    url: "/plugin-builtins/display-7976cbd73167a0fe1fc59071dbb6989d63b49a6ff05c2635e021796606ededa7.bin",
+    sha256: "7976cbd73167a0fe1fc59071dbb6989d63b49a6ff05c2635e021796606ededa7",
+    bytes: 475164
   },
-  "855e93cf084bf4cca9612cab547e883d533c9f7a687487111c0b66e21a4486d5": {
-    url: "/plugin-builtins/display-a7da39800f5565f9b077eca1ace6a4391a84f98400c990d9969eb0ed3702a918.bin",
-    sha256: "a7da39800f5565f9b077eca1ace6a4391a84f98400c990d9969eb0ed3702a918",
-    bytes: 167700
-  },
-  "8700316fe5532060a87a566aac2c44ba1fa02cb32d835aea774d7c80b2ae6f1a": {
-    url: "/plugin-builtins/display-79c9d8bf9eb14e406137def0cedb13455f6eadd93a179bb104c9f30e56ac7ffe.bin",
-    sha256: "79c9d8bf9eb14e406137def0cedb13455f6eadd93a179bb104c9f30e56ac7ffe",
-    bytes: 54824
+  "8596e7f5f62226ab3bf49453365c5038a613b173da7528cac7ac934c52cc09e8": {
+    url: "/plugin-builtins/display-7976cbd73167a0fe1fc59071dbb6989d63b49a6ff05c2635e021796606ededa7.bin",
+    sha256: "7976cbd73167a0fe1fc59071dbb6989d63b49a6ff05c2635e021796606ededa7",
+    bytes: 475164
   },
   "87513360b0e24305d763b0c2f1b96147eadd65bda5d188ea401a91e2fc73435a": {
-    url: "/plugin-builtins/display-f206fd31ad2e13621591219b00955439ada3c84f74ff5388c0fb5440f8628884.bin",
-    sha256: "f206fd31ad2e13621591219b00955439ada3c84f74ff5388c0fb5440f8628884",
-    bytes: 168585
+    url: "/plugin-builtins/display-6b4b11f924d96a0078856d27655da62a0416806ef9eb7001c4dd468271d78d7a.bin",
+    sha256: "6b4b11f924d96a0078856d27655da62a0416806ef9eb7001c4dd468271d78d7a",
+    bytes: 307218
   },
   "888202ec6ebb62691d775800ce34034d1ace45d874a270336d74153291e3693c": {
-    url: "/plugin-builtins/display-a7da39800f5565f9b077eca1ace6a4391a84f98400c990d9969eb0ed3702a918.bin",
-    sha256: "a7da39800f5565f9b077eca1ace6a4391a84f98400c990d9969eb0ed3702a918",
-    bytes: 167700
-  },
-  "89d04d12a3c4dd7fad751118744cf153a388b41062df2cebe53811680414271f": {
-    url: "/plugin-builtins/display-dc56cb7a688087210356d1d6b83fbc37f04b258a40e854ab76aa22b6e06a0e05.bin",
-    sha256: "dc56cb7a688087210356d1d6b83fbc37f04b258a40e854ab76aa22b6e06a0e05",
-    bytes: 1266092
-  },
-  "8a90b4b7551025345e45158b3ec26890dc5c1a645614a70e4dadaa3797940b65": {
-    url: "/plugin-builtins/display-5030666ef08bdd4a8d750ead5420b40e544c6a8d45e7f0eda72ce8cd1e0aa25f.bin",
-    sha256: "5030666ef08bdd4a8d750ead5420b40e544c6a8d45e7f0eda72ce8cd1e0aa25f",
-    bytes: 61472
+    url: "/plugin-builtins/display-7976cbd73167a0fe1fc59071dbb6989d63b49a6ff05c2635e021796606ededa7.bin",
+    sha256: "7976cbd73167a0fe1fc59071dbb6989d63b49a6ff05c2635e021796606ededa7",
+    bytes: 475164
   },
   "8dae932788846a66cf36381aee39b3a12a26c1824010a6e95c1c18d76f313ded": {
-    url: "/plugin-builtins/display-79c9d8bf9eb14e406137def0cedb13455f6eadd93a179bb104c9f30e56ac7ffe.bin",
-    sha256: "79c9d8bf9eb14e406137def0cedb13455f6eadd93a179bb104c9f30e56ac7ffe",
-    bytes: 54824
-  },
-  "8e68ca1868bd1c02d200289f262accaea09e131142365ebe1c175f60127a3a61": {
-    url: "/plugin-builtins/display-a7da39800f5565f9b077eca1ace6a4391a84f98400c990d9969eb0ed3702a918.bin",
-    sha256: "a7da39800f5565f9b077eca1ace6a4391a84f98400c990d9969eb0ed3702a918",
-    bytes: 167700
+    url: "/plugin-builtins/display-05fc73de27099f1bf42e754cfa901149ec99a8c7f1007ecf47bcb3130b9d4809.bin",
+    sha256: "05fc73de27099f1bf42e754cfa901149ec99a8c7f1007ecf47bcb3130b9d4809",
+    bytes: 210718
   },
   "90adbea1ed1ecaba257c501a8145b70eb755b3cd5528c9a801f11883370608a9": {
-    url: "/plugin-builtins/display-79c9d8bf9eb14e406137def0cedb13455f6eadd93a179bb104c9f30e56ac7ffe.bin",
-    sha256: "79c9d8bf9eb14e406137def0cedb13455f6eadd93a179bb104c9f30e56ac7ffe",
-    bytes: 54824
-  },
-  "90ff19911b88db2d95a61c9f632f082becf1cf12faed9ec2757c1aa2e99585c9": {
-    url: "/plugin-builtins/display-79c9d8bf9eb14e406137def0cedb13455f6eadd93a179bb104c9f30e56ac7ffe.bin",
-    sha256: "79c9d8bf9eb14e406137def0cedb13455f6eadd93a179bb104c9f30e56ac7ffe",
-    bytes: 54824
-  },
-  "91bd2e16d4e5bde4253ce99c4d116e14b29c37ea62b51ae1fec4fb3bff6e6e66": {
-    url: "/plugin-builtins/display-3f04e3531a85eb8df600c3ab49a98d684c0478ba0d6c726a6178be6aac7c0679.bin",
-    sha256: "3f04e3531a85eb8df600c3ab49a98d684c0478ba0d6c726a6178be6aac7c0679",
-    bytes: 196498
-  },
-  "91f3f90db57f7e20e16a0d152cb741407ebc55c9ca12fa4f5102915b9be0e0d9": {
-    url: "/plugin-builtins/display-6fe375f73ed93bb6f968dc7012f07576d54d1be0307ae12ca0ff8d4c3b4e894c.bin",
-    sha256: "6fe375f73ed93bb6f968dc7012f07576d54d1be0307ae12ca0ff8d4c3b4e894c",
-    bytes: 131447
-  },
-  "9399c7d41ca5031f2355d688ab95f64dfdf13bbd23c63d77855e72dad1c39965": {
-    url: "/plugin-builtins/display-f206fd31ad2e13621591219b00955439ada3c84f74ff5388c0fb5440f8628884.bin",
-    sha256: "f206fd31ad2e13621591219b00955439ada3c84f74ff5388c0fb5440f8628884",
-    bytes: 168585
+    url: "/plugin-builtins/display-05fc73de27099f1bf42e754cfa901149ec99a8c7f1007ecf47bcb3130b9d4809.bin",
+    sha256: "05fc73de27099f1bf42e754cfa901149ec99a8c7f1007ecf47bcb3130b9d4809",
+    bytes: 210718
   },
   "94095f1ad530b7230065c5a5380a11220bcbeeceded956f14997d3c488013d4d": {
-    url: "/plugin-builtins/display-f206fd31ad2e13621591219b00955439ada3c84f74ff5388c0fb5440f8628884.bin",
-    sha256: "f206fd31ad2e13621591219b00955439ada3c84f74ff5388c0fb5440f8628884",
-    bytes: 168585
+    url: "/plugin-builtins/display-6b4b11f924d96a0078856d27655da62a0416806ef9eb7001c4dd468271d78d7a.bin",
+    sha256: "6b4b11f924d96a0078856d27655da62a0416806ef9eb7001c4dd468271d78d7a",
+    bytes: 307218
   },
   "9424e4f625ae8b45a9f06bae66a9c25488610b7ed49b1194e7abb154bfb69fc8": {
-    url: "/plugin-builtins/display-1c18198985054bc360cefbcb81364d2e5612474a4c1f8682d9dbc9244de832fe.bin",
-    sha256: "1c18198985054bc360cefbcb81364d2e5612474a4c1f8682d9dbc9244de832fe",
-    bytes: 163770
+    url: "/plugin-builtins/display-0f140fe203bef5c1fb0fa3ee70026d367270c6ea9eb1c963a1a805cfd427433f.bin",
+    sha256: "0f140fe203bef5c1fb0fa3ee70026d367270c6ea9eb1c963a1a805cfd427433f",
+    bytes: 222314
   },
   "942e1b0648546c0e90878b250c160b25d2c8e54e2a80db29a5432f142f01fb69": {
-    url: "/plugin-builtins/display-1c18198985054bc360cefbcb81364d2e5612474a4c1f8682d9dbc9244de832fe.bin",
-    sha256: "1c18198985054bc360cefbcb81364d2e5612474a4c1f8682d9dbc9244de832fe",
-    bytes: 163770
-  },
-  "95574dc63f8396acf33d82c6907b914e9a6d96027d7d7b65bc48944a10fa71f7": {
-    url: "/plugin-builtins/display-5030666ef08bdd4a8d750ead5420b40e544c6a8d45e7f0eda72ce8cd1e0aa25f.bin",
-    sha256: "5030666ef08bdd4a8d750ead5420b40e544c6a8d45e7f0eda72ce8cd1e0aa25f",
-    bytes: 61472
+    url: "/plugin-builtins/display-0f140fe203bef5c1fb0fa3ee70026d367270c6ea9eb1c963a1a805cfd427433f.bin",
+    sha256: "0f140fe203bef5c1fb0fa3ee70026d367270c6ea9eb1c963a1a805cfd427433f",
+    bytes: 222314
   },
   "958bb6f753f42f403cba041f73e928e2999d75a19c6b2583314d28663a1a89aa": {
-    url: "/plugin-builtins/display-1c18198985054bc360cefbcb81364d2e5612474a4c1f8682d9dbc9244de832fe.bin",
-    sha256: "1c18198985054bc360cefbcb81364d2e5612474a4c1f8682d9dbc9244de832fe",
-    bytes: 163770
+    url: "/plugin-builtins/display-0f140fe203bef5c1fb0fa3ee70026d367270c6ea9eb1c963a1a805cfd427433f.bin",
+    sha256: "0f140fe203bef5c1fb0fa3ee70026d367270c6ea9eb1c963a1a805cfd427433f",
+    bytes: 222314
   },
   "9602d865817238f021df37c28f17bd35eb69ccf95f5bb6a7a23c164d799fdcbe": {
-    url: "/plugin-builtins/display-f206fd31ad2e13621591219b00955439ada3c84f74ff5388c0fb5440f8628884.bin",
-    sha256: "f206fd31ad2e13621591219b00955439ada3c84f74ff5388c0fb5440f8628884",
-    bytes: 168585
-  },
-  "966f308ec8493f154e94d6e2b9ae70e95e4f0da14041dc71f51cfb92f95141ca": {
-    url: "/plugin-builtins/display-5030666ef08bdd4a8d750ead5420b40e544c6a8d45e7f0eda72ce8cd1e0aa25f.bin",
-    sha256: "5030666ef08bdd4a8d750ead5420b40e544c6a8d45e7f0eda72ce8cd1e0aa25f",
-    bytes: 61472
-  },
-  "96c267805e28df99d119b2c763f4ce152e57b5b5969f156bc7fed117a555b0a0": {
-    url: "/plugin-builtins/display-5030666ef08bdd4a8d750ead5420b40e544c6a8d45e7f0eda72ce8cd1e0aa25f.bin",
-    sha256: "5030666ef08bdd4a8d750ead5420b40e544c6a8d45e7f0eda72ce8cd1e0aa25f",
-    bytes: 61472
+    url: "/plugin-builtins/display-6b4b11f924d96a0078856d27655da62a0416806ef9eb7001c4dd468271d78d7a.bin",
+    sha256: "6b4b11f924d96a0078856d27655da62a0416806ef9eb7001c4dd468271d78d7a",
+    bytes: 307218
   },
   "988266a687f2ceda70d8452c48b4b1e1ca00f597c689948a498be454b3edb6ad": {
-    url: "/plugin-builtins/display-1c18198985054bc360cefbcb81364d2e5612474a4c1f8682d9dbc9244de832fe.bin",
-    sha256: "1c18198985054bc360cefbcb81364d2e5612474a4c1f8682d9dbc9244de832fe",
-    bytes: 163770
-  },
-  "990fa49bc6ae9ee8e80a5ccb514fef9ff3a5c711631aabe6a63b2fc5277fa82a": {
-    url: "/plugin-builtins/display-a7da39800f5565f9b077eca1ace6a4391a84f98400c990d9969eb0ed3702a918.bin",
-    sha256: "a7da39800f5565f9b077eca1ace6a4391a84f98400c990d9969eb0ed3702a918",
-    bytes: 167700
+    url: "/plugin-builtins/display-0f140fe203bef5c1fb0fa3ee70026d367270c6ea9eb1c963a1a805cfd427433f.bin",
+    sha256: "0f140fe203bef5c1fb0fa3ee70026d367270c6ea9eb1c963a1a805cfd427433f",
+    bytes: 222314
   },
   "9c69d15468beb5cf69a64bc347e66f59b22c8990b1af74eb3e25175b4fe7a63a": {
-    url: "/plugin-builtins/display-f206fd31ad2e13621591219b00955439ada3c84f74ff5388c0fb5440f8628884.bin",
-    sha256: "f206fd31ad2e13621591219b00955439ada3c84f74ff5388c0fb5440f8628884",
-    bytes: 168585
+    url: "/plugin-builtins/display-6b4b11f924d96a0078856d27655da62a0416806ef9eb7001c4dd468271d78d7a.bin",
+    sha256: "6b4b11f924d96a0078856d27655da62a0416806ef9eb7001c4dd468271d78d7a",
+    bytes: 307218
   },
   "9c99edcd02900b15dc4e32e55095f66a2adb0e6bcf159b49a837f0eece7a540d": {
     url: "/plugin-builtins/display-89b7d5eeab2fd71d937f760f1dc6daa8faef5a3c1cddca6b476b3439325ef546.bin",
     sha256: "89b7d5eeab2fd71d937f760f1dc6daa8faef5a3c1cddca6b476b3439325ef546",
     bytes: 743960
   },
-  "9cabc579599b18c1fcc1919958c241a5d5776281ad71d1fef7a5dba4f054b700": {
-    url: "/plugin-builtins/display-62dacd832b108eaae351ac8cad84bbcfbacdc4ec712892c28ccc21a83a18cf7e.bin",
-    sha256: "62dacd832b108eaae351ac8cad84bbcfbacdc4ec712892c28ccc21a83a18cf7e",
-    bytes: 1568909
-  },
   "9d89db173ef9862143c0cc73104810b0197dc68a76e6128bab4912d7d7725c53": {
-    url: "/plugin-builtins/display-79c9d8bf9eb14e406137def0cedb13455f6eadd93a179bb104c9f30e56ac7ffe.bin",
-    sha256: "79c9d8bf9eb14e406137def0cedb13455f6eadd93a179bb104c9f30e56ac7ffe",
-    bytes: 54824
+    url: "/plugin-builtins/display-05fc73de27099f1bf42e754cfa901149ec99a8c7f1007ecf47bcb3130b9d4809.bin",
+    sha256: "05fc73de27099f1bf42e754cfa901149ec99a8c7f1007ecf47bcb3130b9d4809",
+    bytes: 210718
   },
   "9e29592477ee7049b4c49445ff05bbed0964ad12da6e78bff341bddeb6e4ff58": {
-    url: "/plugin-builtins/display-f206fd31ad2e13621591219b00955439ada3c84f74ff5388c0fb5440f8628884.bin",
-    sha256: "f206fd31ad2e13621591219b00955439ada3c84f74ff5388c0fb5440f8628884",
-    bytes: 168585
-  },
-  "9e4393c925af78ba0c4a355c9895856c592f0eaa8eb329d7198539d5a226057c": {
-    url: "/plugin-builtins/display-b7f6a37ff69d095c18886869c16002b57efdf6a9ab6070941ac10ac354c36a3b.bin",
-    sha256: "b7f6a37ff69d095c18886869c16002b57efdf6a9ab6070941ac10ac354c36a3b",
-    bytes: 2099453
-  },
-  "9e9af5e9c930bc7980aaddf04f009b8729656ed64d12edeaa4033e70882dc975": {
-    url: "/plugin-builtins/display-79c9d8bf9eb14e406137def0cedb13455f6eadd93a179bb104c9f30e56ac7ffe.bin",
-    sha256: "79c9d8bf9eb14e406137def0cedb13455f6eadd93a179bb104c9f30e56ac7ffe",
-    bytes: 54824
+    url: "/plugin-builtins/display-6b4b11f924d96a0078856d27655da62a0416806ef9eb7001c4dd468271d78d7a.bin",
+    sha256: "6b4b11f924d96a0078856d27655da62a0416806ef9eb7001c4dd468271d78d7a",
+    bytes: 307218
   },
   "9f1e05e77f27c6b3e3e90df5549c80bfb78ced0313303aba80ed9f40a5a3200b": {
-    url: "/plugin-builtins/display-a7da39800f5565f9b077eca1ace6a4391a84f98400c990d9969eb0ed3702a918.bin",
-    sha256: "a7da39800f5565f9b077eca1ace6a4391a84f98400c990d9969eb0ed3702a918",
-    bytes: 167700
-  },
-  a13bb355e573c6dc7941f138fc28502a9468f0d2e1d08f82c8c33958c6f80456: {
-    url: "/plugin-builtins/display-62dacd832b108eaae351ac8cad84bbcfbacdc4ec712892c28ccc21a83a18cf7e.bin",
-    sha256: "62dacd832b108eaae351ac8cad84bbcfbacdc4ec712892c28ccc21a83a18cf7e",
-    bytes: 1568909
+    url: "/plugin-builtins/display-7976cbd73167a0fe1fc59071dbb6989d63b49a6ff05c2635e021796606ededa7.bin",
+    sha256: "7976cbd73167a0fe1fc59071dbb6989d63b49a6ff05c2635e021796606ededa7",
+    bytes: 475164
   },
   a27ce07efced9a60d1a98ea73bd11d7389a32e3294e4c14e4a37d8b3c91bbd94: {
-    url: "/plugin-builtins/display-1c18198985054bc360cefbcb81364d2e5612474a4c1f8682d9dbc9244de832fe.bin",
-    sha256: "1c18198985054bc360cefbcb81364d2e5612474a4c1f8682d9dbc9244de832fe",
-    bytes: 163770
+    url: "/plugin-builtins/display-0f140fe203bef5c1fb0fa3ee70026d367270c6ea9eb1c963a1a805cfd427433f.bin",
+    sha256: "0f140fe203bef5c1fb0fa3ee70026d367270c6ea9eb1c963a1a805cfd427433f",
+    bytes: 222314
   },
   a2b65562f3b9784aea2ea927b9847ca0c0578ddc167c239f5b77a6dd827c1bbd: {
-    url: "/plugin-builtins/display-1c18198985054bc360cefbcb81364d2e5612474a4c1f8682d9dbc9244de832fe.bin",
-    sha256: "1c18198985054bc360cefbcb81364d2e5612474a4c1f8682d9dbc9244de832fe",
-    bytes: 163770
-  },
-  a334a4665703493bafbbf4f6b6bc139c971a419131e77777c5b610770eefbc8d: {
-    url: "/plugin-builtins/display-1803b2d56efd042e7f190967ed1ca8da0b5ad31046ae5d814187a0a3c5c8a1a3.bin",
-    sha256: "1803b2d56efd042e7f190967ed1ca8da0b5ad31046ae5d814187a0a3c5c8a1a3",
-    bytes: 86916
+    url: "/plugin-builtins/display-0f140fe203bef5c1fb0fa3ee70026d367270c6ea9eb1c963a1a805cfd427433f.bin",
+    sha256: "0f140fe203bef5c1fb0fa3ee70026d367270c6ea9eb1c963a1a805cfd427433f",
+    bytes: 222314
   },
   a34ec1db5a9c2b7ba07bf33b412f3165b81403ef1d82e629b1a8f9da66cf391c: {
-    url: "/plugin-builtins/display-f206fd31ad2e13621591219b00955439ada3c84f74ff5388c0fb5440f8628884.bin",
-    sha256: "f206fd31ad2e13621591219b00955439ada3c84f74ff5388c0fb5440f8628884",
-    bytes: 168585
-  },
-  a4d35ca64be104c6eb8905dc442c8298f5f4769b1c4b95c1fce2ed0906cde6a3: {
-    url: "/plugin-builtins/display-6fe375f73ed93bb6f968dc7012f07576d54d1be0307ae12ca0ff8d4c3b4e894c.bin",
-    sha256: "6fe375f73ed93bb6f968dc7012f07576d54d1be0307ae12ca0ff8d4c3b4e894c",
-    bytes: 131447
+    url: "/plugin-builtins/display-6b4b11f924d96a0078856d27655da62a0416806ef9eb7001c4dd468271d78d7a.bin",
+    sha256: "6b4b11f924d96a0078856d27655da62a0416806ef9eb7001c4dd468271d78d7a",
+    bytes: 307218
   },
   a6a2a53c56b02fa39fd246e3fe4a0d9cb76ac07ae59eeea0e4b036b239bbfb67: {
-    url: "/plugin-builtins/display-79c9d8bf9eb14e406137def0cedb13455f6eadd93a179bb104c9f30e56ac7ffe.bin",
-    sha256: "79c9d8bf9eb14e406137def0cedb13455f6eadd93a179bb104c9f30e56ac7ffe",
-    bytes: 54824
+    url: "/plugin-builtins/display-05fc73de27099f1bf42e754cfa901149ec99a8c7f1007ecf47bcb3130b9d4809.bin",
+    sha256: "05fc73de27099f1bf42e754cfa901149ec99a8c7f1007ecf47bcb3130b9d4809",
+    bytes: 210718
   },
   a6a8c1dce4a67251a9ad20a7e5911e81f3c63631388de5da5798dff2cf8ba48c: {
-    url: "/plugin-builtins/display-f206fd31ad2e13621591219b00955439ada3c84f74ff5388c0fb5440f8628884.bin",
-    sha256: "f206fd31ad2e13621591219b00955439ada3c84f74ff5388c0fb5440f8628884",
-    bytes: 168585
+    url: "/plugin-builtins/display-6b4b11f924d96a0078856d27655da62a0416806ef9eb7001c4dd468271d78d7a.bin",
+    sha256: "6b4b11f924d96a0078856d27655da62a0416806ef9eb7001c4dd468271d78d7a",
+    bytes: 307218
   },
   a6e5bf463b03e2828e4ba22f31fbdc0376032ee649b46686dd5ec0ad62609630: {
-    url: "/plugin-builtins/display-a7da39800f5565f9b077eca1ace6a4391a84f98400c990d9969eb0ed3702a918.bin",
-    sha256: "a7da39800f5565f9b077eca1ace6a4391a84f98400c990d9969eb0ed3702a918",
-    bytes: 167700
+    url: "/plugin-builtins/display-7976cbd73167a0fe1fc59071dbb6989d63b49a6ff05c2635e021796606ededa7.bin",
+    sha256: "7976cbd73167a0fe1fc59071dbb6989d63b49a6ff05c2635e021796606ededa7",
+    bytes: 475164
   },
   a78e3869768ad847ab12e0e03557a1f67542d6b2066ba8a8e08f005d487b4997: {
-    url: "/plugin-builtins/display-a7da39800f5565f9b077eca1ace6a4391a84f98400c990d9969eb0ed3702a918.bin",
-    sha256: "a7da39800f5565f9b077eca1ace6a4391a84f98400c990d9969eb0ed3702a918",
-    bytes: 167700
+    url: "/plugin-builtins/display-7976cbd73167a0fe1fc59071dbb6989d63b49a6ff05c2635e021796606ededa7.bin",
+    sha256: "7976cbd73167a0fe1fc59071dbb6989d63b49a6ff05c2635e021796606ededa7",
+    bytes: 475164
   },
   a87898c1ad3ce460959db8b425d1da83563721874eedd61a1ed4003aa4f5f9a0: {
-    url: "/plugin-builtins/display-a7da39800f5565f9b077eca1ace6a4391a84f98400c990d9969eb0ed3702a918.bin",
-    sha256: "a7da39800f5565f9b077eca1ace6a4391a84f98400c990d9969eb0ed3702a918",
-    bytes: 167700
+    url: "/plugin-builtins/display-7976cbd73167a0fe1fc59071dbb6989d63b49a6ff05c2635e021796606ededa7.bin",
+    sha256: "7976cbd73167a0fe1fc59071dbb6989d63b49a6ff05c2635e021796606ededa7",
+    bytes: 475164
   },
   a881d78c968d75b02878b8a7edc8e369d712c3b6e6356e4ed2a0186d2fa12054: {
-    url: "/plugin-builtins/display-1c18198985054bc360cefbcb81364d2e5612474a4c1f8682d9dbc9244de832fe.bin",
-    sha256: "1c18198985054bc360cefbcb81364d2e5612474a4c1f8682d9dbc9244de832fe",
-    bytes: 163770
+    url: "/plugin-builtins/display-0f140fe203bef5c1fb0fa3ee70026d367270c6ea9eb1c963a1a805cfd427433f.bin",
+    sha256: "0f140fe203bef5c1fb0fa3ee70026d367270c6ea9eb1c963a1a805cfd427433f",
+    bytes: 222314
   },
   a909bffcb9e25b3cac4b042d5c0f9bb163563772c45aceb1134315278b0efdda: {
     url: "/plugin-builtins/display-16bee8a1f7ebaf722bd0b75c706331042c69e858c016ce997db87363dcd4ee76.bin",
     sha256: "16bee8a1f7ebaf722bd0b75c706331042c69e858c016ce997db87363dcd4ee76",
     bytes: 1527867
   },
-  a9683c3c16330b42d2aa7cc4638549dd77b1053dd9c02eee516c30928d15564c: {
-    url: "/plugin-builtins/display-b7f6a37ff69d095c18886869c16002b57efdf6a9ab6070941ac10ac354c36a3b.bin",
-    sha256: "b7f6a37ff69d095c18886869c16002b57efdf6a9ab6070941ac10ac354c36a3b",
-    bytes: 2099453
-  },
   a9cc0ea08d3c34e2d67cfc44aa805ca645452105c2ea469c496a03feeb6c9fba: {
-    url: "/plugin-builtins/display-79c9d8bf9eb14e406137def0cedb13455f6eadd93a179bb104c9f30e56ac7ffe.bin",
-    sha256: "79c9d8bf9eb14e406137def0cedb13455f6eadd93a179bb104c9f30e56ac7ffe",
-    bytes: 54824
+    url: "/plugin-builtins/display-05fc73de27099f1bf42e754cfa901149ec99a8c7f1007ecf47bcb3130b9d4809.bin",
+    sha256: "05fc73de27099f1bf42e754cfa901149ec99a8c7f1007ecf47bcb3130b9d4809",
+    bytes: 210718
   },
   aa94b6508fce7f1089ae8a5e6219b3804692f949f3d25df4e53c423205a1f65f: {
-    url: "/plugin-builtins/display-79c9d8bf9eb14e406137def0cedb13455f6eadd93a179bb104c9f30e56ac7ffe.bin",
-    sha256: "79c9d8bf9eb14e406137def0cedb13455f6eadd93a179bb104c9f30e56ac7ffe",
-    bytes: 54824
-  },
-  acbc0b042bf09af7fef452da2fa31be7e768b731de53bf3e05bcf85dfa463e4d: {
-    url: "/plugin-builtins/display-3f04e3531a85eb8df600c3ab49a98d684c0478ba0d6c726a6178be6aac7c0679.bin",
-    sha256: "3f04e3531a85eb8df600c3ab49a98d684c0478ba0d6c726a6178be6aac7c0679",
-    bytes: 196498
-  },
-  ad0c92064a8ece31fb478decc03a14c6bc49297ef2daeeba3c6835575cb5950a: {
-    url: "/plugin-builtins/display-1c18198985054bc360cefbcb81364d2e5612474a4c1f8682d9dbc9244de832fe.bin",
-    sha256: "1c18198985054bc360cefbcb81364d2e5612474a4c1f8682d9dbc9244de832fe",
-    bytes: 163770
+    url: "/plugin-builtins/display-05fc73de27099f1bf42e754cfa901149ec99a8c7f1007ecf47bcb3130b9d4809.bin",
+    sha256: "05fc73de27099f1bf42e754cfa901149ec99a8c7f1007ecf47bcb3130b9d4809",
+    bytes: 210718
   },
   aee64a387a958accf6e33f4f8be31a9bbea8dc1f80f4571ccc7bc184f32f5348: {
-    url: "/plugin-builtins/display-79c9d8bf9eb14e406137def0cedb13455f6eadd93a179bb104c9f30e56ac7ffe.bin",
-    sha256: "79c9d8bf9eb14e406137def0cedb13455f6eadd93a179bb104c9f30e56ac7ffe",
-    bytes: 54824
-  },
-  aef9ea4beb54624c92fcb8a56dd7db7cd76233b5dd442db2939c8ef8c0bf7620: {
-    url: "/plugin-builtins/display-1c18198985054bc360cefbcb81364d2e5612474a4c1f8682d9dbc9244de832fe.bin",
-    sha256: "1c18198985054bc360cefbcb81364d2e5612474a4c1f8682d9dbc9244de832fe",
-    bytes: 163770
+    url: "/plugin-builtins/display-05fc73de27099f1bf42e754cfa901149ec99a8c7f1007ecf47bcb3130b9d4809.bin",
+    sha256: "05fc73de27099f1bf42e754cfa901149ec99a8c7f1007ecf47bcb3130b9d4809",
+    bytes: 210718
   },
   af070a2059e4f1e4dd6df9a409588bd8941eef964ab492041c7f40d243d0275d: {
-    url: "/plugin-builtins/display-79c9d8bf9eb14e406137def0cedb13455f6eadd93a179bb104c9f30e56ac7ffe.bin",
-    sha256: "79c9d8bf9eb14e406137def0cedb13455f6eadd93a179bb104c9f30e56ac7ffe",
-    bytes: 54824
-  },
-  b1e530bbae9960b4ba8971b65516a4c689fbdc27c3c6ebd8fd394c683d2267a1: {
-    url: "/plugin-builtins/display-1803b2d56efd042e7f190967ed1ca8da0b5ad31046ae5d814187a0a3c5c8a1a3.bin",
-    sha256: "1803b2d56efd042e7f190967ed1ca8da0b5ad31046ae5d814187a0a3c5c8a1a3",
-    bytes: 86916
+    url: "/plugin-builtins/display-05fc73de27099f1bf42e754cfa901149ec99a8c7f1007ecf47bcb3130b9d4809.bin",
+    sha256: "05fc73de27099f1bf42e754cfa901149ec99a8c7f1007ecf47bcb3130b9d4809",
+    bytes: 210718
   },
   b22bcf3ccee12c73c2b2de5ade3014db09e467f70db00c982212f782013e9cde: {
-    url: "/plugin-builtins/display-a7da39800f5565f9b077eca1ace6a4391a84f98400c990d9969eb0ed3702a918.bin",
-    sha256: "a7da39800f5565f9b077eca1ace6a4391a84f98400c990d9969eb0ed3702a918",
-    bytes: 167700
+    url: "/plugin-builtins/display-7976cbd73167a0fe1fc59071dbb6989d63b49a6ff05c2635e021796606ededa7.bin",
+    sha256: "7976cbd73167a0fe1fc59071dbb6989d63b49a6ff05c2635e021796606ededa7",
+    bytes: 475164
   },
   b2bdf4958c195930096ec506936fc3b7013f848a3fac7b5026580acefccca1ca: {
-    url: "/plugin-builtins/display-f206fd31ad2e13621591219b00955439ada3c84f74ff5388c0fb5440f8628884.bin",
-    sha256: "f206fd31ad2e13621591219b00955439ada3c84f74ff5388c0fb5440f8628884",
-    bytes: 168585
+    url: "/plugin-builtins/display-6b4b11f924d96a0078856d27655da62a0416806ef9eb7001c4dd468271d78d7a.bin",
+    sha256: "6b4b11f924d96a0078856d27655da62a0416806ef9eb7001c4dd468271d78d7a",
+    bytes: 307218
   },
   b397d817344416d6cfec391b65f0163d46d4c380c59356397250026bb56c621f: {
-    url: "/plugin-builtins/display-f206fd31ad2e13621591219b00955439ada3c84f74ff5388c0fb5440f8628884.bin",
-    sha256: "f206fd31ad2e13621591219b00955439ada3c84f74ff5388c0fb5440f8628884",
-    bytes: 168585
+    url: "/plugin-builtins/display-6b4b11f924d96a0078856d27655da62a0416806ef9eb7001c4dd468271d78d7a.bin",
+    sha256: "6b4b11f924d96a0078856d27655da62a0416806ef9eb7001c4dd468271d78d7a",
+    bytes: 307218
   },
   b3b6dfceb483aded9021d48c63b74afabfa27a3821b41c80cbd6c387133e1b6d: {
-    url: "/plugin-builtins/display-79c9d8bf9eb14e406137def0cedb13455f6eadd93a179bb104c9f30e56ac7ffe.bin",
-    sha256: "79c9d8bf9eb14e406137def0cedb13455f6eadd93a179bb104c9f30e56ac7ffe",
-    bytes: 54824
+    url: "/plugin-builtins/display-05fc73de27099f1bf42e754cfa901149ec99a8c7f1007ecf47bcb3130b9d4809.bin",
+    sha256: "05fc73de27099f1bf42e754cfa901149ec99a8c7f1007ecf47bcb3130b9d4809",
+    bytes: 210718
   },
   b3c2ec301fbe001a9a48c5fb918f1b9da083a2e687f00ac1efdc25f93e30d044: {
-    url: "/plugin-builtins/display-79c9d8bf9eb14e406137def0cedb13455f6eadd93a179bb104c9f30e56ac7ffe.bin",
-    sha256: "79c9d8bf9eb14e406137def0cedb13455f6eadd93a179bb104c9f30e56ac7ffe",
-    bytes: 54824
-  },
-  b4701d21ec9ff951a4f12059f78cda04cd37c845944235834b15e819624f7f35: {
-    url: "/plugin-builtins/display-1803b2d56efd042e7f190967ed1ca8da0b5ad31046ae5d814187a0a3c5c8a1a3.bin",
-    sha256: "1803b2d56efd042e7f190967ed1ca8da0b5ad31046ae5d814187a0a3c5c8a1a3",
-    bytes: 86916
+    url: "/plugin-builtins/display-05fc73de27099f1bf42e754cfa901149ec99a8c7f1007ecf47bcb3130b9d4809.bin",
+    sha256: "05fc73de27099f1bf42e754cfa901149ec99a8c7f1007ecf47bcb3130b9d4809",
+    bytes: 210718
   },
   b5c933be8a8e8a7fe9cec69bfdc956d56bc380a11ad2b1843927241787bcc0a0: {
-    url: "/plugin-builtins/display-1c18198985054bc360cefbcb81364d2e5612474a4c1f8682d9dbc9244de832fe.bin",
-    sha256: "1c18198985054bc360cefbcb81364d2e5612474a4c1f8682d9dbc9244de832fe",
-    bytes: 163770
+    url: "/plugin-builtins/display-0f140fe203bef5c1fb0fa3ee70026d367270c6ea9eb1c963a1a805cfd427433f.bin",
+    sha256: "0f140fe203bef5c1fb0fa3ee70026d367270c6ea9eb1c963a1a805cfd427433f",
+    bytes: 222314
   },
   b868ec0156b3ffa836278756ce6d13f1f3ef59dd3deec7f787a4c7635cdd63c8: {
-    url: "/plugin-builtins/display-79c9d8bf9eb14e406137def0cedb13455f6eadd93a179bb104c9f30e56ac7ffe.bin",
-    sha256: "79c9d8bf9eb14e406137def0cedb13455f6eadd93a179bb104c9f30e56ac7ffe",
-    bytes: 54824
+    url: "/plugin-builtins/display-05fc73de27099f1bf42e754cfa901149ec99a8c7f1007ecf47bcb3130b9d4809.bin",
+    sha256: "05fc73de27099f1bf42e754cfa901149ec99a8c7f1007ecf47bcb3130b9d4809",
+    bytes: 210718
   },
   b8c78b1b5855823a002a5ef8e7877d4916da4578af81632b2da27b7b71f9e2b4: {
-    url: "/plugin-builtins/display-79c9d8bf9eb14e406137def0cedb13455f6eadd93a179bb104c9f30e56ac7ffe.bin",
-    sha256: "79c9d8bf9eb14e406137def0cedb13455f6eadd93a179bb104c9f30e56ac7ffe",
-    bytes: 54824
-  },
-  b8dd209575c2f0862f4c3e862d3a8deb9b86c83783cd4a1040fdc05dca0cd3a0: {
-    url: "/plugin-builtins/display-6fe375f73ed93bb6f968dc7012f07576d54d1be0307ae12ca0ff8d4c3b4e894c.bin",
-    sha256: "6fe375f73ed93bb6f968dc7012f07576d54d1be0307ae12ca0ff8d4c3b4e894c",
-    bytes: 131447
-  },
-  b9145d37e8fb4628492ad525817af6597b0da1f4afabc4f85fe8591e1981bad0: {
-    url: "/plugin-builtins/display-5030666ef08bdd4a8d750ead5420b40e544c6a8d45e7f0eda72ce8cd1e0aa25f.bin",
-    sha256: "5030666ef08bdd4a8d750ead5420b40e544c6a8d45e7f0eda72ce8cd1e0aa25f",
-    bytes: 61472
+    url: "/plugin-builtins/display-05fc73de27099f1bf42e754cfa901149ec99a8c7f1007ecf47bcb3130b9d4809.bin",
+    sha256: "05fc73de27099f1bf42e754cfa901149ec99a8c7f1007ecf47bcb3130b9d4809",
+    bytes: 210718
   },
   b9181fae4f1c3fd751fdbf8dfc02421fcf8424c84c6ddd80734b80738c8544da: {
-    url: "/plugin-builtins/display-f206fd31ad2e13621591219b00955439ada3c84f74ff5388c0fb5440f8628884.bin",
-    sha256: "f206fd31ad2e13621591219b00955439ada3c84f74ff5388c0fb5440f8628884",
-    bytes: 168585
-  },
-  b9c373078fdc701866a7ad5cbdd73d317d98a2dda6f02c7288e7894bc80920ac: {
-    url: "/plugin-builtins/display-dc56cb7a688087210356d1d6b83fbc37f04b258a40e854ab76aa22b6e06a0e05.bin",
-    sha256: "dc56cb7a688087210356d1d6b83fbc37f04b258a40e854ab76aa22b6e06a0e05",
-    bytes: 1266092
-  },
-  ba114b512c4aab754f91fcaae22c0da7bd35f23b16ab2b37558ff77c93fe243e: {
-    url: "/plugin-builtins/display-f206fd31ad2e13621591219b00955439ada3c84f74ff5388c0fb5440f8628884.bin",
-    sha256: "f206fd31ad2e13621591219b00955439ada3c84f74ff5388c0fb5440f8628884",
-    bytes: 168585
+    url: "/plugin-builtins/display-6b4b11f924d96a0078856d27655da62a0416806ef9eb7001c4dd468271d78d7a.bin",
+    sha256: "6b4b11f924d96a0078856d27655da62a0416806ef9eb7001c4dd468271d78d7a",
+    bytes: 307218
   },
   bb43988c9877d1cae78d0df2192c48addfb75d7693c8b8210c186770605dd3c3: {
-    url: "/plugin-builtins/display-79c9d8bf9eb14e406137def0cedb13455f6eadd93a179bb104c9f30e56ac7ffe.bin",
-    sha256: "79c9d8bf9eb14e406137def0cedb13455f6eadd93a179bb104c9f30e56ac7ffe",
-    bytes: 54824
-  },
-  bba5e16887e7698e1d8fae796b23ccae049b7a53020b0838e87023b6d9e0024e: {
-    url: "/plugin-builtins/display-5030666ef08bdd4a8d750ead5420b40e544c6a8d45e7f0eda72ce8cd1e0aa25f.bin",
-    sha256: "5030666ef08bdd4a8d750ead5420b40e544c6a8d45e7f0eda72ce8cd1e0aa25f",
-    bytes: 61472
+    url: "/plugin-builtins/display-05fc73de27099f1bf42e754cfa901149ec99a8c7f1007ecf47bcb3130b9d4809.bin",
+    sha256: "05fc73de27099f1bf42e754cfa901149ec99a8c7f1007ecf47bcb3130b9d4809",
+    bytes: 210718
   },
   bbcc0c56c2c13bda038709a6167e49700d5a6abdd954a5c80512a9b1cc92ee90: {
-    url: "/plugin-builtins/display-79c9d8bf9eb14e406137def0cedb13455f6eadd93a179bb104c9f30e56ac7ffe.bin",
-    sha256: "79c9d8bf9eb14e406137def0cedb13455f6eadd93a179bb104c9f30e56ac7ffe",
-    bytes: 54824
+    url: "/plugin-builtins/display-05fc73de27099f1bf42e754cfa901149ec99a8c7f1007ecf47bcb3130b9d4809.bin",
+    sha256: "05fc73de27099f1bf42e754cfa901149ec99a8c7f1007ecf47bcb3130b9d4809",
+    bytes: 210718
   },
   bd8834aaed6ef3b5542e47a76ade7264a758e4b2402e3dcf64dbf8bf1dd4caf4: {
     url: "/plugin-builtins/display-6aca7787c40eadc5ce98fc7dd3234fd59990cc44fcc570b2b9335f788fa4d430.bin",
@@ -269482,244 +269032,124 @@ var builtinGeometryArtifacts_generated_default = {
     bytes: 1885783
   },
   bedbb20ee290bf71614ad66d9ad6c6c70ffaa78914c2842cc6b6114162d823ac: {
-    url: "/plugin-builtins/display-a7da39800f5565f9b077eca1ace6a4391a84f98400c990d9969eb0ed3702a918.bin",
-    sha256: "a7da39800f5565f9b077eca1ace6a4391a84f98400c990d9969eb0ed3702a918",
-    bytes: 167700
+    url: "/plugin-builtins/display-7976cbd73167a0fe1fc59071dbb6989d63b49a6ff05c2635e021796606ededa7.bin",
+    sha256: "7976cbd73167a0fe1fc59071dbb6989d63b49a6ff05c2635e021796606ededa7",
+    bytes: 475164
   },
-  c2c3131e85f6c4a52f5e6d96a60cfccfb39c39c0223b09a9842b3f474e9d3a37: {
-    url: "/plugin-builtins/display-8df79680290567f281a924eb4c62372dde1b8483eddc60b8c3f40906b8e469e7.bin",
-    sha256: "8df79680290567f281a924eb4c62372dde1b8483eddc60b8c3f40906b8e469e7",
-    bytes: 1028194
-  },
-  c31bfaaf834169c1db706ce1cd896c0f0ea762d612f47a198cc90736f8947235: {
-    url: "/plugin-builtins/display-dc56cb7a688087210356d1d6b83fbc37f04b258a40e854ab76aa22b6e06a0e05.bin",
-    sha256: "dc56cb7a688087210356d1d6b83fbc37f04b258a40e854ab76aa22b6e06a0e05",
-    bytes: 1266092
+  c01560ba02a475c2219d16fa7cffb4b2cafbd1d6abcec77a95f1f7493954633b: {
+    url: "/plugin-builtins/display-05fc73de27099f1bf42e754cfa901149ec99a8c7f1007ecf47bcb3130b9d4809.bin",
+    sha256: "05fc73de27099f1bf42e754cfa901149ec99a8c7f1007ecf47bcb3130b9d4809",
+    bytes: 210718
   },
   c674f9a19bd98232fe718b86fff31ed480b8654e82f441148699239a3fab05a7: {
-    url: "/plugin-builtins/display-03f92accce91ee349159f3f384e8234ab3f9f382b678a2101a1d387d0fb7c509.bin",
-    sha256: "03f92accce91ee349159f3f384e8234ab3f9f382b678a2101a1d387d0fb7c509",
-    bytes: 57359
-  },
-  c69341b90bc4e8465a6fded76385b077e299028361c0e243fc2d9b4d9a352944: {
-    url: "/plugin-builtins/display-dc56cb7a688087210356d1d6b83fbc37f04b258a40e854ab76aa22b6e06a0e05.bin",
-    sha256: "dc56cb7a688087210356d1d6b83fbc37f04b258a40e854ab76aa22b6e06a0e05",
-    bytes: 1266092
+    url: "/plugin-builtins/display-6b4b11f924d96a0078856d27655da62a0416806ef9eb7001c4dd468271d78d7a.bin",
+    sha256: "6b4b11f924d96a0078856d27655da62a0416806ef9eb7001c4dd468271d78d7a",
+    bytes: 307218
   },
   c728c3def7b8de5e65bbe56115578414be10113e40af440e7edccf52b5e59f73: {
-    url: "/plugin-builtins/display-7f69ea678bb4382ffe785f71224b9f7b008bba023d6fd9b09085af0439b9e94b.bin",
-    sha256: "7f69ea678bb4382ffe785f71224b9f7b008bba023d6fd9b09085af0439b9e94b",
-    bytes: 37700
-  },
-  c83b3c4815054dd26583ad107ec814938e1fce340d5c2639b93db56e8f555a9a: {
-    url: "/plugin-builtins/display-dc56cb7a688087210356d1d6b83fbc37f04b258a40e854ab76aa22b6e06a0e05.bin",
-    sha256: "dc56cb7a688087210356d1d6b83fbc37f04b258a40e854ab76aa22b6e06a0e05",
-    bytes: 1266092
-  },
-  c941e8f3df82a82bf333412e34d4c106865789398dfe204786067b4f132f1fca: {
-    url: "/plugin-builtins/display-eb28ac7ab958ceca16f529aa16fd9cd078db01e2f9db4f40a03457e831837c49.bin",
-    sha256: "eb28ac7ab958ceca16f529aa16fd9cd078db01e2f9db4f40a03457e831837c49",
-    bytes: 116299
+    url: "/plugin-builtins/display-0f140fe203bef5c1fb0fa3ee70026d367270c6ea9eb1c963a1a805cfd427433f.bin",
+    sha256: "0f140fe203bef5c1fb0fa3ee70026d367270c6ea9eb1c963a1a805cfd427433f",
+    bytes: 222314
   },
   c96d211499dfffb151a3403c328a600ef35942f1fd72b1dfffe6e0e747ba9e6b: {
-    url: "/plugin-builtins/display-10213b20faaed5daed25406429624eb4168b63ef28e9b0074ae020e54e68f9a8.bin",
-    sha256: "10213b20faaed5daed25406429624eb4168b63ef28e9b0074ae020e54e68f9a8",
-    bytes: 82434
-  },
-  cbf615119e680125510020402a4ed6601497b3e2ddf59dc757143e0d40d16f1d: {
-    url: "/plugin-builtins/display-b7f6a37ff69d095c18886869c16002b57efdf6a9ab6070941ac10ac354c36a3b.bin",
-    sha256: "b7f6a37ff69d095c18886869c16002b57efdf6a9ab6070941ac10ac354c36a3b",
-    bytes: 2099453
-  },
-  cc1cdf0495c44b002d543f3629bc0fd28724636a7face7701bc3aa7c528326e8: {
-    url: "/plugin-builtins/display-03f92accce91ee349159f3f384e8234ab3f9f382b678a2101a1d387d0fb7c509.bin",
-    sha256: "03f92accce91ee349159f3f384e8234ab3f9f382b678a2101a1d387d0fb7c509",
-    bytes: 57359
-  },
-  cc5f04645276ab1b1bb5740deba77c8e2c5b3ba121c7a00ee1d4c222e3664868: {
-    url: "/plugin-builtins/display-87b19f60879b2173dd1d5916f12012e77d633124bb6b58756f8ea8a8f69debd9.bin",
-    sha256: "87b19f60879b2173dd1d5916f12012e77d633124bb6b58756f8ea8a8f69debd9",
-    bytes: 129130
-  },
-  ce167a34d232e0345f4e0074bef9f3f4e5f1c20f4b269118fd6658ecb3b279c5: {
-    url: "/plugin-builtins/display-87b19f60879b2173dd1d5916f12012e77d633124bb6b58756f8ea8a8f69debd9.bin",
-    sha256: "87b19f60879b2173dd1d5916f12012e77d633124bb6b58756f8ea8a8f69debd9",
-    bytes: 129130
+    url: "/plugin-builtins/display-7976cbd73167a0fe1fc59071dbb6989d63b49a6ff05c2635e021796606ededa7.bin",
+    sha256: "7976cbd73167a0fe1fc59071dbb6989d63b49a6ff05c2635e021796606ededa7",
+    bytes: 475164
   },
   cefdcfa4192efb6f04aa1da85691b2896859b4f0004d0d135b47661efc859df0: {
-    url: "/plugin-builtins/display-87b19f60879b2173dd1d5916f12012e77d633124bb6b58756f8ea8a8f69debd9.bin",
-    sha256: "87b19f60879b2173dd1d5916f12012e77d633124bb6b58756f8ea8a8f69debd9",
-    bytes: 129130
+    url: "/plugin-builtins/display-05fc73de27099f1bf42e754cfa901149ec99a8c7f1007ecf47bcb3130b9d4809.bin",
+    sha256: "05fc73de27099f1bf42e754cfa901149ec99a8c7f1007ecf47bcb3130b9d4809",
+    bytes: 210718
   },
   d3923bfe0638fab3b027c69dd38c9566b49be4ff3b7f34087970e2d7f29b0a24: {
-    url: "/plugin-builtins/display-7f69ea678bb4382ffe785f71224b9f7b008bba023d6fd9b09085af0439b9e94b.bin",
-    sha256: "7f69ea678bb4382ffe785f71224b9f7b008bba023d6fd9b09085af0439b9e94b",
-    bytes: 37700
+    url: "/plugin-builtins/display-0f140fe203bef5c1fb0fa3ee70026d367270c6ea9eb1c963a1a805cfd427433f.bin",
+    sha256: "0f140fe203bef5c1fb0fa3ee70026d367270c6ea9eb1c963a1a805cfd427433f",
+    bytes: 222314
   },
   d3b0d47ade7070d216c846027c95b8d734893a58591b191360f7593ba2947533: {
-    url: "/plugin-builtins/display-10213b20faaed5daed25406429624eb4168b63ef28e9b0074ae020e54e68f9a8.bin",
-    sha256: "10213b20faaed5daed25406429624eb4168b63ef28e9b0074ae020e54e68f9a8",
-    bytes: 82434
+    url: "/plugin-builtins/display-7976cbd73167a0fe1fc59071dbb6989d63b49a6ff05c2635e021796606ededa7.bin",
+    sha256: "7976cbd73167a0fe1fc59071dbb6989d63b49a6ff05c2635e021796606ededa7",
+    bytes: 475164
   },
   d3c316060d28ffb83cb4aec56dc50828987a562b40e3de892e74695469188edc: {
-    url: "/plugin-builtins/display-10213b20faaed5daed25406429624eb4168b63ef28e9b0074ae020e54e68f9a8.bin",
-    sha256: "10213b20faaed5daed25406429624eb4168b63ef28e9b0074ae020e54e68f9a8",
-    bytes: 82434
+    url: "/plugin-builtins/display-7976cbd73167a0fe1fc59071dbb6989d63b49a6ff05c2635e021796606ededa7.bin",
+    sha256: "7976cbd73167a0fe1fc59071dbb6989d63b49a6ff05c2635e021796606ededa7",
+    bytes: 475164
   },
   d4778d0bf99fb9be186153c9b3fbf6d1c340d960d6fcc67798cadf3696a228b2: {
-    url: "/plugin-builtins/display-03f92accce91ee349159f3f384e8234ab3f9f382b678a2101a1d387d0fb7c509.bin",
-    sha256: "03f92accce91ee349159f3f384e8234ab3f9f382b678a2101a1d387d0fb7c509",
-    bytes: 57359
-  },
-  d4f24831506145c6edaefbc310734cb2e28e3c4be15fc07c8633461806d18694: {
-    url: "/plugin-builtins/display-7f69ea678bb4382ffe785f71224b9f7b008bba023d6fd9b09085af0439b9e94b.bin",
-    sha256: "7f69ea678bb4382ffe785f71224b9f7b008bba023d6fd9b09085af0439b9e94b",
-    bytes: 37700
+    url: "/plugin-builtins/display-6b4b11f924d96a0078856d27655da62a0416806ef9eb7001c4dd468271d78d7a.bin",
+    sha256: "6b4b11f924d96a0078856d27655da62a0416806ef9eb7001c4dd468271d78d7a",
+    bytes: 307218
   },
   d5f05bf3686ecf5e03fa1e22a5647e2aa15ed1d1d416bcdde0890e829d091ade: {
-    url: "/plugin-builtins/display-10213b20faaed5daed25406429624eb4168b63ef28e9b0074ae020e54e68f9a8.bin",
-    sha256: "10213b20faaed5daed25406429624eb4168b63ef28e9b0074ae020e54e68f9a8",
-    bytes: 82434
+    url: "/plugin-builtins/display-7976cbd73167a0fe1fc59071dbb6989d63b49a6ff05c2635e021796606ededa7.bin",
+    sha256: "7976cbd73167a0fe1fc59071dbb6989d63b49a6ff05c2635e021796606ededa7",
+    bytes: 475164
   },
   d79e80f7c91f000f28b494c658244dc1f7e4d7d3d7b1063fca0327848ce6ccbd: {
-    url: "/plugin-builtins/display-7f69ea678bb4382ffe785f71224b9f7b008bba023d6fd9b09085af0439b9e94b.bin",
-    sha256: "7f69ea678bb4382ffe785f71224b9f7b008bba023d6fd9b09085af0439b9e94b",
-    bytes: 37700
+    url: "/plugin-builtins/display-0f140fe203bef5c1fb0fa3ee70026d367270c6ea9eb1c963a1a805cfd427433f.bin",
+    sha256: "0f140fe203bef5c1fb0fa3ee70026d367270c6ea9eb1c963a1a805cfd427433f",
+    bytes: 222314
   },
   d93345c8c74cd87a66aa061cfe4262007e90ddf8424e86a175d7b80b47c885c5: {
-    url: "/plugin-builtins/display-87b19f60879b2173dd1d5916f12012e77d633124bb6b58756f8ea8a8f69debd9.bin",
-    sha256: "87b19f60879b2173dd1d5916f12012e77d633124bb6b58756f8ea8a8f69debd9",
-    bytes: 129130
-  },
-  da2fb164c0f725d57f36038e2da2b30c8fb6d11e2ca3842ef99c304d45386599: {
-    url: "/plugin-builtins/display-ab4e64fdb5b7a7480ce9447cdb1c02655e6b78a368d7eb8ff266929a61c155f5.bin",
-    sha256: "ab4e64fdb5b7a7480ce9447cdb1c02655e6b78a368d7eb8ff266929a61c155f5",
-    bytes: 381369
-  },
-  dd2d564d17a22dca6df26204cb8e7b7acd2b78604462c481e11fd9e977da0912: {
-    url: "/plugin-builtins/display-03f92accce91ee349159f3f384e8234ab3f9f382b678a2101a1d387d0fb7c509.bin",
-    sha256: "03f92accce91ee349159f3f384e8234ab3f9f382b678a2101a1d387d0fb7c509",
-    bytes: 57359
-  },
-  de15bcca7c39238a58311f216cf90920543e2abd1f9e54ac8f3e76b80bf53922: {
-    url: "/plugin-builtins/display-82c3a60a6ef0df6e0c168c99b0e7fcaaf9558db8d6df46172cb1f69cffc8ccce.bin",
-    sha256: "82c3a60a6ef0df6e0c168c99b0e7fcaaf9558db8d6df46172cb1f69cffc8ccce",
-    bytes: 181425
-  },
-  df88df2d0643387af4ee2b90bc13d0ecbdace7d0922d73bf25149f6bae659ca6: {
-    url: "/plugin-builtins/display-ab4e64fdb5b7a7480ce9447cdb1c02655e6b78a368d7eb8ff266929a61c155f5.bin",
-    sha256: "ab4e64fdb5b7a7480ce9447cdb1c02655e6b78a368d7eb8ff266929a61c155f5",
-    bytes: 381369
-  },
-  dff15e8b98d51dae952f96d9d630e388ed98113ee48b374e677d50978fdd2fbb: {
-    url: "/plugin-builtins/display-87b19f60879b2173dd1d5916f12012e77d633124bb6b58756f8ea8a8f69debd9.bin",
-    sha256: "87b19f60879b2173dd1d5916f12012e77d633124bb6b58756f8ea8a8f69debd9",
-    bytes: 129130
+    url: "/plugin-builtins/display-05fc73de27099f1bf42e754cfa901149ec99a8c7f1007ecf47bcb3130b9d4809.bin",
+    sha256: "05fc73de27099f1bf42e754cfa901149ec99a8c7f1007ecf47bcb3130b9d4809",
+    bytes: 210718
   },
   e0184d9ecf94269d68c536d5c081f0e8b5f32b190b24d88d3f24cb9f2a516b5c: {
-    url: "/plugin-builtins/display-03f92accce91ee349159f3f384e8234ab3f9f382b678a2101a1d387d0fb7c509.bin",
-    sha256: "03f92accce91ee349159f3f384e8234ab3f9f382b678a2101a1d387d0fb7c509",
-    bytes: 57359
+    url: "/plugin-builtins/display-6b4b11f924d96a0078856d27655da62a0416806ef9eb7001c4dd468271d78d7a.bin",
+    sha256: "6b4b11f924d96a0078856d27655da62a0416806ef9eb7001c4dd468271d78d7a",
+    bytes: 307218
   },
   e03306863d3dde861036d9da6d26bf4b58c50deac392ac8254224cbffa562322: {
     url: "/plugin-builtins/display-6aca7787c40eadc5ce98fc7dd3234fd59990cc44fcc570b2b9335f788fa4d430.bin",
     sha256: "6aca7787c40eadc5ce98fc7dd3234fd59990cc44fcc570b2b9335f788fa4d430",
     bytes: 1885783
   },
-  e0da96b6160a97b705574e93f63b361f04c7548b7892e6f49445256a0c1fa18e: {
-    url: "/plugin-builtins/display-82c3a60a6ef0df6e0c168c99b0e7fcaaf9558db8d6df46172cb1f69cffc8ccce.bin",
-    sha256: "82c3a60a6ef0df6e0c168c99b0e7fcaaf9558db8d6df46172cb1f69cffc8ccce",
-    bytes: 181425
-  },
   e17c07f174cedbee1a148a441e480e9b66e55a137cefa62f74d9223475dbee70: {
-    url: "/plugin-builtins/display-87b19f60879b2173dd1d5916f12012e77d633124bb6b58756f8ea8a8f69debd9.bin",
-    sha256: "87b19f60879b2173dd1d5916f12012e77d633124bb6b58756f8ea8a8f69debd9",
-    bytes: 129130
+    url: "/plugin-builtins/display-05fc73de27099f1bf42e754cfa901149ec99a8c7f1007ecf47bcb3130b9d4809.bin",
+    sha256: "05fc73de27099f1bf42e754cfa901149ec99a8c7f1007ecf47bcb3130b9d4809",
+    bytes: 210718
   },
-  e230537cb72a753753114fbf11304186af00cde5c165a9167e16add118ad6a9a: {
-    url: "/plugin-builtins/display-ab4e64fdb5b7a7480ce9447cdb1c02655e6b78a368d7eb8ff266929a61c155f5.bin",
-    sha256: "ab4e64fdb5b7a7480ce9447cdb1c02655e6b78a368d7eb8ff266929a61c155f5",
-    bytes: 381369
+  e20108126a0e323a22b865f3f63fac2d36771f418cad4b24449807e40d023b59: {
+    url: "/plugin-builtins/display-6b4b11f924d96a0078856d27655da62a0416806ef9eb7001c4dd468271d78d7a.bin",
+    sha256: "6b4b11f924d96a0078856d27655da62a0416806ef9eb7001c4dd468271d78d7a",
+    bytes: 307218
   },
   e2ed777a053ab301cd0f94355597cd62ed834c9f9233854e9da1c249bdfd1cab: {
-    url: "/plugin-builtins/display-10213b20faaed5daed25406429624eb4168b63ef28e9b0074ae020e54e68f9a8.bin",
-    sha256: "10213b20faaed5daed25406429624eb4168b63ef28e9b0074ae020e54e68f9a8",
-    bytes: 82434
+    url: "/plugin-builtins/display-7976cbd73167a0fe1fc59071dbb6989d63b49a6ff05c2635e021796606ededa7.bin",
+    sha256: "7976cbd73167a0fe1fc59071dbb6989d63b49a6ff05c2635e021796606ededa7",
+    bytes: 475164
   },
   e51b2b01c1c9bc44222b403b1904d103945eb8eebf431e17492deb21c74d8789: {
-    url: "/plugin-builtins/display-10213b20faaed5daed25406429624eb4168b63ef28e9b0074ae020e54e68f9a8.bin",
-    sha256: "10213b20faaed5daed25406429624eb4168b63ef28e9b0074ae020e54e68f9a8",
-    bytes: 82434
-  },
-  e721ac628e1d1960f5087e061b305ff183bd1f2e464991dc14030f68674ec4e5: {
-    url: "/plugin-builtins/display-8df79680290567f281a924eb4c62372dde1b8483eddc60b8c3f40906b8e469e7.bin",
-    sha256: "8df79680290567f281a924eb4c62372dde1b8483eddc60b8c3f40906b8e469e7",
-    bytes: 1028194
+    url: "/plugin-builtins/display-7976cbd73167a0fe1fc59071dbb6989d63b49a6ff05c2635e021796606ededa7.bin",
+    sha256: "7976cbd73167a0fe1fc59071dbb6989d63b49a6ff05c2635e021796606ededa7",
+    bytes: 475164
   },
   e72afcdf812b4e988c6852f26632079789a798eeea2b238b0da7e91760d263e3: {
-    url: "/plugin-builtins/display-10213b20faaed5daed25406429624eb4168b63ef28e9b0074ae020e54e68f9a8.bin",
-    sha256: "10213b20faaed5daed25406429624eb4168b63ef28e9b0074ae020e54e68f9a8",
-    bytes: 82434
-  },
-  e78ed6a461d7c8d23339278eff3b82b7d5977900eda95f0ae8c434fe26dad1ed: {
-    url: "/plugin-builtins/display-b7f6a37ff69d095c18886869c16002b57efdf6a9ab6070941ac10ac354c36a3b.bin",
-    sha256: "b7f6a37ff69d095c18886869c16002b57efdf6a9ab6070941ac10ac354c36a3b",
-    bytes: 2099453
+    url: "/plugin-builtins/display-7976cbd73167a0fe1fc59071dbb6989d63b49a6ff05c2635e021796606ededa7.bin",
+    sha256: "7976cbd73167a0fe1fc59071dbb6989d63b49a6ff05c2635e021796606ededa7",
+    bytes: 475164
   },
   e7c051d16732a844ceb0372718a081f73af032435c86031b8c4a4e509abba562: {
-    url: "/plugin-builtins/display-03f92accce91ee349159f3f384e8234ab3f9f382b678a2101a1d387d0fb7c509.bin",
-    sha256: "03f92accce91ee349159f3f384e8234ab3f9f382b678a2101a1d387d0fb7c509",
-    bytes: 57359
-  },
-  e8859244241093c8c9104de5f7dc85b33c5c76dda49f00c33ee44acf8ddc4ebb: {
-    url: "/plugin-builtins/display-5f2923dbc2ad9ac634958dbf0006a97bc78c42e87eb0b42073b0ab70ed08bb5d.bin",
-    sha256: "5f2923dbc2ad9ac634958dbf0006a97bc78c42e87eb0b42073b0ab70ed08bb5d",
-    bytes: 5032
-  },
-  e8d352ae0ba683df14c11de94fb23d67323a676ca5a9630efe9f2e449b7f579c: {
-    url: "/plugin-builtins/display-dc56cb7a688087210356d1d6b83fbc37f04b258a40e854ab76aa22b6e06a0e05.bin",
-    sha256: "dc56cb7a688087210356d1d6b83fbc37f04b258a40e854ab76aa22b6e06a0e05",
-    bytes: 1266092
-  },
-  ea11b9551680cffacf5d9f7c08833702ed89985ce91b93dd4f814790595abf36: {
-    url: "/plugin-builtins/display-03f92accce91ee349159f3f384e8234ab3f9f382b678a2101a1d387d0fb7c509.bin",
-    sha256: "03f92accce91ee349159f3f384e8234ab3f9f382b678a2101a1d387d0fb7c509",
-    bytes: 57359
-  },
-  ea25fd538b858796c0156d83c914068beec2d8d7905ccf88af18bc668192629d: {
-    url: "/plugin-builtins/display-10213b20faaed5daed25406429624eb4168b63ef28e9b0074ae020e54e68f9a8.bin",
-    sha256: "10213b20faaed5daed25406429624eb4168b63ef28e9b0074ae020e54e68f9a8",
-    bytes: 82434
-  },
-  eaa93404cdd3aa49ada348cb348a95a05aa16246e7ba8165bc8281e9f7bce8d8: {
-    url: "/plugin-builtins/display-eb28ac7ab958ceca16f529aa16fd9cd078db01e2f9db4f40a03457e831837c49.bin",
-    sha256: "eb28ac7ab958ceca16f529aa16fd9cd078db01e2f9db4f40a03457e831837c49",
-    bytes: 116299
+    url: "/plugin-builtins/display-6b4b11f924d96a0078856d27655da62a0416806ef9eb7001c4dd468271d78d7a.bin",
+    sha256: "6b4b11f924d96a0078856d27655da62a0416806ef9eb7001c4dd468271d78d7a",
+    bytes: 307218
   },
   eabe8e7c22bf1e9635e6d21dc2e655e2d0f1873647eb362044b23e65d24b2331: {
-    url: "/plugin-builtins/display-87b19f60879b2173dd1d5916f12012e77d633124bb6b58756f8ea8a8f69debd9.bin",
-    sha256: "87b19f60879b2173dd1d5916f12012e77d633124bb6b58756f8ea8a8f69debd9",
-    bytes: 129130
-  },
-  ec2bd678b782b19ccf8301a8131f2fee6e70ea4996b142fc5b4571ee4d00c2ae: {
-    url: "/plugin-builtins/display-b7f6a37ff69d095c18886869c16002b57efdf6a9ab6070941ac10ac354c36a3b.bin",
-    sha256: "b7f6a37ff69d095c18886869c16002b57efdf6a9ab6070941ac10ac354c36a3b",
-    bytes: 2099453
-  },
-  ec42485f2fb0945bf87b2aad337b1f324b84d1be20646453eb5c4f83a6f8866d: {
-    url: "/plugin-builtins/display-82c3a60a6ef0df6e0c168c99b0e7fcaaf9558db8d6df46172cb1f69cffc8ccce.bin",
-    sha256: "82c3a60a6ef0df6e0c168c99b0e7fcaaf9558db8d6df46172cb1f69cffc8ccce",
-    bytes: 181425
+    url: "/plugin-builtins/display-05fc73de27099f1bf42e754cfa901149ec99a8c7f1007ecf47bcb3130b9d4809.bin",
+    sha256: "05fc73de27099f1bf42e754cfa901149ec99a8c7f1007ecf47bcb3130b9d4809",
+    bytes: 210718
   },
   ec4923758403fb054874c471d5fd7503d46acce2ebb3aafb841240444f419dd5: {
-    url: "/plugin-builtins/display-03f92accce91ee349159f3f384e8234ab3f9f382b678a2101a1d387d0fb7c509.bin",
-    sha256: "03f92accce91ee349159f3f384e8234ab3f9f382b678a2101a1d387d0fb7c509",
-    bytes: 57359
+    url: "/plugin-builtins/display-6b4b11f924d96a0078856d27655da62a0416806ef9eb7001c4dd468271d78d7a.bin",
+    sha256: "6b4b11f924d96a0078856d27655da62a0416806ef9eb7001c4dd468271d78d7a",
+    bytes: 307218
   },
   ec6016d0f88ac08a183ce414855cb5a4408f2516f2aebb81391a65611f2a41b0: {
-    url: "/plugin-builtins/display-87b19f60879b2173dd1d5916f12012e77d633124bb6b58756f8ea8a8f69debd9.bin",
-    sha256: "87b19f60879b2173dd1d5916f12012e77d633124bb6b58756f8ea8a8f69debd9",
-    bytes: 129130
+    url: "/plugin-builtins/display-05fc73de27099f1bf42e754cfa901149ec99a8c7f1007ecf47bcb3130b9d4809.bin",
+    sha256: "05fc73de27099f1bf42e754cfa901149ec99a8c7f1007ecf47bcb3130b9d4809",
+    bytes: 210718
   },
   ecf52b66d6c66671c95d305613cfeeff114eac77040beb11a7051e2cb7a0faa5: {
     url: "/plugin-builtins/display-88f40bff54c193e7e8159ea2798ceed3a49ab92ce24e0f01d7616d74eacce77a.bin",
@@ -269727,104 +269157,69 @@ var builtinGeometryArtifacts_generated_default = {
     bytes: 905302
   },
   ecf8af719dca178e17549b5f2f00488d49d543de20dcc01bf8a0264351d9726a: {
-    url: "/plugin-builtins/display-87b19f60879b2173dd1d5916f12012e77d633124bb6b58756f8ea8a8f69debd9.bin",
-    sha256: "87b19f60879b2173dd1d5916f12012e77d633124bb6b58756f8ea8a8f69debd9",
-    bytes: 129130
-  },
-  ed75d47bed59d81722bfb1f077815317c178887728b79138becf95844015481b: {
-    url: "/plugin-builtins/display-87b19f60879b2173dd1d5916f12012e77d633124bb6b58756f8ea8a8f69debd9.bin",
-    sha256: "87b19f60879b2173dd1d5916f12012e77d633124bb6b58756f8ea8a8f69debd9",
-    bytes: 129130
+    url: "/plugin-builtins/display-05fc73de27099f1bf42e754cfa901149ec99a8c7f1007ecf47bcb3130b9d4809.bin",
+    sha256: "05fc73de27099f1bf42e754cfa901149ec99a8c7f1007ecf47bcb3130b9d4809",
+    bytes: 210718
   },
   ed8a535c552c262c3dbdde56e0e54cb4f801ced3567b21694ccd66ea7c23f602: {
-    url: "/plugin-builtins/display-10213b20faaed5daed25406429624eb4168b63ef28e9b0074ae020e54e68f9a8.bin",
-    sha256: "10213b20faaed5daed25406429624eb4168b63ef28e9b0074ae020e54e68f9a8",
-    bytes: 82434
+    url: "/plugin-builtins/display-7976cbd73167a0fe1fc59071dbb6989d63b49a6ff05c2635e021796606ededa7.bin",
+    sha256: "7976cbd73167a0fe1fc59071dbb6989d63b49a6ff05c2635e021796606ededa7",
+    bytes: 475164
   },
   ee23870b91aeca1854f0dfbc8c1a015bd245f86882a28a2fa55c70512a2b4889: {
-    url: "/plugin-builtins/display-87b19f60879b2173dd1d5916f12012e77d633124bb6b58756f8ea8a8f69debd9.bin",
-    sha256: "87b19f60879b2173dd1d5916f12012e77d633124bb6b58756f8ea8a8f69debd9",
-    bytes: 129130
-  },
-  ee61c6a2068d1dc494d56892ffb34accbad9eb20343cdd5a0850c67152fff9d1: {
-    url: "/plugin-builtins/display-ab4e64fdb5b7a7480ce9447cdb1c02655e6b78a368d7eb8ff266929a61c155f5.bin",
-    sha256: "ab4e64fdb5b7a7480ce9447cdb1c02655e6b78a368d7eb8ff266929a61c155f5",
-    bytes: 381369
+    url: "/plugin-builtins/display-05fc73de27099f1bf42e754cfa901149ec99a8c7f1007ecf47bcb3130b9d4809.bin",
+    sha256: "05fc73de27099f1bf42e754cfa901149ec99a8c7f1007ecf47bcb3130b9d4809",
+    bytes: 210718
   },
   ef4d2de3b0d767d3af63ca0b56bf75f4c8a46ff35e7171fb759b6372b67f57fe: {
-    url: "/plugin-builtins/display-87b19f60879b2173dd1d5916f12012e77d633124bb6b58756f8ea8a8f69debd9.bin",
-    sha256: "87b19f60879b2173dd1d5916f12012e77d633124bb6b58756f8ea8a8f69debd9",
-    bytes: 129130
-  },
-  f08de717a3ecf1ffa15154c663a4c746f50d2ee72966f54cfda05d7e7e86f65e: {
-    url: "/plugin-builtins/display-87b19f60879b2173dd1d5916f12012e77d633124bb6b58756f8ea8a8f69debd9.bin",
-    sha256: "87b19f60879b2173dd1d5916f12012e77d633124bb6b58756f8ea8a8f69debd9",
-    bytes: 129130
-  },
-  f154919bddae2621e4385409242e2cbd07c059ecfa4b2c0857eb37ea5e2dfce1: {
-    url: "/plugin-builtins/display-87b19f60879b2173dd1d5916f12012e77d633124bb6b58756f8ea8a8f69debd9.bin",
-    sha256: "87b19f60879b2173dd1d5916f12012e77d633124bb6b58756f8ea8a8f69debd9",
-    bytes: 129130
+    url: "/plugin-builtins/display-05fc73de27099f1bf42e754cfa901149ec99a8c7f1007ecf47bcb3130b9d4809.bin",
+    sha256: "05fc73de27099f1bf42e754cfa901149ec99a8c7f1007ecf47bcb3130b9d4809",
+    bytes: 210718
   },
   f31f07dbf8bfaaf88ba9cfed6691bad88d9d8bbd44a9be2c041da5ec575bf9fd: {
-    url: "/plugin-builtins/display-03f92accce91ee349159f3f384e8234ab3f9f382b678a2101a1d387d0fb7c509.bin",
-    sha256: "03f92accce91ee349159f3f384e8234ab3f9f382b678a2101a1d387d0fb7c509",
-    bytes: 57359
+    url: "/plugin-builtins/display-6b4b11f924d96a0078856d27655da62a0416806ef9eb7001c4dd468271d78d7a.bin",
+    sha256: "6b4b11f924d96a0078856d27655da62a0416806ef9eb7001c4dd468271d78d7a",
+    bytes: 307218
   },
   f3b3ffb40769420b74acb1100037209c54eca9274e18fc82ebd172268eacc1ab: {
-    url: "/plugin-builtins/display-03f92accce91ee349159f3f384e8234ab3f9f382b678a2101a1d387d0fb7c509.bin",
-    sha256: "03f92accce91ee349159f3f384e8234ab3f9f382b678a2101a1d387d0fb7c509",
-    bytes: 57359
+    url: "/plugin-builtins/display-6b4b11f924d96a0078856d27655da62a0416806ef9eb7001c4dd468271d78d7a.bin",
+    sha256: "6b4b11f924d96a0078856d27655da62a0416806ef9eb7001c4dd468271d78d7a",
+    bytes: 307218
   },
   f4a08ba275fbf44fe1d5dbb1a647fa6e3bb1403f938330019f3c047be33f2faa: {
-    url: "/plugin-builtins/display-87b19f60879b2173dd1d5916f12012e77d633124bb6b58756f8ea8a8f69debd9.bin",
-    sha256: "87b19f60879b2173dd1d5916f12012e77d633124bb6b58756f8ea8a8f69debd9",
-    bytes: 129130
-  },
-  f62825e068a9699feea4ada80f6aeca484030c631859efa8d151c9451b48425e: {
-    url: "/plugin-builtins/display-62dacd832b108eaae351ac8cad84bbcfbacdc4ec712892c28ccc21a83a18cf7e.bin",
-    sha256: "62dacd832b108eaae351ac8cad84bbcfbacdc4ec712892c28ccc21a83a18cf7e",
-    bytes: 1568909
+    url: "/plugin-builtins/display-05fc73de27099f1bf42e754cfa901149ec99a8c7f1007ecf47bcb3130b9d4809.bin",
+    sha256: "05fc73de27099f1bf42e754cfa901149ec99a8c7f1007ecf47bcb3130b9d4809",
+    bytes: 210718
   },
   f800c04a39871a4176f668474e4ac0a6fc80f3fc92c2d57b9b88b62a533a5c7d: {
-    url: "/plugin-builtins/display-7f69ea678bb4382ffe785f71224b9f7b008bba023d6fd9b09085af0439b9e94b.bin",
-    sha256: "7f69ea678bb4382ffe785f71224b9f7b008bba023d6fd9b09085af0439b9e94b",
-    bytes: 37700
+    url: "/plugin-builtins/display-0f140fe203bef5c1fb0fa3ee70026d367270c6ea9eb1c963a1a805cfd427433f.bin",
+    sha256: "0f140fe203bef5c1fb0fa3ee70026d367270c6ea9eb1c963a1a805cfd427433f",
+    bytes: 222314
   },
   f88589b6f0ded0ff60819d509caf9e20b223b3d73bbeecbebe83792fc12cbeb0: {
-    url: "/plugin-builtins/display-87b19f60879b2173dd1d5916f12012e77d633124bb6b58756f8ea8a8f69debd9.bin",
-    sha256: "87b19f60879b2173dd1d5916f12012e77d633124bb6b58756f8ea8a8f69debd9",
-    bytes: 129130
+    url: "/plugin-builtins/display-05fc73de27099f1bf42e754cfa901149ec99a8c7f1007ecf47bcb3130b9d4809.bin",
+    sha256: "05fc73de27099f1bf42e754cfa901149ec99a8c7f1007ecf47bcb3130b9d4809",
+    bytes: 210718
   },
   f8ede6e9c72606e2ef5f3db97eff941c6c23c6f6e34f6f465b3c847d51a71491: {
-    url: "/plugin-builtins/display-87b19f60879b2173dd1d5916f12012e77d633124bb6b58756f8ea8a8f69debd9.bin",
-    sha256: "87b19f60879b2173dd1d5916f12012e77d633124bb6b58756f8ea8a8f69debd9",
-    bytes: 129130
-  },
-  f997d5db644656b476316e65b3ff88c1aee5d4501d6da787ddd104d875508081: {
-    url: "/plugin-builtins/display-7f69ea678bb4382ffe785f71224b9f7b008bba023d6fd9b09085af0439b9e94b.bin",
-    sha256: "7f69ea678bb4382ffe785f71224b9f7b008bba023d6fd9b09085af0439b9e94b",
-    bytes: 37700
-  },
-  fb07eedbe36e3fe3d0908813e07a95c00915edcb6899b69e439b92c898ee78ad: {
-    url: "/plugin-builtins/display-5f2923dbc2ad9ac634958dbf0006a97bc78c42e87eb0b42073b0ab70ed08bb5d.bin",
-    sha256: "5f2923dbc2ad9ac634958dbf0006a97bc78c42e87eb0b42073b0ab70ed08bb5d",
-    bytes: 5032
+    url: "/plugin-builtins/display-05fc73de27099f1bf42e754cfa901149ec99a8c7f1007ecf47bcb3130b9d4809.bin",
+    sha256: "05fc73de27099f1bf42e754cfa901149ec99a8c7f1007ecf47bcb3130b9d4809",
+    bytes: 210718
   },
   ff3738a036e001c2326507c7af52c5f4e76f5915845cef20075b091b618722a5: {
-    url: "/plugin-builtins/display-03f92accce91ee349159f3f384e8234ab3f9f382b678a2101a1d387d0fb7c509.bin",
-    sha256: "03f92accce91ee349159f3f384e8234ab3f9f382b678a2101a1d387d0fb7c509",
-    bytes: 57359
+    url: "/plugin-builtins/display-6b4b11f924d96a0078856d27655da62a0416806ef9eb7001c4dd468271d78d7a.bin",
+    sha256: "6b4b11f924d96a0078856d27655da62a0416806ef9eb7001c4dd468271d78d7a",
+    bytes: 307218
   },
   ff69900572cb7db2737100c4773eb4da6b0bcec4edc9b80470cc360985773b5e: {
-    url: "/plugin-builtins/display-87b19f60879b2173dd1d5916f12012e77d633124bb6b58756f8ea8a8f69debd9.bin",
-    sha256: "87b19f60879b2173dd1d5916f12012e77d633124bb6b58756f8ea8a8f69debd9",
-    bytes: 129130
+    url: "/plugin-builtins/display-05fc73de27099f1bf42e754cfa901149ec99a8c7f1007ecf47bcb3130b9d4809.bin",
+    sha256: "05fc73de27099f1bf42e754cfa901149ec99a8c7f1007ecf47bcb3130b9d4809",
+    bytes: 210718
   },
   ff77e42449b35773f14c9bdff0f6e9641af17ebfae86e6524a10905288cb13d5: {
-    url: "/plugin-builtins/display-87b19f60879b2173dd1d5916f12012e77d633124bb6b58756f8ea8a8f69debd9.bin",
-    sha256: "87b19f60879b2173dd1d5916f12012e77d633124bb6b58756f8ea8a8f69debd9",
-    bytes: 129130
+    url: "/plugin-builtins/display-05fc73de27099f1bf42e754cfa901149ec99a8c7f1007ecf47bcb3130b9d4809.bin",
+    sha256: "05fc73de27099f1bf42e754cfa901149ec99a8c7f1007ecf47bcb3130b9d4809",
+    bytes: 210718
   }
 };
 
@@ -270150,6 +269545,7 @@ function logBrowserRuntimeDebug(event, payload = {}) {
 // src/components/StarSky/shared/performance/BuiltinGeometryArtifacts.ts
 var publishedLocations = /* @__PURE__ */ new Map();
 var publishedFiles = /* @__PURE__ */ new Map();
+var artifactLocations = new Map(Object.values(builtinGeometryArtifacts_generated_default).map((location) => [location.sha256, location]));
 var BuiltinGeometryArtifacts = class {
   constructor(locations = builtinGeometryArtifacts_generated_default, request = (...args) => fetch(...args)) {
     this.locations = locations;
@@ -270159,8 +269555,8 @@ var BuiltinGeometryArtifacts = class {
     this.failed = /* @__PURE__ */ new Set();
     this.waiting = [];
   }
-  async get(key, validate, persist) {
-    const location = this.locations[key] ?? publishedLocations.get(key);
+  async get(key, validate, persist, preferred) {
+    const location = preferred ?? this.locations[key] ?? publishedLocations.get(key);
     if (!location || this.failed.has(location.url)) return null;
     let job = this.pending.get(location.url);
     while (true) {
@@ -270432,11 +269828,11 @@ var CompiledGeometryCache = class {
     return `${namespace}sha256:${await this.digest(source)}`;
   }
   /** 读取失败或损坏只使缓存失效，源文档始终可重建。 */
-  async get(source) {
+  async get(source, artifact) {
     if (!this.available) return null;
     let timer;
     try {
-      return await Promise.race([this.read(source), new Promise((resolve) => {
+      return await Promise.race([this.read(source, artifact), new Promise((resolve) => {
         timer = setTimeout(() => {
           this.report(new Error("\u7F16\u8BD1\u7F13\u5B58\u8BFB\u53D6\u8D85\u65F6\uFF0C\u5C06\u4ECE\u6E90\u63CF\u8FF0\u91CD\u5EFA"));
           resolve(null);
@@ -270446,17 +269842,17 @@ var CompiledGeometryCache = class {
       clearTimeout(timer);
     }
   }
-  async read(source) {
+  async read(source, artifact) {
     try {
       const key = await this.digest(source);
       const existing = this.reads.get(key);
       if (existing) return existing;
-      if (!this.directory) return this.readInitial(source, key);
+      if (!this.directory) return this.readInitial(source, key, artifact);
       const directory = await this.directory;
-      if (directory && !directory.has(key)) return this.readBuiltin(key);
+      if (directory && !directory.has(key)) return this.readBuiltin(key, artifact);
       const shared = this.reads.get(key);
       if (shared) return shared;
-      const pending = new Promise((resolve) => this.pendingReads.set(key, { source, resolve })).finally(() => this.reads.delete(key));
+      const pending = new Promise((resolve) => this.pendingReads.set(key, { source, artifact, resolve })).finally(() => this.reads.delete(key));
       this.reads.set(key, pending);
       if (!this.readScheduled) {
         this.readScheduled = true;
@@ -270471,7 +269867,7 @@ var CompiledGeometryCache = class {
     }
   }
   /** 目录和首个资产在同一只读事务读取，不串行等待两次存储往返。 */
-  readInitial(source, key) {
+  readInitial(source, key, artifact) {
     const batch = this.database.runTransaction(["metadata", "geometry"], "readonly", (stores) => Promise.all([
       requestToPromise(stores.metadata.getAll()),
       requestToPromise(stores.geometry.get(key))
@@ -270484,14 +269880,14 @@ var CompiledGeometryCache = class {
       return void 0;
     });
     const pending = batch.then(([, record]) => {
-      if (!this.knownKeys?.has(key)) return this.readBuiltin(key);
+      if (!this.knownKeys?.has(key)) return this.readBuiltin(key, artifact);
       try {
         const value = this.acceptRead(source, key, record?.value);
         if (!this.maintenanceStarted || this.touches.size) {
           this.maintenanceStarted = true;
           this.scheduleWrite();
         }
-        return value ?? this.readBuiltin(key);
+        return value ?? this.readBuiltin(key, artifact);
       } catch (error) {
         void this.delete(source);
         this.report(error);
@@ -270522,11 +269918,11 @@ var CompiledGeometryCache = class {
     this.pendingReads.clear();
     try {
       const records = await this.database.runTransaction(["geometry"], "readonly", (stores) => Promise.all(batch.map(([key]) => requestToPromise(stores.geometry.get(key)))));
-      batch.forEach(([key, { source, resolve }], index) => {
+      batch.forEach(([key, { source, artifact, resolve }], index) => {
         try {
           const value = this.acceptRead(source, key, records[index]?.value);
           if (value) resolve(value);
-          else void this.readBuiltin(key).then(resolve);
+          else void this.readBuiltin(key, artifact).then(resolve);
         } catch (error) {
           void this.delete(source);
           this.report(error);
@@ -270542,12 +269938,12 @@ var CompiledGeometryCache = class {
       this.scheduleWrite();
     }
   }
-  readBuiltin(key) {
-    return this.builtins.get(key, validateCachedGeometry, (reference, geometry) => this.putConfirmed(reference, geometry));
+  readBuiltin(key, artifact) {
+    return this.builtins.get(key, validateCachedGeometry, (reference, geometry) => this.putConfirmed(reference, geometry), artifact);
   }
-  /** 调用方保留源键，底层负责短引用去重及事务合并。 */
-  async getMany(sources) {
-    return new Map(await Promise.all(sources.map(async (source) => [source, await this.get(source)])));
+  /** 保留几何缓存身份；缺失时优先读当前外观的接管包，避免跨外观重复下载。 */
+  async getMany(sources, artifact) {
+    return new Map(await Promise.all(sources.map(async (source) => [source, await this.get(source, artifact)])));
   }
   /** 恢复阶段发现损坏时同时删除产物和目录，删除失败不阻塞源生成。 */
   async delete(source) {
@@ -278088,7 +277484,7 @@ function planCapabilityRenderAsset(input, behaviors) {
   const { commands, parents, motionRoots: motionRoots2, mutableSlots, behaviorKey, fallback } = planCapabilityRenderBehaviorBoundary(input, behaviors);
   const roots = new Set(motionRoots2), protectedSlots = new Set(mutableSlots);
   const groups = [];
-  if (fallback && behaviors) return { behaviorKey, motionRoots: motionRoots2, mutableSlots, groups, fallback };
+  if (fallback) return { behaviorKey, motionRoots: motionRoots2, mutableSlots, groups, fallback };
   const identities = /* @__PURE__ */ new Map();
   const identity = (value) => {
     const input2 = JSON.stringify(value), previous = identities.get(input2);
@@ -278110,7 +277506,6 @@ function planCapabilityRenderAsset(input, behaviors) {
       if (current !== slot && motionRootSlot === null && roots.has(current)) motionRootSlot = current;
       current = parents[current];
     }
-    if (fallback) motionRootSlot = parents[slot];
     const material = normalizeMaterialDescriptor(command.material);
     if (command.material?.faceMaterials?.length || material.transparent || material.kind !== "standard" && material.kind !== "physical" || material.transmission) return;
     const { color: _color3, roughness: _roughness, metalness: _metalness, emissive: _emissive, emissiveIntensity: _intensity, ...program } = material;
@@ -278140,7 +277535,7 @@ function planCapabilityRenderAsset(input, behaviors) {
     const keepInstances = (members) => {
       for (let i = 0; i < members.length; i += 256) {
         const chunk = members.slice(i, i + 256);
-        if (chunk.length < 2 && (fallback || !commands[chunk[0].slot].instances?.length || !chunk[0].triangles || chunk[0].triangles * (chunk[0].count - 1) > MAX_DUPLICATED_TRIANGLES_PER_DRAW)) continue;
+        if (chunk.length < 2 && (!commands[chunk[0].slot].instances?.length || !chunk[0].triangles || chunk[0].triangles * (chunk[0].count - 1) > MAX_DUPLICATED_TRIANGLES_PER_DRAW)) continue;
         groups.push({ slots: chunk.map((member) => member.slot), motionRootSlot: chunk[0].root, representation: "instances" });
       }
     };
@@ -278269,6 +277664,7 @@ async function readCapabilityRenderAsset(commands, store = terrainCompiledGeomet
   return asset;
 }
 function validateCapabilityRenderAssetPlan(asset, plan) {
+  if (asset.rigidGroups?.length === 0) return;
   if (asset.behaviorKey !== plan.behaviorKey) throw new Error("\u5B8C\u6574\u6E32\u67D3\u8D44\u4EA7\u884C\u4E3A\u8FB9\u754C\u4E0D\u5339\u914D");
   if (asset.rigidGroups?.some((group) => !plan.groups.some((candidate) => candidate.motionRootSlot === group.motionRootSlot && (candidate.representation === "instances" ? Boolean(group.instances) || group.bakedInstances === true : !group.instances && !group.bakedInstances) && group.slots.every((slot) => candidate.slots.includes(slot))))) throw new Error("\u5B8C\u6574\u6E32\u67D3\u8D44\u4EA7\u8D85\u51FA\u58F0\u660E\u5408\u5E76\u8FB9\u754C");
 }
@@ -278280,10 +277676,14 @@ var CAPABILITY_RENDER_ASSET_ENTRY_VERSION = `v1:three-r${REVISION}`;
 var TAB_MAX_CHARACTERS = 512 * 1024;
 
 // src/components/StarSky/host/runtime/sandbox/Capabilities/CapabilityPrebuiltRenderAsset.ts
+var verifiedPrebuiltAssets = /* @__PURE__ */ new WeakMap();
 var verifiedDeclarations = /* @__PURE__ */ new WeakMap();
 function isVerifiedRenderDeclaration(command, asset, slot) {
   const verified = verifiedDeclarations.get(command);
   return Boolean(verified && (!asset || verified.asset === asset && verified.slot === slot));
+}
+function getPrebuiltSourceArtifact(prebuilt) {
+  return verifiedPrebuiltAssets.get(prebuilt)?.sourceArtifact;
 }
 
 // src/components/StarSky/host/runtime/sandbox/Capabilities/CapabilityRenderRevisionJournal.ts
@@ -278434,12 +277834,11 @@ var CapabilityRenderAssetRuntime = class {
     this.poseJournal = new CapabilityRenderRevisionJournal(() => this.poseChanged());
     this.contextLost = () => this.fallback();
     this.pool = new SharedGeometryPool(port.renderer);
-    if (port.enabled && port.renderer) this.filter = new CapabilityDrawFilter(port.renderer);
-    if (port.enabled) port.renderer?.domElement?.addEventListener("webglcontextlost", this.contextLost);
+    if (port.renderer) this.filter = new CapabilityDrawFilter(port.renderer);
+    port.renderer?.domElement?.addEventListener("webglcontextlost", this.contextLost);
   }
   /** 首批定位完整资产；后续批次只接管对应身份，缺失或损坏安全回原路径。 */
   prepare(commands) {
-    if (!this.port.enabled) return false;
     if (!this.asset?.rigidGroups && !this.port.renderer?.extensions?.has("WEBGL_multi_draw") || this.controller.signal.aborted || this.failed || !terrainCompiledGeometryCache.available) {
       logBrowserRuntimeDebug("plugin.render-asset.skipped", {
         pluginId: this.port.pluginId,
@@ -278459,10 +277858,11 @@ var CapabilityRenderAssetRuntime = class {
    * @param prebuilt 已验证的预构建资产及当前实例节点绑定
    */
   async preparePrebuilt(prebuilt, requireTakeoverValidation = false) {
-    if (!this.port.enabled || !this.port.renderer || !prebuilt.asset.rigidGroups && !this.port.renderer.extensions?.has("WEBGL_multi_draw") || this.controller.signal.aborted || this.failed || !terrainCompiledGeometryCache.available) return false;
+    if (!this.port.renderer || !prebuilt.asset.rigidGroups && !this.port.renderer.extensions?.has("WEBGL_multi_draw") || this.controller.signal.aborted || this.failed || !terrainCompiledGeometryCache.available) return false;
     const created = prebuilt.commands.filter((command) => command.type === "scene.createNode");
     if (!created.length) return Boolean(this.asset);
     if (this.asset) return this.prepareSupported(created);
+    this.prebuilt = prebuilt;
     this.takeoverVerified = !requireTakeoverValidation;
     this.allowPreDisplay = true;
     this.prebuiltOffset = 0;
@@ -278721,7 +278121,7 @@ var CapabilityRenderAssetRuntime = class {
     if (!this.deferredSources || !this.asset) return Promise.resolve();
     return this.sourceGeometryRead ??= (async () => {
       const keys = Array.from(new Set(this.asset.sources.map((source) => source.node.geometryKey).filter((key) => !this.sourceGeometries.has(key))));
-      const geometries = await terrainCompiledGeometryCache.getMany(keys);
+      const geometries = await terrainCompiledGeometryCache.getMany(keys, this.prebuilt && getPrebuiltSourceArtifact(this.prebuilt));
       if (this.controller.signal.aborted || this.failed) throw new DOMException("\u5B8C\u6574\u6E32\u67D3\u8D44\u4EA7\u5DF2\u53D6\u6D88", "AbortError");
       if (keys.some((key) => !geometries.get(key))) throw new Error("\u5B8C\u6574\u6E32\u67D3\u8D44\u4EA7\u62FE\u53D6\u8D44\u6E90\u7F3A\u5931");
       geometries.forEach((geometry, key) => {
@@ -279564,8 +278964,12 @@ var CapabilityRenderAssetRuntime = class {
     });
     this.pending.clear();
   }
+  /** 当前实例已有可接管的最终资产；未命中入口不探测旧完整资产缓存。 */
+  get active() {
+    return Boolean(this.asset) && !this.failed;
+  }
   getStats() {
-    return { ...this.stats, trackedMaterials: this.materialChecks.size, active: Boolean(this.asset) && !this.failed, ready: this.firstDisplay && !this.failed };
+    return { ...this.stats, trackedMaterials: this.materialChecks.size, active: this.active, ready: this.firstDisplay && !this.failed };
   }
   /** 已接管节点仍归正式场景所有，卸载只释放未接管身份和本实例最终资源。 */
   dispose() {
@@ -280074,7 +279478,6 @@ var CapabilitySceneRuntime = class {
     this.previewTextures = /* @__PURE__ */ new Map();
     this.rigidBatches = new CapabilityRigidBatchRuntime(port.renderer, port.root, port.pluginId);
     this.renderAsset = new CapabilityRenderAssetRuntime({
-      enabled: port.enableRenderAssetCandidate === true,
       renderer: port.renderer,
       root: port.root,
       pluginId: port.pluginId,
@@ -281045,7 +280448,7 @@ async function buildDisplayArtifact(batches, store, finalStores = {}, experiment
       return { commandType: command.type, ok: true };
     }
   }, store);
-  const rigidStore = finalStores.rigid ?? store, matrixStore = finalStores.matrix ?? store;
+  const rigidStore = finalStores.rigid ?? store, matrixStore = finalStores.matrix;
   const snapshots = new CapabilityRigidBatchSnapshot(void 0, rigidStore), manifests = new CapabilityFinalDisplayManifest(void 0, rigidStore, false, experimentalMaterialSlots, experimentalFinalAssets);
   const compiler = new StaticGeometryCompiler(8 * 1024 * 1024, false, void 0, void 0, true);
   const matrixPool = new SharedGeometryPool();
@@ -281081,30 +280484,33 @@ async function buildDisplayArtifact(batches, store, finalStores = {}, experiment
     const restored = manifests.declaration(batches.flat());
     await manifests.read(restored);
     if (restored.groups.length !== groups.length) throw new Error("\u6700\u7EC8\u663E\u793A\u6E05\u5355\u751F\u6210\u4E0D\u5B8C\u6574");
-    const matrixSnapshots = new CapabilityRigidBatchSnapshot(void 0, matrixStore);
-    const matrixManifests = new CapabilityFinalDisplayManifest(void 0, matrixStore, true);
-    const matrixPlan = matrixManifests.declaration(batches.flat()), matrixGroups = [];
-    for (const sources of collectCapabilityMatrixGroups(root, canBatchCapabilitySource)) {
-      const key = capabilityMatrixSnapshotKey(sources);
-      if (!key) throw new Error("\u5185\u7F6E\u77E9\u9635\u7EC4\u7F3A\u5C11\u7A33\u5B9A\u51E0\u4F55\u8EAB\u4EFD");
-      const job = createCapabilityMatrixBatch(sources, root, matrixPool);
-      let step = job.next();
-      while (!step.done) step = job.next();
-      const batch = step.value;
-      try {
-        if (!batch.sync()) throw new Error("\u5185\u7F6E\u77E9\u9635\u7EC4\u542B\u4E0D\u652F\u6301\u7684\u53D8\u6362");
-        matrixSnapshots.save(key, batch.mesh, void 0, batch.layout);
-        matrixGroups.push({ slots: sources.map((source) => slots.get(source.userData.capabilityNodeId)), snapshotKey: key });
-        await matrixSnapshots.flush();
-      } finally {
-        batch.dispose();
+    const matrixGroups = [];
+    if (matrixStore) {
+      const matrixSnapshots = new CapabilityRigidBatchSnapshot(void 0, matrixStore);
+      const matrixManifests = new CapabilityFinalDisplayManifest(void 0, matrixStore, true);
+      const matrixPlan = matrixManifests.declaration(batches.flat());
+      for (const sources of collectCapabilityMatrixGroups(root, canBatchCapabilitySource)) {
+        const key = capabilityMatrixSnapshotKey(sources);
+        if (!key) throw new Error("\u5185\u7F6E\u77E9\u9635\u7EC4\u7F3A\u5C11\u7A33\u5B9A\u51E0\u4F55\u8EAB\u4EFD");
+        const job = createCapabilityMatrixBatch(sources, root, matrixPool);
+        let step = job.next();
+        while (!step.done) step = job.next();
+        const batch = step.value;
+        try {
+          if (!batch.sync()) throw new Error("\u5185\u7F6E\u77E9\u9635\u7EC4\u542B\u4E0D\u652F\u6301\u7684\u53D8\u6362");
+          matrixSnapshots.save(key, batch.mesh, void 0, batch.layout);
+          matrixGroups.push({ slots: sources.map((source) => slots.get(source.userData.capabilityNodeId)), snapshotKey: key });
+          await matrixSnapshots.flush();
+        } finally {
+          batch.dispose();
+        }
       }
+      matrixManifests.save(matrixPlan, matrixGroups, matrixSnapshots.flush(), batches.slice(0, -1).map((_batch, index) => matrixManifests.declaration(batches.slice(0, index + 1).flat())));
+      await matrixManifests.flush();
+      const matrixRestored = matrixManifests.declaration(batches.flat());
+      await matrixManifests.read(matrixRestored);
+      if (matrixRestored.groups.length !== matrixGroups.length) throw new Error("\u6700\u7EC8\u77E9\u9635\u663E\u793A\u6E05\u5355\u751F\u6210\u4E0D\u5B8C\u6574");
     }
-    matrixManifests.save(matrixPlan, matrixGroups, matrixSnapshots.flush(), batches.slice(0, -1).map((_batch, index) => matrixManifests.declaration(batches.slice(0, index + 1).flat())));
-    await matrixManifests.flush();
-    const matrixRestored = matrixManifests.declaration(batches.flat());
-    await matrixManifests.read(matrixRestored);
-    if (matrixRestored.groups.length !== matrixGroups.length) throw new Error("\u6700\u7EC8\u77E9\u9635\u663E\u793A\u6E05\u5355\u751F\u6210\u4E0D\u5B8C\u6574");
     const assetGroups = finalStores.asset ? await buildRenderAsset(root, batches, store, finalStores.asset) : 0;
     const rigidAssetGroups = finalStores.rigidAsset ? await buildRenderAsset(root, batches, store, finalStores.rigidAsset, true, renderPlan) : 0;
     return { nodes: plan.commands.length, groups: groups.length, matrixGroups: matrixGroups.length, assetGroups, rigidAssetGroups };
@@ -281122,28 +280528,18 @@ async function buildDisplayArtifact(batches, store, finalStores = {}, experiment
 }
 
 // src/components/StarSky/host/runtime/sandbox/Capabilities/buildPluginDisplay.ts
-function capturePrebuildBehaviors(builder, context, batches) {
-  if (typeof builder !== "function" || !(builder.prototype instanceof ComposablePluginBase)) return void 0;
-  const Constructor = builder;
-  const captured = capturePluginDeclarations((runtime) => new Constructor(runtime, { ...context, id: "prebuild" }));
-  assert.deepEqual(captured.batches, batches, "\u6B63\u5F0F\u521D\u59CB\u7ED3\u6784\u4E0E prebuild \u4E0D\u4E00\u81F4\uFF0C\u4E0D\u80FD\u636E\u6B64\u9884\u6784\u5EFA\u884C\u4E3A\u8FB9\u754C");
-  return captured.behaviors;
-}
 var digest = (value) => createHash("sha256").update(value).digest("hex");
-var segmentOf = (reference) => {
-  const match = /sha256:([a-f0-9]{64})$/.exec(reference);
-  assert.ok(match, reference);
-  return Number.parseInt(match[1].slice(0, 2), 16) >> 6;
-};
-function splitArtifactRecords(records) {
-  const segments = /* @__PURE__ */ new Map();
-  for (const [reference, geometry] of Array.from(records.entries()).sort(([a], [b]) => a.localeCompare(b))) {
-    const segment = segmentOf(reference);
-    const values = segments.get(segment) ?? /* @__PURE__ */ new Map();
-    values.set(reference, geometry);
-    segments.set(segment, values);
-  }
-  return Array.from(segments.entries()).sort(([left], [right]) => left - right).map(([, values]) => values);
+function createArtifact(records) {
+  const payload = encodeBuiltinGeometryArtifact(
+    Object.fromEntries(Array.from(records.entries()).sort(([a], [b]) => a.localeCompare(b)))
+  );
+  const sha256 = digest(payload);
+  const keys = Array.from(records.keys(), (key) => {
+    const hash = /sha256:([a-f0-9]{64})$/.exec(key)?.[1];
+    assert.ok(hash, key);
+    return hash;
+  });
+  return { filename: `display-${sha256}.bin`, payload, sha256, bytes: payload.byteLength, keys };
 }
 function createStore(records) {
   const reference = (source) => {
@@ -281177,18 +280573,26 @@ function createStore(records) {
   };
   return store;
 }
-async function buildPluginDisplay(builder, options = {}) {
+async function buildPluginDisplay(builder) {
   const method = Object.getOwnPropertyDescriptor(builder, "prebuild");
   assert.equal(typeof method?.value, "function", "\u9884\u6784\u5EFA\u5165\u53E3\u5FC5\u987B\u5B9A\u4E49\u53EF\u8C03\u7528\u7684\u9759\u6001 prebuild()");
+  const behaviorMethod = Object.getOwnPropertyDescriptor(builder, "prebuildBehaviors");
+  assert.ok(!behaviorMethod || typeof behaviorMethod.value === "function", "\u884C\u4E3A\u9884\u6784\u5EFA\u5165\u53E3\u5FC5\u987B\u4E3A\u9759\u6001 prebuildBehaviors()");
   const configuredTiers = getPluginMetadataTiers(builder.metadata);
   const tiers = configuredTiers.length ? configuredTiers : [void 0];
   const artifacts = [];
   const stats = [];
   const renderEntries = [];
   for (const tier of tiers) {
-    const base = /* @__PURE__ */ new Map(), rigid = /* @__PURE__ */ new Map(), matrix = /* @__PURE__ */ new Map(), asset = /* @__PURE__ */ new Map(), rigidAsset = /* @__PURE__ */ new Map();
+    const entryOffset = renderEntries.length;
+    const requiredSourceKeys = /* @__PURE__ */ new Set();
+    const base = /* @__PURE__ */ new Map(), rigid = /* @__PURE__ */ new Map(), rigidAsset = /* @__PURE__ */ new Map();
     const batches = await builder.prebuild(Object.freeze({ tier }));
-    const behaviors = options.rigidRenderAssets ? capturePrebuildBehaviors(builder, Object.freeze({ tier }), batches) : void 0;
+    const behaviors = behaviorMethod ? await builder.prebuildBehaviors(Object.freeze({ tier })) : void 0;
+    assert.ok(
+      behaviors === void 0 || Array.isArray(behaviors.descriptors) && Array.isArray(behaviors.targetNodeIds),
+      "prebuildBehaviors() \u5FC5\u987B\u8FD4\u56DE\u884C\u4E3A\u63CF\u8FF0\u4E0E\u76EE\u6807\u8282\u70B9"
+    );
     assert.ok(
       Array.isArray(batches) && batches.length && batches.every((batch) => Array.isArray(batch) && batch.every((command) => command?.type === "scene.createNode")),
       "prebuild() \u5FC5\u987B\u8FD4\u56DE\u521D\u59CB\u573A\u666F\u521B\u5EFA\u547D\u4EE4\u6279\u6B21"
@@ -281197,25 +280601,24 @@ async function buildPluginDisplay(builder, options = {}) {
       tier,
       ...await buildDisplayArtifact(batches, createStore(base), {
         rigid: createStore(rigid),
-        matrix: createStore(matrix),
-        ...options.renderAssets ? { asset: createStore(asset) } : {},
-        ...options.rigidRenderAssets ? { rigidAsset: createStore(rigidAsset) } : {}
+        rigidAsset: createStore(rigidAsset)
       }, false, false, behaviors)
     });
     assert.ok(base.size, `\u7B49\u7EA7 ${tier} \u6CA1\u6709\u663E\u793A\u8BB0\u5F55`);
     for (const [reference, record] of Array.from(rigidAsset.entries())) {
-      const asset2 = record.metadata?.renderAsset;
-      if (!asset2) continue;
-      if (asset2.rigidGroups?.length) {
-        const covered = new Set(asset2.rigidGroups.flatMap((group) => group.slots));
+      const asset = record.metadata?.renderAsset;
+      if (!asset) continue;
+      for (const source of asset.sources ?? []) requiredSourceKeys.add(source.node.geometryKey);
+      if (asset.rigidGroups?.length) {
+        const covered = new Set(asset.rigidGroups.flatMap((group) => group.slots));
         const retained = /* @__PURE__ */ new Set([
           reference,
-          ...asset2.rigidGroups.map((group) => group.layout.geometryKey),
-          ...asset2.sources.filter((source) => !covered.has(source.slot)).map((source) => source.node.geometryKey)
+          ...asset.rigidGroups.map((group) => group.layout.geometryKey),
+          ...asset.sources.filter((source) => !covered.has(source.slot)).map((source) => source.node.geometryKey)
         ]);
-        for (const source of asset2.sources) if (!retained.has(source.node.geometryKey)) {
+        for (const source of asset.sources) if (!retained.has(source.node.geometryKey)) {
           assert.ok(
-            base.has(source.node.geometryKey) || rigid.has(source.node.geometryKey) || matrix.has(source.node.geometryKey),
+            base.has(source.node.geometryKey) || rigid.has(source.node.geometryKey),
             "\u6E90\u6062\u590D\u51E0\u4F55\u7F3A\u5C11\u72EC\u7ACB\u4EA7\u7269"
           );
         }
@@ -281225,7 +280628,7 @@ async function buildPluginDisplay(builder, options = {}) {
         version: CAPABILITY_RENDER_ASSET_ENTRY_VERSION,
         ...tier ? { tier } : {},
         reference,
-        sha256: digest(JSON.stringify(asset2)),
+        sha256: digest(JSON.stringify(asset)),
         bindings: batches.flat().map((command) => {
           assert.equal(command.type, "scene.createNode");
           const { nodeId, parentId, name } = command;
@@ -281233,49 +280636,35 @@ async function buildPluginDisplay(builder, options = {}) {
         })
       });
     }
-    for (const records of [
-      new Map(Array.from(base.entries()).concat(Array.from(rigid.entries()))),
-      matrix
-    ]) {
-      for (const segment of splitArtifactRecords(records)) {
-        const payload = encodeBuiltinGeometryArtifact(
-          Object.fromEntries(Array.from(segment.entries()).sort(([a], [b]) => a.localeCompare(b)))
-        );
-        const sha256 = digest(payload);
-        const keys = Array.from(segment.keys(), (key) => {
-          const hash = /sha256:([a-f0-9]{64})$/.exec(key)?.[1];
-          assert.ok(hash, key);
-          return hash;
-        });
-        artifacts.push({
-          filename: `display-${sha256}.bin`,
-          payload,
-          sha256,
-          bytes: payload.byteLength,
-          keys
-        });
-      }
+    const sourceRecords = requiredSourceKeys.size ? new Map(Array.from(requiredSourceKeys).sort().map((key) => {
+      const record = base.get(key);
+      assert.ok(record, "\u63A5\u7BA1\u6E90\u51E0\u4F55\u7F3A\u5C11\u72EC\u7ACB\u4EA7\u7269");
+      return [key, record];
+    })) : new Map(Array.from(base.entries()).concat(Array.from(rigid.entries())));
+    if (requiredSourceKeys.size) {
+      const sourceData = createArtifact(sourceRecords);
+      const metadata = { sourceGeometryPack: { version: 1, sha256: sourceData.sha256 } };
+      sourceRecords.set(`sha256:${digest(`plugin-source-pack-v1:${sourceData.sha256}`)}`, {
+        attributes: { position: { array: new Float32Array(3), itemSize: 3, normalized: false } },
+        index: null,
+        groups: [],
+        bounds: { min: [0, 0, 0], max: [0, 0, 0], center: [0, 0, 0], radius: 0 },
+        metadata,
+        bytes: 12 + new TextEncoder().encode(JSON.stringify(metadata)).byteLength
+      });
     }
-    for (const complete of [asset, rigidAsset]) if (complete.size) {
+    const sourceArtifact = createArtifact(sourceRecords);
+    artifacts.push(sourceArtifact);
+    for (const entry of renderEntries.slice(entryOffset)) entry.sourceArtifact = sourceArtifact.sha256;
+    if (rigidAsset.size) {
+      const complete = rigidAsset;
       complete.forEach((record) => {
         const manifest = record.metadata?.renderAsset;
         if (manifest && typeof manifest === "object") {
           record.metadata = { ...record.metadata, renderAsset: JSON.stringify(manifest) };
         }
       });
-      const payload = encodeBuiltinGeometryArtifact(Object.fromEntries(Array.from(complete.entries()).sort(([a], [b]) => a.localeCompare(b))));
-      const sha256 = digest(payload);
-      artifacts.push({
-        filename: `display-${sha256}.bin`,
-        payload,
-        sha256,
-        bytes: payload.byteLength,
-        keys: Array.from(complete.keys(), (key) => {
-          const hash = /sha256:([a-f0-9]{64})$/.exec(key)?.[1];
-          assert.ok(hash, key);
-          return hash;
-        })
-      });
+      artifacts.push(createArtifact(complete));
     }
   }
   return { artifacts, stats, renderEntries };
@@ -281428,6 +280817,7 @@ export {
   buildPluginDisplay,
   buildRoundInstrumentButton,
   buildVehicleSpeedControls,
+  capturePluginDeclarations,
   clampElasticPullOffset,
   clampPluginCurrentSurfacePoint,
   clearPluginSnappingStackPlacementState,

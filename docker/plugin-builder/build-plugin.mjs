@@ -348,14 +348,14 @@ async function prebuildPluginDisplay(entry, outDir) {
         });
       } }] });
     const { default: builder } = await import(pathToFileURL(modulePath).href);
-    const { artifacts } = await sdk.buildPluginDisplay(builder);
+    const { artifacts, renderEntries } = await sdk.buildPluginDisplay(builder);
     const catalog = {};
     await fs.mkdir(path.join(outDir, 'display'), { recursive: true });
     for (const { filename, payload, sha256, bytes, keys } of artifacts) {
       await fs.writeFile(path.join(outDir, 'display', filename), payload);
       for (const key of keys) catalog[key] ??= { url: `display/${filename}`, sha256, bytes };
     }
-    return catalog;
+    return { displayArtifacts: catalog, ...(renderEntries.length ? { displayEntries: renderEntries } : {}) };
   } finally { await fs.rm(temporary, { recursive: true, force: true }); }
 }
 
@@ -449,7 +449,7 @@ async function main() {
 
   const runtimeDependencies = collectRuntimeDependencies(sandboxBuildResult.metafile);
   await copyPluginStaticAssets(srcDir, outDir, staticAssets);
-  const displayArtifacts = await prebuildPluginDisplay(entryFile, outDir);
+  const display = await prebuildPluginDisplay(entryFile, outDir);
   const runtimeManifest = {
     pluginId,
     version,
@@ -458,7 +458,7 @@ async function main() {
     integrity,
     sandboxEntry,
     staticAssets,
-    ...(displayArtifacts ? { displayArtifacts } : {}),
+    ...display,
     externalDependencies: runtimeDependencies.externalDependencies,
     bundledDependencies: runtimeDependencies.bundledDependencies,
   };

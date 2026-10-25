@@ -25,9 +25,9 @@ import (
 
 const (
 	// 当前支持的道路状态结构版本。
-	currentSchemaVersion = 3
+	currentSchemaVersion = 4
 	// 与前端一致的旧道路统一宽度，门接口保留保存值。
-	defaultRoadWidth = 2.6
+	defaultRoadWidth = 3
 	// 单个道路状态允许的最大字节数。
 	maxStateBytes = 2 * 1024 * 1024
 	// 单个星球允许的道路节点上限。
@@ -593,7 +593,7 @@ func emptyDocumentResponse() *DocumentResponse {
 
 // migrateRoadWidths 只在旧版本升级时统一非接口节点，之后保留用户编辑。
 func migrateRoadWidths(state *roadState, schemaVersion int) {
-	if schemaVersion >= 3 {
+	if schemaVersion >= 4 {
 		return
 	}
 	for index := range state.Nodes {

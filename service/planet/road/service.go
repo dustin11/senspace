@@ -25,7 +25,9 @@ import (
 
 const (
 	// 当前支持的道路状态结构版本。
-	currentSchemaVersion = 2
+	currentSchemaVersion = 3
+	// 与前端一致的旧道路统一宽度，门接口保留保存值。
+	defaultRoadWidth = 2.6
 	// 单个道路状态允许的最大字节数。
 	maxStateBytes = 2 * 1024 * 1024
 	// 单个星球允许的道路节点上限。
@@ -247,6 +249,7 @@ func RemovePlatformAnchorsTx(
 	}
 	state.Nodes = keptNodes
 	state.Edges = keptEdges
+	migrateRoadWidths(state, document.SchemaVersion)
 	normalized, err := json.Marshal(state)
 	if err != nil {
 		return err
@@ -588,6 +591,18 @@ func emptyDocumentResponse() *DocumentResponse {
 	}
 }
 
+// migrateRoadWidths 只在旧版本升级时统一非接口节点，之后保留用户编辑。
+func migrateRoadWidths(state *roadState, schemaVersion int) {
+	if schemaVersion >= 3 {
+		return
+	}
+	for index := range state.Nodes {
+		if state.Nodes[index].Anchor.Kind != "connector" {
+			state.Nodes[index].Width = defaultRoadWidth
+		}
+	}
+}
+
 // mapDocument 把数据库记录映射为公开响应。
 func mapDocument(document road_domain.Document) *DocumentResponse {
 	state := json.RawMessage(document.StateJson)
@@ -596,6 +611,7 @@ func mapDocument(document road_domain.Document) *DocumentResponse {
 	if schemaVersion < currentSchemaVersion {
 		var legacy roadState
 		if json.Unmarshal(state, &legacy) == nil {
+			migrateRoadWidths(&legacy, schemaVersion)
 			if migrated, err := json.Marshal(legacy); err == nil {
 				state = migrated
 				schemaVersion = currentSchemaVersion

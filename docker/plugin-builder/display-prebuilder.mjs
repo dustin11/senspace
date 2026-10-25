@@ -5764,7 +5764,7 @@ var require_typescript = __commonJS({
         walkUpParenthesizedTypesAndGetParentAndChild: () => walkUpParenthesizedTypesAndGetParentAndChild,
         whitespaceOrMapCommentRegExp: () => whitespaceOrMapCommentRegExp,
         writeCommentRange: () => writeCommentRange,
-        writeFile: () => writeFile,
+        writeFile: () => writeFile2,
         writeFileEnsuringDirectories: () => writeFileEnsuringDirectories,
         zipWith: () => zipWith
       });
@@ -12097,7 +12097,7 @@ ${lanes.join("\n")}
               return process.stdout.isTTY;
             },
             readFile,
-            writeFile: writeFile2,
+            writeFile: writeFile22,
             watchFile: watchFile2,
             watchDirectory,
             preferNonRecursiveWatch: !fsSupportsRecursiveFsWatch,
@@ -12327,7 +12327,7 @@ ${lanes.join("\n")}
             }
             return buffer.toString("utf8");
           }
-          function writeFile2(fileName, data, writeByteOrderMark) {
+          function writeFile22(fileName, data, writeByteOrderMark) {
             if (writeByteOrderMark) {
               data = byteOrderMarkIndicator + data;
             }
@@ -24407,7 +24407,7 @@ ${lanes.join("\n")}
         sourceFilePath = isSourceFileInCommonSourceDirectory ? sourceFilePath.substring(commonSourceDirectory.length) : sourceFilePath;
         return combinePaths(newDirPath, sourceFilePath);
       }
-      function writeFile(host, diagnostics, fileName, text, writeByteOrderMark, sourceFiles, data) {
+      function writeFile2(host, diagnostics, fileName, text, writeByteOrderMark, sourceFiles, data) {
         host.writeFile(
           fileName,
           text,
@@ -24426,12 +24426,12 @@ ${lanes.join("\n")}
           createDirectory(directoryPath);
         }
       }
-      function writeFileEnsuringDirectories(path2, data, writeByteOrderMark, writeFile2, createDirectory, directoryExists) {
+      function writeFileEnsuringDirectories(path2, data, writeByteOrderMark, writeFile22, createDirectory, directoryExists) {
         try {
-          writeFile2(path2, data, writeByteOrderMark);
+          writeFile22(path2, data, writeByteOrderMark);
         } catch {
           ensureDirectoriesExist(getDirectoryPath(normalizePath(path2)), createDirectory, directoryExists);
-          writeFile2(path2, data, writeByteOrderMark);
+          writeFile22(path2, data, writeByteOrderMark);
         }
       }
       function getLineOfLocalPosition(sourceFile, pos) {
@@ -133158,7 +133158,7 @@ ${lanes.join("\n")}
             return;
           }
           const buildInfo = host.getBuildInfo() || { version };
-          writeFile(
+          writeFile2(
             host,
             emitterDiagnostics,
             buildInfoPath,
@@ -133370,7 +133370,7 @@ ${lanes.join("\n")}
             }
             if (sourceMapFilePath) {
               const sourceMap = sourceMapGenerator.toString();
-              writeFile(
+              writeFile2(
                 host,
                 emitterDiagnostics,
                 sourceMapFilePath,
@@ -133385,7 +133385,7 @@ ${lanes.join("\n")}
           }
           const text = writer.getText();
           const data = { sourceMapUrlPos, diagnostics: transform2.diagnostics };
-          writeFile(host, emitterDiagnostics, jsFilePath, text, !!compilerOptions.emitBOM, sourceFiles, data);
+          writeFile2(host, emitterDiagnostics, jsFilePath, text, !!compilerOptions.emitBOM, sourceFiles, data);
           writer.clear();
           return !data.skippedDtsWrite;
         }
@@ -133570,7 +133570,7 @@ ${lanes.join("\n")}
           // internal API
           writeNode,
           writeList,
-          writeFile: writeFile2,
+          writeFile: writeFile22,
           writeBundle
         };
         function printNode(hint, node, sourceFile) {
@@ -133608,7 +133608,7 @@ ${lanes.join("\n")}
           return endPrint();
         }
         function printFile(sourceFile) {
-          writeFile2(
+          writeFile22(
             sourceFile,
             beginPrint(),
             /*sourceMapGenerator*/
@@ -133660,7 +133660,7 @@ ${lanes.join("\n")}
           reset2();
           writer = previousWriter;
         }
-        function writeFile2(sourceFile, output, sourceMapGenerator2) {
+        function writeFile22(sourceFile, output, sourceMapGenerator2) {
           isOwnFileEmit = true;
           const previousWriter = writer;
           setWriter(output, sourceMapGenerator2);
@@ -138229,7 +138229,7 @@ ${lanes.join("\n")}
           getDirectories,
           readDirectory,
           createDirectory: host.createDirectory && createDirectory,
-          writeFile: host.writeFile && writeFile2,
+          writeFile: host.writeFile && writeFile22,
           addOrDeleteFileOrDirectory,
           addOrDeleteFile,
           clearCache,
@@ -138296,7 +138296,7 @@ ${lanes.join("\n")}
           const index = binarySearch(entries, name, identity, compareStringsCaseSensitive);
           return index >= 0;
         }
-        function writeFile2(fileName, data, writeByteOrderMark) {
+        function writeFile22(fileName, data, writeByteOrderMark) {
           const path2 = toPath3(fileName);
           const result = getCachedFileSystemEntriesForBaseDir(path2);
           if (result) {
@@ -139916,7 +139916,7 @@ ${lanes.join("\n")}
           getCanonicalFileName,
           getFileIncludeReasons: () => programDiagnostics.getFileReasons(),
           structureIsReused,
-          writeFile: writeFile2,
+          writeFile: writeFile22,
           getGlobalTypingsCacheLocation: maybeBind(host, host.getGlobalTypingsCacheLocation)
         };
         onProgramCreateComplete();
@@ -140411,7 +140411,7 @@ ${lanes.join("\n")}
             getRedirectFromSourceFile,
             isSourceOfProjectReferenceRedirect,
             getSymlinkCache,
-            writeFile: writeFileCallback || writeFile2,
+            writeFile: writeFileCallback || writeFile22,
             isEmitBlocked,
             shouldTransformImportCall,
             getEmitModuleFormatOfFile: getEmitModuleFormatOfFile2,
@@ -140439,7 +140439,7 @@ ${lanes.join("\n")}
             getGlobalTypingsCacheLocation: program.getGlobalTypingsCacheLocation
           };
         }
-        function writeFile2(fileName, text, writeByteOrderMark, onError, sourceFiles, data) {
+        function writeFile22(fileName, text, writeByteOrderMark, onError, sourceFiles, data) {
           host.writeFile(fileName, text, writeByteOrderMark, onError, sourceFiles, data);
         }
         function emitBuildInfo(writeFileCallback) {
@@ -142523,10 +142523,10 @@ ${lanes.join("\n")}
         }
       }
       var emitSkippedWithNoDiagnostics = { diagnostics: emptyArray, sourceMaps: void 0, emittedFiles: void 0, emitSkipped: true };
-      function handleNoEmitOptions(program, sourceFile, writeFile2, cancellationToken) {
+      function handleNoEmitOptions(program, sourceFile, writeFile22, cancellationToken) {
         const options = program.getCompilerOptions();
         if (options.noEmit) {
-          return sourceFile ? emitSkippedWithNoDiagnostics : program.emitBuildInfo(writeFile2, cancellationToken);
+          return sourceFile ? emitSkippedWithNoDiagnostics : program.emitBuildInfo(writeFile22, cancellationToken);
         }
         if (!options.noEmitOnError) return void 0;
         let diagnostics = [
@@ -142545,7 +142545,7 @@ ${lanes.join("\n")}
         if (!diagnostics.length) return void 0;
         let emittedFiles;
         if (!sourceFile) {
-          const emitResult = program.emitBuildInfo(writeFile2, cancellationToken);
+          const emitResult = program.emitBuildInfo(writeFile22, cancellationToken);
           if (emitResult.diagnostics) diagnostics = [...diagnostics, ...emitResult.diagnostics];
           emittedFiles = emitResult.emittedFiles;
         }
@@ -142916,9 +142916,9 @@ ${lanes.join("\n")}
       }
       function getFileEmitOutput(program, sourceFile, emitOnlyDtsFiles, cancellationToken, customTransformers, forceDtsEmit) {
         const outputFiles = [];
-        const { emitSkipped, diagnostics } = program.emit(sourceFile, writeFile2, cancellationToken, emitOnlyDtsFiles, customTransformers, forceDtsEmit);
+        const { emitSkipped, diagnostics } = program.emit(sourceFile, writeFile22, cancellationToken, emitOnlyDtsFiles, customTransformers, forceDtsEmit);
         return { outputFiles, emitSkipped, diagnostics };
-        function writeFile2(fileName, text, writeByteOrderMark) {
+        function writeFile22(fileName, text, writeByteOrderMark) {
           outputFiles.push({ name: fileName, writeByteOrderMark, text });
         }
       }
@@ -144277,11 +144277,11 @@ ${lanes.join("\n")}
           notImplemented();
         }
         return builderProgram;
-        function emitBuildInfo(writeFile2, cancellationToken) {
+        function emitBuildInfo(writeFile22, cancellationToken) {
           Debug.assert(isBuilderProgramStateWithDefinedProgram(state));
           if (getBuildInfoEmitPending(state)) {
             const result = state.program.emitBuildInfo(
-              writeFile2 || maybeBind(host, host.writeFile),
+              writeFile22 || maybeBind(host, host.writeFile),
               cancellationToken
             );
             state.buildInfoEmitPending = false;
@@ -144289,7 +144289,7 @@ ${lanes.join("\n")}
           }
           return emitSkippedWithNoDiagnostics;
         }
-        function emitNextAffectedFileOrDtsErrors(writeFile2, cancellationToken, emitOnlyDtsFiles, customTransformers, isForDtsErrors) {
+        function emitNextAffectedFileOrDtsErrors(writeFile22, cancellationToken, emitOnlyDtsFiles, customTransformers, isForDtsErrors) {
           var _a, _b, _c, _d;
           Debug.assert(isBuilderProgramStateWithDefinedProgram(state));
           let affected = getNextAffectedFile(state, cancellationToken, host);
@@ -144347,7 +144347,7 @@ ${lanes.join("\n")}
               if (isForDtsErrors || !getBuildInfoEmitPending(state)) return void 0;
               const affected2 = state.program;
               const result2 = affected2.emitBuildInfo(
-                writeFile2 || maybeBind(host, host.writeFile),
+                writeFile22 || maybeBind(host, host.writeFile),
                 cancellationToken
               );
               state.buildInfoEmitPending = false;
@@ -144359,7 +144359,7 @@ ${lanes.join("\n")}
           if (emitKind & 56) emitOnly = emitOnly === void 0 ? 1 : void 0;
           const result = !isForDtsErrors ? state.program.emit(
             affected === state.program ? void 0 : affected,
-            getWriteFileCallback(writeFile2, customTransformers),
+            getWriteFileCallback(writeFile22, customTransformers),
             cancellationToken,
             emitOnly,
             customTransformers,
@@ -144405,9 +144405,9 @@ ${lanes.join("\n")}
           });
           if (emitDiagnosticsPerFile) state.emitDiagnosticsPerFile = emitDiagnosticsPerFile;
         }
-        function emitNextAffectedFile(writeFile2, cancellationToken, emitOnlyDtsFiles, customTransformers) {
+        function emitNextAffectedFile(writeFile22, cancellationToken, emitOnlyDtsFiles, customTransformers) {
           return emitNextAffectedFileOrDtsErrors(
-            writeFile2,
+            writeFile22,
             cancellationToken,
             emitOnlyDtsFiles,
             customTransformers,
@@ -144415,9 +144415,9 @@ ${lanes.join("\n")}
             false
           );
         }
-        function getWriteFileCallback(writeFile2, customTransformers) {
+        function getWriteFileCallback(writeFile22, customTransformers) {
           Debug.assert(isBuilderProgramStateWithDefinedProgram(state));
-          if (!getEmitDeclarations(state.compilerOptions)) return writeFile2 || maybeBind(host, host.writeFile);
+          if (!getEmitDeclarations(state.compilerOptions)) return writeFile22 || maybeBind(host, host.writeFile);
           return (fileName, text, writeByteOrderMark, onError, sourceFiles, data) => {
             var _a, _b, _c;
             if (isDeclarationFileName(fileName)) {
@@ -144468,7 +144468,7 @@ ${lanes.join("\n")}
                 state.outSignature = newSignature;
               }
             }
-            if (writeFile2) writeFile2(fileName, text, writeByteOrderMark, onError, sourceFiles, data);
+            if (writeFile22) writeFile22(fileName, text, writeByteOrderMark, onError, sourceFiles, data);
             else if (host.writeFile) host.writeFile(fileName, text, writeByteOrderMark, onError, sourceFiles, data);
             else state.program.writeFile(fileName, text, writeByteOrderMark, onError, sourceFiles, data);
             function handleNewSignature(oldSignatureFormat, newSignature) {
@@ -144486,12 +144486,12 @@ ${lanes.join("\n")}
             }
           };
         }
-        function emit(targetSourceFile, writeFile2, cancellationToken, emitOnlyDtsFiles, customTransformers) {
+        function emit(targetSourceFile, writeFile22, cancellationToken, emitOnlyDtsFiles, customTransformers) {
           Debug.assert(isBuilderProgramStateWithDefinedProgram(state));
           if (kind === 1) {
             assertSourceFileOkWithoutNextAffectedCall(state, targetSourceFile);
           }
-          const result = handleNoEmitOptions(builderProgram, targetSourceFile, writeFile2, cancellationToken);
+          const result = handleNoEmitOptions(builderProgram, targetSourceFile, writeFile22, cancellationToken);
           if (result) return result;
           if (!targetSourceFile) {
             if (kind === 1) {
@@ -144501,7 +144501,7 @@ ${lanes.join("\n")}
               let emittedFiles = [];
               let affectedEmitResult;
               while (affectedEmitResult = emitNextAffectedFile(
-                writeFile2,
+                writeFile22,
                 cancellationToken,
                 emitOnlyDtsFiles,
                 customTransformers
@@ -144528,7 +144528,7 @@ ${lanes.join("\n")}
           }
           const emitResult = state.program.emit(
             targetSourceFile,
-            getWriteFileCallback(writeFile2, customTransformers),
+            getWriteFileCallback(writeFile22, customTransformers),
             cancellationToken,
             emitOnlyDtsFiles,
             customTransformers
@@ -144843,8 +144843,8 @@ ${lanes.join("\n")}
           getSyntacticDiagnostics: (sourceFile, cancellationToken) => getProgram().getSyntacticDiagnostics(sourceFile, cancellationToken),
           getDeclarationDiagnostics: (sourceFile, cancellationToken) => getProgram().getDeclarationDiagnostics(sourceFile, cancellationToken),
           getSemanticDiagnostics: (sourceFile, cancellationToken) => getProgram().getSemanticDiagnostics(sourceFile, cancellationToken),
-          emit: (sourceFile, writeFile2, cancellationToken, emitOnlyDts, customTransformers) => getProgram().emit(sourceFile, writeFile2, cancellationToken, emitOnlyDts, customTransformers),
-          emitBuildInfo: (writeFile2, cancellationToken) => getProgram().emitBuildInfo(writeFile2, cancellationToken),
+          emit: (sourceFile, writeFile22, cancellationToken, emitOnlyDts, customTransformers) => getProgram().emit(sourceFile, writeFile22, cancellationToken, emitOnlyDts, customTransformers),
+          emitBuildInfo: (writeFile22, cancellationToken) => getProgram().emitBuildInfo(writeFile22, cancellationToken),
           getAllDependencies: notImplemented,
           getCurrentDirectory: () => getProgram().getCurrentDirectory(),
           close: noop
@@ -146392,7 +146392,7 @@ ${lanes.join("\n")}
         const fileName = isString(file) ? file : file.fileName;
         return fileNameConvertor ? fileNameConvertor(fileName) : fileName;
       }
-      function emitFilesAndReportErrors(program, reportDiagnostic, write, reportSummary, writeFile2, cancellationToken, emitOnlyDtsFiles, customTransformers) {
+      function emitFilesAndReportErrors(program, reportDiagnostic, write, reportSummary, writeFile22, cancellationToken, emitOnlyDtsFiles, customTransformers) {
         const options = program.getCompilerOptions();
         const allDiagnostics = program.getConfigFileParsingDiagnostics().slice();
         const configFileParsingDiagnosticsLength = allDiagnostics.length;
@@ -146424,7 +146424,7 @@ ${lanes.join("\n")}
         const emitResult = options.listFilesOnly ? { emitSkipped: true, diagnostics: emptyArray } : program.emit(
           /*targetSourceFile*/
           void 0,
-          writeFile2,
+          writeFile22,
           cancellationToken,
           emitOnlyDtsFiles,
           customTransformers
@@ -146448,13 +146448,13 @@ ${lanes.join("\n")}
           diagnostics
         };
       }
-      function emitFilesAndReportErrorsAndGetExitStatus(program, reportDiagnostic, write, reportSummary, writeFile2, cancellationToken, emitOnlyDtsFiles, customTransformers) {
+      function emitFilesAndReportErrorsAndGetExitStatus(program, reportDiagnostic, write, reportSummary, writeFile22, cancellationToken, emitOnlyDtsFiles, customTransformers) {
         const { emitResult, diagnostics } = emitFilesAndReportErrors(
           program,
           reportDiagnostic,
           write,
           reportSummary,
-          writeFile2,
+          writeFile22,
           cancellationToken,
           emitOnlyDtsFiles,
           customTransformers
@@ -147954,22 +147954,22 @@ ${lanes.join("\n")}
           getSemanticDiagnosticsOfNextAffectedFile: (cancellationToken, ignoreSourceFile) => withProgramOrUndefined(
             (program2) => program2.getSemanticDiagnosticsOfNextAffectedFile && program2.getSemanticDiagnosticsOfNextAffectedFile(cancellationToken, ignoreSourceFile)
           ),
-          emit: (targetSourceFile, writeFile2, cancellationToken, emitOnlyDtsFiles, customTransformers) => {
+          emit: (targetSourceFile, writeFile22, cancellationToken, emitOnlyDtsFiles, customTransformers) => {
             if (targetSourceFile || emitOnlyDtsFiles) {
               return withProgramOrUndefined(
                 (program2) => {
                   var _a, _b;
-                  return program2.emit(targetSourceFile, writeFile2, cancellationToken, emitOnlyDtsFiles, customTransformers || ((_b = (_a = state.host).getCustomTransformers) == null ? void 0 : _b.call(_a, project)));
+                  return program2.emit(targetSourceFile, writeFile22, cancellationToken, emitOnlyDtsFiles, customTransformers || ((_b = (_a = state.host).getCustomTransformers) == null ? void 0 : _b.call(_a, project)));
                 }
               );
             }
             executeSteps(0, cancellationToken);
-            return emit(writeFile2, cancellationToken, customTransformers);
+            return emit(writeFile22, cancellationToken, customTransformers);
           },
           done
         };
-        function done(cancellationToken, writeFile2, customTransformers) {
-          executeSteps(3, cancellationToken, writeFile2, customTransformers);
+        function done(cancellationToken, writeFile22, customTransformers) {
+          executeSteps(3, cancellationToken, writeFile22, customTransformers);
           mark("SolutionBuilder::Projects built");
           return doneInvalidatedProject(state, projectPath);
         }
@@ -148103,7 +148103,7 @@ ${lanes.join("\n")}
           step = 2;
           return emitResult;
         }
-        function executeSteps(till, cancellationToken, writeFile2, customTransformers) {
+        function executeSteps(till, cancellationToken, writeFile22, customTransformers) {
           while (step <= till && step < 3) {
             const currentStep = step;
             switch (step) {
@@ -148111,7 +148111,7 @@ ${lanes.join("\n")}
                 createProgram2();
                 break;
               case 1:
-                emit(writeFile2, cancellationToken, customTransformers);
+                emit(writeFile22, cancellationToken, customTransformers);
                 break;
               case 2:
                 queueReferencingProjects(state, project, projectPath, projectIndex, config, buildOrder, Debug.checkDefined(buildResult));
@@ -148698,14 +148698,14 @@ ${lanes.join("\n")}
           }
         }
       }
-      function build(state, project, cancellationToken, writeFile2, getCustomTransformers, onlyReferences) {
+      function build(state, project, cancellationToken, writeFile22, getCustomTransformers, onlyReferences) {
         mark("SolutionBuilder::beforeBuild");
-        const result = buildWorker(state, project, cancellationToken, writeFile2, getCustomTransformers, onlyReferences);
+        const result = buildWorker(state, project, cancellationToken, writeFile22, getCustomTransformers, onlyReferences);
         mark("SolutionBuilder::afterBuild");
         measure("SolutionBuilder::Build", "SolutionBuilder::beforeBuild", "SolutionBuilder::afterBuild");
         return result;
       }
-      function buildWorker(state, project, cancellationToken, writeFile2, getCustomTransformers, onlyReferences) {
+      function buildWorker(state, project, cancellationToken, writeFile22, getCustomTransformers, onlyReferences) {
         const buildOrder = getBuildOrderFor(state, project, onlyReferences);
         if (!buildOrder) return 3;
         setupInitialBuild(state, cancellationToken);
@@ -148715,7 +148715,7 @@ ${lanes.join("\n")}
           const invalidatedProject = getNextInvalidatedProject(state, buildOrder, reportQueue);
           if (!invalidatedProject) break;
           reportQueue = false;
-          invalidatedProject.done(cancellationToken, writeFile2, getCustomTransformers == null ? void 0 : getCustomTransformers(invalidatedProject.project));
+          invalidatedProject.done(cancellationToken, writeFile22, getCustomTransformers == null ? void 0 : getCustomTransformers(invalidatedProject.project));
           if (!state.diagnostics.has(invalidatedProject.projectPath)) successfulProjects++;
         }
         disableCache(state);
@@ -149011,13 +149011,13 @@ ${lanes.join("\n")}
       function createSolutionBuilderWorker(watch, hostOrHostWithWatch, rootNames, options, baseWatchOptions) {
         const state = createSolutionBuilderState(watch, hostOrHostWithWatch, rootNames, options, baseWatchOptions);
         return {
-          build: (project, cancellationToken, writeFile2, getCustomTransformers) => build(state, project, cancellationToken, writeFile2, getCustomTransformers),
+          build: (project, cancellationToken, writeFile22, getCustomTransformers) => build(state, project, cancellationToken, writeFile22, getCustomTransformers),
           clean: (project) => clean(state, project),
-          buildReferences: (project, cancellationToken, writeFile2, getCustomTransformers) => build(
+          buildReferences: (project, cancellationToken, writeFile22, getCustomTransformers) => build(
             state,
             project,
             cancellationToken,
-            writeFile2,
+            writeFile22,
             getCustomTransformers,
             /*onlyReferences*/
             true
@@ -201267,7 +201267,7 @@ ${options.prefix}` : "\n" : options.prefix
         walkUpParenthesizedTypesAndGetParentAndChild: () => walkUpParenthesizedTypesAndGetParentAndChild,
         whitespaceOrMapCommentRegExp: () => whitespaceOrMapCommentRegExp,
         writeCommentRange: () => writeCommentRange,
-        writeFile: () => writeFile,
+        writeFile: () => writeFile2,
         writeFileEnsuringDirectories: () => writeFileEnsuringDirectories,
         zipWith: () => zipWith
       });
@@ -203313,7 +203313,7 @@ ${options.prefix}` : "\n" : options.prefix
         /**
          * Returns true if emit was conducted
          */
-        emitFile(scriptInfo, writeFile2) {
+        emitFile(scriptInfo, writeFile22) {
           if (!this.languageServiceEnabled || !this.shouldEmitFile(scriptInfo)) {
             return { emitSkipped: true, diagnostics: emptyArray2 };
           }
@@ -203321,7 +203321,7 @@ ${options.prefix}` : "\n" : options.prefix
           if (!emitSkipped) {
             for (const outputFile of outputFiles) {
               const outputFileAbsoluteFileName = getNormalizedAbsolutePath(outputFile.name, this.currentDirectory);
-              writeFile2(outputFileAbsoluteFileName, outputFile.text, outputFile.writeByteOrderMark);
+              writeFile22(outputFileAbsoluteFileName, outputFile.text, outputFile.writeByteOrderMark);
             }
             if (this.builderState && getEmitDeclarations(this.compilerOptions)) {
               const dtsFiles = outputFiles.filter((f) => isDeclarationFileName(f.name));
@@ -256303,1057 +256303,6 @@ function resolvePointAttachedWorldPosition(contactWorldPoint, mountPoint, worldQ
   return contactWorldPoint.clone().sub(worldOffset);
 }
 
-// src/components/StarSky/PluginFramework/spatialProfile.ts
-function definePluginSpatialProfile(profile) {
-  const anchors = profile.anchors ? defineSpaceAnchors({ ...profile.anchors }) : void 0;
-  const focusAnchorId = profile.focus?.anchorId;
-  if (focusAnchorId && !resolveSpaceAnchor(anchors, focusAnchorId)) {
-    throw new Error(`\u805A\u7126\u7A7A\u95F4\u951A\u70B9\u4E0D\u5B58\u5728: ${focusAnchorId}`);
-  }
-  const stackAnchorId = profile.stackTargetAnchorId;
-  if (stackAnchorId && resolveSpaceAnchor(anchors, stackAnchorId)?.kind !== "frame") {
-    throw new Error(`\u5806\u53E0\u627F\u8F7D\u5FC5\u987B\u5F15\u7528 frame \u7A7A\u95F4\u951A\u70B9: ${stackAnchorId}`);
-  }
-  const bodyCenterAnchorId = profile.body?.centerAnchorId;
-  const bodyCenterAnchor = resolveSpaceAnchor(anchors, bodyCenterAnchorId);
-  if (bodyCenterAnchorId && bodyCenterAnchor?.kind !== "point") {
-    throw new Error(`\u672C\u4F53\u4E2D\u5FC3\u5FC5\u987B\u5F15\u7528 point \u7A7A\u95F4\u951A\u70B9: ${bodyCenterAnchorId}`);
-  }
-  return {
-    ...profile,
-    ...anchors ? { anchors } : {}
-  };
-}
-var DYNAMIC_FOOTPRINT_POSITION_EPSILON = 1e-4;
-var MAX_DYNAMIC_FOOTPRINT_POINTS_PER_GEOMETRY = 192;
-var MIN_DYNAMIC_FOOTPRINT_SPAN = 2e-3;
-var DYNAMIC_FOOTPRINT_EDGE_SAMPLE_STEPS = 8;
-var MAX_EDGE_SAMPLE_SOURCE_POINTS = 64;
-var dynamicSurfaceFootprintPointCache = /* @__PURE__ */ new WeakMap();
-var dynamicSurfaceFootprintInfoCache = /* @__PURE__ */ new WeakMap();
-function getCollisionInfoFromFootprint(footprint) {
-  if (footprint.shape === "circle") {
-    return {
-      shape: "circle",
-      size: footprint.radius
-    };
-  }
-  return {
-    shape: "rect",
-    size: {
-      width: footprint.width,
-      depth: footprint.depth
-    }
-  };
-}
-function hasDynamicSurfaceFootprint(plugin) {
-  const refNodeId = plugin?.getSpatialProfile?.()?.footprint?.refNodeId;
-  return typeof refNodeId === "string" && refNodeId.length > 0;
-}
-function resolveSurfaceClampMarginFromCollisionInfo(info) {
-  if (!info) {
-    return null;
-  }
-  if (info.shape === "circle" && typeof info.size === "number") {
-    return Math.max(0, info.size);
-  }
-  if (info.shape === "rect" && typeof info.size !== "number") {
-    return {
-      x: Math.max(0, info.size.width / 2),
-      z: Math.max(0, info.size.depth / 2)
-    };
-  }
-  const capsule = info;
-  if (capsule.shape === "capsule") {
-    return Math.max(0, capsule.size.radius + capsule.size.length / 2);
-  }
-  return null;
-}
-function resolveSurfaceBoundaryInsetsFromCollisionInfo(info) {
-  const halfExtents = resolveProjectedCollisionHalfExtents(info);
-  if (!halfExtents || !info) {
-    return null;
-  }
-  const offsetX = info.offset?.x || 0;
-  const offsetZ = info.offset?.y || 0;
-  return {
-    left: Math.max(0, halfExtents.x - offsetX),
-    right: Math.max(0, halfExtents.x + offsetX),
-    back: Math.max(0, halfExtents.z - offsetZ),
-    front: Math.max(0, halfExtents.z + offsetZ)
-  };
-}
-function clampRectSurfacePointByCollisionInfo(options) {
-  if (!Number.isFinite(options.surfaceWidth) || !Number.isFinite(options.surfaceDepth)) {
-    return null;
-  }
-  const insets = resolveSurfaceBoundaryInsetsFromCollisionInfo(
-    options.collisionInfo
-  );
-  if (!insets) {
-    return null;
-  }
-  const normalizedMargin = typeof options.margin === "number" ? { x: options.margin, z: options.margin } : {
-    x: options.margin?.x ?? 0,
-    z: options.margin?.z ?? 0
-  };
-  const halfWidth = Math.max(
-    0,
-    Number(options.surfaceWidth) / 2 - normalizedMargin.x
-  );
-  const halfDepth = Math.max(
-    0,
-    Number(options.surfaceDepth) / 2 - normalizedMargin.z
-  );
-  const minX = -halfWidth + insets.left;
-  const maxX = halfWidth - insets.right;
-  const minZ = -halfDepth + insets.back;
-  const maxZ = halfDepth - insets.front;
-  return new Vector3(
-    minX <= maxX ? MathUtils.clamp(options.surfacePoint.x, minX, maxX) : (minX + maxX) / 2,
-    options.surfacePoint.y,
-    minZ <= maxZ ? MathUtils.clamp(options.surfacePoint.z, minZ, maxZ) : (minZ + maxZ) / 2
-  );
-}
-function resolveProjectedCollisionHalfExtents(info) {
-  if (!info) {
-    return null;
-  }
-  if (info.shape === "circle" && typeof info.size === "number") {
-    const radius = Math.max(0, info.size);
-    return { x: radius, z: radius };
-  }
-  if (info.shape === "rect" && typeof info.size !== "number") {
-    const halfWidth = Math.max(0, info.size.width / 2);
-    const halfDepth = Math.max(0, info.size.depth / 2);
-    const dynamicInfo = info;
-    const rotationY = typeof dynamicInfo.rotationY === "number" && Number.isFinite(dynamicInfo.rotationY) && !dynamicInfo.isAABB ? dynamicInfo.rotationY : 0;
-    const cos = Math.abs(Math.cos(rotationY));
-    const sin = Math.abs(Math.sin(rotationY));
-    return {
-      x: cos * halfWidth + sin * halfDepth,
-      z: sin * halfWidth + cos * halfDepth
-    };
-  }
-  const capsule = info;
-  if (capsule.shape === "capsule") {
-    const halfLength = Math.max(0, capsule.size.length / 2);
-    const radius = Math.max(0, capsule.size.radius);
-    const rotationY = typeof capsule.rotationY === "number" && Number.isFinite(capsule.rotationY) ? capsule.rotationY : 0;
-    return {
-      x: radius + Math.abs(Math.cos(rotationY)) * halfLength,
-      z: radius + Math.abs(Math.sin(rotationY)) * halfLength
-    };
-  }
-  return null;
-}
-function resolveDynamicSurfaceFootprintCollisionInfo(plugin, options = {}) {
-  if (!hasDynamicSurfaceFootprint(plugin)) {
-    return null;
-  }
-  const profile = plugin.getSpatialProfile();
-  const footprint = profile.footprint;
-  const refNodeId = footprint.refNodeId;
-  if (!refNodeId) {
-    return null;
-  }
-  const collisionMesh = options.collisionMesh || plugin.getCollisionMesh?.() || plugin.getMesh?.() || plugin.mesh || null;
-  if (!collisionMesh) {
-    return null;
-  }
-  const refNode = resolveDynamicFootprintRefNode(collisionMesh, refNodeId);
-  if (!refNode) {
-    return null;
-  }
-  const mountParent = options.mountParent !== void 0 ? options.mountParent : resolveDynamicFootprintMountParent(plugin, collisionMesh);
-  const surfaceCandidate = options.surface !== void 0 ? options.surface : plugin.getCurrentActivitySurface?.() || null;
-  const surface = mountParent && surfaceCandidate?.parentObject !== mountParent ? null : surfaceCandidate;
-  const referencePosition = options.referencePosition || resolveDynamicFootprintReferencePosition(plugin, collisionMesh) || new Vector3();
-  const blockingHeight = Number.isFinite(options.blockingHeight) && (options.blockingHeight || 0) > 0 ? Number(options.blockingHeight) : 0;
-  const bodyRefNode = blockingHeight > 0 && footprint.bodyRefNodeId ? resolveDynamicFootprintRefNode(collisionMesh, footprint.bodyRefNodeId) : null;
-  refNode.updateWorldMatrix(true, true);
-  bodyRefNode?.updateWorldMatrix(true, true);
-  mountParent?.updateWorldMatrix(true, false);
-  const cacheKey = [
-    blockingHeight > 0 ? blockingHeight.toFixed(4) : "base",
-    getDynamicFootprintMatrixCacheSignature(refNode.matrixWorld),
-    bodyRefNode ? getDynamicFootprintMatrixCacheSignature(bodyRefNode.matrixWorld) : "support-only",
-    mountParent ? getDynamicFootprintMatrixCacheSignature(mountParent.matrixWorld) : "world",
-    surface?.id || "surface"
-  ].join("|");
-  const entityCache = dynamicSurfaceFootprintInfoCache.get(plugin);
-  if (entityCache?.has(cacheKey)) {
-    return entityCache.get(cacheKey) ?? null;
-  }
-  const localSamplePoints = getDynamicFootprintLocalSamplePoints(refNode);
-  if (localSamplePoints.length === 0) {
-    return null;
-  }
-  const bandPoints = getDynamicFootprintSupportBandPoints({
-    refNode,
-    localSamplePoints,
-    mountParent,
-    surface,
-    footprint,
-    blockingHeight,
-    bodyRefNode
-  });
-  if (bandPoints.length === 0) {
-    return null;
-  }
-  const nextInfo = createDynamicFootprintCollisionInfoFromPoints(
-    bandPoints,
-    referencePosition,
-    footprint
-  );
-  const nextEntityCache = entityCache ?? /* @__PURE__ */ new Map();
-  nextEntityCache.set(cacheKey, nextInfo);
-  if (nextEntityCache.size > 32) {
-    nextEntityCache.clear();
-    nextEntityCache.set(cacheKey, nextInfo);
-  }
-  if (!entityCache) {
-    dynamicSurfaceFootprintInfoCache.set(plugin, nextEntityCache);
-  }
-  return nextInfo;
-}
-function getDefaultDragSurfaceMarginFromFootprint(footprint) {
-  if (footprint.shape === "circle") {
-    return footprint.radius;
-  }
-  return {
-    x: footprint.width / 2,
-    z: footprint.depth / 2
-  };
-}
-function getDefaultInteractionScaleFromFootprint(footprint) {
-  if (footprint.shape === "circle") {
-    return footprint.radius * 2;
-  }
-  return Math.max(footprint.width, footprint.depth);
-}
-function getDefaultBlockedInsetFromFootprint(footprint) {
-  if (footprint.shape === "circle") {
-    return footprint.radius;
-  }
-  return footprint.depth / 2;
-}
-function getBodyHeightFromBody(body) {
-  if (!body) {
-    return null;
-  }
-  if (body.shape === "sphere") {
-    return body.radius * 2;
-  }
-  return body.height;
-}
-function getBodyVolume(body) {
-  if (!body) {
-    return null;
-  }
-  if (body.shape === "sphere") {
-    return 4 / 3 * Math.PI * Math.pow(body.radius, 3);
-  }
-  if (body.shape === "cylinder") {
-    return Math.PI * body.radius * body.radius * body.height;
-  }
-  return body.width * body.height * body.depth;
-}
-function getBodyBlockedInsetAtClearance(body, mountContactDistance, clearanceHeight) {
-  if (!body || !Number.isFinite(clearanceHeight)) {
-    return null;
-  }
-  if (body.shape === "sphere") {
-    const centerY = typeof mountContactDistance === "number" ? mountContactDistance : body.radius;
-    const deltaY = clearanceHeight - centerY;
-    if (deltaY >= body.radius) {
-      return 0;
-    }
-    if (deltaY <= -body.radius) {
-      return body.radius;
-    }
-    return Math.sqrt(Math.max(0, body.radius * body.radius - deltaY * deltaY));
-  }
-  if (body.shape === "cylinder") {
-    return body.radius;
-  }
-  return body.depth / 2;
-}
-function resolvePluginMountContactDistance(plugin) {
-  const profile = plugin.getSpatialProfile();
-  const mountAnchorId = plugin.getSurfaceAttachmentProfile?.()?.mountAnchorId || DEFAULT_MOUNT_ANCHOR_ID;
-  const mountFrame2 = resolveNamedSpaceFrame(profile.anchors, mountAnchorId);
-  if (!mountFrame2) {
-    return 0;
-  }
-  const contactDistance = -mountFrame2.origin.dot(mountFrame2.forward);
-  return Number.isFinite(contactDistance) ? Math.max(0, contactDistance) : 0;
-}
-function resolvePluginBodyHeight(plugin) {
-  const profile = plugin.getSpatialProfile();
-  const bodyHeightFromBody = getBodyHeightFromBody(profile.body);
-  return bodyHeightFromBody ?? profile.interactionScale ?? getDefaultInteractionScaleFromFootprint(profile.footprint);
-}
-function resolvePluginBlockedInsetAtClearance(plugin, clearanceHeight) {
-  const profile = plugin.getSpatialProfile();
-  return getBodyBlockedInsetAtClearance(
-    profile.body,
-    resolvePluginMountContactDistance(plugin),
-    clearanceHeight
-  ) ?? getDefaultBlockedInsetFromFootprint(profile.footprint);
-}
-function resolvePluginInteractionScale(plugin) {
-  const profile = plugin.getSpatialProfile();
-  return profile.interactionScale ?? getDefaultInteractionScaleFromFootprint(profile.footprint);
-}
-function resolvePrimaryInteractionSizeFromSpatialProfile(profile, fallbackSize = 0) {
-  if (!profile) {
-    return Math.max(0, fallbackSize);
-  }
-  return Math.max(
-    0,
-    profile.interactionScale ?? getBodyHeightFromBody(profile.body) ?? getDefaultInteractionScaleFromFootprint(profile.footprint) ?? fallbackSize
-  );
-}
-function resolvePluginDragSurfaceMargin(plugin) {
-  const profile = plugin.getSpatialProfile();
-  if (profile.dragSurfaceMargin !== void 0) {
-    return profile.dragSurfaceMargin;
-  }
-  const dynamicMargin = resolveSurfaceClampMarginFromCollisionInfo(
-    resolveDynamicSurfaceFootprintCollisionInfo(
-      plugin
-    )
-  );
-  return dynamicMargin ?? getDefaultDragSurfaceMarginFromFootprint(profile.footprint);
-}
-function resolveDynamicFootprintRefNode(collisionMesh, refNodeId) {
-  let matchedNode = null;
-  collisionMesh.traverse((node) => {
-    if (!matchedNode && node.userData?.capabilityNodeId === refNodeId) {
-      matchedNode = node;
-    }
-  });
-  return matchedNode || findDescendantByName(collisionMesh, refNodeId);
-}
-function resolveDynamicFootprintMountParent(plugin, collisionMesh) {
-  const rootMesh = plugin.getMesh?.() || plugin.mesh || collisionMesh || null;
-  return rootMesh?.parent || collisionMesh.parent || null;
-}
-function resolveDynamicFootprintReferencePosition(plugin, collisionMesh) {
-  const placementAnchor = plugin.getPlacementAnchor?.()?.localPoint;
-  if (placementAnchor && Number.isFinite(placementAnchor.x) && Number.isFinite(placementAnchor.y) && Number.isFinite(placementAnchor.z)) {
-    return placementAnchor.clone();
-  }
-  const customPosition = plugin.getCollisionReferencePosition?.();
-  if (customPosition && Number.isFinite(customPosition.x) && Number.isFinite(customPosition.y) && Number.isFinite(customPosition.z)) {
-    return customPosition.clone();
-  }
-  return collisionMesh.position.clone();
-}
-function getDynamicFootprintMatrixCacheSignature(matrix) {
-  return matrix.elements.map((value) => Number.isFinite(value) ? value.toFixed(4) : "NaN").join(",");
-}
-function getDynamicFootprintSupportBandPoints(options) {
-  const {
-    refNode,
-    localSamplePoints,
-    mountParent,
-    surface,
-    footprint,
-    blockingHeight,
-    bodyRefNode
-  } = options;
-  refNode.updateWorldMatrix(true, true);
-  const footprintExtent = footprint.shape === "circle" ? footprint.radius * 2 : Math.max(footprint.width, footprint.depth);
-  const bandTolerance = Math.max(1e-3, footprintExtent * 0.04);
-  const projectedPoints = [];
-  let minHeight = Infinity;
-  const sampleSources = [{ node: refNode, points: localSamplePoints }];
-  if (bodyRefNode && bodyRefNode !== refNode) {
-    sampleSources.push({
-      node: bodyRefNode,
-      points: getDynamicFootprintLocalSamplePoints(bodyRefNode)
-    });
-  }
-  for (const { node, points } of sampleSources) {
-    for (const localPoint of points) {
-      const worldPoint = localPoint.clone().applyMatrix4(node.matrixWorld);
-      const projected = projectDynamicFootprintPoint(
-        worldPoint,
-        mountParent,
-        surface
-      );
-      if (!projected) {
-        continue;
-      }
-      projectedPoints.push(projected);
-      minHeight = Math.min(minHeight, projected.height);
-    }
-  }
-  if (!Number.isFinite(minHeight) || projectedPoints.length === 0) {
-    return [];
-  }
-  const maxBlockingHeight = Number.isFinite(blockingHeight) && blockingHeight > 0 ? minHeight + blockingHeight + bandTolerance : minHeight + bandTolerance;
-  const bandPoints = projectedPoints.filter((item) => item.height <= maxBlockingHeight).map((item) => item.point);
-  return bandPoints.length > 0 ? bandPoints : projectedPoints.map((item) => item.point);
-}
-function projectDynamicFootprintPoint(worldPoint, mountParent, surface) {
-  if (surface?.shape === "mesh") {
-    const surfacePoint = surface.worldToSurface(worldPoint);
-    if (Number.isFinite(surfacePoint.x) && Number.isFinite(surfacePoint.y) && Number.isFinite(surfacePoint.z)) {
-      return {
-        point: new Vector3(surfacePoint.x, 0, surfacePoint.z),
-        height: surfacePoint.y
-      };
-    }
-  }
-  if (surface && surface.shape !== "sphere") {
-    const projection = surface.projectWorldPoint(worldPoint);
-    if (Number.isFinite(projection.surfacePoint.x) && Number.isFinite(projection.surfacePoint.y) && Number.isFinite(projection.surfacePoint.z) && Number.isFinite(projection.distance)) {
-      return {
-        point: projection.surfacePoint.clone(),
-        height: projection.distance
-      };
-    }
-  }
-  const localPoint = mountParent ? mountParent.worldToLocal(worldPoint.clone()) : worldPoint.clone();
-  if (!Number.isFinite(localPoint.x) || !Number.isFinite(localPoint.y) || !Number.isFinite(localPoint.z)) {
-    return null;
-  }
-  return {
-    point: new Vector3(localPoint.x, 0, localPoint.z),
-    height: localPoint.y
-  };
-}
-function getDynamicFootprintLocalSamplePoints(refNode) {
-  const cached = dynamicSurfaceFootprintPointCache.get(refNode);
-  if (cached) {
-    return cached;
-  }
-  refNode.updateWorldMatrix(true, true);
-  const inverseRefWorld = refNode.matrixWorld.clone().invert();
-  const samplePoints = [];
-  refNode.traverse((node) => {
-    if (node.userData.capabilityRigidBatch) return;
-    const mesh = node;
-    const positionAttribute = mesh.geometry?.getAttribute?.("position");
-    if (!positionAttribute) {
-      return;
-    }
-    const nodeMatrix = inverseRefWorld.clone().multiply(mesh.matrixWorld);
-    const instance = mesh;
-    const hasInstances = !!instance.instanceMatrix && typeof instance.getMatrixAt === "function";
-    const count = hasInstances ? instance.count : 1;
-    const step = Math.max(
-      1,
-      Math.ceil(
-        positionAttribute.count / MAX_DYNAMIC_FOOTPRINT_POINTS_PER_GEOMETRY
-      )
-    );
-    for (let part = 0; part < count; part++) {
-      const localMatrix = new Matrix4();
-      if (hasInstances) instance.getMatrixAt(part, localMatrix);
-      localMatrix.premultiply(nodeMatrix);
-      for (let index = 0; index < positionAttribute.count; index += step) {
-        samplePoints.push(
-          new Vector3().fromBufferAttribute(positionAttribute, index).applyMatrix4(localMatrix)
-        );
-      }
-      const lastIndex = positionAttribute.count - 1;
-      if (lastIndex >= 0 && lastIndex % step !== 0) {
-        samplePoints.push(
-          new Vector3().fromBufferAttribute(positionAttribute, lastIndex).applyMatrix4(localMatrix)
-        );
-      }
-      appendDynamicFootprintEdgeSamplePoints(mesh, localMatrix, samplePoints);
-    }
-  });
-  if (samplePoints.length === 0) {
-    const worldBounds = new Box3().setFromObject(refNode);
-    if (!worldBounds.isEmpty()) {
-      const min = worldBounds.min;
-      const max = worldBounds.max;
-      const worldCorners = [
-        new Vector3(min.x, min.y, min.z),
-        new Vector3(min.x, min.y, max.z),
-        new Vector3(max.x, min.y, min.z),
-        new Vector3(max.x, min.y, max.z),
-        new Vector3(min.x, max.y, min.z),
-        new Vector3(min.x, max.y, max.z),
-        new Vector3(max.x, max.y, min.z),
-        new Vector3(max.x, max.y, max.z)
-      ];
-      for (const corner of worldCorners) {
-        samplePoints.push(corner.applyMatrix4(inverseRefWorld));
-      }
-    }
-  }
-  dynamicSurfaceFootprintPointCache.set(refNode, samplePoints);
-  return samplePoints;
-}
-function appendDynamicFootprintEdgeSamplePoints(mesh, localMatrix, samplePoints) {
-  const geometry = mesh.geometry;
-  const positionAttribute = geometry?.getAttribute?.("position");
-  if (!geometry || !positionAttribute) {
-    return;
-  }
-  if (positionAttribute.count > MAX_EDGE_SAMPLE_SOURCE_POINTS) {
-    return;
-  }
-  if (!geometry.boundingBox) {
-    geometry.computeBoundingBox();
-  }
-  const bounds = geometry.boundingBox;
-  if (!bounds || bounds.isEmpty()) {
-    return;
-  }
-  const min = bounds.min;
-  const max = bounds.max;
-  const corners = [
-    new Vector3(min.x, min.y, min.z),
-    new Vector3(min.x, min.y, max.z),
-    new Vector3(min.x, max.y, min.z),
-    new Vector3(min.x, max.y, max.z),
-    new Vector3(max.x, min.y, min.z),
-    new Vector3(max.x, min.y, max.z),
-    new Vector3(max.x, max.y, min.z),
-    new Vector3(max.x, max.y, max.z)
-  ];
-  const edges = [
-    [0, 1],
-    [0, 2],
-    [0, 4],
-    [1, 3],
-    [1, 5],
-    [2, 3],
-    [2, 6],
-    [3, 7],
-    [4, 5],
-    [4, 6],
-    [5, 7],
-    [6, 7]
-  ];
-  for (const [startIndex, endIndex] of edges) {
-    const start = corners[startIndex];
-    const end = corners[endIndex];
-    for (let step = 1; step < DYNAMIC_FOOTPRINT_EDGE_SAMPLE_STEPS; step++) {
-      samplePoints.push(
-        start.clone().lerp(end, step / DYNAMIC_FOOTPRINT_EDGE_SAMPLE_STEPS).applyMatrix4(localMatrix)
-      );
-    }
-  }
-}
-function createDynamicFootprintCollisionInfoFromPoints(bandPoints, referencePosition, footprint) {
-  let minX = Infinity;
-  let maxX = -Infinity;
-  let minZ = Infinity;
-  let maxZ = -Infinity;
-  let sumX = 0;
-  let sumZ = 0;
-  for (const point of bandPoints) {
-    minX = Math.min(minX, point.x);
-    maxX = Math.max(maxX, point.x);
-    minZ = Math.min(minZ, point.z);
-    maxZ = Math.max(maxZ, point.z);
-    sumX += point.x;
-    sumZ += point.z;
-  }
-  if (!Number.isFinite(minX) || !Number.isFinite(maxX) || !Number.isFinite(minZ) || !Number.isFinite(maxZ)) {
-    return null;
-  }
-  const aabbWidth = Math.max(MIN_DYNAMIC_FOOTPRINT_SPAN, maxX - minX);
-  const aabbDepth = Math.max(MIN_DYNAMIC_FOOTPRINT_SPAN, maxZ - minZ);
-  const centerX = sumX / bandPoints.length;
-  const centerZ = sumZ / bandPoints.length;
-  let covarianceXX = 0;
-  let covarianceZZ = 0;
-  let covarianceXZ = 0;
-  for (const point of bandPoints) {
-    const dx = point.x - centerX;
-    const dz = point.z - centerZ;
-    covarianceXX += dx * dx;
-    covarianceZZ += dz * dz;
-    covarianceXZ += dx * dz;
-  }
-  const hasDirection = Math.abs(covarianceXX - covarianceZZ) > DYNAMIC_FOOTPRINT_POSITION_EPSILON || Math.abs(covarianceXZ) > DYNAMIC_FOOTPRINT_POSITION_EPSILON;
-  if (!hasDirection) {
-    return createDynamicFootprintAabbCollisionInfo(
-      minX,
-      maxX,
-      minZ,
-      maxZ,
-      referencePosition
-    );
-  }
-  const angle = 0.5 * Math.atan2(2 * covarianceXZ, covarianceXX - covarianceZZ);
-  const axisX = Math.cos(angle);
-  const axisZ = Math.sin(angle);
-  const sideX = -axisZ;
-  const sideZ = axisX;
-  let minU = Infinity;
-  let maxU = -Infinity;
-  let minV = Infinity;
-  let maxV = -Infinity;
-  for (const point of bandPoints) {
-    const projectionU = point.x * axisX + point.z * axisZ;
-    const projectionV = point.x * sideX + point.z * sideZ;
-    minU = Math.min(minU, projectionU);
-    maxU = Math.max(maxU, projectionU);
-    minV = Math.min(minV, projectionV);
-    maxV = Math.max(maxV, projectionV);
-  }
-  const width = Math.max(MIN_DYNAMIC_FOOTPRINT_SPAN, maxU - minU);
-  const depth = Math.max(MIN_DYNAMIC_FOOTPRINT_SPAN, maxV - minV);
-  const obbArea = width * depth;
-  const aabbArea = aabbWidth * aabbDepth;
-  const normalizedRotation = normalizeDynamicFootprintHalfTurnRotation(-angle);
-  const centerU = (minU + maxU) / 2;
-  const centerV = (minV + maxV) / 2;
-  const orientedCenterX = centerU * axisX + centerV * sideX;
-  const orientedCenterZ = centerU * axisZ + centerV * sideZ;
-  if (footprint.shape === "circle") {
-    const longSpan = Math.max(width, depth);
-    const shortSpan = Math.min(width, depth);
-    const capsuleRotation = width >= depth ? normalizedRotation : normalizeDynamicFootprintHalfTurnRotation(
-      normalizedRotation + Math.PI / 2
-    );
-    return {
-      shape: "capsule",
-      size: {
-        length: Math.max(0, longSpan - shortSpan),
-        radius: Math.max(MIN_DYNAMIC_FOOTPRINT_SPAN / 2, shortSpan / 2)
-      },
-      offset: new Vector2(
-        orientedCenterX - referencePosition.x,
-        orientedCenterZ - referencePosition.z
-      ),
-      rotationY: capsuleRotation
-    };
-  }
-  if (Math.abs(normalizedRotation) <= DYNAMIC_FOOTPRINT_POSITION_EPSILON || obbArea >= aabbArea * 0.98) {
-    return createDynamicFootprintAabbCollisionInfo(
-      minX,
-      maxX,
-      minZ,
-      maxZ,
-      referencePosition
-    );
-  }
-  return {
-    shape: "rect",
-    size: { width, depth },
-    offset: new Vector2(
-      orientedCenterX - referencePosition.x,
-      orientedCenterZ - referencePosition.z
-    ),
-    isAABB: false,
-    rotationY: normalizedRotation
-  };
-}
-function createDynamicFootprintAabbCollisionInfo(minX, maxX, minZ, maxZ, referencePosition) {
-  const centerX = (minX + maxX) / 2;
-  const centerZ = (minZ + maxZ) / 2;
-  return {
-    shape: "rect",
-    size: {
-      width: Math.max(MIN_DYNAMIC_FOOTPRINT_SPAN, maxX - minX),
-      depth: Math.max(MIN_DYNAMIC_FOOTPRINT_SPAN, maxZ - minZ)
-    },
-    offset: new Vector2(
-      centerX - referencePosition.x,
-      centerZ - referencePosition.z
-    ),
-    isAABB: true,
-    rotationY: 0
-  };
-}
-function normalizeDynamicFootprintHalfTurnRotation(rotationY) {
-  let normalized = rotationY;
-  while (normalized <= -Math.PI / 2) {
-    normalized += Math.PI;
-  }
-  while (normalized > Math.PI / 2) {
-    normalized -= Math.PI;
-  }
-  return normalized;
-}
-function resolvePluginFocusState(plugin) {
-  const profile = plugin.getSpatialProfile();
-  const focus = profile.focus;
-  const interactionScale = resolvePluginInteractionScale(plugin);
-  const defaultTargetOffsetY = interactionScale / 2;
-  const distance = Math.min(1.4, Math.max(0.6, interactionScale * 3.2));
-  const focusAnchor = resolveSpaceAnchor(profile.anchors, focus?.anchorId);
-  const focusPoint = focusAnchor ? resolveSpacePoint(focusAnchor, focus?.anchorId).origin : null;
-  return {
-    distance: focus?.distance ?? distance,
-    theta: focus?.theta ?? 0,
-    phi: focus?.phi ?? Math.PI / 3,
-    targetOffset: focusPoint?.clone() ?? new Vector3(0, defaultTargetOffsetY, 0),
-    ...focus?.duration === void 0 ? {} : { duration: focus.duration }
-  };
-}
-
-// src/components/StarSky/PluginFramework/persistence.ts
-var DEFAULT_PERSISTENCE_MAX_DEPTH = 12;
-function roundPersistenceNumber(value) {
-  return Math.round(value * 1e4) / 1e4;
-}
-function getPluginPersistenceStorageKey(pluginId) {
-  return `plugin:${pluginId}`;
-}
-function normalizePersistenceValue(value, depth, maxDepth, seen) {
-  if (depth > maxDepth) {
-    throw new Error(`Persistence state exceeds max depth ${maxDepth}.`);
-  }
-  if (typeof value === "number") {
-    return Number.isFinite(value) ? roundPersistenceNumber(value) : null;
-  }
-  if (value === null || typeof value === "string" || typeof value === "boolean") {
-    return value;
-  }
-  if (value === void 0 || typeof value === "function" || typeof value === "symbol" || typeof value === "bigint") {
-    return void 0;
-  }
-  if (Array.isArray(value)) {
-    if (seen.has(value)) {
-      throw new Error("Persistence state contains circular reference.");
-    }
-    seen.add(value);
-    const normalizedArray = value.map((item) => {
-      const normalizedItem = normalizePersistenceValue(
-        item,
-        depth + 1,
-        maxDepth,
-        seen
-      );
-      return normalizedItem === void 0 ? null : normalizedItem;
-    });
-    seen.delete(value);
-    return normalizedArray;
-  }
-  if (typeof value === "object") {
-    if (seen.has(value)) {
-      throw new Error("Persistence state contains circular reference.");
-    }
-    seen.add(value);
-    const normalizedRecord = {};
-    Object.entries(value).forEach(([key, item]) => {
-      const normalizedItem = normalizePersistenceValue(
-        item,
-        depth + 1,
-        maxDepth,
-        seen
-      );
-      if (normalizedItem !== void 0) {
-        normalizedRecord[key] = normalizedItem;
-      }
-    });
-    seen.delete(value);
-    return normalizedRecord;
-  }
-  return void 0;
-}
-function stringifyPersistenceState(value, options = {}) {
-  const maxDepth = options.maxDepth ?? DEFAULT_PERSISTENCE_MAX_DEPTH;
-  const normalized = normalizePersistenceValue(
-    value,
-    0,
-    maxDepth,
-    /* @__PURE__ */ new WeakSet()
-  );
-  const result = JSON.stringify(normalized);
-  if (typeof result !== "string") {
-    throw new Error("Persistence state cannot be serialized.");
-  }
-  return result;
-}
-function parsePersistenceState(raw, guard) {
-  const parsed = JSON.parse(raw);
-  if (guard && !guard(parsed)) {
-    return null;
-  }
-  return parsed;
-}
-function serializeObjectPosePayload(object, options = {}) {
-  const positionMode = options.position ?? "xyz";
-  const rotationMode = options.rotation ?? "quaternion";
-  const payload = {};
-  if (positionMode === "xz") {
-    payload.p = [object.position.x, object.position.z];
-  } else if (positionMode === "xyz") {
-    payload.p = [object.position.x, object.position.y, object.position.z];
-  }
-  if (rotationMode === "quaternion") {
-    payload.r = [
-      object.quaternion.x,
-      object.quaternion.y,
-      object.quaternion.z,
-      object.quaternion.w
-    ];
-  }
-  return payload;
-}
-function parseCompactPoint(value) {
-  if (!Array.isArray(value)) {
-    return null;
-  }
-  if (value.length === 2) {
-    const [x, z] = value;
-    if (typeof x !== "number" || typeof z !== "number") {
-      return null;
-    }
-    if (!Number.isFinite(x) || !Number.isFinite(z)) {
-      return null;
-    }
-    return {
-      point: new Vector3(x, 0, z),
-      dimensions: 2
-    };
-  }
-  if (value.length === 3) {
-    const [x, y, z] = value;
-    if (typeof x !== "number" || typeof y !== "number" || typeof z !== "number") {
-      return null;
-    }
-    if (!Number.isFinite(x) || !Number.isFinite(y) || !Number.isFinite(z)) {
-      return null;
-    }
-    return {
-      point: new Vector3(x, y, z),
-      dimensions: 3
-    };
-  }
-  return null;
-}
-function parseCompactRotation(value) {
-  if (!Array.isArray(value) || value.length !== 4) {
-    return null;
-  }
-  const [x, y, z, w] = value;
-  if (typeof x !== "number" || typeof y !== "number" || typeof z !== "number" || typeof w !== "number") {
-    return null;
-  }
-  if (!Number.isFinite(x) || !Number.isFinite(y) || !Number.isFinite(z) || !Number.isFinite(w)) {
-    return null;
-  }
-  return new Quaternion(x, y, z, w);
-}
-function parseCompactTilt(value) {
-  if (!Array.isArray(value) || value.length !== 2) {
-    return null;
-  }
-  const [angle, horizontalAngle] = value;
-  if (typeof angle !== "number" || typeof horizontalAngle !== "number" || !Number.isFinite(angle) || !Number.isFinite(horizontalAngle)) {
-    return null;
-  }
-  return { angle, horizontalAngle };
-}
-function isCompactPluginFacePersistencePayload(value) {
-  return !!value && typeof value === "object" && (value.w === void 0 || value.w === 0 || value.w === 1);
-}
-function parsePluginPersistencePayload(payload) {
-  if (!payload || typeof payload !== "object") {
-    return null;
-  }
-  const record = payload;
-  const compactPoint = parseCompactPoint(record.p);
-  const rotation = parseCompactRotation(record.r);
-  const tilt = parseCompactTilt(record.t);
-  const stackPlacement = parseCompactStackPlacement(record.sp);
-  const containerPlacement = parseCompactContainerPlacement(record.c);
-  const hasDefaultContainer = Object.prototype.hasOwnProperty.call(record, "dc");
-  const defaultContainerId = hasDefaultContainer ? typeof record.dc === "string" && record.dc.length > 0 ? record.dc : null : void 0;
-  const mediaIndex = typeof record.i === "number" && Number.isFinite(record.i) ? record.i : void 0;
-  const surfaceId = typeof record.s === "string" ? record.s : void 0;
-  const face = isCompactPluginFacePersistencePayload(record.face) ? { ...record.face } : void 0;
-  if (face && (typeof face.f !== "number" || !Number.isFinite(face.f) || face.f < 0 || face.f > 1)) {
-    delete face.f;
-  }
-  if (!surfaceId && !compactPoint && !rotation && !tilt && !stackPlacement && !containerPlacement && defaultContainerId === void 0 && mediaIndex === void 0 && !face && !("d" in record)) {
-    return null;
-  }
-  return {
-    surfaceId,
-    point: compactPoint?.point,
-    dimensions: compactPoint?.dimensions,
-    rotation: rotation || void 0,
-    tilt: tilt || void 0,
-    stackPlacement: stackPlacement || void 0,
-    containerPlacement: containerPlacement || void 0,
-    defaultContainerId,
-    mediaIndex,
-    face,
-    data: "d" in record ? record.d : void 0,
-    raw: payload
-  };
-}
-function parseCompactContainerPlacement(value) {
-  if (!value || typeof value !== "object") return null;
-  const record = value;
-  if (typeof record.id !== "string" || record.id.length === 0) return null;
-  return {
-    containerId: record.id,
-    ...typeof record.o === "number" && Number.isFinite(record.o) ? { orderKey: record.o } : {}
-  };
-}
-function parseCompactStackPlacement(value) {
-  if (!value || typeof value !== "object") {
-    return null;
-  }
-  const record = value;
-  const anchor = parseCompactPoint(record.a);
-  const world = parseCompactPoint(record.w);
-  const targetRelativeQuaternion = parseCompactRotation(record.rq);
-  if (!anchor || anchor.dimensions !== 3 || !world || world.dimensions !== 3) {
-    return null;
-  }
-  return {
-    anchorPoint: anchor.point,
-    worldPoint: world.point,
-    ...typeof record.tp === "string" && record.tp.length > 0 ? { targetPluginId: record.tp } : {},
-    ...targetRelativeQuaternion ? { targetRelativeQuaternion } : {}
-  };
-}
-function serializePluginSurfacePosition(plugin) {
-  if (!plugin.mesh) {
-    return null;
-  }
-  const currentSurface = plugin.getCurrentActivitySurface?.() || plugin.activitySurface || null;
-  const surfaceId = plugin.attachment?.surfaceId || currentSurface?.id || void 0;
-  const persistedSurface = surfaceId && plugin.context.surfaceRegistry?.get(surfaceId) || currentSurface;
-  const localPoint = plugin.mesh.position;
-  const useThreeDimensions = persistedSurface?.shape === "mesh" || persistedSurface?.shape === "sphere";
-  const payload = {
-    s: surfaceId,
-    p: useThreeDimensions ? [localPoint.x, localPoint.y, localPoint.z] : [localPoint.x, localPoint.z]
-  };
-  return payload;
-}
-function restorePluginSurfacePosition(plugin, payload) {
-  if (!plugin.mesh || !payload.point) {
-    return;
-  }
-  const targetSurfaceId = payload.surfaceId;
-  const currentSurface = plugin.getCurrentActivitySurface?.() || plugin.activitySurface || null;
-  const registeredTargetSurface = targetSurfaceId ? plugin.context.surfaceRegistry?.get(targetSurfaceId) || null : null;
-  if (targetSurfaceId && !registeredTargetSurface && currentSurface?.id !== targetSurfaceId) {
-    return;
-  }
-  const targetSurface = registeredTargetSurface || currentSurface;
-  const localPoint = payload.point.clone();
-  if (payload.dimensions === 2) {
-    if (targetSurface?.shape === "mesh") {
-      localPoint.copy(targetSurface.clampSurfacePoint(localPoint, 0));
-    } else {
-      localPoint.y = resolvePluginMountContactDistance(plugin);
-    }
-  }
-  if (targetSurfaceId && targetSurfaceId !== plugin.attachment?.surfaceId && plugin.id && plugin.surfaceService && targetSurface) {
-    const targetWorldPoint = targetSurface.surfaceToWorld(localPoint);
-    plugin.surfaceService.tryReparent(plugin.id, targetWorldPoint, {
-      preferredSurfaceId: targetSurfaceId,
-      ignoreCurrentInside: true
-    });
-  }
-  plugin.mesh.position.copy(localPoint);
-  plugin.applyCurrentSurfacePlacement?.();
-  plugin.syncAttachmentPosition();
-}
-
-// src/components/StarSky/PluginFramework/surfaceAttachmentProfile.ts
-var DEFAULT_ROOT_MOUNT_FRAME = resolveSpaceFrame(
-  mountFrame(void 0, { normal: "+y" })
-);
-function resolveSurfaceAttachmentProfile(options) {
-  const explicitMountAnchorId = options.attachmentProfile?.mountAnchorId;
-  const mountAnchorId = explicitMountAnchorId || DEFAULT_MOUNT_ANCHOR_ID;
-  const mountAnchor = resolveSpaceAnchor(options.spaceAnchors, mountAnchorId);
-  if (mountAnchor?.kind === "point") {
-    const mountPoint = resolveSpacePoint(mountAnchor, mountAnchorId);
-    return {
-      mountAnchorId,
-      mountKind: "point",
-      mountPoint,
-      mountFrame: {
-        ...DEFAULT_ROOT_MOUNT_FRAME,
-        origin: mountPoint.origin.clone(),
-        ...mountPoint.nodeId ? { nodeId: mountPoint.nodeId } : {}
-      }
-    };
-  }
-  if (mountAnchor?.kind === "frame") {
-    const mountFrame2 = resolveNamedSpaceFrame(
-      options.spaceAnchors,
-      mountAnchorId
-    );
-    if (mountFrame2) {
-      return {
-        mountAnchorId,
-        mountKind: "frame",
-        mountPoint: mountFrame2,
-        mountFrame: mountFrame2
-      };
-    }
-  }
-  if (explicitMountAnchorId && mountAnchorId !== DEFAULT_MOUNT_ANCHOR_ID || mountAnchor) {
-    throw new Error(`\u5B89\u88C5\u7A7A\u95F4\u951A\u70B9\u5FC5\u987B\u662F point \u6216\u5B8C\u6574 frame: ${mountAnchorId}`);
-  }
-  return {
-    mountAnchorId,
-    mountKind: "frame",
-    mountPoint: DEFAULT_ROOT_MOUNT_FRAME,
-    mountFrame: {
-      ...DEFAULT_ROOT_MOUNT_FRAME,
-      origin: DEFAULT_ROOT_MOUNT_FRAME.origin.clone(),
-      forward: DEFAULT_ROOT_MOUNT_FRAME.forward.clone(),
-      up: DEFAULT_ROOT_MOUNT_FRAME.up.clone(),
-      right: DEFAULT_ROOT_MOUNT_FRAME.right.clone()
-    }
-  };
-}
-function createAnchorSurfaceAttachmentProfile(anchors, anchorId) {
-  const anchor = resolveSpaceAnchor(anchors, anchorId);
-  if (!anchor || anchor.kind !== "point" && anchor.kind !== "frame") {
-    throw new Error(`\u5B89\u88C5\u7A7A\u95F4\u951A\u70B9\u5FC5\u987B\u662F point \u6216\u5B8C\u6574 frame: ${anchorId}`);
-  }
-  return { mountAnchorId: anchorId };
-}
-function resolvePluginSurfaceAttachmentProfile(plugin) {
-  const spatialProfile = plugin.getSpatialProfile();
-  return resolveSurfaceAttachmentProfile({
-    attachmentProfile: plugin.getSurfaceAttachmentProfile?.() || null,
-    spaceAnchors: spatialProfile.anchors
-  });
-}
-function resolveMountFrameContactDistance(profile) {
-  if (profile.mountKind !== "frame") {
-    return 0;
-  }
-  return Math.max(
-    0,
-    -profile.mountFrame.origin.dot(profile.mountFrame.forward)
-  );
-}
-
-// src/components/StarSky/PluginFramework/utils/spatial/createBoxLocalCorners.ts
-function createBoxLocalCorners(halfExtents) {
-  const halfWidth = halfExtents.x;
-  const halfHeight = halfExtents.y;
-  const halfDepth = halfExtents.z;
-  return [
-    new Vector3(-halfWidth, -halfHeight, -halfDepth),
-    new Vector3(-halfWidth, -halfHeight, halfDepth),
-    new Vector3(-halfWidth, halfHeight, -halfDepth),
-    new Vector3(-halfWidth, halfHeight, halfDepth),
-    new Vector3(halfWidth, -halfHeight, -halfDepth),
-    new Vector3(halfWidth, -halfHeight, halfDepth),
-    new Vector3(halfWidth, halfHeight, -halfDepth),
-    new Vector3(halfWidth, halfHeight, halfDepth)
-  ];
-}
-
 // src/components/StarSky/PluginFramework/utils/spatial/resolveSurfaceSpace.ts
 function resolveSurfaceOriginWorld(surface) {
   return surface.surfaceToWorld(new Vector3(0, 0, 0));
@@ -257655,6 +256604,811 @@ function resolveSurfaceHingedTiltPose(options) {
   };
 }
 
+// src/components/StarSky/PluginFramework/surfaceAttachmentProfile.ts
+var DEFAULT_ROOT_MOUNT_FRAME = resolveSpaceFrame(
+  mountFrame(void 0, { normal: "+y" })
+);
+function resolveSurfaceAttachmentProfile(options) {
+  const explicitMountAnchorId = options.attachmentProfile?.mountAnchorId;
+  const mountAnchorId = explicitMountAnchorId || DEFAULT_MOUNT_ANCHOR_ID;
+  const mountAnchor = resolveSpaceAnchor(options.spaceAnchors, mountAnchorId);
+  if (mountAnchor?.kind === "point") {
+    const mountPoint = resolveSpacePoint(mountAnchor, mountAnchorId);
+    return {
+      mountAnchorId,
+      mountKind: "point",
+      mountPoint,
+      mountFrame: {
+        ...DEFAULT_ROOT_MOUNT_FRAME,
+        origin: mountPoint.origin.clone(),
+        ...mountPoint.nodeId ? { nodeId: mountPoint.nodeId } : {}
+      }
+    };
+  }
+  if (mountAnchor?.kind === "frame") {
+    const mountFrame2 = resolveNamedSpaceFrame(
+      options.spaceAnchors,
+      mountAnchorId
+    );
+    if (mountFrame2) {
+      return {
+        mountAnchorId,
+        mountKind: "frame",
+        mountPoint: mountFrame2,
+        mountFrame: mountFrame2
+      };
+    }
+  }
+  if (explicitMountAnchorId && mountAnchorId !== DEFAULT_MOUNT_ANCHOR_ID || mountAnchor) {
+    throw new Error(`\u5B89\u88C5\u7A7A\u95F4\u951A\u70B9\u5FC5\u987B\u662F point \u6216\u5B8C\u6574 frame: ${mountAnchorId}`);
+  }
+  return {
+    mountAnchorId,
+    mountKind: "frame",
+    mountPoint: DEFAULT_ROOT_MOUNT_FRAME,
+    mountFrame: {
+      ...DEFAULT_ROOT_MOUNT_FRAME,
+      origin: DEFAULT_ROOT_MOUNT_FRAME.origin.clone(),
+      forward: DEFAULT_ROOT_MOUNT_FRAME.forward.clone(),
+      up: DEFAULT_ROOT_MOUNT_FRAME.up.clone(),
+      right: DEFAULT_ROOT_MOUNT_FRAME.right.clone()
+    }
+  };
+}
+function createAnchorSurfaceAttachmentProfile(anchors, anchorId) {
+  const anchor = resolveSpaceAnchor(anchors, anchorId);
+  if (!anchor || anchor.kind !== "point" && anchor.kind !== "frame") {
+    throw new Error(`\u5B89\u88C5\u7A7A\u95F4\u951A\u70B9\u5FC5\u987B\u662F point \u6216\u5B8C\u6574 frame: ${anchorId}`);
+  }
+  return { mountAnchorId: anchorId };
+}
+function resolvePluginSurfaceAttachmentProfile(plugin) {
+  const spatialProfile = plugin.getSpatialProfile();
+  return resolveSurfaceAttachmentProfile({
+    attachmentProfile: plugin.getSurfaceAttachmentProfile?.() || null,
+    spaceAnchors: spatialProfile.anchors
+  });
+}
+function resolveMountFrameContactDistance(profile) {
+  if (profile.mountKind !== "frame") {
+    return 0;
+  }
+  return Math.max(
+    0,
+    -profile.mountFrame.origin.dot(profile.mountFrame.forward)
+  );
+}
+
+// src/components/StarSky/PluginFramework/spatialProfile.ts
+function definePluginSpatialProfile(profile) {
+  const anchors = profile.anchors ? defineSpaceAnchors({ ...profile.anchors }) : void 0;
+  const focusAnchorId = profile.focus?.anchorId;
+  if (focusAnchorId && !resolveSpaceAnchor(anchors, focusAnchorId)) {
+    throw new Error(`\u805A\u7126\u7A7A\u95F4\u951A\u70B9\u4E0D\u5B58\u5728: ${focusAnchorId}`);
+  }
+  const stackAnchorId = profile.stackTargetAnchorId;
+  if (stackAnchorId && resolveSpaceAnchor(anchors, stackAnchorId)?.kind !== "frame") {
+    throw new Error(`\u5806\u53E0\u627F\u8F7D\u5FC5\u987B\u5F15\u7528 frame \u7A7A\u95F4\u951A\u70B9: ${stackAnchorId}`);
+  }
+  for (const body of [profile.body, ...profile.collisionBodies || []]) {
+    const bodyCenterAnchorId = body?.centerAnchorId;
+    const bodyCenterAnchor = resolveSpaceAnchor(anchors, bodyCenterAnchorId);
+    if (bodyCenterAnchorId && bodyCenterAnchor?.kind !== "point") {
+      throw new Error(`\u672C\u4F53\u4E2D\u5FC3\u5FC5\u987B\u5F15\u7528 point \u7A7A\u95F4\u951A\u70B9: ${bodyCenterAnchorId}`);
+    }
+  }
+  return {
+    ...profile,
+    ...anchors ? { anchors } : {}
+  };
+}
+var DYNAMIC_FOOTPRINT_POSITION_EPSILON = 1e-4;
+var MAX_DYNAMIC_FOOTPRINT_POINTS_PER_GEOMETRY = 192;
+var MIN_DYNAMIC_FOOTPRINT_SPAN = 2e-3;
+var DYNAMIC_FOOTPRINT_EDGE_SAMPLE_STEPS = 8;
+var MAX_EDGE_SAMPLE_SOURCE_POINTS = 64;
+var dynamicSurfaceFootprintPointCache = /* @__PURE__ */ new WeakMap();
+var dynamicSurfaceFootprintInfoCache = /* @__PURE__ */ new WeakMap();
+function getCollisionInfoFromFootprint(footprint) {
+  if (footprint.shape === "circle") {
+    return {
+      shape: "circle",
+      size: footprint.radius
+    };
+  }
+  return {
+    shape: "rect",
+    size: {
+      width: footprint.width,
+      depth: footprint.depth
+    }
+  };
+}
+function hasDynamicSurfaceFootprint(plugin) {
+  const refNodeId = plugin?.getSpatialProfile?.()?.footprint?.refNodeId;
+  return typeof refNodeId === "string" && refNodeId.length > 0;
+}
+function resolveSurfaceClampMarginFromCollisionInfo(info) {
+  if (!info) {
+    return null;
+  }
+  if (info.shape === "circle" && typeof info.size === "number") {
+    return Math.max(0, info.size);
+  }
+  if (info.shape === "rect" && typeof info.size !== "number") {
+    return {
+      x: Math.max(0, info.size.width / 2),
+      z: Math.max(0, info.size.depth / 2)
+    };
+  }
+  const capsule = info;
+  if (capsule.shape === "capsule") {
+    return Math.max(0, capsule.size.radius + capsule.size.length / 2);
+  }
+  return null;
+}
+function resolveSurfaceBoundaryInsetsFromCollisionInfo(info) {
+  const halfExtents = resolveProjectedCollisionHalfExtents(info);
+  if (!halfExtents || !info) {
+    return null;
+  }
+  const offsetX = info.offset?.x || 0;
+  const offsetZ = info.offset?.y || 0;
+  return {
+    left: Math.max(0, halfExtents.x - offsetX),
+    right: Math.max(0, halfExtents.x + offsetX),
+    back: Math.max(0, halfExtents.z - offsetZ),
+    front: Math.max(0, halfExtents.z + offsetZ)
+  };
+}
+function clampRectSurfacePointByCollisionInfo(options) {
+  if (!Number.isFinite(options.surfaceWidth) || !Number.isFinite(options.surfaceDepth)) {
+    return null;
+  }
+  const insets = resolveSurfaceBoundaryInsetsFromCollisionInfo(
+    options.collisionInfo
+  );
+  if (!insets) {
+    return null;
+  }
+  const normalizedMargin = typeof options.margin === "number" ? { x: options.margin, z: options.margin } : {
+    x: options.margin?.x ?? 0,
+    z: options.margin?.z ?? 0
+  };
+  const halfWidth = Math.max(
+    0,
+    Number(options.surfaceWidth) / 2 - normalizedMargin.x
+  );
+  const halfDepth = Math.max(
+    0,
+    Number(options.surfaceDepth) / 2 - normalizedMargin.z
+  );
+  const minX = -halfWidth + insets.left;
+  const maxX = halfWidth - insets.right;
+  const minZ = -halfDepth + insets.back;
+  const maxZ = halfDepth - insets.front;
+  return new Vector3(
+    minX <= maxX ? MathUtils.clamp(options.surfacePoint.x, minX, maxX) : (minX + maxX) / 2,
+    options.surfacePoint.y,
+    minZ <= maxZ ? MathUtils.clamp(options.surfacePoint.z, minZ, maxZ) : (minZ + maxZ) / 2
+  );
+}
+function resolveProjectedCollisionHalfExtents(info) {
+  if (!info) {
+    return null;
+  }
+  if (info.shape === "circle" && typeof info.size === "number") {
+    const radius = Math.max(0, info.size);
+    return { x: radius, z: radius };
+  }
+  if (info.shape === "rect" && typeof info.size !== "number") {
+    const halfWidth = Math.max(0, info.size.width / 2);
+    const halfDepth = Math.max(0, info.size.depth / 2);
+    const dynamicInfo = info;
+    const rotationY = typeof dynamicInfo.rotationY === "number" && Number.isFinite(dynamicInfo.rotationY) && !dynamicInfo.isAABB ? dynamicInfo.rotationY : 0;
+    const cos = Math.abs(Math.cos(rotationY));
+    const sin = Math.abs(Math.sin(rotationY));
+    return {
+      x: cos * halfWidth + sin * halfDepth,
+      z: sin * halfWidth + cos * halfDepth
+    };
+  }
+  const capsule = info;
+  if (capsule.shape === "capsule") {
+    const halfLength = Math.max(0, capsule.size.length / 2);
+    const radius = Math.max(0, capsule.size.radius);
+    const rotationY = typeof capsule.rotationY === "number" && Number.isFinite(capsule.rotationY) ? capsule.rotationY : 0;
+    return {
+      x: radius + Math.abs(Math.cos(rotationY)) * halfLength,
+      z: radius + Math.abs(Math.sin(rotationY)) * halfLength
+    };
+  }
+  return null;
+}
+function resolveDynamicSurfaceFootprintCollisionInfo(plugin, options = {}) {
+  if (!hasDynamicSurfaceFootprint(plugin)) {
+    return null;
+  }
+  const profile = plugin.getSpatialProfile();
+  const footprint = profile.footprint;
+  const refNodeId = footprint.refNodeId;
+  if (!refNodeId) {
+    return null;
+  }
+  const collisionMesh = options.collisionMesh || plugin.getCollisionMesh?.() || plugin.getMesh?.() || plugin.mesh || null;
+  if (!collisionMesh) {
+    return null;
+  }
+  const refNode = resolveDynamicFootprintRefNode(collisionMesh, refNodeId);
+  if (!refNode) {
+    return null;
+  }
+  const mountParent = options.mountParent !== void 0 ? options.mountParent : resolveDynamicFootprintMountParent(plugin, collisionMesh);
+  const surfaceCandidate = options.surface !== void 0 ? options.surface : plugin.getCurrentActivitySurface?.() || null;
+  const surface = mountParent && surfaceCandidate?.parentObject !== mountParent ? null : surfaceCandidate;
+  const referencePosition = options.referencePosition || resolveDynamicFootprintReferencePosition(plugin, collisionMesh) || new Vector3();
+  const blockingHeight = Number.isFinite(options.blockingHeight) && (options.blockingHeight || 0) > 0 ? Number(options.blockingHeight) : 0;
+  const bodyRefNode = blockingHeight > 0 && footprint.bodyRefNodeId ? resolveDynamicFootprintRefNode(collisionMesh, footprint.bodyRefNodeId) : null;
+  refNode.updateWorldMatrix(true, true);
+  bodyRefNode?.updateWorldMatrix(true, true);
+  mountParent?.updateWorldMatrix(true, false);
+  const projectionQuery = surface?.createWorldPointProjectionQuery?.();
+  const projectionMatrix = surface?.shape === "rect" ? projectionQuery?.worldToSurfaceMatrix : void 0;
+  const matrixKey = (node) => {
+    if (!projectionMatrix) return getDynamicFootprintMatrixCacheSignature(node.matrixWorld);
+    const relative = projectionMatrix.clone().multiply(node.matrixWorld);
+    relative.elements[12] -= referencePosition.x;
+    relative.elements[14] -= referencePosition.z;
+    return getDynamicFootprintMatrixCacheSignature(relative);
+  };
+  const cacheKey = [
+    blockingHeight > 0 ? blockingHeight.toFixed(4) : "base",
+    JSON.stringify(footprint),
+    refNode.uuid,
+    matrixKey(refNode),
+    bodyRefNode ? `${bodyRefNode.uuid}:${matrixKey(bodyRefNode)}` : "support-only",
+    projectionMatrix ? "relative-rect" : mountParent ? getDynamicFootprintMatrixCacheSignature(mountParent.matrixWorld) : "world",
+    projectionMatrix ? "relative-anchor" : `${referencePosition.x},${referencePosition.z}`,
+    surface?.id || "surface"
+  ].join("|");
+  const entityCache = dynamicSurfaceFootprintInfoCache.get(plugin);
+  if (entityCache?.has(cacheKey)) {
+    return entityCache.get(cacheKey) ?? null;
+  }
+  const localSamplePoints = getDynamicFootprintLocalSamplePoints(refNode);
+  if (localSamplePoints.length === 0) {
+    return null;
+  }
+  const bandPoints = getDynamicFootprintSupportBandPoints({
+    refNode,
+    localSamplePoints,
+    mountParent,
+    surface,
+    footprint,
+    blockingHeight,
+    bodyRefNode,
+    projectionQuery
+  });
+  if (bandPoints.length === 0) {
+    return null;
+  }
+  const nextInfo = createDynamicFootprintCollisionInfoFromPoints(
+    bandPoints,
+    referencePosition,
+    footprint
+  );
+  const nextEntityCache = entityCache ?? /* @__PURE__ */ new Map();
+  nextEntityCache.set(cacheKey, nextInfo);
+  if (nextEntityCache.size > 32) {
+    nextEntityCache.clear();
+    nextEntityCache.set(cacheKey, nextInfo);
+  }
+  if (!entityCache) {
+    dynamicSurfaceFootprintInfoCache.set(plugin, nextEntityCache);
+  }
+  return nextInfo;
+}
+function getDefaultDragSurfaceMarginFromFootprint(footprint) {
+  if (footprint.shape === "circle") {
+    return footprint.radius;
+  }
+  return {
+    x: footprint.width / 2,
+    z: footprint.depth / 2
+  };
+}
+function getDefaultInteractionScaleFromFootprint(footprint) {
+  if (footprint.shape === "circle") {
+    return footprint.radius * 2;
+  }
+  return Math.max(footprint.width, footprint.depth);
+}
+function getDefaultBlockedInsetFromFootprint(footprint) {
+  if (footprint.shape === "circle") {
+    return footprint.radius;
+  }
+  return footprint.depth / 2;
+}
+function getBodyHeightFromBody(body) {
+  if (!body) {
+    return null;
+  }
+  if (body.shape === "sphere") {
+    return body.radius * 2;
+  }
+  return body.height;
+}
+function getBodyVolume(body) {
+  if (!body) {
+    return null;
+  }
+  if (body.shape === "sphere") {
+    return 4 / 3 * Math.PI * Math.pow(body.radius, 3);
+  }
+  if (body.shape === "cylinder") {
+    return Math.PI * body.radius * body.radius * body.height;
+  }
+  return body.width * body.height * body.depth;
+}
+function getBodyBlockedInsetAtClearance(body, mountContactDistance, clearanceHeight) {
+  if (!body || !Number.isFinite(clearanceHeight)) {
+    return null;
+  }
+  if (body.shape === "sphere") {
+    const centerY = typeof mountContactDistance === "number" ? mountContactDistance : body.radius;
+    const deltaY = clearanceHeight - centerY;
+    if (deltaY >= body.radius) {
+      return 0;
+    }
+    if (deltaY <= -body.radius) {
+      return body.radius;
+    }
+    return Math.sqrt(Math.max(0, body.radius * body.radius - deltaY * deltaY));
+  }
+  if (body.shape === "cylinder") {
+    return body.radius;
+  }
+  return body.depth / 2;
+}
+function resolvePluginMountContactDistance(plugin) {
+  const profile = plugin.getSpatialProfile();
+  const mountAnchorId = plugin.getSurfaceAttachmentProfile?.()?.mountAnchorId || DEFAULT_MOUNT_ANCHOR_ID;
+  const mountFrame2 = resolveNamedSpaceFrame(profile.anchors, mountAnchorId);
+  if (!mountFrame2) {
+    return 0;
+  }
+  const contactDistance = -mountFrame2.origin.dot(mountFrame2.forward);
+  return Number.isFinite(contactDistance) ? Math.max(0, contactDistance) : 0;
+}
+function resolvePluginBodyHeight(plugin) {
+  const profile = plugin.getSpatialProfile();
+  const bodyHeightFromBody = getBodyHeightFromBody(profile.body);
+  return bodyHeightFromBody ?? profile.interactionScale ?? getDefaultInteractionScaleFromFootprint(profile.footprint);
+}
+function resolvePluginBlockedInsetAtClearance(plugin, clearanceHeight) {
+  const profile = plugin.getSpatialProfile();
+  return getBodyBlockedInsetAtClearance(
+    profile.body,
+    resolvePluginMountContactDistance(plugin),
+    clearanceHeight
+  ) ?? getDefaultBlockedInsetFromFootprint(profile.footprint);
+}
+function resolvePluginInteractionScale(plugin) {
+  const profile = plugin.getSpatialProfile();
+  return profile.interactionScale ?? getDefaultInteractionScaleFromFootprint(profile.footprint);
+}
+function resolvePrimaryInteractionSizeFromSpatialProfile(profile, fallbackSize = 0) {
+  if (!profile) {
+    return Math.max(0, fallbackSize);
+  }
+  return Math.max(
+    0,
+    profile.interactionScale ?? getBodyHeightFromBody(profile.body) ?? getDefaultInteractionScaleFromFootprint(profile.footprint) ?? fallbackSize
+  );
+}
+function resolvePluginDragSurfaceMargin(plugin) {
+  const profile = plugin.getSpatialProfile();
+  if (profile.dragSurfaceMargin !== void 0) {
+    return profile.dragSurfaceMargin;
+  }
+  const dynamicMargin = resolveSurfaceClampMarginFromCollisionInfo(
+    resolveDynamicSurfaceFootprintCollisionInfo(
+      plugin
+    )
+  );
+  return dynamicMargin ?? getDefaultDragSurfaceMarginFromFootprint(profile.footprint);
+}
+function resolveDynamicFootprintRefNode(collisionMesh, refNodeId) {
+  let matchedNode = null;
+  collisionMesh.traverse((node) => {
+    if (!matchedNode && node.userData?.capabilityNodeId === refNodeId) {
+      matchedNode = node;
+    }
+  });
+  return matchedNode || findDescendantByName(collisionMesh, refNodeId);
+}
+function resolveDynamicFootprintMountParent(plugin, collisionMesh) {
+  const rootMesh = plugin.getMesh?.() || plugin.mesh || collisionMesh || null;
+  return rootMesh?.parent || collisionMesh.parent || null;
+}
+function resolveDynamicFootprintReferencePosition(plugin, collisionMesh) {
+  const placementAnchor = plugin.getPlacementAnchor?.()?.localPoint;
+  if (placementAnchor && Number.isFinite(placementAnchor.x) && Number.isFinite(placementAnchor.y) && Number.isFinite(placementAnchor.z)) {
+    return placementAnchor.clone();
+  }
+  const customPosition = plugin.getCollisionReferencePosition?.();
+  if (customPosition && Number.isFinite(customPosition.x) && Number.isFinite(customPosition.y) && Number.isFinite(customPosition.z)) {
+    return customPosition.clone();
+  }
+  return collisionMesh.position.clone();
+}
+function getDynamicFootprintMatrixCacheSignature(matrix) {
+  return matrix.elements.map((value) => {
+    if (!Number.isFinite(value)) return "NaN";
+    const rounded = value.toFixed(4);
+    return rounded === "-0.0000" ? "0.0000" : rounded;
+  }).join(",");
+}
+function getDynamicFootprintSupportBandPoints(options) {
+  const {
+    refNode,
+    localSamplePoints,
+    mountParent,
+    surface,
+    footprint,
+    blockingHeight,
+    bodyRefNode,
+    projectionQuery
+  } = options;
+  refNode.updateWorldMatrix(true, true);
+  const footprintExtent = footprint.shape === "circle" ? footprint.radius * 2 : Math.max(footprint.width, footprint.depth);
+  const bandTolerance = Math.max(1e-3, footprintExtent * 0.04);
+  const projectedPoints = [];
+  let minHeight = Infinity;
+  const sampleSources = [{ node: refNode, points: localSamplePoints }];
+  if (bodyRefNode && bodyRefNode !== refNode) {
+    sampleSources.push({
+      node: bodyRefNode,
+      points: getDynamicFootprintLocalSamplePoints(bodyRefNode)
+    });
+  }
+  for (const { node, points } of sampleSources) {
+    for (const localPoint of points) {
+      const worldPoint = localPoint.clone().applyMatrix4(node.matrixWorld);
+      const projected = projectDynamicFootprintPoint(
+        worldPoint,
+        mountParent,
+        surface,
+        projectionQuery
+      );
+      if (!projected) {
+        continue;
+      }
+      projectedPoints.push(projected);
+      minHeight = Math.min(minHeight, projected.height);
+    }
+  }
+  if (!Number.isFinite(minHeight) || projectedPoints.length === 0) {
+    return [];
+  }
+  const maxBlockingHeight = Number.isFinite(blockingHeight) && blockingHeight > 0 ? minHeight + blockingHeight + bandTolerance : minHeight + bandTolerance;
+  const bandPoints = projectedPoints.filter((item) => item.height <= maxBlockingHeight).map((item) => item.point);
+  return bandPoints.length > 0 ? bandPoints : projectedPoints.map((item) => item.point);
+}
+function projectDynamicFootprintPoint(worldPoint, mountParent, surface, projectionQuery) {
+  if (surface?.shape === "mesh") {
+    const surfacePoint = surface.worldToSurface(worldPoint);
+    if (Number.isFinite(surfacePoint.x) && Number.isFinite(surfacePoint.y) && Number.isFinite(surfacePoint.z)) {
+      return {
+        point: new Vector3(surfacePoint.x, 0, surfacePoint.z),
+        height: surfacePoint.y
+      };
+    }
+  }
+  if (surface && surface.shape !== "sphere") {
+    const projection = projectionQuery ? projectionQuery(worldPoint) : surface.projectWorldPoint(worldPoint);
+    if (Number.isFinite(projection.surfacePoint.x) && Number.isFinite(projection.surfacePoint.y) && Number.isFinite(projection.surfacePoint.z) && Number.isFinite(projection.distance)) {
+      return {
+        point: projection.surfacePoint.clone(),
+        height: projection.distance
+      };
+    }
+  }
+  const localPoint = mountParent ? mountParent.worldToLocal(worldPoint.clone()) : worldPoint.clone();
+  if (!Number.isFinite(localPoint.x) || !Number.isFinite(localPoint.y) || !Number.isFinite(localPoint.z)) {
+    return null;
+  }
+  return {
+    point: new Vector3(localPoint.x, 0, localPoint.z),
+    height: localPoint.y
+  };
+}
+function getDynamicFootprintLocalSamplePoints(refNode) {
+  const cached = dynamicSurfaceFootprintPointCache.get(refNode);
+  if (cached) {
+    return cached;
+  }
+  refNode.updateWorldMatrix(true, true);
+  const inverseRefWorld = refNode.matrixWorld.clone().invert();
+  const samplePoints = [];
+  refNode.traverse((node) => {
+    if (node.userData.capabilityRigidBatch) return;
+    const mesh = node;
+    const positionAttribute = mesh.geometry?.getAttribute?.("position");
+    if (!positionAttribute) {
+      return;
+    }
+    const nodeMatrix = inverseRefWorld.clone().multiply(mesh.matrixWorld);
+    const instance = mesh;
+    const hasInstances = !!instance.instanceMatrix && typeof instance.getMatrixAt === "function";
+    const count = hasInstances ? instance.count : 1;
+    const step = Math.max(
+      1,
+      Math.ceil(
+        positionAttribute.count / MAX_DYNAMIC_FOOTPRINT_POINTS_PER_GEOMETRY
+      )
+    );
+    for (let part = 0; part < count; part++) {
+      const localMatrix = new Matrix4();
+      if (hasInstances) instance.getMatrixAt(part, localMatrix);
+      localMatrix.premultiply(nodeMatrix);
+      for (let index = 0; index < positionAttribute.count; index += step) {
+        samplePoints.push(
+          new Vector3().fromBufferAttribute(positionAttribute, index).applyMatrix4(localMatrix)
+        );
+      }
+      const lastIndex = positionAttribute.count - 1;
+      if (lastIndex >= 0 && lastIndex % step !== 0) {
+        samplePoints.push(
+          new Vector3().fromBufferAttribute(positionAttribute, lastIndex).applyMatrix4(localMatrix)
+        );
+      }
+      appendDynamicFootprintEdgeSamplePoints(mesh, localMatrix, samplePoints);
+    }
+  });
+  if (samplePoints.length === 0) {
+    const worldBounds = new Box3().setFromObject(refNode);
+    if (!worldBounds.isEmpty()) {
+      const min = worldBounds.min;
+      const max = worldBounds.max;
+      const worldCorners = [
+        new Vector3(min.x, min.y, min.z),
+        new Vector3(min.x, min.y, max.z),
+        new Vector3(max.x, min.y, min.z),
+        new Vector3(max.x, min.y, max.z),
+        new Vector3(min.x, max.y, min.z),
+        new Vector3(min.x, max.y, max.z),
+        new Vector3(max.x, max.y, min.z),
+        new Vector3(max.x, max.y, max.z)
+      ];
+      for (const corner of worldCorners) {
+        samplePoints.push(corner.applyMatrix4(inverseRefWorld));
+      }
+    }
+  }
+  dynamicSurfaceFootprintPointCache.set(refNode, samplePoints);
+  return samplePoints;
+}
+function appendDynamicFootprintEdgeSamplePoints(mesh, localMatrix, samplePoints) {
+  const geometry = mesh.geometry;
+  const positionAttribute = geometry?.getAttribute?.("position");
+  if (!geometry || !positionAttribute) {
+    return;
+  }
+  if (positionAttribute.count > MAX_EDGE_SAMPLE_SOURCE_POINTS) {
+    return;
+  }
+  if (!geometry.boundingBox) {
+    geometry.computeBoundingBox();
+  }
+  const bounds = geometry.boundingBox;
+  if (!bounds || bounds.isEmpty()) {
+    return;
+  }
+  const min = bounds.min;
+  const max = bounds.max;
+  const corners = [
+    new Vector3(min.x, min.y, min.z),
+    new Vector3(min.x, min.y, max.z),
+    new Vector3(min.x, max.y, min.z),
+    new Vector3(min.x, max.y, max.z),
+    new Vector3(max.x, min.y, min.z),
+    new Vector3(max.x, min.y, max.z),
+    new Vector3(max.x, max.y, min.z),
+    new Vector3(max.x, max.y, max.z)
+  ];
+  const edges = [
+    [0, 1],
+    [0, 2],
+    [0, 4],
+    [1, 3],
+    [1, 5],
+    [2, 3],
+    [2, 6],
+    [3, 7],
+    [4, 5],
+    [4, 6],
+    [5, 7],
+    [6, 7]
+  ];
+  for (const [startIndex, endIndex] of edges) {
+    const start = corners[startIndex];
+    const end = corners[endIndex];
+    for (let step = 1; step < DYNAMIC_FOOTPRINT_EDGE_SAMPLE_STEPS; step++) {
+      samplePoints.push(
+        start.clone().lerp(end, step / DYNAMIC_FOOTPRINT_EDGE_SAMPLE_STEPS).applyMatrix4(localMatrix)
+      );
+    }
+  }
+}
+function createDynamicFootprintCollisionInfoFromPoints(bandPoints, referencePosition, footprint) {
+  let minX = Infinity;
+  let maxX = -Infinity;
+  let minZ = Infinity;
+  let maxZ = -Infinity;
+  let sumX = 0;
+  let sumZ = 0;
+  for (const point of bandPoints) {
+    minX = Math.min(minX, point.x);
+    maxX = Math.max(maxX, point.x);
+    minZ = Math.min(minZ, point.z);
+    maxZ = Math.max(maxZ, point.z);
+    sumX += point.x;
+    sumZ += point.z;
+  }
+  if (!Number.isFinite(minX) || !Number.isFinite(maxX) || !Number.isFinite(minZ) || !Number.isFinite(maxZ)) {
+    return null;
+  }
+  const aabbWidth = Math.max(MIN_DYNAMIC_FOOTPRINT_SPAN, maxX - minX);
+  const aabbDepth = Math.max(MIN_DYNAMIC_FOOTPRINT_SPAN, maxZ - minZ);
+  const centerX = sumX / bandPoints.length;
+  const centerZ = sumZ / bandPoints.length;
+  let covarianceXX = 0;
+  let covarianceZZ = 0;
+  let covarianceXZ = 0;
+  for (const point of bandPoints) {
+    const dx = point.x - centerX;
+    const dz = point.z - centerZ;
+    covarianceXX += dx * dx;
+    covarianceZZ += dz * dz;
+    covarianceXZ += dx * dz;
+  }
+  const hasDirection = Math.abs(covarianceXX - covarianceZZ) > DYNAMIC_FOOTPRINT_POSITION_EPSILON || Math.abs(covarianceXZ) > DYNAMIC_FOOTPRINT_POSITION_EPSILON;
+  if (!hasDirection) {
+    return createDynamicFootprintAabbCollisionInfo(
+      minX,
+      maxX,
+      minZ,
+      maxZ,
+      referencePosition
+    );
+  }
+  const angle = 0.5 * Math.atan2(2 * covarianceXZ, covarianceXX - covarianceZZ);
+  const axisX = Math.cos(angle);
+  const axisZ = Math.sin(angle);
+  const sideX = -axisZ;
+  const sideZ = axisX;
+  let minU = Infinity;
+  let maxU = -Infinity;
+  let minV = Infinity;
+  let maxV = -Infinity;
+  for (const point of bandPoints) {
+    const projectionU = point.x * axisX + point.z * axisZ;
+    const projectionV = point.x * sideX + point.z * sideZ;
+    minU = Math.min(minU, projectionU);
+    maxU = Math.max(maxU, projectionU);
+    minV = Math.min(minV, projectionV);
+    maxV = Math.max(maxV, projectionV);
+  }
+  const width = Math.max(MIN_DYNAMIC_FOOTPRINT_SPAN, maxU - minU);
+  const depth = Math.max(MIN_DYNAMIC_FOOTPRINT_SPAN, maxV - minV);
+  const obbArea = width * depth;
+  const aabbArea = aabbWidth * aabbDepth;
+  const normalizedRotation = normalizeDynamicFootprintHalfTurnRotation(-angle);
+  const centerU = (minU + maxU) / 2;
+  const centerV = (minV + maxV) / 2;
+  const orientedCenterX = centerU * axisX + centerV * sideX;
+  const orientedCenterZ = centerU * axisZ + centerV * sideZ;
+  if (footprint.shape === "circle") {
+    const longSpan = Math.max(width, depth);
+    const shortSpan = Math.min(width, depth);
+    const capsuleRotation = width >= depth ? normalizedRotation : normalizeDynamicFootprintHalfTurnRotation(
+      normalizedRotation + Math.PI / 2
+    );
+    return {
+      shape: "capsule",
+      size: {
+        length: Math.max(0, longSpan - shortSpan),
+        radius: Math.max(MIN_DYNAMIC_FOOTPRINT_SPAN / 2, shortSpan / 2)
+      },
+      offset: new Vector2(
+        orientedCenterX - referencePosition.x,
+        orientedCenterZ - referencePosition.z
+      ),
+      rotationY: capsuleRotation
+    };
+  }
+  if (Math.abs(normalizedRotation) <= DYNAMIC_FOOTPRINT_POSITION_EPSILON || obbArea >= aabbArea * 0.98) {
+    return createDynamicFootprintAabbCollisionInfo(
+      minX,
+      maxX,
+      minZ,
+      maxZ,
+      referencePosition
+    );
+  }
+  return {
+    shape: "rect",
+    size: { width, depth },
+    offset: new Vector2(
+      orientedCenterX - referencePosition.x,
+      orientedCenterZ - referencePosition.z
+    ),
+    isAABB: false,
+    rotationY: normalizedRotation
+  };
+}
+function createDynamicFootprintAabbCollisionInfo(minX, maxX, minZ, maxZ, referencePosition) {
+  const centerX = (minX + maxX) / 2;
+  const centerZ = (minZ + maxZ) / 2;
+  return {
+    shape: "rect",
+    size: {
+      width: Math.max(MIN_DYNAMIC_FOOTPRINT_SPAN, maxX - minX),
+      depth: Math.max(MIN_DYNAMIC_FOOTPRINT_SPAN, maxZ - minZ)
+    },
+    offset: new Vector2(
+      centerX - referencePosition.x,
+      centerZ - referencePosition.z
+    ),
+    isAABB: true,
+    rotationY: 0
+  };
+}
+function normalizeDynamicFootprintHalfTurnRotation(rotationY) {
+  let normalized = rotationY;
+  while (normalized <= -Math.PI / 2) {
+    normalized += Math.PI;
+  }
+  while (normalized > Math.PI / 2) {
+    normalized -= Math.PI;
+  }
+  return normalized;
+}
+function resolvePluginFocusState(plugin) {
+  const profile = plugin.getSpatialProfile();
+  const focus = profile.focus;
+  const interactionScale = resolvePluginInteractionScale(plugin);
+  const defaultTargetOffsetY = interactionScale / 2;
+  const distance = Math.min(1.4, Math.max(0.6, interactionScale * 3.2));
+  const focusAnchor = resolveSpaceAnchor(profile.anchors, focus?.anchorId);
+  const focusPoint = focusAnchor ? resolveSpacePoint(focusAnchor, focus?.anchorId).origin : null;
+  return {
+    distance: focus?.distance ?? distance,
+    theta: focus?.theta ?? 0,
+    phi: focus?.phi ?? Math.PI / 3,
+    targetOffset: focusPoint?.clone() ?? new Vector3(0, defaultTargetOffsetY, 0),
+    ...focus?.duration === void 0 ? {} : { duration: focus.duration }
+  };
+}
+
+// src/components/StarSky/PluginFramework/utils/spatial/createBoxLocalCorners.ts
+function createBoxLocalCorners(halfExtents) {
+  const halfWidth = halfExtents.x;
+  const halfHeight = halfExtents.y;
+  const halfDepth = halfExtents.z;
+  return [
+    new Vector3(-halfWidth, -halfHeight, -halfDepth),
+    new Vector3(-halfWidth, -halfHeight, halfDepth),
+    new Vector3(-halfWidth, halfHeight, -halfDepth),
+    new Vector3(-halfWidth, halfHeight, halfDepth),
+    new Vector3(halfWidth, -halfHeight, -halfDepth),
+    new Vector3(halfWidth, -halfHeight, halfDepth),
+    new Vector3(halfWidth, halfHeight, -halfDepth),
+    new Vector3(halfWidth, halfHeight, halfDepth)
+  ];
+}
+
 // src/components/StarSky/PluginFramework/utils/spatial/surfaceTiltSpatial.ts
 function resolveSurfaceTiltClampLocalCorners(options) {
   const profile = options.spatialProfile;
@@ -257828,6 +257582,20 @@ function getDefaultInteractionScale(footprint) {
 }
 
 // src/components/StarSky/PluginFramework/behaviors/surfaceTiltCore.ts
+function resolveSurfaceTiltHorizontalAngleFromPose(surface, point, mount, worldQuaternion) {
+  const frame = resolveSurfaceWorldFrameAtPoint(surface, point);
+  if (!frame) return 0;
+  const base = new Quaternion().setFromRotationMatrix(
+    resolveAttachedWorldMatrix(frame, mount)
+  );
+  const delta = worldQuaternion.clone().multiply(base.invert()).normalize();
+  const normal = resolveSurfaceTiltWorldNormal(surface, point);
+  const angle = 2 * Math.atan2(
+    new Vector3(delta.x, delta.y, delta.z).dot(normal),
+    delta.w
+  );
+  return Math.atan2(Math.sin(angle), Math.cos(angle));
+}
 var SURFACE_TILT_DEFAULTS = {
   verticalSensitivity: -5e-3,
   horizontalSensitivity: Math.PI / 4 / 300,
@@ -257852,8 +257620,14 @@ function resolveSurfaceTiltNextAngle(options) {
   const currentClient = inputAxis === "screen-x" ? options.currentClientX : options.currentClientY;
   return MathUtils.clamp(
     options.startAngle + (currentClient - startClient) * resolveSurfaceTiltSensitivity(channel, channelKind),
-    resolveSurfaceTiltMinAngle(channel, channelKind),
-    resolveSurfaceTiltMaxAngle(channel, channelKind)
+    channelKind === "horizontal" ? Math.min(
+      options.startAngle,
+      resolveSurfaceTiltMinAngle(channel, channelKind)
+    ) : resolveSurfaceTiltMinAngle(channel, channelKind),
+    channelKind === "horizontal" ? Math.max(
+      options.startAngle,
+      resolveSurfaceTiltMaxAngle(channel, channelKind)
+    ) : resolveSurfaceTiltMaxAngle(channel, channelKind)
   );
 }
 function resolveSurfaceTiltSensitivity(channel, channelKind) {
@@ -257899,1005 +257673,6 @@ function createSurfaceTiltHorizontalQuaternion(options) {
     resolveSurfaceTiltWorldNormal(options.surface, options.surfacePoint),
     options.horizontalAngle
   );
-}
-
-// src/components/StarSky/PluginFramework/behaviors/surfaceTiltBehavior.ts
-var SURFACE_ANCHORED_TILT_BEHAVIOR_KEY = "surfaceAnchoredTiltBehavior";
-var DEFAULT_ANCHOR_DRAG_ACTION_BUTTON_ID = "move";
-function resolveDefaultAnchorDragDescriptor(event) {
-  const hitPoint = event.interactionAnchorHitPoint || null;
-  if (!hitPoint) {
-    return null;
-  }
-  let currentObject = event.interactionAnchorHitObject || null;
-  while (currentObject) {
-    if (currentObject.userData.pluginActionButtonId === DEFAULT_ANCHOR_DRAG_ACTION_BUTTON_ID) {
-      return {
-        mode: "world-point",
-        point: hitPoint.clone()
-      };
-    }
-    currentObject = currentObject.parent;
-  }
-  return null;
-}
-function isDefaultAnchorDragActionButtonEvent(event) {
-  const carrier = event;
-  return carrier?.pluginActionButtonId === DEFAULT_ANCHOR_DRAG_ACTION_BUTTON_ID;
-}
-function resolvePluginSurfaceTiltAnchorPoint(plugin, options = {}) {
-  const currentSurface = options.currentSurface || plugin.getCurrentActivitySurface?.() || null;
-  if (!currentSurface) {
-    return null;
-  }
-  const clampMargin = options.clampMargin ?? 0;
-  const normalizeAnchorPoint = (anchorPoint) => {
-    const clampedPoint = currentSurface.clampSurfacePoint(
-      anchorPoint.clone(),
-      clampMargin
-    );
-    if (currentSurface.shape === "rect" || currentSurface.shape === "polygon") {
-      clampedPoint.y = 0;
-    }
-    return clampedPoint;
-  };
-  if (options.preferBehaviorState !== false) {
-    const state = plugin.behaviorState[SURFACE_ANCHORED_TILT_BEHAVIOR_KEY];
-    if (state?.anchorPoint && state.anchorSurfaceId === currentSurface.id) {
-      return normalizeAnchorPoint(state.anchorPoint);
-    }
-  }
-  if (options.preferAttachment !== false && plugin.attachment?.surfaceId === currentSurface.id && plugin.attachment.localPoint) {
-    return normalizeAnchorPoint(plugin.attachment.localPoint);
-  }
-  const fallbackWorldPoint = options.fallbackWorldPoint || plugin.mesh?.getWorldPosition(new Vector3()) || null;
-  if (!fallbackWorldPoint) {
-    return null;
-  }
-  const surfacePoint = currentSurface.projectWorldPoint(fallbackWorldPoint).surfacePoint;
-  return normalizeAnchorPoint(surfacePoint);
-}
-function getSurfaceAnchoredTiltBehaviorApi(plugin) {
-  const state = plugin.behaviorState[SURFACE_ANCHORED_TILT_BEHAVIOR_KEY];
-  return state?.api || null;
-}
-function createSurfaceAnchoredTiltBehavior(options) {
-  const verticalConfig = options.vertical || null;
-  const horizontalConfig = options.horizontal || null;
-  const inferredBaseWorldQuaternions = /* @__PURE__ */ new WeakMap();
-  const hasVerticalTilt = (plugin) => !!resolveTarget(plugin, "vertical");
-  const hasHorizontalTilt = (plugin) => !!resolveTarget(plugin, "horizontal");
-  const hasConfiguredTilt = () => !!verticalConfig?.targetName || !!horizontalConfig?.targetName;
-  const shouldApplyTilt = (plugin) => {
-    return (hasVerticalTilt(plugin) || hasHorizontalTilt(plugin)) && (options.isEnabled?.(plugin) ?? true);
-  };
-  const resolveDynamicValue = (plugin, value) => {
-    return typeof value === "function" ? value(plugin) : value;
-  };
-  const resolveChannelConfig = (channel) => {
-    return channel === "vertical" ? verticalConfig : horizontalConfig;
-  };
-  const resolveTarget = (plugin, channel) => {
-    const config = resolveChannelConfig(channel);
-    if (!config?.targetName) {
-      return null;
-    }
-    return findDescendantByName(plugin.mesh || null, config.targetName);
-  };
-  const resolvePrimaryTarget = (plugin) => {
-    return resolveTarget(plugin, "vertical") || resolveTarget(plugin, "horizontal");
-  };
-  const resolveInputAxis = (plugin, channel) => {
-    return resolveSurfaceTiltInputAxis(
-      {
-        inputAxis: resolveDynamicValue(
-          plugin,
-          resolveChannelConfig(channel)?.inputAxis
-        )
-      },
-      channel
-    );
-  };
-  const resolveSensitivity = (plugin, channel) => {
-    return resolveSurfaceTiltSensitivity(
-      {
-        sensitivity: resolveDynamicValue(
-          plugin,
-          resolveChannelConfig(channel)?.sensitivity
-        )
-      },
-      channel
-    );
-  };
-  const resolveMinAngle = (plugin, channel) => {
-    return resolveSurfaceTiltMinAngle(
-      {
-        minAngle: resolveDynamicValue(
-          plugin,
-          resolveChannelConfig(channel)?.minAngle
-        )
-      },
-      channel
-    );
-  };
-  const resolveMaxAngle = (plugin, channel) => {
-    return resolveSurfaceTiltMaxAngle(
-      {
-        maxAngle: resolveDynamicValue(
-          plugin,
-          resolveChannelConfig(channel)?.maxAngle
-        )
-      },
-      channel
-    );
-  };
-  const resolveRotationAxisLocal = (plugin, channel) => {
-    return resolveSurfaceTiltRotationAxis(
-      {
-        axis: resolveDynamicValue(plugin, resolveChannelConfig(channel)?.axis)
-      },
-      channel
-    );
-  };
-  const resolveTravelAxisLocal = (plugin, channel) => {
-    return resolveSurfaceTiltTravelAxis(
-      {
-        axis: resolveDynamicValue(plugin, resolveChannelConfig(channel)?.axis)
-      },
-      channel
-    );
-  };
-  const shouldRestoreOnRelease = (plugin) => {
-    return shouldRestoreSurfaceTiltOnRelease({
-      vertical: {
-        restoreOnRelease: resolveDynamicValue(
-          plugin,
-          verticalConfig?.restoreOnRelease
-        )
-      },
-      horizontal: {
-        restoreOnRelease: resolveDynamicValue(
-          plugin,
-          horizontalConfig?.restoreOnRelease
-        )
-      }
-    });
-  };
-  const resolveRestAngle = (plugin, channel, fallback) => {
-    return resolveSurfaceTiltRestAngle(
-      {
-        restAngle: resolveDynamicValue(
-          plugin,
-          resolveChannelConfig(channel)?.restAngle
-        )
-      },
-      fallback
-    );
-  };
-  const resolveHingeRadius = (plugin, channel) => {
-    return resolveDynamicValue(plugin, resolveChannelConfig(channel)?.hingeRadius) ?? 0;
-  };
-  const resolveHingeOffsetLocal = (plugin, channel) => {
-    const value = resolveDynamicValue(
-      plugin,
-      resolveChannelConfig(channel)?.hingeOffsetLocal
-    );
-    if (!value || !Number.isFinite(value.x) || !Number.isFinite(value.y) || !Number.isFinite(value.z)) {
-      return void 0;
-    }
-    return new Vector3(value.x, value.y, value.z);
-  };
-  const resolveBaseWorldQuaternion = (plugin, target, channel) => {
-    const baseEuler = resolveDynamicValue(
-      plugin,
-      resolveChannelConfig(channel)?.baseEuler
-    );
-    if (!baseEuler) {
-      const cachedBaseWorldQuaternion = inferredBaseWorldQuaternions.get(target);
-      if (cachedBaseWorldQuaternion) {
-        return cachedBaseWorldQuaternion.clone();
-      }
-      target.updateWorldMatrix(true, false);
-      const inferredBaseWorldQuaternion = target.getWorldQuaternion(
-        new Quaternion()
-      );
-      inferredBaseWorldQuaternions.set(
-        target,
-        inferredBaseWorldQuaternion.clone()
-      );
-      return inferredBaseWorldQuaternion;
-    }
-    const localQuaternion = new Quaternion().setFromEuler(
-      new Euler(baseEuler.x, baseEuler.y, baseEuler.z)
-    );
-    if (!target.parent) {
-      return localQuaternion;
-    }
-    target.parent.updateWorldMatrix(true, false);
-    const parentWorldQuaternion = target.parent.getWorldQuaternion(
-      new Quaternion()
-    );
-    return parentWorldQuaternion.multiply(localQuaternion);
-  };
-  const resolveSurface = (plugin) => {
-    return options.getSurface?.(plugin) || plugin.getCurrentActivitySurface?.() || null;
-  };
-  const resolveClampMargin = (plugin) => {
-    return options.getClampMargin?.(plugin) ?? 0;
-  };
-  const resolveAnchorReferenceWorldPoint = (plugin, target) => {
-    if (options.anchorReferenceTarget === "plugin-root") {
-      return plugin.mesh?.getWorldPosition(new Vector3()) || target.getWorldPosition(new Vector3());
-    }
-    return options.resolveAnchorReferenceWorldPoint?.(plugin, target) || target.getWorldPosition(new Vector3());
-  };
-  const resolveAnchorPlacementTarget = (plugin, target) => {
-    if (options.anchorPlacementTarget === "plugin-root" && plugin.mesh) {
-      return plugin.mesh;
-    }
-    return options.resolveAnchorPlacementTarget?.(plugin, target) || target;
-  };
-  const resolvePoseTargetPositionMode = () => options.poseTargetPositionMode ?? "world-pose";
-  const resolveClientValue = (inputAxis, nativeEvent) => {
-    if (!nativeEvent) {
-      return null;
-    }
-    return inputAxis === "screen-x" ? nativeEvent.clientX : nativeEvent.clientY;
-  };
-  const applyWorldPoseToTarget = (target, pose, positionMode) => {
-    if (target.parent) {
-      const parentQuat = new Quaternion();
-      target.parent.updateWorldMatrix(true, false);
-      if (positionMode === "world-pose") {
-        const localPos = target.parent.worldToLocal(pose.position.clone());
-        target.position.copy(localPos);
-      }
-      target.parent.getWorldQuaternion(parentQuat);
-      target.quaternion.copy(parentQuat.invert().multiply(pose.quaternion));
-      return;
-    }
-    if (positionMode === "world-pose") {
-      target.position.copy(pose.position);
-    }
-    target.quaternion.copy(pose.quaternion);
-  };
-  const applySurfaceAnchorPointToTarget = (surface, target, surfacePoint) => {
-    const worldPoint = surface.surfaceToWorld(surfacePoint.clone());
-    if (target.parent) {
-      target.parent.updateWorldMatrix(true, false);
-      target.position.copy(target.parent.worldToLocal(worldPoint));
-      return;
-    }
-    target.position.copy(worldPoint);
-  };
-  const resolveAnchorPoint = (surface, worldPoint, margin) => {
-    const surfacePoint = surface.projectWorldPoint(worldPoint).surfacePoint;
-    const clampedPoint = surface.clampSurfacePoint(surfacePoint, margin);
-    if (surface.shape === "rect" || surface.shape === "polygon") {
-      clampedPoint.y = 0;
-    }
-    return clampedPoint;
-  };
-  const resolveTiltBodyLocalCorners = (plugin, target) => {
-    const attachmentProfile = resolvePluginSurfaceAttachmentProfile(plugin);
-    const corners = resolveSurfaceTiltClampLocalCorners({
-      spatialProfile: plugin.getSpatialProfile(),
-      mountFrame: attachmentProfile.mountFrame
-    });
-    const worldScale = target.getWorldScale(new Vector3());
-    return corners?.map((corner) => corner.multiply(worldScale)) || null;
-  };
-  const resolveTiltMountFrame = (plugin, target) => {
-    const frame = resolvePluginSurfaceAttachmentProfile(plugin).mountFrame;
-    return {
-      ...frame,
-      origin: frame.origin.clone().multiply(target.getWorldScale(new Vector3()))
-    };
-  };
-  const clampAnchorPointByTiltedPose = (plugin, target, surface, anchorPoint, margin) => {
-    if (getPluginSnappingStackPlacementState(plugin)?.support || surface.shape !== "rect") {
-      return null;
-    }
-    const bounds = surface.getBoundsMetadata?.();
-    const surfaceWidth = bounds?.width;
-    const surfaceDepth = bounds?.depth;
-    if (!Number.isFinite(surfaceWidth) || !Number.isFinite(surfaceDepth)) {
-      return null;
-    }
-    const localCorners = resolveTiltBodyLocalCorners(plugin, target);
-    if (!localCorners || localCorners.length === 0) {
-      return null;
-    }
-    const dynamicBoundaryCollisionInfo = resolveDynamicSurfaceFootprintCollisionInfo(plugin, {
-      collisionMesh: plugin.getCollisionMesh?.() || plugin.getMesh?.() || plugin.mesh || target,
-      mountParent: (plugin.getMesh?.() || plugin.mesh || target)?.parent || target.parent || null,
-      surface,
-      referencePosition: new Vector3(anchorPoint.x, 0, anchorPoint.z)
-    });
-    const state = getState(plugin);
-    return clampSurfaceTiltAnchorPointByPose({
-      surface,
-      target,
-      anchorPoint,
-      margin,
-      baseWorldQuaternion: resolveBaseWorldQuaternion(
-        plugin,
-        target,
-        "vertical"
-      ),
-      mountFrame: resolvePoseTargetPositionMode() === "world-pose" && target === plugin.mesh ? resolveTiltMountFrame(plugin, target) : void 0,
-      angle: state.currentAngle,
-      hingeRadius: resolveHingeRadius(plugin, "vertical"),
-      hingeOffsetLocal: resolveHingeOffsetLocal(plugin, "vertical"),
-      rotationAxisLocal: resolveRotationAxisLocal(plugin, "vertical"),
-      travelAxisLocal: resolveTravelAxisLocal(plugin, "vertical"),
-      horizontalAngle: state.currentHorizontalAngle,
-      surfaceBoundaryCollisionInfo: dynamicBoundaryCollisionInfo,
-      surfaceTiltClampLocalCorners: localCorners
-    });
-  };
-  const resolveCanonicalSnapAngle = (plugin, target, surface) => {
-    if (!hasVerticalTilt(plugin)) {
-      return 0;
-    }
-    const attachmentProfile = resolvePluginSurfaceAttachmentProfile(plugin);
-    const surfaceNormal = resolveSurfaceTiltWorldNormal(surface);
-    return resolveSurfaceTiltCanonicalSnapAngle({
-      spatialProfile: plugin.getSpatialProfile(),
-      baseWorldQuaternion: resolveBaseWorldQuaternion(
-        plugin,
-        target,
-        "vertical"
-      ),
-      mountFrame: attachmentProfile.mountFrame,
-      surfaceNormal,
-      rotationAxisLocal: resolveRotationAxisLocal(plugin, "vertical"),
-      minAngle: resolveMinAngle(plugin, "vertical"),
-      maxAngle: resolveMaxAngle(plugin, "vertical"),
-      preferredNormalLocalAxis: void 0
-    });
-  };
-  const getState = (plugin) => {
-    const existing = plugin.behaviorState[SURFACE_ANCHORED_TILT_BEHAVIOR_KEY];
-    if (existing) {
-      return existing;
-    }
-    const created = {
-      dragStartAngle: 0,
-      dragStartHorizontalAngle: 0,
-      dragStartClient: 0,
-      dragStartClientX: 0,
-      dragStartClientY: 0,
-      restAngle: 0,
-      restHorizontalAngle: 0,
-      currentAngle: 0,
-      currentHorizontalAngle: 0,
-      anchorPoint: null,
-      anchorSurfaceId: null,
-      anchorDragStartPoint: null,
-      anchorDragStartAnchorPoint: null,
-      singleGestureAnchorDragActive: false,
-      pendingSingleGestureAnchorDrag: false,
-      api: {
-        getAngle: () => created.currentAngle,
-        getHorizontalAngle: () => created.currentHorizontalAngle,
-        getAnchorPoint: () => created.anchorPoint?.clone() || null,
-        clampAnchorPoint: (anchorPoint, margin = 0) => {
-          if (!shouldApplyTilt(plugin)) {
-            return null;
-          }
-          const target = resolvePrimaryTarget(plugin);
-          const surface = resolveSurface(plugin);
-          if (!target || !surface) {
-            return null;
-          }
-          const normalizedAnchorPoint = anchorPoint.clone();
-          if (surface.shape === "rect" || surface.shape === "polygon") {
-            normalizedAnchorPoint.y = 0;
-          }
-          return clampAnchorPointByTiltedPose(
-            plugin,
-            target,
-            surface,
-            normalizedAnchorPoint,
-            margin
-          ) || surface.clampSurfacePoint(normalizedAnchorPoint, margin);
-        },
-        applyAngle: (angle) => {
-          if (!shouldApplyTilt(plugin)) {
-            return false;
-          }
-          const target = resolveTarget(plugin, "vertical");
-          const surface = resolveSurface(plugin);
-          if (!target || !surface) {
-            return false;
-          }
-          const nextAngle = MathUtils.clamp(
-            angle,
-            resolveMinAngle(plugin, "vertical"),
-            resolveMaxAngle(plugin, "vertical")
-          );
-          const anchorPoint = resolvePluginSurfaceTiltAnchorPoint(plugin, {
-            currentSurface: surface,
-            clampMargin: resolveClampMargin(plugin),
-            fallbackWorldPoint: resolveAnchorReferenceWorldPoint(
-              plugin,
-              target
-            ),
-            preferBehaviorState: false
-          }) || resolveAnchorPoint(
-            surface,
-            resolveAnchorReferenceWorldPoint(plugin, target),
-            resolveClampMargin(plugin)
-          );
-          created.anchorPoint = anchorPoint;
-          created.anchorSurfaceId = surface.id;
-          applyResolvedPoses(
-            plugin,
-            surface,
-            nextAngle,
-            created.currentHorizontalAngle,
-            anchorPoint
-          );
-          return true;
-        },
-        applyHorizontalAngle: (angle) => {
-          if (!shouldApplyTilt(plugin) || !hasHorizontalTilt(plugin)) {
-            return false;
-          }
-          const target = resolveTarget(plugin, "horizontal");
-          const surface = resolveSurface(plugin);
-          if (!target || !surface) {
-            return false;
-          }
-          const nextAngle = MathUtils.clamp(
-            angle,
-            resolveMinAngle(plugin, "horizontal"),
-            resolveMaxAngle(plugin, "horizontal")
-          );
-          const anchorPoint = resolvePluginSurfaceTiltAnchorPoint(plugin, {
-            currentSurface: surface,
-            clampMargin: resolveClampMargin(plugin),
-            fallbackWorldPoint: resolveAnchorReferenceWorldPoint(
-              plugin,
-              target
-            ),
-            preferBehaviorState: false
-          }) || resolveAnchorPoint(
-            surface,
-            resolveAnchorReferenceWorldPoint(plugin, target),
-            resolveClampMargin(plugin)
-          );
-          created.anchorPoint = anchorPoint;
-          created.anchorSurfaceId = surface.id;
-          applyResolvedPoses(
-            plugin,
-            surface,
-            created.currentAngle,
-            nextAngle,
-            anchorPoint
-          );
-          return true;
-        },
-        resolveCanonicalSnapAngle: () => {
-          if (!shouldApplyTilt(plugin)) {
-            return 0;
-          }
-          const target = resolveTarget(plugin, "vertical");
-          const surface = resolveSurface(plugin);
-          if (!target || !surface) {
-            return 0;
-          }
-          return resolveCanonicalSnapAngle(plugin, target, surface);
-        },
-        applyCanonicalSnapPose: () => {
-          if (!shouldApplyTilt(plugin)) {
-            return false;
-          }
-          const target = resolveTarget(plugin, "vertical");
-          const surface = resolveSurface(plugin);
-          if (!target || !surface) {
-            return false;
-          }
-          const nextAngle = resolveCanonicalSnapAngle(plugin, target, surface);
-          const anchorPoint = resolvePluginSurfaceTiltAnchorPoint(plugin, {
-            currentSurface: surface,
-            clampMargin: resolveClampMargin(plugin),
-            fallbackWorldPoint: resolveAnchorReferenceWorldPoint(
-              plugin,
-              target
-            ),
-            preferBehaviorState: false
-          }) || resolveAnchorPoint(
-            surface,
-            resolveAnchorReferenceWorldPoint(plugin, target),
-            resolveClampMargin(plugin)
-          );
-          created.anchorPoint = anchorPoint;
-          created.anchorSurfaceId = surface.id;
-          return applyCanonicalSupportedPose(
-            plugin,
-            surface,
-            nextAngle,
-            0,
-            anchorPoint
-          );
-        },
-        reapplyFromCurrentPlacement: () => {
-          if (!shouldApplyTilt(plugin)) {
-            return false;
-          }
-          if (Math.abs(created.currentAngle) < 1e-6 && Math.abs(created.currentHorizontalAngle) < 1e-6) {
-            return false;
-          }
-          const target = resolvePrimaryTarget(plugin);
-          const surface = resolveSurface(plugin);
-          if (!target || !surface) {
-            return false;
-          }
-          const anchorPoint = resolveAnchorPoint(
-            surface,
-            resolveAnchorReferenceWorldPoint(plugin, target),
-            resolveClampMargin(plugin)
-          );
-          created.anchorPoint = anchorPoint;
-          created.anchorSurfaceId = surface.id;
-          applyResolvedPoses(
-            plugin,
-            surface,
-            created.currentAngle,
-            created.currentHorizontalAngle,
-            anchorPoint
-          );
-          return true;
-        },
-        reapplyFromAnchorPoint: (anchorPoint) => {
-          if (!shouldApplyTilt(plugin)) {
-            return false;
-          }
-          const target = resolvePrimaryTarget(plugin);
-          const surface = resolveSurface(plugin);
-          if (!target || !surface) {
-            return false;
-          }
-          const resolvedAnchorPoint = surface.clampSurfacePoint(
-            anchorPoint.clone(),
-            resolveClampMargin(plugin)
-          );
-          if (surface.shape === "rect" || surface.shape === "polygon") {
-            resolvedAnchorPoint.y = 0;
-          }
-          created.anchorPoint = resolvedAnchorPoint;
-          created.anchorSurfaceId = surface.id;
-          applyResolvedPoses(
-            plugin,
-            surface,
-            created.currentAngle,
-            created.currentHorizontalAngle,
-            resolvedAnchorPoint
-          );
-          return true;
-        },
-        beginAnchorDragFromSurfacePoint: (point) => {
-          if (!shouldApplyTilt(plugin)) {
-            return false;
-          }
-          const target = resolvePrimaryTarget(plugin);
-          const surface = resolveSurface(plugin);
-          if (!target || !surface) {
-            return false;
-          }
-          const anchorPoint = resolvePluginSurfaceTiltAnchorPoint(plugin, {
-            currentSurface: surface,
-            clampMargin: resolveClampMargin(plugin),
-            fallbackWorldPoint: resolveAnchorReferenceWorldPoint(
-              plugin,
-              target
-            )
-          }) || resolveAnchorPoint(
-            surface,
-            resolveAnchorReferenceWorldPoint(plugin, target),
-            resolveClampMargin(plugin)
-          );
-          const startPoint = point.clone();
-          if (surface.shape === "rect" || surface.shape === "polygon") {
-            startPoint.y = 0;
-          }
-          created.anchorDragStartPoint = startPoint;
-          created.anchorDragStartAnchorPoint = anchorPoint.clone();
-          return true;
-        },
-        applyAnchorDragSurfacePoint: (point) => {
-          if (!created.anchorDragStartPoint || !created.anchorDragStartAnchorPoint) {
-            return created.api.beginAnchorDragFromSurfacePoint(point);
-          }
-          const surface = resolveSurface(plugin);
-          if (!surface) {
-            return false;
-          }
-          const currentPoint = point.clone();
-          if (surface.shape === "rect" || surface.shape === "polygon") {
-            currentPoint.y = 0;
-          }
-          const delta = currentPoint.clone().sub(created.anchorDragStartPoint);
-          const nextAnchor = created.anchorDragStartAnchorPoint.clone().add(delta);
-          const didApply = created.api.reapplyFromAnchorPoint(nextAnchor);
-          return didApply;
-        },
-        beginAnchorDragFromWorldPoint: (worldPoint) => {
-          const surface = resolveSurface(plugin);
-          if (!surface) {
-            return false;
-          }
-          return created.api.beginAnchorDragFromSurfacePoint(
-            surface.projectWorldPoint(worldPoint).surfacePoint
-          );
-        },
-        applyAnchorDragWorldPoint: (worldPoint) => {
-          const surface = resolveSurface(plugin);
-          if (!surface) {
-            return false;
-          }
-          return created.api.applyAnchorDragSurfacePoint(
-            surface.projectWorldPoint(worldPoint).surfacePoint
-          );
-        },
-        endAnchorDrag: () => {
-          created.anchorDragStartPoint = null;
-          created.anchorDragStartAnchorPoint = null;
-        }
-      }
-    };
-    plugin.behaviorState[SURFACE_ANCHORED_TILT_BEHAVIOR_KEY] = created;
-    return created;
-  };
-  const resolveStackSupportFrame = (plugin, target, surface, anchorPoint) => {
-    const state = getState(plugin);
-    return resolvePluginSnappingTiltSupportFrame(plugin, {
-      surface,
-      currentWorldPosition: target.getWorldPosition(new Vector3()),
-      baseSurfacePoint: anchorPoint,
-      baseWorldQuaternion: resolveBaseWorldQuaternion(plugin, target, "vertical"),
-      mountFrame: resolveTiltMountFrame(plugin, target),
-      angle: state.currentAngle,
-      horizontalAngle: state.currentHorizontalAngle,
-      hingeRadius: resolveHingeRadius(plugin, "vertical"),
-      hingeOffsetLocal: resolveHingeOffsetLocal(plugin, "vertical"),
-      rotationAxisLocal: resolveRotationAxisLocal(plugin, "vertical"),
-      surfaceTiltClampLocalCorners: resolveTiltBodyLocalCorners(plugin, target) || void 0
-    });
-  };
-  const applyResolvedPose = (plugin, target, surface, channel, angle, horizontalAngle, anchorPoint, updateState = true) => {
-    const state = getState(plugin);
-    const localCorners = resolveTiltBodyLocalCorners(plugin, target) || void 0;
-    const useMountFrame = resolvePoseTargetPositionMode() === "world-pose" && target === plugin.mesh;
-    const horizontalQuaternion = createSurfaceTiltHorizontalQuaternion({
-      surface,
-      surfacePoint: anchorPoint,
-      hasHorizontalTilt: hasHorizontalTilt(plugin),
-      horizontalAngle
-    });
-    const pose = resolveSurfaceHingedTiltPose({
-      surface,
-      currentWorldPosition: target.getWorldPosition(new Vector3()),
-      baseSurfacePoint: anchorPoint,
-      baseWorldQuaternion: resolveBaseWorldQuaternion(plugin, target, channel),
-      mountFrame: useMountFrame ? resolveTiltMountFrame(plugin, target) : void 0,
-      supportFrame: useMountFrame ? resolveStackSupportFrame(plugin, target, surface, anchorPoint) : void 0,
-      angle,
-      hingeRadius: channel === "vertical" ? resolveHingeRadius(plugin, "vertical") : 0,
-      hingeOffsetLocal: channel === "vertical" ? resolveHingeOffsetLocal(plugin, "vertical") : void 0,
-      clampMargin: resolveClampMargin(plugin),
-      rotationAxisLocal: resolveRotationAxisLocal(plugin, channel),
-      travelAxisLocal: resolveTravelAxisLocal(plugin, channel),
-      premultiplyWorldQuaternion: useMountFrame ? void 0 : horizontalQuaternion,
-      horizontalAngle: useMountFrame ? horizontalAngle : void 0,
-      surfaceTiltClampLocalCorners: localCorners
-    });
-    const anchorPlacementTarget = resolveAnchorPlacementTarget(plugin, target);
-    if (anchorPlacementTarget !== target) {
-      applySurfaceAnchorPointToTarget(
-        surface,
-        anchorPlacementTarget,
-        pose.surfacePoint
-      );
-    }
-    if (typeof options.applyPose === "function") {
-      options.applyPose(plugin, pose, target);
-    } else {
-      applyWorldPoseToTarget(target, pose, resolvePoseTargetPositionMode());
-    }
-    if (updateState) {
-      state.currentAngle = angle;
-      state.currentHorizontalAngle = horizontalAngle;
-      state.anchorPoint = pose.surfacePoint.clone();
-      state.anchorSurfaceId = surface.id;
-      if (options.syncAttachmentOnApply === true) {
-        plugin.syncAttachmentPosition();
-      }
-    }
-    return pose;
-  };
-  const applyResolvedPoses = (plugin, surface, angle, horizontalAngle, anchorPoint) => {
-    const state = getState(plugin);
-    const verticalTarget = resolveTarget(plugin, "vertical");
-    const horizontalTarget = resolveTarget(plugin, "horizontal");
-    let firstPose = null;
-    if (verticalTarget) {
-      firstPose = applyResolvedPose(
-        plugin,
-        verticalTarget,
-        surface,
-        "vertical",
-        angle,
-        horizontalTarget === verticalTarget ? horizontalAngle : 0,
-        anchorPoint,
-        false
-      );
-    }
-    if (horizontalTarget && horizontalTarget !== verticalTarget) {
-      firstPose = firstPose || applyResolvedPose(
-        plugin,
-        horizontalTarget,
-        surface,
-        "horizontal",
-        0,
-        horizontalAngle,
-        anchorPoint,
-        false
-      );
-    }
-    state.currentAngle = angle;
-    state.currentHorizontalAngle = horizontalAngle;
-    state.anchorPoint = firstPose?.surfacePoint.clone() || anchorPoint.clone();
-    state.anchorSurfaceId = surface.id;
-    if (options.syncAttachmentOnApply === true) {
-      plugin.syncAttachmentPosition();
-    }
-  };
-  const applyCanonicalSupportedPose = (plugin, surface, angle, horizontalAngle, anchorPoint) => {
-    const state = getState(plugin);
-    const verticalTarget = resolveTarget(plugin, "vertical");
-    const horizontalTarget = resolveTarget(plugin, "horizontal");
-    if (!verticalTarget) {
-      return false;
-    }
-    const useMountFrame = resolvePoseTargetPositionMode() === "world-pose" && verticalTarget === plugin.mesh;
-    const horizontalQuaternion = createSurfaceTiltHorizontalQuaternion({
-      surface,
-      surfacePoint: anchorPoint,
-      hasHorizontalTilt: hasHorizontalTilt(plugin),
-      horizontalAngle
-    });
-    const pose = resolveSurfaceTiltCanonicalSupportedPose({
-      surface,
-      anchorPoint,
-      baseWorldQuaternion: resolveBaseWorldQuaternion(
-        plugin,
-        verticalTarget,
-        "vertical"
-      ),
-      mountFrame: useMountFrame ? resolveTiltMountFrame(plugin, verticalTarget) : void 0,
-      supportFrame: useMountFrame ? resolveStackSupportFrame(plugin, verticalTarget, surface, anchorPoint) : void 0,
-      angle,
-      horizontalAngle: useMountFrame ? horizontalAngle : void 0,
-      rotationAxisLocal: resolveRotationAxisLocal(plugin, "vertical"),
-      travelAxisLocal: resolveTravelAxisLocal(plugin, "vertical"),
-      surfaceTiltClampLocalCorners: resolveTiltBodyLocalCorners(plugin, verticalTarget) || void 0
-    });
-    if (!useMountFrame && horizontalQuaternion) {
-      pose.quaternion.premultiply(horizontalQuaternion);
-    }
-    const anchorPlacementTarget = resolveAnchorPlacementTarget(
-      plugin,
-      verticalTarget
-    );
-    if (anchorPlacementTarget !== verticalTarget) {
-      applySurfaceAnchorPointToTarget(
-        surface,
-        anchorPlacementTarget,
-        pose.surfacePoint
-      );
-    }
-    if (typeof options.applyPose === "function") {
-      options.applyPose(plugin, pose, verticalTarget);
-    } else {
-      applyWorldPoseToTarget(
-        verticalTarget,
-        pose,
-        resolvePoseTargetPositionMode()
-      );
-    }
-    if (horizontalTarget && horizontalTarget !== verticalTarget) {
-      applyResolvedPose(
-        plugin,
-        horizontalTarget,
-        surface,
-        "horizontal",
-        0,
-        horizontalAngle,
-        anchorPoint,
-        false
-      );
-    }
-    state.currentAngle = angle;
-    state.currentHorizontalAngle = horizontalAngle;
-    state.anchorPoint = pose.surfacePoint.clone();
-    state.anchorSurfaceId = surface.id;
-    if (options.syncAttachmentOnApply === true) {
-      plugin.syncAttachmentPosition();
-    }
-    return true;
-  };
-  return {
-    name: "surface-anchored-tilt",
-    setup(plugin) {
-      if (!hasConfiguredTilt()) {
-        return;
-      }
-      const state = getState(plugin);
-      state.restAngle = resolveRestAngle(
-        plugin,
-        "vertical",
-        state.currentAngle
-      );
-      state.restHorizontalAngle = resolveRestAngle(
-        plugin,
-        "horizontal",
-        state.currentHorizontalAngle
-      );
-    },
-    resolveInteractionStartAnchor(event) {
-      const { plugin } = event;
-      const state = getState(plugin);
-      if (!shouldApplyTilt(plugin)) {
-        state.pendingSingleGestureAnchorDrag = false;
-        return null;
-      }
-      const descriptor = options.resolveStartAnchorDescriptor?.(plugin, event) || resolveDefaultAnchorDragDescriptor(event) || null;
-      if (event.interactionAnchorPurpose === "single-drag-start") {
-        state.pendingSingleGestureAnchorDrag = !!descriptor;
-        return descriptor;
-      }
-      if (event.interactionAnchorPurpose === "single-drag-plane") {
-        return descriptor;
-      }
-      state.pendingSingleGestureAnchorDrag = false;
-      return null;
-    },
-    onSingleDown(event) {
-      const { plugin, nativeEvent, point } = event;
-      if (!shouldApplyTilt(plugin)) {
-        return void 0;
-      }
-      const state = getState(plugin);
-      state.api.endAnchorDrag();
-      state.singleGestureAnchorDragActive = false;
-      if (point && (state.pendingSingleGestureAnchorDrag || isDefaultAnchorDragActionButtonEvent(nativeEvent))) {
-        state.pendingSingleGestureAnchorDrag = false;
-        state.singleGestureAnchorDragActive = state.api.beginAnchorDragFromSurfacePoint(point);
-        return void 0;
-      }
-      state.pendingSingleGestureAnchorDrag = false;
-      const target = resolvePrimaryTarget(plugin);
-      const surface = resolveSurface(plugin);
-      const inputAxis = hasVerticalTilt(plugin) ? resolveInputAxis(plugin, "vertical") : resolveInputAxis(plugin, "horizontal");
-      const clientValue = resolveClientValue(inputAxis, nativeEvent);
-      if (!target || !surface || clientValue === null) {
-        return void 0;
-      }
-      state.dragStartAngle = state.currentAngle;
-      state.dragStartHorizontalAngle = state.currentHorizontalAngle;
-      state.dragStartClient = clientValue;
-      state.dragStartClientX = nativeEvent?.clientX ?? clientValue;
-      state.dragStartClientY = nativeEvent?.clientY ?? clientValue;
-      state.restAngle = resolveRestAngle(
-        plugin,
-        "vertical",
-        state.currentAngle
-      );
-      state.restHorizontalAngle = resolveRestAngle(
-        plugin,
-        "horizontal",
-        state.currentHorizontalAngle
-      );
-      if (state.anchorSurfaceId !== surface.id || !state.anchorPoint || Math.abs(state.currentAngle) < 1e-6) {
-        state.anchorPoint = resolvePluginSurfaceTiltAnchorPoint(plugin, {
-          currentSurface: surface,
-          clampMargin: resolveClampMargin(plugin),
-          fallbackWorldPoint: target.getWorldPosition(new Vector3()),
-          preferBehaviorState: false
-        }) || resolveAnchorPoint(
-          surface,
-          target.getWorldPosition(new Vector3()),
-          resolveClampMargin(plugin)
-        );
-        state.anchorSurfaceId = surface.id;
-      }
-      return void 0;
-    },
-    onSingleDrag(event) {
-      const { plugin, nativeEvent, point } = event;
-      if (!shouldApplyTilt(plugin)) {
-        return void 0;
-      }
-      const state = getState(plugin);
-      if (state.singleGestureAnchorDragActive) {
-        if (!point) {
-          return void 0;
-        }
-        return state.api.applyAnchorDragSurfacePoint(point);
-      }
-      const target = resolvePrimaryTarget(plugin);
-      const surface = resolveSurface(plugin);
-      if (!target || !surface || !nativeEvent) {
-        return void 0;
-      }
-      const verticalInputAxis = resolveInputAxis(plugin, "vertical");
-      const verticalClientValue = resolveClientValue(
-        verticalInputAxis,
-        nativeEvent
-      );
-      const horizontalInputAxis = resolveInputAxis(plugin, "horizontal");
-      const horizontalClientValue = resolveClientValue(
-        horizontalInputAxis,
-        nativeEvent
-      );
-      const nextAngle = hasVerticalTilt(plugin) && verticalClientValue !== null ? MathUtils.clamp(
-        state.dragStartAngle + (verticalClientValue - state.dragStartClient) * resolveSensitivity(plugin, "vertical"),
-        resolveMinAngle(plugin, "vertical"),
-        resolveMaxAngle(plugin, "vertical")
-      ) : state.currentAngle;
-      const nextHorizontalAngle = hasHorizontalTilt(plugin) && horizontalClientValue !== null ? MathUtils.clamp(
-        state.dragStartHorizontalAngle + (horizontalClientValue - (horizontalInputAxis === "screen-x" ? state.dragStartClientX : state.dragStartClientY)) * resolveSensitivity(plugin, "horizontal"),
-        resolveMinAngle(plugin, "horizontal"),
-        resolveMaxAngle(plugin, "horizontal")
-      ) : state.currentHorizontalAngle;
-      const anchorPoint = state.anchorSurfaceId === surface.id && state.anchorPoint ? state.anchorPoint.clone() : resolveAnchorPoint(
-        surface,
-        target.getWorldPosition(new Vector3()),
-        resolveClampMargin(plugin)
-      );
-      applyResolvedPoses(
-        plugin,
-        surface,
-        nextAngle,
-        nextHorizontalAngle,
-        anchorPoint
-      );
-      return void 0;
-    },
-    onSingleUp(event) {
-      const { plugin } = event;
-      const state = getState(plugin);
-      if (state.singleGestureAnchorDragActive) {
-        state.api.endAnchorDrag();
-        state.singleGestureAnchorDragActive = false;
-        return void 0;
-      }
-      if (!shouldApplyTilt(plugin) || !shouldRestoreOnRelease(plugin)) {
-        return void 0;
-      }
-      const target = resolvePrimaryTarget(plugin);
-      const surface = resolveSurface(plugin);
-      if (!target || !surface) {
-        return void 0;
-      }
-      const anchorPoint = state.anchorSurfaceId === surface.id && state.anchorPoint ? state.anchorPoint.clone() : resolveAnchorPoint(
-        surface,
-        target.getWorldPosition(new Vector3()),
-        resolveClampMargin(plugin)
-      );
-      applyResolvedPoses(
-        plugin,
-        surface,
-        state.restAngle,
-        hasHorizontalTilt(plugin) ? state.restHorizontalAngle : state.currentHorizontalAngle,
-        anchorPoint
-      );
-      return void 0;
-    }
-  };
 }
 
 // src/components/StarSky/PluginFramework/behaviors/standardCapabilityBehaviorId.ts
@@ -259670,6 +258445,1281 @@ function resolveRotatedLocalBoundsMinY(localBounds, quaternion) {
     }
   });
   return Number.isFinite(minY) ? minY : 0;
+}
+
+// src/components/StarSky/PluginFramework/behaviors/surfaceTiltBehavior.ts
+var SURFACE_ANCHORED_TILT_BEHAVIOR_KEY = "surfaceAnchoredTiltBehavior";
+var DEFAULT_ANCHOR_DRAG_ACTION_BUTTON_ID = "move";
+function resolveDefaultAnchorDragDescriptor(event) {
+  const hitPoint = event.interactionAnchorHitPoint || null;
+  if (!hitPoint) {
+    return null;
+  }
+  let currentObject = event.interactionAnchorHitObject || null;
+  while (currentObject) {
+    if (currentObject.userData.pluginActionButtonId === DEFAULT_ANCHOR_DRAG_ACTION_BUTTON_ID) {
+      return {
+        mode: "world-point",
+        point: hitPoint.clone()
+      };
+    }
+    currentObject = currentObject.parent;
+  }
+  return null;
+}
+function isDefaultAnchorDragActionButtonEvent(event) {
+  const carrier = event;
+  return carrier?.pluginActionButtonId === DEFAULT_ANCHOR_DRAG_ACTION_BUTTON_ID;
+}
+function resolvePluginSurfaceTiltAnchorPoint(plugin, options = {}) {
+  const currentSurface = options.currentSurface || plugin.getCurrentActivitySurface?.() || null;
+  if (!currentSurface) {
+    return null;
+  }
+  const clampMargin = options.clampMargin ?? 0;
+  const normalizeAnchorPoint = (anchorPoint) => {
+    const clampedPoint = currentSurface.clampSurfacePoint(
+      anchorPoint.clone(),
+      clampMargin
+    );
+    if (currentSurface.shape === "rect" || currentSurface.shape === "polygon") {
+      clampedPoint.y = 0;
+    }
+    return clampedPoint;
+  };
+  if (options.preferBehaviorState !== false) {
+    const state = plugin.behaviorState[SURFACE_ANCHORED_TILT_BEHAVIOR_KEY];
+    if (state?.anchorPoint && state.anchorSurfaceId === currentSurface.id) {
+      return normalizeAnchorPoint(state.anchorPoint);
+    }
+  }
+  if (options.preferAttachment !== false && plugin.attachment?.surfaceId === currentSurface.id && plugin.attachment.localPoint) {
+    return normalizeAnchorPoint(plugin.attachment.localPoint);
+  }
+  const fallbackWorldPoint = options.fallbackWorldPoint || plugin.mesh?.getWorldPosition(new Vector3()) || null;
+  if (!fallbackWorldPoint) {
+    return null;
+  }
+  const surfacePoint = currentSurface.projectWorldPoint(fallbackWorldPoint).surfacePoint;
+  return normalizeAnchorPoint(surfacePoint);
+}
+function getSurfaceAnchoredTiltBehaviorApi(plugin) {
+  const state = plugin.behaviorState[SURFACE_ANCHORED_TILT_BEHAVIOR_KEY];
+  return state?.api || null;
+}
+function createSurfaceAnchoredTiltBehavior(options) {
+  const verticalConfig = options.vertical || null;
+  const horizontalConfig = options.horizontal || null;
+  const inferredBaseWorldQuaternions = /* @__PURE__ */ new WeakMap();
+  const hasVerticalTilt = (plugin) => !!resolveTarget(plugin, "vertical");
+  const hasHorizontalTilt = (plugin) => !!resolveTarget(plugin, "horizontal");
+  const hasConfiguredTilt = () => !!verticalConfig?.targetName || !!horizontalConfig?.targetName;
+  const shouldApplyTilt = (plugin) => {
+    return (hasVerticalTilt(plugin) || hasHorizontalTilt(plugin)) && (options.isEnabled?.(plugin) ?? true);
+  };
+  const resolveDynamicValue = (plugin, value) => {
+    return typeof value === "function" ? value(plugin) : value;
+  };
+  const resolveChannelConfig = (channel) => {
+    return channel === "vertical" ? verticalConfig : horizontalConfig;
+  };
+  const resolveTarget = (plugin, channel) => {
+    const config = resolveChannelConfig(channel);
+    if (!config?.targetName) {
+      return null;
+    }
+    return findDescendantByName(plugin.mesh || null, config.targetName);
+  };
+  const resolvePrimaryTarget = (plugin) => {
+    return resolveTarget(plugin, "vertical") || resolveTarget(plugin, "horizontal");
+  };
+  const resolveInputAxis = (plugin, channel) => {
+    return resolveSurfaceTiltInputAxis(
+      {
+        inputAxis: resolveDynamicValue(
+          plugin,
+          resolveChannelConfig(channel)?.inputAxis
+        )
+      },
+      channel
+    );
+  };
+  const resolveSensitivity = (plugin, channel) => {
+    return resolveSurfaceTiltSensitivity(
+      {
+        sensitivity: resolveDynamicValue(
+          plugin,
+          resolveChannelConfig(channel)?.sensitivity
+        )
+      },
+      channel
+    );
+  };
+  const resolveMinAngle = (plugin, channel) => {
+    return resolveSurfaceTiltMinAngle(
+      {
+        minAngle: resolveDynamicValue(
+          plugin,
+          resolveChannelConfig(channel)?.minAngle
+        )
+      },
+      channel
+    );
+  };
+  const resolveMaxAngle = (plugin, channel) => {
+    return resolveSurfaceTiltMaxAngle(
+      {
+        maxAngle: resolveDynamicValue(
+          plugin,
+          resolveChannelConfig(channel)?.maxAngle
+        )
+      },
+      channel
+    );
+  };
+  const resolveRotationAxisLocal = (plugin, channel) => {
+    return resolveSurfaceTiltRotationAxis(
+      {
+        axis: resolveDynamicValue(plugin, resolveChannelConfig(channel)?.axis)
+      },
+      channel
+    );
+  };
+  const resolveTravelAxisLocal = (plugin, channel) => {
+    return resolveSurfaceTiltTravelAxis(
+      {
+        axis: resolveDynamicValue(plugin, resolveChannelConfig(channel)?.axis)
+      },
+      channel
+    );
+  };
+  const shouldRestoreOnRelease = (plugin) => {
+    return shouldRestoreSurfaceTiltOnRelease({
+      vertical: {
+        restoreOnRelease: resolveDynamicValue(
+          plugin,
+          verticalConfig?.restoreOnRelease
+        )
+      },
+      horizontal: {
+        restoreOnRelease: resolveDynamicValue(
+          plugin,
+          horizontalConfig?.restoreOnRelease
+        )
+      }
+    });
+  };
+  const resolveRestAngle = (plugin, channel, fallback) => {
+    return resolveSurfaceTiltRestAngle(
+      {
+        restAngle: resolveDynamicValue(
+          plugin,
+          resolveChannelConfig(channel)?.restAngle
+        )
+      },
+      fallback
+    );
+  };
+  const resolveHingeRadius = (plugin, channel) => {
+    return resolveDynamicValue(plugin, resolveChannelConfig(channel)?.hingeRadius) ?? 0;
+  };
+  const resolveHingeOffsetLocal = (plugin, channel) => {
+    const value = resolveDynamicValue(
+      plugin,
+      resolveChannelConfig(channel)?.hingeOffsetLocal
+    );
+    if (!value || !Number.isFinite(value.x) || !Number.isFinite(value.y) || !Number.isFinite(value.z)) {
+      return void 0;
+    }
+    return new Vector3(value.x, value.y, value.z);
+  };
+  const resolveBaseWorldQuaternion = (plugin, target, channel) => {
+    const baseEuler = resolveDynamicValue(
+      plugin,
+      resolveChannelConfig(channel)?.baseEuler
+    );
+    if (!baseEuler) {
+      const cachedBaseWorldQuaternion = inferredBaseWorldQuaternions.get(target);
+      if (cachedBaseWorldQuaternion) {
+        return cachedBaseWorldQuaternion.clone();
+      }
+      target.updateWorldMatrix(true, false);
+      const inferredBaseWorldQuaternion = target.getWorldQuaternion(
+        new Quaternion()
+      );
+      inferredBaseWorldQuaternions.set(
+        target,
+        inferredBaseWorldQuaternion.clone()
+      );
+      return inferredBaseWorldQuaternion;
+    }
+    const localQuaternion = new Quaternion().setFromEuler(
+      new Euler(baseEuler.x, baseEuler.y, baseEuler.z)
+    );
+    if (!target.parent) {
+      return localQuaternion;
+    }
+    target.parent.updateWorldMatrix(true, false);
+    const parentWorldQuaternion = target.parent.getWorldQuaternion(
+      new Quaternion()
+    );
+    return parentWorldQuaternion.multiply(localQuaternion);
+  };
+  const resolveSurface = (plugin) => {
+    return options.getSurface?.(plugin) || plugin.getCurrentActivitySurface?.() || null;
+  };
+  const resolveClampMargin = (plugin) => {
+    return options.getClampMargin?.(plugin) ?? 0;
+  };
+  const resolveAnchorReferenceWorldPoint = (plugin, target) => {
+    if (options.anchorReferenceTarget === "plugin-root") {
+      return plugin.mesh?.getWorldPosition(new Vector3()) || target.getWorldPosition(new Vector3());
+    }
+    return options.resolveAnchorReferenceWorldPoint?.(plugin, target) || target.getWorldPosition(new Vector3());
+  };
+  const resolveAnchorPlacementTarget = (plugin, target) => {
+    if (options.anchorPlacementTarget === "plugin-root" && plugin.mesh) {
+      return plugin.mesh;
+    }
+    return options.resolveAnchorPlacementTarget?.(plugin, target) || target;
+  };
+  const resolvePoseTargetPositionMode = () => options.poseTargetPositionMode ?? "world-pose";
+  const resolveClientValue = (inputAxis, nativeEvent) => {
+    if (!nativeEvent) {
+      return null;
+    }
+    return inputAxis === "screen-x" ? nativeEvent.clientX : nativeEvent.clientY;
+  };
+  const applyWorldPoseToTarget = (target, pose, positionMode) => {
+    if (target.parent) {
+      const parentQuat = new Quaternion();
+      target.parent.updateWorldMatrix(true, false);
+      if (positionMode === "world-pose") {
+        const localPos = target.parent.worldToLocal(pose.position.clone());
+        target.position.copy(localPos);
+      }
+      target.parent.getWorldQuaternion(parentQuat);
+      target.quaternion.copy(parentQuat.invert().multiply(pose.quaternion));
+      return;
+    }
+    if (positionMode === "world-pose") {
+      target.position.copy(pose.position);
+    }
+    target.quaternion.copy(pose.quaternion);
+  };
+  const applySurfaceAnchorPointToTarget = (surface, target, surfacePoint) => {
+    const worldPoint = surface.surfaceToWorld(surfacePoint.clone());
+    if (target.parent) {
+      target.parent.updateWorldMatrix(true, false);
+      target.position.copy(target.parent.worldToLocal(worldPoint));
+      return;
+    }
+    target.position.copy(worldPoint);
+  };
+  const resolveAnchorPoint = (surface, worldPoint, margin) => {
+    const surfacePoint = surface.projectWorldPoint(worldPoint).surfacePoint;
+    const clampedPoint = surface.clampSurfacePoint(surfacePoint, margin);
+    if (surface.shape === "rect" || surface.shape === "polygon") {
+      clampedPoint.y = 0;
+    }
+    return clampedPoint;
+  };
+  const resolveTiltBodyLocalCorners = (plugin, target) => {
+    const attachmentProfile = resolvePluginSurfaceAttachmentProfile(plugin);
+    const corners = resolveSurfaceTiltClampLocalCorners({
+      spatialProfile: plugin.getSpatialProfile(),
+      mountFrame: attachmentProfile.mountFrame
+    });
+    const worldScale = target.getWorldScale(new Vector3());
+    return corners?.map((corner) => corner.multiply(worldScale)) || null;
+  };
+  const resolveTiltMountFrame = (plugin, target) => {
+    const frame = resolvePluginSurfaceAttachmentProfile(plugin).mountFrame;
+    return {
+      ...frame,
+      origin: frame.origin.clone().multiply(target.getWorldScale(new Vector3()))
+    };
+  };
+  const clampAnchorPointByTiltedPose = (plugin, target, surface, anchorPoint, margin) => {
+    if (getPluginSnappingStackPlacementState(plugin)?.support || surface.shape !== "rect") {
+      return null;
+    }
+    const bounds = surface.getBoundsMetadata?.();
+    const surfaceWidth = bounds?.width;
+    const surfaceDepth = bounds?.depth;
+    if (!Number.isFinite(surfaceWidth) || !Number.isFinite(surfaceDepth)) {
+      return null;
+    }
+    const localCorners = resolveTiltBodyLocalCorners(plugin, target);
+    if (!localCorners || localCorners.length === 0) {
+      return null;
+    }
+    const dynamicBoundaryCollisionInfo = resolveDynamicSurfaceFootprintCollisionInfo(plugin, {
+      collisionMesh: plugin.getCollisionMesh?.() || plugin.getMesh?.() || plugin.mesh || target,
+      mountParent: (plugin.getMesh?.() || plugin.mesh || target)?.parent || target.parent || null,
+      surface,
+      referencePosition: new Vector3(anchorPoint.x, 0, anchorPoint.z)
+    });
+    const state = getState(plugin);
+    return clampSurfaceTiltAnchorPointByPose({
+      surface,
+      target,
+      anchorPoint,
+      margin,
+      baseWorldQuaternion: resolveBaseWorldQuaternion(
+        plugin,
+        target,
+        "vertical"
+      ),
+      mountFrame: resolvePoseTargetPositionMode() === "world-pose" && target === plugin.mesh ? resolveTiltMountFrame(plugin, target) : void 0,
+      angle: state.currentAngle,
+      hingeRadius: resolveHingeRadius(plugin, "vertical"),
+      hingeOffsetLocal: resolveHingeOffsetLocal(plugin, "vertical"),
+      rotationAxisLocal: resolveRotationAxisLocal(plugin, "vertical"),
+      travelAxisLocal: resolveTravelAxisLocal(plugin, "vertical"),
+      horizontalAngle: state.currentHorizontalAngle,
+      surfaceBoundaryCollisionInfo: dynamicBoundaryCollisionInfo,
+      surfaceTiltClampLocalCorners: localCorners
+    });
+  };
+  const resolveCanonicalSnapAngle = (plugin, target, surface) => {
+    if (!hasVerticalTilt(plugin)) {
+      return 0;
+    }
+    const attachmentProfile = resolvePluginSurfaceAttachmentProfile(plugin);
+    const surfaceNormal = resolveSurfaceTiltWorldNormal(surface);
+    return resolveSurfaceTiltCanonicalSnapAngle({
+      spatialProfile: plugin.getSpatialProfile(),
+      baseWorldQuaternion: resolveBaseWorldQuaternion(
+        plugin,
+        target,
+        "vertical"
+      ),
+      mountFrame: attachmentProfile.mountFrame,
+      surfaceNormal,
+      rotationAxisLocal: resolveRotationAxisLocal(plugin, "vertical"),
+      minAngle: resolveMinAngle(plugin, "vertical"),
+      maxAngle: resolveMaxAngle(plugin, "vertical"),
+      preferredNormalLocalAxis: void 0
+    });
+  };
+  const getState = (plugin) => {
+    const existing = plugin.behaviorState[SURFACE_ANCHORED_TILT_BEHAVIOR_KEY];
+    if (existing) {
+      return existing;
+    }
+    const surface = resolveSurface(plugin);
+    const root = plugin.mesh;
+    const separateRoot = root && resolvePrimaryTarget(plugin) !== root && !hasHorizontalTilt(plugin);
+    const initialHorizontalAngle = separateRoot && surface ? resolveSurfaceTiltHorizontalAngleFromPose(
+      surface,
+      surface.projectWorldPoint(root.getWorldPosition(new Vector3())).surfacePoint,
+      resolveTiltMountFrame(plugin, root),
+      root.getWorldQuaternion(new Quaternion())
+    ) : 0;
+    const created = {
+      dragStartAngle: 0,
+      dragStartHorizontalAngle: 0,
+      dragStartClient: 0,
+      dragStartClientX: 0,
+      dragStartClientY: 0,
+      restAngle: 0,
+      restHorizontalAngle: 0,
+      currentAngle: 0,
+      currentHorizontalAngle: options.initialHorizontalAngle ?? initialHorizontalAngle,
+      anchorPoint: null,
+      anchorSurfaceId: null,
+      anchorDragStartPoint: null,
+      anchorDragStartAnchorPoint: null,
+      singleGestureAnchorDragActive: false,
+      pendingSingleGestureAnchorDrag: false,
+      api: {
+        getAngle: () => created.currentAngle,
+        getHorizontalAngle: () => created.currentHorizontalAngle,
+        getAnchorPoint: () => created.anchorPoint?.clone() || null,
+        clampAnchorPoint: (anchorPoint, margin = 0) => {
+          if (!shouldApplyTilt(plugin)) {
+            return null;
+          }
+          const target = resolvePrimaryTarget(plugin);
+          const surface2 = resolveSurface(plugin);
+          if (!target || !surface2) {
+            return null;
+          }
+          const normalizedAnchorPoint = anchorPoint.clone();
+          if (surface2.shape === "rect" || surface2.shape === "polygon") {
+            normalizedAnchorPoint.y = 0;
+          }
+          return clampAnchorPointByTiltedPose(
+            plugin,
+            target,
+            surface2,
+            normalizedAnchorPoint,
+            margin
+          ) || surface2.clampSurfacePoint(normalizedAnchorPoint, margin);
+        },
+        applyAngle: (angle) => {
+          if (!shouldApplyTilt(plugin)) {
+            return false;
+          }
+          const target = resolveTarget(plugin, "vertical");
+          const surface2 = resolveSurface(plugin);
+          if (!target || !surface2) {
+            return false;
+          }
+          const nextAngle = MathUtils.clamp(
+            angle,
+            resolveMinAngle(plugin, "vertical"),
+            resolveMaxAngle(plugin, "vertical")
+          );
+          const anchorPoint = resolvePluginSurfaceTiltAnchorPoint(plugin, {
+            currentSurface: surface2,
+            clampMargin: resolveClampMargin(plugin),
+            fallbackWorldPoint: resolveAnchorReferenceWorldPoint(
+              plugin,
+              target
+            ),
+            preferBehaviorState: false
+          }) || resolveAnchorPoint(
+            surface2,
+            resolveAnchorReferenceWorldPoint(plugin, target),
+            resolveClampMargin(plugin)
+          );
+          created.anchorPoint = anchorPoint;
+          created.anchorSurfaceId = surface2.id;
+          applyResolvedPoses(
+            plugin,
+            surface2,
+            nextAngle,
+            created.currentHorizontalAngle,
+            anchorPoint
+          );
+          return true;
+        },
+        applyHorizontalAngle: (angle) => {
+          if (!Number.isFinite(angle)) return false;
+          const target = resolveTarget(plugin, "horizontal") || plugin.mesh || resolvePrimaryTarget(plugin);
+          const surface2 = resolveSurface(plugin);
+          if (!target || !surface2) {
+            return false;
+          }
+          const nextAngle = angle;
+          const anchorPoint = resolvePluginSurfaceTiltAnchorPoint(plugin, {
+            currentSurface: surface2,
+            clampMargin: resolveClampMargin(plugin),
+            fallbackWorldPoint: resolveAnchorReferenceWorldPoint(
+              plugin,
+              target
+            ),
+            preferBehaviorState: false
+          }) || resolveAnchorPoint(
+            surface2,
+            resolveAnchorReferenceWorldPoint(plugin, target),
+            resolveClampMargin(plugin)
+          );
+          created.anchorPoint = anchorPoint;
+          created.anchorSurfaceId = surface2.id;
+          applyResolvedPoses(
+            plugin,
+            surface2,
+            created.currentAngle,
+            nextAngle,
+            anchorPoint
+          );
+          return true;
+        },
+        resolveCanonicalSnapAngle: () => {
+          if (!shouldApplyTilt(plugin)) {
+            return 0;
+          }
+          const target = resolveTarget(plugin, "vertical");
+          const surface2 = resolveSurface(plugin);
+          if (!target || !surface2) {
+            return 0;
+          }
+          return resolveCanonicalSnapAngle(plugin, target, surface2);
+        },
+        applyCanonicalSnapPose: () => {
+          if (!shouldApplyTilt(plugin)) {
+            return false;
+          }
+          const target = resolveTarget(plugin, "vertical");
+          const surface2 = resolveSurface(plugin);
+          if (!target || !surface2) {
+            return false;
+          }
+          const nextAngle = resolveCanonicalSnapAngle(plugin, target, surface2);
+          const anchorPoint = resolvePluginSurfaceTiltAnchorPoint(plugin, {
+            currentSurface: surface2,
+            clampMargin: resolveClampMargin(plugin),
+            fallbackWorldPoint: resolveAnchorReferenceWorldPoint(
+              plugin,
+              target
+            ),
+            preferBehaviorState: false
+          }) || resolveAnchorPoint(
+            surface2,
+            resolveAnchorReferenceWorldPoint(plugin, target),
+            resolveClampMargin(plugin)
+          );
+          created.anchorPoint = anchorPoint;
+          created.anchorSurfaceId = surface2.id;
+          return applyCanonicalSupportedPose(
+            plugin,
+            surface2,
+            nextAngle,
+            0,
+            anchorPoint
+          );
+        },
+        reapplyFromCurrentPlacement: () => {
+          if (!shouldApplyTilt(plugin)) {
+            return false;
+          }
+          if (Math.abs(created.currentAngle) < 1e-6 && Math.abs(created.currentHorizontalAngle) < 1e-6) {
+            return false;
+          }
+          const target = resolvePrimaryTarget(plugin);
+          const surface2 = resolveSurface(plugin);
+          if (!target || !surface2) {
+            return false;
+          }
+          const anchorPoint = resolveAnchorPoint(
+            surface2,
+            resolveAnchorReferenceWorldPoint(plugin, target),
+            resolveClampMargin(plugin)
+          );
+          created.anchorPoint = anchorPoint;
+          created.anchorSurfaceId = surface2.id;
+          applyResolvedPoses(
+            plugin,
+            surface2,
+            created.currentAngle,
+            created.currentHorizontalAngle,
+            anchorPoint
+          );
+          return true;
+        },
+        reapplyFromAnchorPoint: (anchorPoint) => {
+          if (!shouldApplyTilt(plugin)) {
+            return false;
+          }
+          const target = resolvePrimaryTarget(plugin);
+          const surface2 = resolveSurface(plugin);
+          if (!target || !surface2) {
+            return false;
+          }
+          const resolvedAnchorPoint = surface2.clampSurfacePoint(
+            anchorPoint.clone(),
+            resolveClampMargin(plugin)
+          );
+          if (surface2.shape === "rect" || surface2.shape === "polygon") {
+            resolvedAnchorPoint.y = 0;
+          }
+          created.anchorPoint = resolvedAnchorPoint;
+          created.anchorSurfaceId = surface2.id;
+          applyResolvedPoses(
+            plugin,
+            surface2,
+            created.currentAngle,
+            created.currentHorizontalAngle,
+            resolvedAnchorPoint
+          );
+          return true;
+        },
+        beginAnchorDragFromSurfacePoint: (point) => {
+          if (!shouldApplyTilt(plugin)) {
+            return false;
+          }
+          const target = resolvePrimaryTarget(plugin);
+          const surface2 = resolveSurface(plugin);
+          if (!target || !surface2) {
+            return false;
+          }
+          const anchorPoint = resolvePluginSurfaceTiltAnchorPoint(plugin, {
+            currentSurface: surface2,
+            clampMargin: resolveClampMargin(plugin),
+            fallbackWorldPoint: resolveAnchorReferenceWorldPoint(
+              plugin,
+              target
+            )
+          }) || resolveAnchorPoint(
+            surface2,
+            resolveAnchorReferenceWorldPoint(plugin, target),
+            resolveClampMargin(plugin)
+          );
+          const startPoint = point.clone();
+          if (surface2.shape === "rect" || surface2.shape === "polygon") {
+            startPoint.y = 0;
+          }
+          created.anchorDragStartPoint = startPoint;
+          created.anchorDragStartAnchorPoint = anchorPoint.clone();
+          return true;
+        },
+        applyAnchorDragSurfacePoint: (point) => {
+          if (!created.anchorDragStartPoint || !created.anchorDragStartAnchorPoint) {
+            return created.api.beginAnchorDragFromSurfacePoint(point);
+          }
+          const surface2 = resolveSurface(plugin);
+          if (!surface2) {
+            return false;
+          }
+          const currentPoint = point.clone();
+          if (surface2.shape === "rect" || surface2.shape === "polygon") {
+            currentPoint.y = 0;
+          }
+          const delta = currentPoint.clone().sub(created.anchorDragStartPoint);
+          const nextAnchor = created.anchorDragStartAnchorPoint.clone().add(delta);
+          const didApply = created.api.reapplyFromAnchorPoint(nextAnchor);
+          return didApply;
+        },
+        beginAnchorDragFromWorldPoint: (worldPoint) => {
+          const surface2 = resolveSurface(plugin);
+          if (!surface2) {
+            return false;
+          }
+          return created.api.beginAnchorDragFromSurfacePoint(
+            surface2.projectWorldPoint(worldPoint).surfacePoint
+          );
+        },
+        applyAnchorDragWorldPoint: (worldPoint) => {
+          const surface2 = resolveSurface(plugin);
+          if (!surface2) {
+            return false;
+          }
+          return created.api.applyAnchorDragSurfacePoint(
+            surface2.projectWorldPoint(worldPoint).surfacePoint
+          );
+        },
+        endAnchorDrag: () => {
+          created.anchorDragStartPoint = null;
+          created.anchorDragStartAnchorPoint = null;
+        }
+      }
+    };
+    plugin.behaviorState[SURFACE_ANCHORED_TILT_BEHAVIOR_KEY] = created;
+    return created;
+  };
+  const resolveStackSupportFrame = (plugin, target, surface, anchorPoint) => {
+    const state = getState(plugin);
+    return resolvePluginSnappingTiltSupportFrame(plugin, {
+      surface,
+      currentWorldPosition: target.getWorldPosition(new Vector3()),
+      baseSurfacePoint: anchorPoint,
+      baseWorldQuaternion: resolveBaseWorldQuaternion(plugin, target, "vertical"),
+      mountFrame: resolveTiltMountFrame(plugin, target),
+      angle: state.currentAngle,
+      horizontalAngle: state.currentHorizontalAngle,
+      hingeRadius: resolveHingeRadius(plugin, "vertical"),
+      hingeOffsetLocal: resolveHingeOffsetLocal(plugin, "vertical"),
+      rotationAxisLocal: resolveRotationAxisLocal(plugin, "vertical"),
+      surfaceTiltClampLocalCorners: resolveTiltBodyLocalCorners(plugin, target) || void 0
+    });
+  };
+  const applyResolvedPose = (plugin, target, surface, channel, angle, horizontalAngle, anchorPoint, updateState = true) => {
+    const state = getState(plugin);
+    const localCorners = resolveTiltBodyLocalCorners(plugin, target) || void 0;
+    const menuRoot = channel === "horizontal" && target === plugin.mesh && !hasHorizontalTilt(plugin);
+    const useMountFrame = target === plugin.mesh && (menuRoot || resolvePoseTargetPositionMode() === "world-pose");
+    const horizontalQuaternion = createSurfaceTiltHorizontalQuaternion({
+      surface,
+      surfacePoint: anchorPoint,
+      hasHorizontalTilt: hasHorizontalTilt(plugin) || Math.abs(horizontalAngle) > 1e-10,
+      horizontalAngle
+    });
+    const pose = resolveSurfaceHingedTiltPose({
+      surface,
+      currentWorldPosition: target.getWorldPosition(new Vector3()),
+      baseSurfacePoint: anchorPoint,
+      baseWorldQuaternion: resolveBaseWorldQuaternion(plugin, target, channel),
+      mountFrame: useMountFrame ? resolveTiltMountFrame(plugin, target) : void 0,
+      supportFrame: useMountFrame ? resolveStackSupportFrame(plugin, target, surface, anchorPoint) : void 0,
+      angle,
+      hingeRadius: channel === "vertical" ? resolveHingeRadius(plugin, "vertical") : 0,
+      hingeOffsetLocal: channel === "vertical" ? resolveHingeOffsetLocal(plugin, "vertical") : void 0,
+      clampMargin: resolveClampMargin(plugin),
+      rotationAxisLocal: resolveRotationAxisLocal(plugin, channel),
+      travelAxisLocal: resolveTravelAxisLocal(plugin, channel),
+      premultiplyWorldQuaternion: useMountFrame ? void 0 : horizontalQuaternion,
+      horizontalAngle: useMountFrame ? horizontalAngle : void 0,
+      surfaceTiltClampLocalCorners: localCorners
+    });
+    const anchorPlacementTarget = resolveAnchorPlacementTarget(plugin, target);
+    if (anchorPlacementTarget !== target) {
+      applySurfaceAnchorPointToTarget(
+        surface,
+        anchorPlacementTarget,
+        pose.surfacePoint
+      );
+    }
+    if (typeof options.applyPose === "function") {
+      options.applyPose(plugin, pose, target);
+    } else {
+      applyWorldPoseToTarget(
+        target,
+        pose,
+        menuRoot ? "world-pose" : resolvePoseTargetPositionMode()
+      );
+    }
+    if (updateState) {
+      state.currentAngle = angle;
+      state.currentHorizontalAngle = horizontalAngle;
+      state.anchorPoint = pose.surfacePoint.clone();
+      state.anchorSurfaceId = surface.id;
+      if (options.syncAttachmentOnApply === true) {
+        plugin.syncAttachmentPosition();
+      }
+    }
+    return pose;
+  };
+  const applyResolvedPoses = (plugin, surface, angle, horizontalAngle, anchorPoint) => {
+    const state = getState(plugin);
+    const verticalTarget = resolveTarget(plugin, "vertical");
+    const horizontalTarget = resolveTarget(plugin, "horizontal") || plugin.mesh || verticalTarget;
+    let firstPose = null;
+    if (verticalTarget) {
+      firstPose = applyResolvedPose(
+        plugin,
+        verticalTarget,
+        surface,
+        "vertical",
+        angle,
+        horizontalTarget === verticalTarget ? horizontalAngle : 0,
+        anchorPoint,
+        false
+      );
+    }
+    if (horizontalTarget && horizontalTarget !== verticalTarget) {
+      const horizontalPose = applyResolvedPose(
+        plugin,
+        horizontalTarget,
+        surface,
+        "horizontal",
+        0,
+        horizontalAngle,
+        anchorPoint,
+        false
+      );
+      firstPose ||= horizontalPose;
+    }
+    state.currentAngle = angle;
+    state.currentHorizontalAngle = horizontalAngle;
+    state.anchorPoint = firstPose?.surfacePoint.clone() || anchorPoint.clone();
+    state.anchorSurfaceId = surface.id;
+    if (options.syncAttachmentOnApply === true) {
+      plugin.syncAttachmentPosition();
+    }
+  };
+  const applyCanonicalSupportedPose = (plugin, surface, angle, horizontalAngle, anchorPoint) => {
+    const state = getState(plugin);
+    const verticalTarget = resolveTarget(plugin, "vertical");
+    const horizontalTarget = resolveTarget(plugin, "horizontal");
+    if (!verticalTarget) {
+      return false;
+    }
+    const useMountFrame = resolvePoseTargetPositionMode() === "world-pose" && verticalTarget === plugin.mesh;
+    const horizontalQuaternion = createSurfaceTiltHorizontalQuaternion({
+      surface,
+      surfacePoint: anchorPoint,
+      hasHorizontalTilt: hasHorizontalTilt(plugin) || Math.abs(horizontalAngle) > 1e-10,
+      horizontalAngle
+    });
+    const pose = resolveSurfaceTiltCanonicalSupportedPose({
+      surface,
+      anchorPoint,
+      baseWorldQuaternion: resolveBaseWorldQuaternion(
+        plugin,
+        verticalTarget,
+        "vertical"
+      ),
+      mountFrame: useMountFrame ? resolveTiltMountFrame(plugin, verticalTarget) : void 0,
+      supportFrame: useMountFrame ? resolveStackSupportFrame(plugin, verticalTarget, surface, anchorPoint) : void 0,
+      angle,
+      horizontalAngle: useMountFrame ? horizontalAngle : void 0,
+      rotationAxisLocal: resolveRotationAxisLocal(plugin, "vertical"),
+      travelAxisLocal: resolveTravelAxisLocal(plugin, "vertical"),
+      surfaceTiltClampLocalCorners: resolveTiltBodyLocalCorners(plugin, verticalTarget) || void 0
+    });
+    if (!useMountFrame && horizontalQuaternion) {
+      pose.quaternion.premultiply(horizontalQuaternion);
+    }
+    const anchorPlacementTarget = resolveAnchorPlacementTarget(
+      plugin,
+      verticalTarget
+    );
+    if (anchorPlacementTarget !== verticalTarget) {
+      applySurfaceAnchorPointToTarget(
+        surface,
+        anchorPlacementTarget,
+        pose.surfacePoint
+      );
+    }
+    if (typeof options.applyPose === "function") {
+      options.applyPose(plugin, pose, verticalTarget);
+    } else {
+      applyWorldPoseToTarget(
+        verticalTarget,
+        pose,
+        resolvePoseTargetPositionMode()
+      );
+    }
+    if (horizontalTarget && horizontalTarget !== verticalTarget) {
+      applyResolvedPose(
+        plugin,
+        horizontalTarget,
+        surface,
+        "horizontal",
+        0,
+        horizontalAngle,
+        anchorPoint,
+        false
+      );
+    }
+    state.currentAngle = angle;
+    state.currentHorizontalAngle = horizontalAngle;
+    state.anchorPoint = pose.surfacePoint.clone();
+    state.anchorSurfaceId = surface.id;
+    if (options.syncAttachmentOnApply === true) {
+      plugin.syncAttachmentPosition();
+    }
+    return true;
+  };
+  return {
+    name: "surface-anchored-tilt",
+    setup(plugin) {
+      if (!hasConfiguredTilt()) {
+        return;
+      }
+      const state = getState(plugin);
+      state.restAngle = resolveRestAngle(
+        plugin,
+        "vertical",
+        state.currentAngle
+      );
+      state.restHorizontalAngle = resolveRestAngle(
+        plugin,
+        "horizontal",
+        state.currentHorizontalAngle
+      );
+    },
+    resolveInteractionStartAnchor(event) {
+      const { plugin } = event;
+      const state = getState(plugin);
+      if (options.pointerEnabled === false || !shouldApplyTilt(plugin)) {
+        state.pendingSingleGestureAnchorDrag = false;
+        return null;
+      }
+      const descriptor = options.resolveStartAnchorDescriptor?.(plugin, event) || resolveDefaultAnchorDragDescriptor(event) || null;
+      if (event.interactionAnchorPurpose === "single-drag-start") {
+        state.pendingSingleGestureAnchorDrag = !!descriptor;
+        return descriptor;
+      }
+      if (event.interactionAnchorPurpose === "single-drag-plane") {
+        return descriptor;
+      }
+      state.pendingSingleGestureAnchorDrag = false;
+      return null;
+    },
+    onSingleDown(event) {
+      const { plugin, nativeEvent, point } = event;
+      if (options.pointerEnabled === false || !shouldApplyTilt(plugin)) {
+        return void 0;
+      }
+      const state = getState(plugin);
+      state.api.endAnchorDrag();
+      state.singleGestureAnchorDragActive = false;
+      if (point && (state.pendingSingleGestureAnchorDrag || isDefaultAnchorDragActionButtonEvent(nativeEvent))) {
+        state.pendingSingleGestureAnchorDrag = false;
+        state.singleGestureAnchorDragActive = state.api.beginAnchorDragFromSurfacePoint(point);
+        return void 0;
+      }
+      state.pendingSingleGestureAnchorDrag = false;
+      const target = resolvePrimaryTarget(plugin);
+      const surface = resolveSurface(plugin);
+      const inputAxis = hasVerticalTilt(plugin) ? resolveInputAxis(plugin, "vertical") : resolveInputAxis(plugin, "horizontal");
+      const clientValue = resolveClientValue(inputAxis, nativeEvent);
+      if (!target || !surface || clientValue === null) {
+        return void 0;
+      }
+      state.dragStartAngle = state.currentAngle;
+      state.dragStartHorizontalAngle = state.currentHorizontalAngle;
+      state.dragStartClient = clientValue;
+      state.dragStartClientX = nativeEvent?.clientX ?? clientValue;
+      state.dragStartClientY = nativeEvent?.clientY ?? clientValue;
+      state.restAngle = resolveRestAngle(
+        plugin,
+        "vertical",
+        state.currentAngle
+      );
+      state.restHorizontalAngle = resolveRestAngle(
+        plugin,
+        "horizontal",
+        state.currentHorizontalAngle
+      );
+      if (state.anchorSurfaceId !== surface.id || !state.anchorPoint || Math.abs(state.currentAngle) < 1e-6) {
+        state.anchorPoint = resolvePluginSurfaceTiltAnchorPoint(plugin, {
+          currentSurface: surface,
+          clampMargin: resolveClampMargin(plugin),
+          fallbackWorldPoint: target.getWorldPosition(new Vector3()),
+          preferBehaviorState: false
+        }) || resolveAnchorPoint(
+          surface,
+          target.getWorldPosition(new Vector3()),
+          resolveClampMargin(plugin)
+        );
+        state.anchorSurfaceId = surface.id;
+      }
+      return void 0;
+    },
+    onSingleDrag(event) {
+      const { plugin, nativeEvent, point } = event;
+      if (options.pointerEnabled === false || !shouldApplyTilt(plugin)) {
+        return void 0;
+      }
+      const state = getState(plugin);
+      if (state.singleGestureAnchorDragActive) {
+        if (!point) {
+          return void 0;
+        }
+        return state.api.applyAnchorDragSurfacePoint(point);
+      }
+      const target = resolvePrimaryTarget(plugin);
+      const surface = resolveSurface(plugin);
+      if (!target || !surface || !nativeEvent) {
+        return void 0;
+      }
+      const verticalInputAxis = resolveInputAxis(plugin, "vertical");
+      const verticalClientValue = resolveClientValue(
+        verticalInputAxis,
+        nativeEvent
+      );
+      const horizontalInputAxis = resolveInputAxis(plugin, "horizontal");
+      const horizontalClientValue = resolveClientValue(
+        horizontalInputAxis,
+        nativeEvent
+      );
+      const nextAngle = hasVerticalTilt(plugin) && verticalClientValue !== null ? MathUtils.clamp(
+        state.dragStartAngle + (verticalClientValue - state.dragStartClient) * resolveSensitivity(plugin, "vertical"),
+        resolveMinAngle(plugin, "vertical"),
+        resolveMaxAngle(plugin, "vertical")
+      ) : state.currentAngle;
+      const nextHorizontalAngle = hasHorizontalTilt(plugin) && horizontalClientValue !== null ? MathUtils.clamp(
+        state.dragStartHorizontalAngle + (horizontalClientValue - (horizontalInputAxis === "screen-x" ? state.dragStartClientX : state.dragStartClientY)) * resolveSensitivity(plugin, "horizontal"),
+        Math.min(state.dragStartHorizontalAngle, resolveMinAngle(plugin, "horizontal")),
+        Math.max(state.dragStartHorizontalAngle, resolveMaxAngle(plugin, "horizontal"))
+      ) : state.currentHorizontalAngle;
+      const anchorPoint = state.anchorSurfaceId === surface.id && state.anchorPoint ? state.anchorPoint.clone() : resolveAnchorPoint(
+        surface,
+        target.getWorldPosition(new Vector3()),
+        resolveClampMargin(plugin)
+      );
+      applyResolvedPoses(
+        plugin,
+        surface,
+        nextAngle,
+        nextHorizontalAngle,
+        anchorPoint
+      );
+      return void 0;
+    },
+    onSingleUp(event) {
+      const { plugin } = event;
+      const state = getState(plugin);
+      if (state.singleGestureAnchorDragActive) {
+        state.api.endAnchorDrag();
+        state.singleGestureAnchorDragActive = false;
+        return void 0;
+      }
+      if (options.pointerEnabled === false || !shouldApplyTilt(plugin) || !shouldRestoreOnRelease(plugin)) {
+        return void 0;
+      }
+      const target = resolvePrimaryTarget(plugin);
+      const surface = resolveSurface(plugin);
+      if (!target || !surface) {
+        return void 0;
+      }
+      const anchorPoint = state.anchorSurfaceId === surface.id && state.anchorPoint ? state.anchorPoint.clone() : resolveAnchorPoint(
+        surface,
+        target.getWorldPosition(new Vector3()),
+        resolveClampMargin(plugin)
+      );
+      applyResolvedPoses(
+        plugin,
+        surface,
+        state.restAngle,
+        hasHorizontalTilt(plugin) ? state.restHorizontalAngle : state.currentHorizontalAngle,
+        anchorPoint
+      );
+      return void 0;
+    }
+  };
+}
+
+// src/components/StarSky/PluginFramework/persistence.ts
+var DEFAULT_PERSISTENCE_MAX_DEPTH = 12;
+function roundPersistenceNumber(value) {
+  return Math.round(value * 1e4) / 1e4;
+}
+function getPluginPersistenceStorageKey(pluginId) {
+  return `plugin:${pluginId}`;
+}
+function normalizePersistenceValue(value, depth, maxDepth, seen) {
+  if (depth > maxDepth) {
+    throw new Error(`Persistence state exceeds max depth ${maxDepth}.`);
+  }
+  if (typeof value === "number") {
+    return Number.isFinite(value) ? roundPersistenceNumber(value) : null;
+  }
+  if (value === null || typeof value === "string" || typeof value === "boolean") {
+    return value;
+  }
+  if (value === void 0 || typeof value === "function" || typeof value === "symbol" || typeof value === "bigint") {
+    return void 0;
+  }
+  if (Array.isArray(value)) {
+    if (seen.has(value)) {
+      throw new Error("Persistence state contains circular reference.");
+    }
+    seen.add(value);
+    const normalizedArray = value.map((item) => {
+      const normalizedItem = normalizePersistenceValue(
+        item,
+        depth + 1,
+        maxDepth,
+        seen
+      );
+      return normalizedItem === void 0 ? null : normalizedItem;
+    });
+    seen.delete(value);
+    return normalizedArray;
+  }
+  if (typeof value === "object") {
+    if (seen.has(value)) {
+      throw new Error("Persistence state contains circular reference.");
+    }
+    seen.add(value);
+    const normalizedRecord = {};
+    Object.entries(value).forEach(([key, item]) => {
+      const normalizedItem = normalizePersistenceValue(
+        item,
+        depth + 1,
+        maxDepth,
+        seen
+      );
+      if (normalizedItem !== void 0) {
+        normalizedRecord[key] = normalizedItem;
+      }
+    });
+    seen.delete(value);
+    return normalizedRecord;
+  }
+  return void 0;
+}
+function stringifyPersistenceState(value, options = {}) {
+  const maxDepth = options.maxDepth ?? DEFAULT_PERSISTENCE_MAX_DEPTH;
+  const normalized = normalizePersistenceValue(
+    value,
+    0,
+    maxDepth,
+    /* @__PURE__ */ new WeakSet()
+  );
+  const result = JSON.stringify(normalized);
+  if (typeof result !== "string") {
+    throw new Error("Persistence state cannot be serialized.");
+  }
+  return result;
+}
+function parsePersistenceState(raw, guard) {
+  const parsed = JSON.parse(raw);
+  if (guard && !guard(parsed)) {
+    return null;
+  }
+  return parsed;
+}
+function serializeObjectPosePayload(object, options = {}) {
+  const positionMode = options.position ?? "xyz";
+  const rotationMode = options.rotation ?? "quaternion";
+  const payload = {};
+  if (positionMode === "xz") {
+    payload.p = [object.position.x, object.position.z];
+  } else if (positionMode === "xyz") {
+    payload.p = [object.position.x, object.position.y, object.position.z];
+  }
+  if (rotationMode === "quaternion") {
+    payload.r = [
+      object.quaternion.x,
+      object.quaternion.y,
+      object.quaternion.z,
+      object.quaternion.w
+    ];
+  }
+  return payload;
+}
+function parseCompactPoint(value) {
+  if (!Array.isArray(value)) {
+    return null;
+  }
+  if (value.length === 2) {
+    const [x, z] = value;
+    if (typeof x !== "number" || typeof z !== "number") {
+      return null;
+    }
+    if (!Number.isFinite(x) || !Number.isFinite(z)) {
+      return null;
+    }
+    return {
+      point: new Vector3(x, 0, z),
+      dimensions: 2
+    };
+  }
+  if (value.length === 3) {
+    const [x, y, z] = value;
+    if (typeof x !== "number" || typeof y !== "number" || typeof z !== "number") {
+      return null;
+    }
+    if (!Number.isFinite(x) || !Number.isFinite(y) || !Number.isFinite(z)) {
+      return null;
+    }
+    return {
+      point: new Vector3(x, y, z),
+      dimensions: 3
+    };
+  }
+  return null;
+}
+function parseCompactRotation(value) {
+  if (!Array.isArray(value) || value.length !== 4) {
+    return null;
+  }
+  const [x, y, z, w] = value;
+  if (typeof x !== "number" || typeof y !== "number" || typeof z !== "number" || typeof w !== "number") {
+    return null;
+  }
+  if (!Number.isFinite(x) || !Number.isFinite(y) || !Number.isFinite(z) || !Number.isFinite(w)) {
+    return null;
+  }
+  return new Quaternion(x, y, z, w);
+}
+function parseCompactTilt(value) {
+  if (!Array.isArray(value) || value.length !== 2) {
+    return null;
+  }
+  const [angle, horizontalAngle] = value;
+  if (typeof angle !== "number" || typeof horizontalAngle !== "number" || !Number.isFinite(angle) || !Number.isFinite(horizontalAngle)) {
+    return null;
+  }
+  return { angle, horizontalAngle };
+}
+function isCompactPluginFacePersistencePayload(value) {
+  return !!value && typeof value === "object" && (value.w === void 0 || value.w === 0 || value.w === 1);
+}
+function parsePluginPersistencePayload(payload) {
+  if (!payload || typeof payload !== "object") {
+    return null;
+  }
+  const record = payload;
+  const compactPoint = parseCompactPoint(record.p);
+  const rotation = parseCompactRotation(record.r);
+  const tilt = parseCompactTilt(record.t);
+  const stackPlacement = parseCompactStackPlacement(record.sp);
+  const containerPlacement = parseCompactContainerPlacement(record.c);
+  const hasDefaultContainer = Object.prototype.hasOwnProperty.call(record, "dc");
+  const defaultContainerId = hasDefaultContainer ? typeof record.dc === "string" && record.dc.length > 0 ? record.dc : null : void 0;
+  const mediaIndex = typeof record.i === "number" && Number.isFinite(record.i) ? record.i : void 0;
+  const surfaceId = typeof record.s === "string" ? record.s : void 0;
+  const face = isCompactPluginFacePersistencePayload(record.face) ? { ...record.face } : void 0;
+  if (face && (typeof face.f !== "number" || !Number.isFinite(face.f) || face.f < 0 || face.f > 1)) {
+    delete face.f;
+  }
+  if (!surfaceId && !compactPoint && !rotation && !tilt && !stackPlacement && !containerPlacement && defaultContainerId === void 0 && mediaIndex === void 0 && !face && !("d" in record)) {
+    return null;
+  }
+  return {
+    surfaceId,
+    point: compactPoint?.point,
+    dimensions: compactPoint?.dimensions,
+    rotation: rotation || void 0,
+    tilt: tilt || void 0,
+    stackPlacement: stackPlacement || void 0,
+    containerPlacement: containerPlacement || void 0,
+    defaultContainerId,
+    mediaIndex,
+    face,
+    data: "d" in record ? record.d : void 0,
+    raw: payload
+  };
+}
+function parseCompactContainerPlacement(value) {
+  if (!value || typeof value !== "object") return null;
+  const record = value;
+  if (typeof record.id !== "string" || record.id.length === 0) return null;
+  return {
+    containerId: record.id,
+    ...typeof record.o === "number" && Number.isFinite(record.o) ? { orderKey: record.o } : {}
+  };
+}
+function parseCompactStackPlacement(value) {
+  if (!value || typeof value !== "object") {
+    return null;
+  }
+  const record = value;
+  const anchor = parseCompactPoint(record.a);
+  const world = parseCompactPoint(record.w);
+  const targetRelativeQuaternion = parseCompactRotation(record.rq);
+  if (!anchor || anchor.dimensions !== 3 || !world || world.dimensions !== 3) {
+    return null;
+  }
+  return {
+    anchorPoint: anchor.point,
+    worldPoint: world.point,
+    ...typeof record.tp === "string" && record.tp.length > 0 ? { targetPluginId: record.tp } : {},
+    ...targetRelativeQuaternion ? { targetRelativeQuaternion } : {}
+  };
+}
+function serializePluginSurfacePosition(plugin) {
+  if (!plugin.mesh) {
+    return null;
+  }
+  const currentSurface = plugin.getCurrentActivitySurface?.() || plugin.activitySurface || null;
+  const surfaceId = plugin.attachment?.surfaceId || currentSurface?.id || void 0;
+  const persistedSurface = surfaceId && plugin.context.surfaceRegistry?.get(surfaceId) || currentSurface;
+  const localPoint = plugin.mesh.position;
+  const useThreeDimensions = persistedSurface?.shape === "mesh" || persistedSurface?.shape === "sphere";
+  const payload = {
+    s: surfaceId,
+    p: useThreeDimensions ? [localPoint.x, localPoint.y, localPoint.z] : [localPoint.x, localPoint.z]
+  };
+  return payload;
+}
+function restorePluginSurfacePosition(plugin, payload) {
+  if (!plugin.mesh || !payload.point) {
+    return;
+  }
+  const targetSurfaceId = payload.surfaceId;
+  const currentSurface = plugin.getCurrentActivitySurface?.() || plugin.activitySurface || null;
+  const registeredTargetSurface = targetSurfaceId ? plugin.context.surfaceRegistry?.get(targetSurfaceId) || null : null;
+  if (targetSurfaceId && !registeredTargetSurface && currentSurface?.id !== targetSurfaceId) {
+    return;
+  }
+  const targetSurface = registeredTargetSurface || currentSurface;
+  const localPoint = payload.point.clone();
+  if (payload.dimensions === 2) {
+    if (targetSurface?.shape === "mesh") {
+      localPoint.copy(targetSurface.clampSurfacePoint(localPoint, 0));
+    } else {
+      localPoint.y = resolvePluginMountContactDistance(plugin);
+    }
+  }
+  if (targetSurfaceId && targetSurfaceId !== plugin.attachment?.surfaceId && plugin.id && plugin.surfaceService && targetSurface) {
+    const targetWorldPoint = targetSurface.surfaceToWorld(localPoint);
+    plugin.surfaceService.tryReparent(plugin.id, targetWorldPoint, {
+      preferredSurfaceId: targetSurfaceId,
+      ignoreCurrentInside: true
+    });
+  }
+  plugin.mesh.position.copy(localPoint);
+  plugin.applyCurrentSurfacePlacement?.();
+  plugin.syncAttachmentPosition();
 }
 
 // src/components/StarSky/PluginFramework/behaviors/capabilityPersistence.ts
@@ -260475,10 +260525,10 @@ function createPersistentPositionContainerPlacementField(binding = {}) {
       const boundDefaultContainerId = binding.getDefaultContainerId?.(plugin);
       const defaultContainerId = binding.getDefaultContainerId ? boundDefaultContainerId : typeof plugin.defaultPlacementContainerId === "string" || plugin.defaultPlacementContainerId === null ? plugin.defaultPlacementContainerId : void 0;
       const boundContainerId = binding.getContainerId?.(plugin);
-      const containerId = binding.getContainerId ? boundContainerId : plugin.getPlacementContainerId?.() || null;
+      const containerId = binding.getContainerId ? boundContainerId : plugin.getPlacementContainerId ? plugin.getPlacementContainerId() : plugin.placementContainer?.id || null;
       if (containerId) {
         const boundOrderKey = binding.getOrderKey?.(plugin);
-        const orderKey = binding.getOrderKey ? boundOrderKey : plugin.getPlacementContainerOrder?.() ?? null;
+        const orderKey = binding.getOrderKey ? boundOrderKey : plugin.getPlacementContainerOrder?.() ?? plugin.placementContainer?.orderKey ?? null;
         writer.payload.c = {
           id: containerId,
           ...typeof orderKey === "number" && Number.isFinite(orderKey) ? { o: orderKey } : {}
@@ -260607,6 +260657,7 @@ function serializePersistentSurfaceTiltAngle(plugin, options) {
   if (!options.surfaceTiltAngle) {
     return null;
   }
+  plugin.getPlanarRotationController?.();
   const tiltApi = getSurfaceAnchoredTiltBehaviorApi(plugin);
   if (tiltApi) {
     const angle2 = tiltApi.getAngle();
@@ -260640,6 +260691,7 @@ function restorePersistentSurfaceTiltAngle(plugin, value, options) {
   if (!options.surfaceTiltAngle) {
     return;
   }
+  plugin.getPlanarRotationController?.();
   const tiltApi = getSurfaceAnchoredTiltBehaviorApi(plugin);
   const tilt = value && typeof value === "object" && !Array.isArray(value) ? value : null;
   if (!tilt) {
@@ -261584,6 +261636,46 @@ var ComposablePluginBase = class {
    */
   getMesh() {
     return this.mesh;
+  }
+  /** 普通插件与已有倾斜插件共用相同的水平角和标准持久化入口。 */
+  getPlanarRotationController() {
+    if (!this.mesh || this.context.capabilities?.runtimeMode === "capability")
+      return null;
+    let tilt = getSurfaceAnchoredTiltBehaviorApi(this);
+    if (!tilt) {
+      const surface = this.getCurrentActivitySurface();
+      if (!surface) return null;
+      const point = this.attachment?.localPoint || surface.projectWorldPoint(
+        this.mesh.getWorldPosition(new Vector3())
+      ).surfacePoint;
+      const initialHorizontalAngle = resolveSurfaceTiltHorizontalAngleFromPose(
+        surface,
+        point,
+        resolvePluginSurfaceAttachmentProfile(this).mountFrame,
+        this.mesh.getWorldQuaternion(new Quaternion())
+      );
+      if (!this.mesh.name) this.mesh.name = `${this.id}:placement-root`;
+      this.registerBehavior(
+        createSurfaceAnchoredTiltBehavior({
+          pointerEnabled: false,
+          initialHorizontalAngle,
+          horizontal: { targetName: this.mesh.name, restoreOnRelease: false }
+        })
+      );
+      tilt = getSurfaceAnchoredTiltBehaviorApi(this);
+    }
+    if (!tilt) return null;
+    const api = tilt;
+    return {
+      target: this.mesh,
+      getAngle: () => api.getHorizontalAngle(),
+      getPivot: () => {
+        const point = api.getAnchorPoint() || this.attachment?.localPoint;
+        const surface = this.getCurrentActivitySurface();
+        return point && surface ? surface.surfaceToWorld(point) : this.mesh.getWorldPosition(new Vector3());
+      },
+      apply: (angle) => api.applyHorizontalAngle(angle)
+    };
   }
   /**
    * 获取当前宿主场景对象。
@@ -264791,10 +264883,10 @@ function resolveStandardMediaViewportMediaIndexBinding(options) {
     })?.apply?.(plugin)
   };
 }
-function resolveStandardSurfacePersistenceOptions(persistence, shouldRegisterSurfaceTilt, shouldRegisterPluginSnapping) {
+function resolveStandardSurfacePersistenceOptions(persistence, shouldRegisterPluginSnapping) {
   const resolvedPersistence = persistence === true ? {
     position: "surface",
-    saveSurfaceTiltAngle: shouldRegisterSurfaceTilt
+    saveSurfaceTiltAngle: true
   } : persistence;
   const {
     poseObject,
@@ -264807,7 +264899,7 @@ function resolveStandardSurfacePersistenceOptions(persistence, shouldRegisterSur
     ...rest
   } = resolvedPersistence;
   const shouldPersistRotation = saveRotation ?? !!poseObject;
-  const shouldPersistSurfaceTilt = saveSurfaceTiltAngle ?? shouldRegisterSurfaceTilt;
+  const shouldPersistSurfaceTilt = saveSurfaceTiltAngle ?? true;
   return {
     ...rest,
     fields: createStandardSurfacePersistenceFields({
@@ -264842,7 +264934,9 @@ function createStandardSurfacePersistenceFields(options = {}) {
   };
   const resolvedMediaIndexBinding = resolveStandardMediaViewportMediaIndexBinding(mediaViewportIndex);
   const fields = [
-    createPersistentPositionPoseField(poseOptions)
+    createPersistentPositionPoseField(poseOptions),
+    // 容器成员和默认收纳偏好必须随插件保存，避免覆盖宿主提交的 c/dc。
+    createPersistentPositionContainerPlacementField()
   ];
   if (poseOptions.surfaceTiltAngle) {
     fields.push(createPersistentPositionSurfaceTiltField(poseOptions));
@@ -264980,7 +265074,6 @@ function createStandardSurfaceBehaviors(options = {}) {
       createPersistentPositionBehavior(
         resolveStandardSurfacePersistenceOptions(
           options.persistence,
-          shouldRegisterSurfaceTilt,
           !!options.pluginSnapping
         )
       )
@@ -268432,9 +268525,9 @@ var builtinGeometryArtifacts_generated_default = {
     bytes: 475164
   },
   "0768cc66546b4ba68a128496b60f521f90069fd7905086293a5ddc2d4289c006": {
-    url: "/plugin-builtins/display-6aca7787c40eadc5ce98fc7dd3234fd59990cc44fcc570b2b9335f788fa4d430.bin",
-    sha256: "6aca7787c40eadc5ce98fc7dd3234fd59990cc44fcc570b2b9335f788fa4d430",
-    bytes: 1885783
+    url: "/plugin-builtins/display-ccb90db0154b61742e3a2db7d1a536c84588c5cd7b245281aa42e10eaeb34455.bin",
+    sha256: "ccb90db0154b61742e3a2db7d1a536c84588c5cd7b245281aa42e10eaeb34455",
+    bytes: 1886448
   },
   "0775eb605f35bd45a827119a4326c60c6d32224bc46d2f4a6c61a3aabc2ec66c": {
     url: "/plugin-builtins/display-0f140fe203bef5c1fb0fa3ee70026d367270c6ea9eb1c963a1a805cfd427433f.bin",
@@ -268467,9 +268560,9 @@ var builtinGeometryArtifacts_generated_default = {
     bytes: 210718
   },
   "1511248c954f90e086b35d28cb60a331e7a9095ca7b284aeda5159f17ed3ced5": {
-    url: "/plugin-builtins/display-88f40bff54c193e7e8159ea2798ceed3a49ab92ce24e0f01d7616d74eacce77a.bin",
-    sha256: "88f40bff54c193e7e8159ea2798ceed3a49ab92ce24e0f01d7616d74eacce77a",
-    bytes: 905302
+    url: "/plugin-builtins/display-346ee0c2d5ec9943e0ff1c837d6a5bc2e332963af82d4969aaabee76dabdf30a.bin",
+    sha256: "346ee0c2d5ec9943e0ff1c837d6a5bc2e332963af82d4969aaabee76dabdf30a",
+    bytes: 905965
   },
   "158fe9a8b903a0ea042206efad377533dc1a72eb76414ca57bb56ec33c046cc8": {
     url: "/plugin-builtins/display-05fc73de27099f1bf42e754cfa901149ec99a8c7f1007ecf47bcb3130b9d4809.bin",
@@ -268522,9 +268615,9 @@ var builtinGeometryArtifacts_generated_default = {
     bytes: 307218
   },
   "2504b76536886a90909368ba9d5e34d84930057c8dc53f630362773ae433c5be": {
-    url: "/plugin-builtins/display-88f40bff54c193e7e8159ea2798ceed3a49ab92ce24e0f01d7616d74eacce77a.bin",
-    sha256: "88f40bff54c193e7e8159ea2798ceed3a49ab92ce24e0f01d7616d74eacce77a",
-    bytes: 905302
+    url: "/plugin-builtins/display-346ee0c2d5ec9943e0ff1c837d6a5bc2e332963af82d4969aaabee76dabdf30a.bin",
+    sha256: "346ee0c2d5ec9943e0ff1c837d6a5bc2e332963af82d4969aaabee76dabdf30a",
+    bytes: 905965
   },
   "2636b38aa0ed355161133ff8f7c5390433d177afa433333bdc8b7c99cdd266c7": {
     url: "/plugin-builtins/display-7976cbd73167a0fe1fc59071dbb6989d63b49a6ff05c2635e021796606ededa7.bin",
@@ -268602,9 +268695,9 @@ var builtinGeometryArtifacts_generated_default = {
     bytes: 210718
   },
   "3658c3e19663bdbb607304003b28daff9e971504007a923720cadb59bdfda05a": {
-    url: "/plugin-builtins/display-88f40bff54c193e7e8159ea2798ceed3a49ab92ce24e0f01d7616d74eacce77a.bin",
-    sha256: "88f40bff54c193e7e8159ea2798ceed3a49ab92ce24e0f01d7616d74eacce77a",
-    bytes: 905302
+    url: "/plugin-builtins/display-346ee0c2d5ec9943e0ff1c837d6a5bc2e332963af82d4969aaabee76dabdf30a.bin",
+    sha256: "346ee0c2d5ec9943e0ff1c837d6a5bc2e332963af82d4969aaabee76dabdf30a",
+    bytes: 905965
   },
   "38ee66d52bd3474fecacca5d829c40e08a3f33ca16f598b57a1c3b63433b6e04": {
     url: "/plugin-builtins/display-0f140fe203bef5c1fb0fa3ee70026d367270c6ea9eb1c963a1a805cfd427433f.bin",
@@ -268675,6 +268768,11 @@ var builtinGeometryArtifacts_generated_default = {
     url: "/plugin-builtins/display-05fc73de27099f1bf42e754cfa901149ec99a8c7f1007ecf47bcb3130b9d4809.bin",
     sha256: "05fc73de27099f1bf42e754cfa901149ec99a8c7f1007ecf47bcb3130b9d4809",
     bytes: 210718
+  },
+  "4cd4fe30bdaba127b1e72db7becd0ab91b660f7860e196f5daf7186d711804d5": {
+    url: "/plugin-builtins/display-346ee0c2d5ec9943e0ff1c837d6a5bc2e332963af82d4969aaabee76dabdf30a.bin",
+    sha256: "346ee0c2d5ec9943e0ff1c837d6a5bc2e332963af82d4969aaabee76dabdf30a",
+    bytes: 905965
   },
   "4d91c3e3666aad91a268d4312a3e79b4dd822042a5307f4db31e2e5ae33d3a4a": {
     url: "/plugin-builtins/display-7976cbd73167a0fe1fc59071dbb6989d63b49a6ff05c2635e021796606ededa7.bin",
@@ -268971,6 +269069,11 @@ var builtinGeometryArtifacts_generated_default = {
     sha256: "05fc73de27099f1bf42e754cfa901149ec99a8c7f1007ecf47bcb3130b9d4809",
     bytes: 210718
   },
+  b20dcd0476657be1ec12f13f7c882ab4d86b75d9a7c7c9e96787215924398d8b: {
+    url: "/plugin-builtins/display-ccb90db0154b61742e3a2db7d1a536c84588c5cd7b245281aa42e10eaeb34455.bin",
+    sha256: "ccb90db0154b61742e3a2db7d1a536c84588c5cd7b245281aa42e10eaeb34455",
+    bytes: 1886448
+  },
   b22bcf3ccee12c73c2b2de5ade3014db09e467f70db00c982212f782013e9cde: {
     url: "/plugin-builtins/display-7976cbd73167a0fe1fc59071dbb6989d63b49a6ff05c2635e021796606ededa7.bin",
     sha256: "7976cbd73167a0fe1fc59071dbb6989d63b49a6ff05c2635e021796606ededa7",
@@ -269025,11 +269128,6 @@ var builtinGeometryArtifacts_generated_default = {
     url: "/plugin-builtins/display-05fc73de27099f1bf42e754cfa901149ec99a8c7f1007ecf47bcb3130b9d4809.bin",
     sha256: "05fc73de27099f1bf42e754cfa901149ec99a8c7f1007ecf47bcb3130b9d4809",
     bytes: 210718
-  },
-  bd8834aaed6ef3b5542e47a76ade7264a758e4b2402e3dcf64dbf8bf1dd4caf4: {
-    url: "/plugin-builtins/display-6aca7787c40eadc5ce98fc7dd3234fd59990cc44fcc570b2b9335f788fa4d430.bin",
-    sha256: "6aca7787c40eadc5ce98fc7dd3234fd59990cc44fcc570b2b9335f788fa4d430",
-    bytes: 1885783
   },
   bedbb20ee290bf71614ad66d9ad6c6c70ffaa78914c2842cc6b6114162d823ac: {
     url: "/plugin-builtins/display-7976cbd73167a0fe1fc59071dbb6989d63b49a6ff05c2635e021796606ededa7.bin",
@@ -269102,9 +269200,9 @@ var builtinGeometryArtifacts_generated_default = {
     bytes: 307218
   },
   e03306863d3dde861036d9da6d26bf4b58c50deac392ac8254224cbffa562322: {
-    url: "/plugin-builtins/display-6aca7787c40eadc5ce98fc7dd3234fd59990cc44fcc570b2b9335f788fa4d430.bin",
-    sha256: "6aca7787c40eadc5ce98fc7dd3234fd59990cc44fcc570b2b9335f788fa4d430",
-    bytes: 1885783
+    url: "/plugin-builtins/display-ccb90db0154b61742e3a2db7d1a536c84588c5cd7b245281aa42e10eaeb34455.bin",
+    sha256: "ccb90db0154b61742e3a2db7d1a536c84588c5cd7b245281aa42e10eaeb34455",
+    bytes: 1886448
   },
   e17c07f174cedbee1a148a441e480e9b66e55a137cefa62f74d9223475dbee70: {
     url: "/plugin-builtins/display-05fc73de27099f1bf42e754cfa901149ec99a8c7f1007ecf47bcb3130b9d4809.bin",
@@ -269150,11 +269248,6 @@ var builtinGeometryArtifacts_generated_default = {
     url: "/plugin-builtins/display-05fc73de27099f1bf42e754cfa901149ec99a8c7f1007ecf47bcb3130b9d4809.bin",
     sha256: "05fc73de27099f1bf42e754cfa901149ec99a8c7f1007ecf47bcb3130b9d4809",
     bytes: 210718
-  },
-  ecf52b66d6c66671c95d305613cfeeff114eac77040beb11a7051e2cb7a0faa5: {
-    url: "/plugin-builtins/display-88f40bff54c193e7e8159ea2798ceed3a49ab92ce24e0f01d7616d74eacce77a.bin",
-    sha256: "88f40bff54c193e7e8159ea2798ceed3a49ab92ce24e0f01d7616d74eacce77a",
-    bytes: 905302
   },
   ecf8af719dca178e17549b5f2f00488d49d543de20dcc01bf8a0264351d9726a: {
     url: "/plugin-builtins/display-05fc73de27099f1bf42e754cfa901149ec99a8c7f1007ecf47bcb3130b9d4809.bin",
@@ -269416,6 +269509,7 @@ var HIGH_FREQUENCY_EVENT_INTERVALS = {
   "plugin.stack-support.followed": 1e3,
   "plugin.stack-tilt.relative": 1e3,
   "plugin.stack-placement.restored": 1e3,
+  "plugin.planar-rotation.blocked": 500,
   "starsky.idle-task.performance": 1e3,
   "browser.long-task": 500,
   "free-flight.update-performance": 1e3,
@@ -269443,10 +269537,10 @@ var MAX_THROTTLE_ENTRIES = 256;
 var lastEventTimes = /* @__PURE__ */ new Map();
 var cachedRuntimeDebugEnabled = null;
 var runtimeDebugStateCacheExpiresAt = 0;
-var pendingPreparationLogs = [];
-var preparationLogBytes = 0;
-var preparationLogTimer;
-var preparationLogUnloadInstalled = false;
+var pendingRuntimeLogs = [];
+var runtimeLogBytes = 0;
+var runtimeLogTimer;
+var runtimeLogUnloadInstalled = false;
 function sendRuntimeDebug(body) {
   void fetch(BROWSER_RUNTIME_DEBUG_ENDPOINT, {
     method: "POST",
@@ -269455,13 +269549,13 @@ function sendRuntimeDebug(body) {
     keepalive: true
   }).catch(() => void 0);
 }
-function flushPreparationLogs() {
-  if (preparationLogTimer !== void 0) clearTimeout(preparationLogTimer);
-  preparationLogTimer = void 0;
-  if (!pendingPreparationLogs.length) return;
-  const body = `[${pendingPreparationLogs.join(",")}]`;
-  pendingPreparationLogs.length = 0;
-  preparationLogBytes = 0;
+function flushRuntimeLogs() {
+  if (runtimeLogTimer !== void 0) clearTimeout(runtimeLogTimer);
+  runtimeLogTimer = void 0;
+  if (!pendingRuntimeLogs.length) return;
+  const body = `[${pendingRuntimeLogs.join(",")}]`;
+  pendingRuntimeLogs.length = 0;
+  runtimeLogBytes = 0;
   sendRuntimeDebug(body);
 }
 function resolveThrottleKey(event, payload) {
@@ -269522,23 +269616,23 @@ function logBrowserRuntimeDebug(event, payload = {}) {
     return;
   }
   const record = JSON.stringify({ timestamp: (/* @__PURE__ */ new Date()).toISOString(), event, payload });
-  if (event.startsWith("plugin.proximity-") && !event.endsWith(".failed") && payload.severity !== "ERROR") {
+  if (!/(?:^|\.)(?:error|failed|unhandledrejection)$/.test(event) && payload.severity !== "ERROR") {
     const bytes = record.length * 3 + 1;
-    if (preparationLogBytes + bytes > 48 * 1024 || pendingPreparationLogs.length >= 64) flushPreparationLogs();
+    if (runtimeLogBytes + bytes > 48 * 1024 || pendingRuntimeLogs.length >= 64) flushRuntimeLogs();
     if (bytes > 48 * 1024) {
       sendRuntimeDebug(record);
       return;
     }
-    pendingPreparationLogs.push(record);
-    preparationLogBytes += bytes;
-    preparationLogTimer ??= setTimeout(flushPreparationLogs, 16);
-    if (!preparationLogUnloadInstalled) {
-      preparationLogUnloadInstalled = true;
-      window.addEventListener("pagehide", flushPreparationLogs);
+    pendingRuntimeLogs.push(record);
+    runtimeLogBytes += bytes;
+    runtimeLogTimer ??= setTimeout(flushRuntimeLogs, 16);
+    if (!runtimeLogUnloadInstalled) {
+      runtimeLogUnloadInstalled = true;
+      window.addEventListener("pagehide", flushRuntimeLogs);
     }
     return;
   }
-  flushPreparationLogs();
+  flushRuntimeLogs();
   sendRuntimeDebug(record);
 }
 
@@ -270341,10 +270435,14 @@ function getSharedGeometryBufferSource(geometry) {
   return source;
 }
 var GeometryRangeView = class extends BufferGeometry {
+  constructor(sharedIndex) {
+    super();
+    this.sharedIndex = sharedIndex;
+  }
   dispose() {
     const attributes = this.attributes, index = this.index;
     this.attributes = {};
-    this.index = null;
+    if (this.index === this.sharedIndex) this.index = null;
     try {
       super.dispose();
     } finally {
@@ -270353,10 +270451,10 @@ var GeometryRangeView = class extends BufferGeometry {
     }
   }
 };
-function createGeometryRangeView(template, start, count, box, sphere) {
-  const geometry = new GeometryRangeView();
+function createGeometryRangeView(template, start, count, box, sphere, privateIndex) {
+  const geometry = new GeometryRangeView(template.index);
   Object.entries(template.attributes).forEach(([name, attribute]) => geometry.setAttribute(name, attribute));
-  geometry.setIndex(template.index);
+  geometry.setIndex(privateIndex ?? template.index);
   geometry.setDrawRange(start, count);
   geometry.boundingBox = box.clone();
   geometry.boundingSphere = sphere.clone();
@@ -270919,6 +271017,7 @@ var drivingPerformanceStandard_default = {
 // src/components/StarSky/shared/performance/SceneMotionRuntime.ts
 var sceneRuntimes = /* @__PURE__ */ new WeakMap();
 var INITIAL_STATE = Object.freeze({ driving: false, level: 0, motionLevel: 0, loadProtected: false });
+var NO_INTERESTS = Object.freeze([]);
 function hasSceneMotionRuntime(camera) {
   return sceneRuntimes.has(camera);
 }
@@ -271820,10 +271919,10 @@ function submitShaderWarmupPrograms(renderer, objects, camera, scene, mode = "sc
       }
     });
   };
-  if (mode !== "shadow") collect(objects);
+  if (mode !== "shadow" && mode !== "linear") collect(objects);
   if (mode === "current-target") return programs;
   let root = objects;
-  if (mode !== "shadow") {
+  if (mode !== "shadow" && mode !== "linear") {
     const opaqueObjects = [];
     objects.traverse((object) => {
       const material = object.material;
@@ -271977,6 +272076,12 @@ function compileShaderWarmup(renderer, objects, camera, scene, signal, bufferRoo
 }
 var warmupSequence = 0;
 
+// src/components/StarSky/shared/performance/RenderSourceMatrixScope.ts
+var automaticMatrixDepth = 0;
+function isAutomaticRenderMatrixUpdate() {
+  return automaticMatrixDepth > 0;
+}
+
 // src/components/StarSky/host/runtime/sandbox/Capabilities/CapabilityDisplaySource.ts
 var immutableInstanceBounds = /* @__PURE__ */ new WeakMap();
 var CapabilityDisplaySource = class extends Object3D {
@@ -272032,8 +272137,14 @@ var CapabilityDisplaySource = class extends Object3D {
       this.poseDirty = false;
     }
   }
+  /** 无显示与子节点的 CPU 叶子按需刷新，不能影响已回源网格或挂在源上的可见部件。 */
+  updateMatrixWorld(force) {
+    if (!this.isMesh && this.children.length === 0 && isAutomaticRenderMatrixUpdate()) return;
+    super.updateMatrixWorld(force);
+  }
   /** 保留实例索引和原节点身份，连续拾取不再反复构造或释放网格。 */
   raycast(raycaster, intersects2) {
+    this.updateWorldMatrix(true, false);
     if (this.instanceMatrix) {
       InstancedMesh.prototype.raycast.call(this, raycaster, intersects2);
       return;
@@ -272948,15 +273059,24 @@ var CapabilityDrawFilter = class {
       const preparations = /* @__PURE__ */ new Set(), previousRender = renderer.render;
       const preparedRender = (...args) => {
         preparations.forEach((prepare) => prepare(...args));
-        return previousRender.apply(renderer, args);
+        state.rendering++;
+        try {
+          return previousRender.apply(renderer, args);
+        } finally {
+          state.rendering--;
+        }
       };
-      state = { predicates, previous, filtered, owners: 0, submitting: 0, preparations, previousRender, preparedRender };
+      state = { predicates, previous, filtered, owners: 0, submitting: 0, rendering: 0, preparations, previousRender, preparedRender };
       rendererFilters.set(renderer, state);
       renderer.renderBufferDirect = filtered;
       if (typeof previousRender === "function") renderer.render = preparedRender;
     }
     this.state = state;
     state.owners += 1;
+  }
+  /** 多消费者共享嵌套提交范围，异常退出也立即恢复。 */
+  get rendering() {
+    return this.state.rendering > 0;
   }
   /** 注册一个节点的提交条件；清理只影响该节点。 */
   register(node, predicate) {
@@ -273641,7 +273761,7 @@ var CapabilityRigidBatchRuntime = class {
     if (!transaction) return;
     transaction.controller.abort();
     transaction.requests.forEach((request) => request.cancel());
-    this.scheduler?.cancel(this.ownerId, transaction.key);
+    this.scheduler.cancel(this.ownerId, transaction.key);
     this.finalBatchWarmTransactions.delete(parent);
   }
   /** 将同父级的代理一起提交，减少重复 compile、shader 完成检查和离屏缓冲提交。 */
@@ -274448,6 +274568,211 @@ function canBatchCapabilitySource(node, beforeRender = node.onBeforeRender, matr
   return getCapabilityBatchRejectionReason(node, beforeRender, matrixMode, allowPhysicalMaterial) === void 0;
 }
 
+// src/components/StarSky/host/runtime/sandbox/Capabilities/CapabilityFinalPackedBatches.ts
+var CapabilityFinalPackedBatches = class {
+  constructor(renderer, root, pool) {
+    this.renderer = renderer;
+    this.root = root;
+    this.pool = pool;
+    this.batches = [];
+    this.refreshed = /* @__PURE__ */ new Set();
+    this.matrix = new Matrix4();
+    this.disposed = false;
+    this.filter = new CapabilityDrawFilter(renderer);
+    this.filter.beforeRender((scene) => this.sync(scene));
+  }
+  /** 固定资格仅在创建期分组，热帧不重新编码材质或扫描源树。 */
+  *prepare(sources) {
+    const groups = /* @__PURE__ */ new Map();
+    for (const source of sources) {
+      const { mesh } = source, material = mesh.material;
+      const descriptor = Object.getOwnPropertyDescriptor(mesh, "isMesh");
+      if (!mesh.parent || Array.isArray(mesh.material) || material.transparent || material.transmission > 0 || mesh.isInstancedMesh || mesh.onBeforeRender !== Object3D.prototype.onBeforeRender || mesh.onAfterRender !== Object3D.prototype.onAfterRender || mesh.onBeforeShadow !== Object3D.prototype.onBeforeShadow || mesh.onAfterShadow !== Object3D.prototype.onAfterShadow || !descriptor?.configurable || descriptor.value !== true || !source.sourceGeometryKey) continue;
+      const key = JSON.stringify([source.geometryKey, material.uuid, mesh.castShadow, mesh.receiveShadow, mesh.renderOrder, mesh.layers.mask]);
+      const group = groups.get(key) ?? [];
+      group.push(source);
+      groups.set(key, group);
+    }
+    for (const group of Array.from(groups.values())) {
+      if (this.disposed) return;
+      if (group.length < 3 || group.length > 256) continue;
+      this.create(group);
+      yield;
+    }
+  }
+  /** 复用现有 r180 缓冲适配，不复制顶点、索引或源材质。 */
+  create(sources) {
+    const geometryKey2 = sources[0].geometryKey, template = this.pool.peek(geometryKey2);
+    const ranges = template?.userData.capabilityRigidGeometryRanges;
+    if (!template?.index || !ranges?.length) return;
+    const geometryIds = sources.map((source) => ranges.findIndex((range) => range.key === source.sourceGeometryKey));
+    if (geometryIds.some((id) => id < 0)) return;
+    const layout = {
+      ranges: ranges.map((range) => ({
+        vertexStart: range.firstVertex,
+        vertexCount: range.vertices,
+        indexStart: range.start,
+        indexCount: range.count,
+        start: range.start,
+        count: range.count,
+        box: [...range.bounds.min, ...range.bounds.max],
+        sphere: [...range.bounds.center, range.bounds.radius]
+      })),
+      geometryIds: ranges.map((_range, id) => id),
+      geometryKeys: ranges.map((range) => range.key),
+      counts: ranges.map(() => 1)
+    };
+    const first = sources[0].mesh;
+    const mesh = new BatchedMesh(sources.length, template.attributes.position.count, template.index.count, first.material);
+    let geometry, batch;
+    try {
+      geometry = restoreCapabilityMatrixGeometry(mesh, { geometryKey: geometryKey2, batched: layout, matrices: null }, layout.counts, this.pool);
+      mesh.matrixAutoUpdate = false;
+      mesh.frustumCulled = false;
+      mesh.sortObjects = false;
+      mesh.raycast = () => {
+      };
+      mesh.castShadow = first.castShadow;
+      mesh.receiveShadow = first.receiveShadow;
+      mesh.renderOrder = first.renderOrder;
+      mesh.layers.mask = first.layers.mask;
+      Object.assign(mesh.userData, {
+        pluginId: first.userData.pluginId,
+        capabilityRigidBatch: true,
+        capabilityMatrixBatch: true,
+        capabilityMatrixStaging: true,
+        capabilityFinalManifestHit: true,
+        capabilityDisplayCacheHit: true,
+        capabilityFinalPackedBatch: true
+      });
+      batch = {
+        mesh,
+        geometry,
+        members: [],
+        enabled: false,
+        failed: false,
+        releaseFailure: bindFinalBatchFailure(mesh, () => {
+          batch.failed = true;
+        })
+      };
+      const current = batch;
+      sources.forEach((source, index) => {
+        const id = mesh.addInstance(geometryIds[index]);
+        mesh.setVisibleAt(id, false);
+        const descriptor = Object.getOwnPropertyDescriptor(source.mesh, "isMesh");
+        const member = {
+          source,
+          geometry: source.mesh.geometry,
+          parent: source.mesh.parent,
+          count: ranges[geometryIds[index]].count,
+          matrix: new Matrix4().makeScale(0, 0, 0),
+          active: false,
+          release: () => {
+            if (Object.getOwnPropertyDescriptor(source.mesh, "isMesh")?.get === renderable)
+              Object.defineProperty(source.mesh, "isMesh", descriptor);
+          }
+        };
+        const renderable = () => !(this.filter.rendering && current.enabled && member.active && !isGeometryPreparationPass(this.renderer));
+        Object.defineProperty(source.mesh, "isMesh", { configurable: true, enumerable: descriptor.enumerable, get: renderable });
+        current.members.push(member);
+      });
+      this.filter.register(mesh, () => !current.failed && (isGeometryPreparationPass(this.renderer) || current.enabled));
+      this.batches.push(current);
+      this.root.add(mesh);
+    } catch (error) {
+      batch?.members.forEach((member) => member.release());
+      batch?.releaseFailure();
+      if (geometry) {
+        mesh.geometry = new BufferGeometry();
+        this.pool.release(geometry);
+      }
+      mesh.dispose();
+      throw error;
+    }
+  }
+  /** 真实提交前读取现有就绪门；不改变声明显隐或跨物理子步复用接触。 */
+  sync(scene) {
+    if (this.disposed || this.filter.rendering) return;
+    let ancestor = this.root;
+    while (ancestor && ancestor !== scene) ancestor = ancestor.parent;
+    const inScope = ancestor === scene && !isGeometryPreparationPass(this.renderer);
+    this.refreshed.clear();
+    for (const batch of this.batches) {
+      batch.enabled = false;
+      if (!inScope || batch.failed) continue;
+      const material = batch.members[0].source.mesh.material;
+      if (!Array.isArray(material) && batch.mesh.material !== material) batch.mesh.material = material;
+      if (getFinalBatchPreparation(batch.mesh)?.() !== true) continue;
+      delete batch.mesh.userData.capabilityMatrixStaging;
+      batch.enabled = true;
+      batch.members.forEach((member, id) => this.syncMember(batch, member, id));
+    }
+  }
+  /** 只同步有限个最终组的姿态／显隐；不遍历数百个原零件。 */
+  syncMember(batch, member, id) {
+    const source = member.source.mesh, mesh = batch.mesh;
+    let active = member.source.ready() && source.geometry === member.geometry && source.parent === member.parent && source.material === mesh.material && source.castShadow === mesh.castShadow && source.receiveShadow === mesh.receiveShadow && source.renderOrder === mesh.renderOrder && source.layers.mask === mesh.layers.mask && source.onBeforeRender === Object3D.prototype.onBeforeRender && source.onAfterRender === Object3D.prototype.onAfterRender && source.onBeforeShadow === Object3D.prototype.onBeforeShadow && source.onAfterShadow === Object3D.prototype.onAfterShadow && source.geometry.drawRange.count === member.count && getFinalBatchPreparation(source)?.() === true;
+    if (this.disposed) return;
+    for (let node = source; active && node && node !== this.root; node = node.parent) active = node.visible;
+    if (active) {
+      this.matrix.identity();
+      let node = source;
+      while (node && node !== this.root) {
+        if (!this.refreshed.has(node)) {
+          if (node.matrixAutoUpdate) node.updateMatrix();
+          this.refreshed.add(node);
+        }
+        this.matrix.premultiply(node.matrix);
+        node = node.parent;
+      }
+      active = node === this.root && orthogonalMatrix(this.matrix);
+      if (active && !member.matrix.equals(this.matrix)) {
+        member.matrix.copy(this.matrix);
+        mesh.setMatrixAt(id, this.matrix);
+      }
+    }
+    if (active !== member.active) {
+      member.active = active;
+      mesh.setVisibleAt(id, active);
+    }
+  }
+  /** 只统计实际接管的最终组，不能以候选数量冒充真实收益。 */
+  getStats() {
+    return {
+      batches: this.batches.length,
+      activeBatches: this.batches.filter((batch) => batch.enabled).length,
+      activeMembers: this.batches.reduce((sum, batch) => sum + (batch.enabled ? batch.members.filter((member) => member.active).length : 0), 0)
+    };
+  }
+  /** 同步恢复所有原身份，释放当前实例纹理，归还共享缓冲。 */
+  dispose() {
+    if (this.disposed) return;
+    this.disposed = true;
+    this.batches.forEach((batch) => {
+      batch.enabled = false;
+      batch.members.forEach((member) => member.release());
+      batch.releaseFailure();
+      batch.mesh.removeFromParent();
+      batch.mesh.geometry = new BufferGeometry();
+      batch.mesh.dispose();
+      this.pool.release(batch.geometry);
+    });
+    this.batches.length = 0;
+    this.filter.dispose();
+  }
+};
+function orthogonalMatrix(matrix) {
+  const e = matrix.elements;
+  if (!e.every(Number.isFinite) || matrix.determinant() <= 0) return false;
+  const xx = e[0] * e[0] + e[1] * e[1] + e[2] * e[2];
+  const yy = e[4] * e[4] + e[5] * e[5] + e[6] * e[6];
+  const zz = e[8] * e[8] + e[9] * e[9] + e[10] * e[10];
+  const xy = e[0] * e[4] + e[1] * e[5] + e[2] * e[6];
+  const xz = e[0] * e[8] + e[1] * e[9] + e[2] * e[10];
+  const yz = e[4] * e[8] + e[5] * e[9] + e[6] * e[10];
+  return xy * xy < 1e-12 * xx * yy && xz * xz < 1e-12 * xx * zz && yz * yz < 1e-12 * yy * zz;
+}
+
 // src/components/StarSky/host/runtime/sandbox/Capabilities/CapabilityRigidGeometryRanges.ts
 async function packCapabilityRigidGeometryRanges(groups, store) {
   const keys = Array.from(new Set(groups.map((group) => group.layout.geometryKey)));
@@ -274560,6 +274885,55 @@ function restoreCapabilityRigidGeometryRange(key, sourceKey2, cached, pool) {
       throw error;
     }
   });
+}
+
+// src/components/StarSky/host/runtime/sandbox/Capabilities/CapabilityRigidVisibility.ts
+function createCapabilityRigidVisibility(template, group) {
+  if (group.instances) return void 0;
+  const count = group.ranges.reduce((sum, range) => sum + range.triangleCount * 3, 0);
+  const start = template.drawRange.start;
+  const source = template.index?.array.subarray(start, start + count) ?? Uint32Array.from({ length: count }, (_, index2) => start + index2);
+  const values = source instanceof Uint16Array ? new Uint16Array(source) : new Uint32Array(source);
+  const index = new BufferAttribute(values, 1).setUsage(DynamicDrawUsage);
+  if (!template.boundingBox) template.computeBoundingBox();
+  if (!template.boundingSphere) template.computeBoundingSphere();
+  const geometry = createGeometryRangeView(template, 0, count, template.boundingBox, template.boundingSphere, index);
+  let part = 0;
+  const ranges = group.counts.map((instances) => {
+    const first = group.ranges[part], last = group.ranges[part + instances - 1];
+    part += instances;
+    return { start: first.firstTriangle * 3, end: (last.firstTriangle + last.triangleCount) * 3 };
+  });
+  const visible = group.slots.map(() => true);
+  let dirty = false;
+  return {
+    geometry,
+    /** 提交前读取当前 LOD／用户显隐；稳定状态零复制、零上传，不替换缓冲身份。 */
+    sync(isVisible) {
+      for (let i = 0; i < visible.length; i++) {
+        const next = isVisible(i);
+        if (visible[i] !== next) {
+          visible[i] = next;
+          dirty = true;
+        }
+      }
+      if (!dirty) return;
+      let cursor = 0;
+      for (let i = 0; i < ranges.length; i++) {
+        if (!visible[i]) continue;
+        const range = ranges[i];
+        values.set(source.subarray(range.start, range.end), cursor);
+        cursor += range.end - range.start;
+      }
+      geometry.setDrawRange(0, cursor);
+      if (cursor) {
+        index.clearUpdateRanges();
+        index.addUpdateRange(0, cursor);
+        index.needsUpdate = true;
+      }
+      dirty = false;
+    }
+  };
 }
 
 // src/components/StarSky/host/runtime/sandbox/Capabilities/CapabilityMatrixBatchDisplay.ts
@@ -274894,7 +275268,15 @@ function restoreCapabilityRigidRenderGroup(group, cached, base, pool, shareOpaqu
     pool.release(geometry);
     throw error;
   }
-  const mesh = group.instances ? new InstancedMesh(geometry, material, group.instances.length / 16) : new Mesh(geometry, material);
+  let visibility;
+  try {
+    visibility = createCapabilityRigidVisibility(geometry, group);
+  } catch (error) {
+    releaseMaterial();
+    pool.release(geometry);
+    throw error;
+  }
+  const mesh = group.instances ? new InstancedMesh(geometry, material, group.instances.length / 16) : new Mesh(visibility.geometry, material);
   mesh.raycast = () => void 0;
   if (mesh instanceof InstancedMesh) {
     const matrix = new Matrix4();
@@ -274911,11 +275293,12 @@ function restoreCapabilityRigidRenderGroup(group, cached, base, pool, shareOpaqu
   Object.assign(mesh, state);
   mesh.layers.mask = layers;
   let disposed = false;
-  return { mesh, dispose() {
+  return { mesh, syncVisibility: visibility?.sync, dispose() {
     if (disposed) return;
     disposed = true;
     mesh.removeFromParent();
     if (mesh instanceof InstancedMesh) mesh.dispose();
+    visibility?.geometry.dispose();
     releaseMaterial();
     pool.release(geometry);
   } };
@@ -277832,6 +278215,7 @@ var CapabilityRenderAssetRuntime = class {
     this.stats = { groups: 0, members: 0, adopted: 0, revision: 0, validationPasses: 0, sourceChecks: 0, fallbacks: 0, liveGeometryHits: 0 };
     this.journal = new CapabilityRenderRevisionJournal(() => this.changed());
     this.poseJournal = new CapabilityRenderRevisionJournal(() => this.poseChanged());
+    this.packedBatchesRequested = false;
     this.contextLost = () => this.fallback();
     this.pool = new SharedGeometryPool(port.renderer);
     if (port.renderer) this.filter = new CapabilityDrawFilter(port.renderer);
@@ -278316,10 +278700,12 @@ var CapabilityRenderAssetRuntime = class {
         });
         runtime.poseJournal.watch(node, ["visible"], () => runtime.poseChanged(node));
         runtime.journal.watch(node.layers, ["mask"]);
-        const poseChanged = node instanceof CapabilityDisplaySource && proxy ? () => {
-          node.markRenderPoseDirty();
+        const dirtyGroupMatrix = runtime.cacheObservedGroupMatrix(node);
+        const poseChanged = () => {
+          dirtyGroupMatrix?.();
+          if (node instanceof CapabilityDisplaySource && proxy) node.markRenderPoseDirty();
           runtime.poseChanged(node, true);
-        } : () => runtime.poseChanged(node, true);
+        };
         if (node instanceof CapabilityDisplaySource && proxy) node.enableRenderPoseCache();
         runtime.poseJournal.watch(node.position, void 0, poseChanged);
         runtime.poseJournal.watch(node.quaternion, ["_x", "_y", "_z", "_w"], poseChanged);
@@ -278431,7 +278817,14 @@ var CapabilityRenderAssetRuntime = class {
         );
         restored.mesh.matrix.identity();
         restored.mesh.matrixWorldNeedsUpdate = true;
-        const installed = previous ?? { poseRevision: 0, rigid: restored, meshes: [restored.mesh], slots: group.slots, cleanup: [], valid: true };
+        const installed = previous ?? {
+          poseRevision: 0,
+          rigid: restored,
+          meshes: [restored.mesh],
+          slots: group.slots,
+          cleanup: [],
+          valid: true
+        };
         Object.assign(restored.mesh.userData, {
           pluginId: runtime.port.pluginId,
           capabilityRigidBatch: true,
@@ -278515,6 +278908,50 @@ var CapabilityRenderAssetRuntime = class {
       })) finish(new Error("\u5B8C\u6574\u6E32\u67D3\u8D44\u4EA7\u65E0\u6CD5\u8FDB\u5165\u5171\u4EAB\u51C6\u5907\u961F\u5217"));
     });
   }
+  /** 最终源树稳定后才申请可选批次，不加入首显关键路径。 */
+  preparePackedBatches() {
+    if (this.packedBatchesRequested || this.deferredSources || !this.firstDisplay || !this.asset?.rigidGroups || !this.port.renderer?.extensions?.has("WEBGL_multi_draw")) return;
+    this.packedBatchesRequested = true;
+    const definitions = new Map(this.asset.rigidGroups.map((group) => [group.slots[0], group]));
+    const sources = this.groups.flatMap((group) => {
+      const definition = definitions.get(group.slots[0]);
+      return group.valid && group.rigid && !definition?.instances && definition?.layout.sourceGeometryKey ? [{
+        mesh: group.rigid.mesh,
+        ...definition.layout,
+        sourceGeometryKey: definition.layout.sourceGeometryKey,
+        ready: () => this.ready(group, true) && group.valid && !this.failed
+      }] : [];
+    });
+    const batches = this.packedBatches = new CapabilityFinalPackedBatches(this.port.renderer, this.port.root, this.pool);
+    const steps = batches.prepare(sources);
+    this.resourceCleanup.push(() => {
+      steps.return();
+      batches.dispose();
+    });
+    const scheduler = getFrameTaskScheduler(this.port.renderer);
+    const queued = scheduler.enqueue({
+      key: `render-asset-packed:${this.port.pluginId}`,
+      source: { ownerId: `render-asset:${this.port.pluginId}`, attribution: "plugin", objectId: this.port.pluginId },
+      kind: "preparation",
+      priority: "detail",
+      signal: this.controller.signal,
+      isValid: () => !this.failed && !this.controller.signal.aborted,
+      run: () => {
+        try {
+          return steps.next().done ? true : "continue";
+        } catch (error) {
+          steps.return();
+          batches.dispose();
+          logBrowserRuntimeDebug("plugin.render-asset.packed-failed", { pluginId: this.port.pluginId, message: String(error) });
+          return true;
+        }
+      }
+    });
+    if (!queued) {
+      steps.return();
+      batches.dispose();
+    }
+  }
   /** 最终网格跟随共同运动祖先，不插入或替换宿主认定的首个声明根。 */
   motionRoot(sources) {
     let root = sources[0].parent ?? this.port.root;
@@ -278538,7 +278975,7 @@ var CapabilityRenderAssetRuntime = class {
       mesh.userData.capabilityRenderAsset = true;
       mesh.userData.capabilityFinalManifestHit = true;
       mesh.userData.capabilityBatchSources ??= [mesh];
-      group.cleanup.push(this.filter.register(mesh, () => group.valid && (isGeometryPreparationPass(this.port.renderer) || this.ready(group, true)) && group.valid));
+      group.cleanup.push(this.filter.register(mesh, () => group.valid && (isGeometryPreparationPass(this.port.renderer) || this.ready(group, true) && group.valid && (!group.rigid?.syncVisibility || mesh.geometry.drawRange.count > 0))));
       group.cleanup.push(bindFinalBatchFailure(mesh, () => this.fallback()));
     });
     if (group.batch || group.rigid) group.cleanup.push(bindFinalBatchDisplay(
@@ -278681,7 +279118,7 @@ var CapabilityRenderAssetRuntime = class {
     groups?.forEach((group) => {
       if (!group.valid) return;
       group.poseRevision++;
-      if (object && invalidateRigid && group.rigid) this.drop(group);
+      if (object && invalidateRigid && group.rigid) this.drop(group, "source-pose");
     });
   }
   trackPose(object, group) {
@@ -278842,25 +279279,27 @@ var CapabilityRenderAssetRuntime = class {
     if (this.failed) return false;
     this.groups.forEach((group2) => {
       if (!group2.valid) return;
-      if (group2.batch && !group2.batch.sync()) this.drop(group2);
+      if (group2.batch && !group2.batch.sync()) this.drop(group2, "matrix-sync");
       if (group2.rigid && (publish || this.firstDisplay) && group2.visibleRevision !== group2.poseRevision) {
         let cacheable = true;
-        const hidden = group2.slots.some((slot) => {
-          let node = this.nodes.get(slot);
+        const visible = (index) => {
+          let node = this.nodes.get(group2.slots[index]);
           while (node && node !== group2.rigid.mesh.parent) {
             if (!node.visible) cacheable = false;
-            if (!(node instanceof Mesh || node instanceof CapabilityDisplaySource ? isFinalBatchSourceVisible(node) : node.visible)) return true;
+            if (!(node instanceof Mesh || node instanceof CapabilityDisplaySource ? isFinalBatchSourceVisible(node) : node.visible)) return false;
             node = node.parent ?? void 0;
           }
-          return false;
-        });
-        if (hidden) this.drop(group2);
-        else group2.visibleRevision = cacheable ? group2.poseRevision : void 0;
+          return true;
+        };
+        if (group2.rigid.syncVisibility) group2.rigid.syncVisibility(visible);
+        else if (group2.slots.some((_slot, index) => !visible(index))) this.drop(group2, "source-visibility");
+        group2.visibleRevision = cacheable ? group2.poseRevision : void 0;
       }
     });
     if (this.failed) return false;
     if (this.firstDisplay) {
       this.readyState = true;
+      this.preparePackedBatches();
       return true;
     }
     if (this.asset.sources.some((source) => !this.port.texturesReady(this.nodes.get(source.slot)))) {
@@ -278875,6 +279314,7 @@ var CapabilityRenderAssetRuntime = class {
     if (ready2 && publish && !this.firstDisplay) {
       this.firstDisplay = true;
       logBrowserRuntimeDebug("plugin.render-asset.ready", { pluginId: this.port.pluginId, ...this.stats });
+      this.preparePackedBatches();
     }
     this.readyState = ready2;
     return ready2;
@@ -278902,9 +279342,17 @@ var CapabilityRenderAssetRuntime = class {
   pendingHasSlot(slot) {
     return !this.adoptedSlots.has(slot);
   }
-  drop(group) {
+  drop(group, reason = "source-state") {
     if (!group.valid) return;
-    if (!this.firstDisplay && !this.failed) {
+    if (!this.failed) logBrowserRuntimeDebug("plugin.render-asset.group-fallback", {
+      pluginId: this.port.pluginId,
+      reason,
+      members: group.slots.length,
+      firstDisplay: this.firstDisplay,
+      sources: group.slots.map((slot) => this.nodes.get(slot)?.name)
+    });
+    const localBeforeDisplay = group.rigid && (reason === "source-pose" || reason === "source-visibility") && this.initialized && this.takeoverVerified && this.adoptedSlots.size === this.asset?.commands.length;
+    if (!this.firstDisplay && !this.failed && !localBeforeDisplay) {
       this.fallback();
       return;
     }
@@ -278955,6 +279403,58 @@ var CapabilityRenderAssetRuntime = class {
   releaseDisplaySourceMaterials() {
     this.displaySourceMaterials.splice(0).forEach((material) => this.port.releaseDisplayMaterial(material));
   }
+  /** 父组使用姿态 journal；同一姿态的显式查询复用局部及世界矩阵，不缓存接触结果。 */
+  cacheObservedGroupMatrix(node) {
+    if (!(node instanceof Group) || node.updateMatrix !== Object3D.prototype.updateMatrix) return;
+    const descriptor = Object.getOwnPropertyDescriptor(node, "updateMatrix");
+    if (descriptor && (!descriptor.configurable || !descriptor.writable || !("value" in descriptor))) return;
+    const update = node.updateMatrix, cached = new Matrix4();
+    let dirty = true;
+    const updateIfChanged = () => {
+      if (!dirty && node.matrix.equals(cached)) return;
+      update.call(node);
+      cached.copy(node.matrix);
+      dirty = false;
+    };
+    node.updateMatrix = updateIfChanged;
+    this.resourceCleanup.push(() => {
+      if (node.updateMatrix !== updateIfChanged) return;
+      if (descriptor) Object.defineProperty(node, "updateMatrix", descriptor);
+      else Reflect.deleteProperty(node, "updateMatrix");
+    });
+    const worldUpdate = node.updateWorldMatrix, worldDescriptor = Object.getOwnPropertyDescriptor(node, "updateWorldMatrix");
+    if (worldUpdate === Object3D.prototype.updateWorldMatrix && (!worldDescriptor || worldDescriptor.configurable && worldDescriptor.writable && "value" in worldDescriptor)) {
+      const local = new Matrix4(), parentWorld = new Matrix4(), world = new Matrix4();
+      let parent;
+      const updateWorldIfChanged = (updateParents, updateChildren) => {
+        if (!node.matrixWorldAutoUpdate || node.updateMatrix !== updateIfChanged) {
+          parent = void 0;
+          worldUpdate.call(node, updateParents, updateChildren);
+          return;
+        }
+        if (updateParents) node.parent?.updateWorldMatrix(true, false);
+        if (node.matrixAutoUpdate) node.updateMatrix();
+        if (parent !== node.parent || !local.equals(node.matrix) || !world.equals(node.matrixWorld) || node.parent && !parentWorld.equals(node.parent.matrixWorld)) {
+          worldUpdate.call(node, false, false);
+          parent = node.parent;
+          local.copy(node.matrix);
+          world.copy(node.matrixWorld);
+          if (parent) parentWorld.copy(parent.matrixWorld);
+          node.matrixWorldNeedsUpdate = true;
+        }
+        if (updateChildren) node.children.forEach((child) => child.updateWorldMatrix(false, true));
+      };
+      node.updateWorldMatrix = updateWorldIfChanged;
+      this.resourceCleanup.push(() => {
+        if (node.updateWorldMatrix !== updateWorldIfChanged) return;
+        if (worldDescriptor) Object.defineProperty(node, "updateWorldMatrix", worldDescriptor);
+        else Reflect.deleteProperty(node, "updateWorldMatrix");
+      });
+    }
+    return () => {
+      dirty = true;
+    };
+  }
   clearUnadopted() {
     this.nodes.forEach((node, slot) => {
       if (this.adoptedSlots.has(slot)) return;
@@ -278969,7 +279469,13 @@ var CapabilityRenderAssetRuntime = class {
     return Boolean(this.asset) && !this.failed;
   }
   getStats() {
-    return { ...this.stats, trackedMaterials: this.materialChecks.size, active: this.active, ready: this.firstDisplay && !this.failed };
+    return {
+      ...this.stats,
+      trackedMaterials: this.materialChecks.size,
+      active: this.active,
+      ready: this.firstDisplay && !this.failed,
+      packed: this.packedBatches?.getStats()
+    };
   }
   /** 已接管节点仍归正式场景所有，卸载只释放未接管身份和本实例最终资源。 */
   dispose() {
@@ -280797,6 +281303,28 @@ function findPluginPrebuildExport(entry) {
   if (candidates.length > 1) throw new Error(`${entry}: \u591A\u4E2A\u9884\u6784\u5EFA\u5165\u53E3\uFF0C\u8BF7\u660E\u786E default \u5BFC\u51FA`);
   return candidates[0] ?? null;
 }
+
+// scripts/plugin-artifact-compression.mjs
+import { rm, writeFile } from "node:fs/promises";
+import { promisify } from "node:util";
+import { brotliCompress, constants, gzip } from "node:zlib";
+var codecs = [
+  { suffix: "gz", compress: promisify(gzip), options: { level: 6 } },
+  { suffix: "br", compress: promisify(brotliCompress), options: { params: { [constants.BROTLI_PARAM_QUALITY]: 5 } } }
+];
+async function writePluginCompressedArtifacts(filename, payload) {
+  const sizes = { gz: 0, br: 0 };
+  for (const { suffix, compress, options } of codecs) {
+    const compressed = payload.byteLength >= 1024 ? await compress(payload, options) : null;
+    if (!compressed || compressed.byteLength >= payload.byteLength) {
+      await rm(`${filename}.${suffix}`, { force: true });
+      continue;
+    }
+    await writeFile(`${filename}.${suffix}`, compressed);
+    sizes[suffix] = compressed.byteLength;
+  }
+  return sizes;
+}
 export {
   AudioPlaybackRuntime,
   CYLINDER_SEGMENTS,
@@ -281014,7 +281542,8 @@ export {
   updatePointerFromPointerEvent,
   vec,
   withFallbackMediaEntry,
-  wrapMediaStageIndex
+  wrapMediaStageIndex,
+  writePluginCompressedArtifacts
 };
 /*! Bundled license information:
 

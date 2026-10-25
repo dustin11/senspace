@@ -1,7 +1,11 @@
 package road
 
 import (
+	"crypto/sha256"
+	"encoding/hex"
 	"encoding/json"
+	"reflect"
+	"strconv"
 	"strings"
 	"testing"
 
@@ -116,5 +120,46 @@ func TestMapLegacyDocument(t *testing.T) {
 	}
 	if response.ContentHash == strings.Repeat("0", 64) {
 		t.Fatal("expected migrated state hash")
+	}
+}
+
+// 旧道路只升级普通节点；门接口、拓扑和已升级文档的自定义宽度保持不变。
+func TestMapDocumentRoadWidths(t *testing.T) {
+	for _, version := range []int{1, 2, 3} {
+		t.Run(strconv.Itoa(version), func(t *testing.T) {
+			original := roadState{
+				Nodes: []roadNode{
+					{Id: "door", Anchor: roadAnchor{Kind: "connector", ConnectorId: "door:outside"}, Width: 0.8},
+					{Id: "road", Anchor: roadAnchor{Kind: "surface", SurfaceId: "terrain", SurfacePoint: []float64{1, 0, 0}}, Width: 1.2},
+					{Id: "bridge", Anchor: roadAnchor{Kind: "frame", FrameId: "world", LocalPoint: []float64{2, 0, 0}}, Width: 3.6},
+				},
+				Edges: []roadEdge{{Id: "edge", FromNodeId: "door", ToNodeId: "road"}},
+			}
+			state, err := json.Marshal(original)
+			if err != nil {
+				t.Fatal(err)
+			}
+			hash := sha256.Sum256(state)
+			document := road_domain.Document{SchemaVersion: version, Revision: 7, StateJson: string(state), ContentHash: hex.EncodeToString(hash[:])}
+			response := mapDocument(document)
+			var actual roadState
+			if err := json.Unmarshal(response.State, &actual); err != nil {
+				t.Fatal(err)
+			}
+			if version < 3 {
+				original.Nodes[1].Width = 2.6
+				original.Nodes[2].Width = 2.6
+			}
+			if !reflect.DeepEqual(actual, original) {
+				t.Fatalf("unexpected road state: %+v", actual)
+			}
+			if response.SchemaVersion != 3 || response.Revision != 7 || document.StateJson != string(state) {
+				t.Fatal("migration changed source or optimistic lock revision")
+			}
+			hash = sha256.Sum256(response.State)
+			if response.ContentHash != hex.EncodeToString(hash[:]) {
+				t.Fatal("migrated content hash mismatch")
+			}
+		})
 	}
 }

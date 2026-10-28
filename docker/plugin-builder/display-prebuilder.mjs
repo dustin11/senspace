@@ -256605,11 +256605,12 @@ function resolveSurfaceHingedTiltPose(options) {
 }
 
 // src/components/StarSky/PluginFramework/utils/spatial/resolveSurfaceTiltCollision.ts
-function resolveCollisionSafeSurfaceTiltAngle(options) {
+function resolveCollisionSafeSurfaceTilt(options) {
   const { plugin, collisionManager, target, previousAngle, poseOptions } = options;
   const delta = poseOptions.angle - previousAngle;
-  if (!collisionManager?.getSafeTiltAngle || Math.abs(delta) < 1e-8)
-    return poseOptions.angle;
+  const anchorPoint = poseOptions.baseSurfacePoint?.clone() || poseOptions.surface.projectWorldPoint(poseOptions.currentWorldPosition).surfacePoint;
+  if (!collisionManager?.getSafeTiltMotion || Math.abs(delta) < 1e-8)
+    return { angle: poseOptions.angle, anchorPoint };
   const raw = { ...poseOptions, surfaceTiltClampLocalCorners: void 0 };
   const rest = resolveSurfaceHingedTiltPose({ ...raw, angle: 0 });
   const opposite = resolveSurfaceHingedTiltPose({ ...raw, angle: Math.PI });
@@ -256622,12 +256623,13 @@ function resolveCollisionSafeSurfaceTiltAngle(options) {
   const pivot = rest.position.clone().add(opposite.position).multiplyScalar(0.5).add(position.clone().sub(previous.position));
   const axis = (poseOptions.rotationAxisLocal || new Vector3(0, 1, 0)).clone().applyQuaternion(rest.quaternion).normalize();
   const corners = poseOptions.surfaceTiltClampLocalCorners;
-  const angle = collisionManager.getSafeTiltAngle(plugin, {
+  const result = collisionManager.getSafeTiltMotion(plugin, {
     target,
     surface: poseOptions.surface,
     pivot,
     axis,
     angle: delta,
+    allowBoundaryRetreat: !poseOptions.supportFrame,
     normalCorrection: corners?.length ? {
       normal: previous.surfaceNormal.clone().normalize(),
       points: corners.map(
@@ -256635,7 +256637,11 @@ function resolveCollisionSafeSurfaceTiltAngle(options) {
       )
     } : void 0
   });
-  return previousAngle + angle;
+  if (result.translation) {
+    const worldAnchor = poseOptions.surface.surfaceToWorld(anchorPoint.clone());
+    anchorPoint.copy(poseOptions.surface.worldToSurface(worldAnchor.add(result.translation)));
+  }
+  return { angle: previousAngle + result.angle, anchorPoint };
 }
 
 // src/components/StarSky/PluginFramework/surfaceAttachmentProfile.ts
@@ -256725,6 +256731,10 @@ function definePluginSpatialProfile(profile) {
     throw new Error(`\u5806\u53E0\u627F\u8F7D\u5FC5\u987B\u5F15\u7528 frame \u7A7A\u95F4\u951A\u70B9: ${stackAnchorId}`);
   }
   for (const body of [profile.body, ...profile.collisionBodies || []]) {
+    if (body?.shape === "mesh") {
+      if (!body.nodeId.trim()) throw new Error("\u78B0\u649E\u7F51\u683C\u5FC5\u987B\u5F15\u7528\u6709\u6548\u8282\u70B9");
+      continue;
+    }
     const bodyCenterAnchorId = body?.centerAnchorId;
     const bodyCenterAnchor = resolveSpaceAnchor(anchors, bodyCenterAnchorId);
     if (bodyCenterAnchorId && bodyCenterAnchor?.kind !== "point") {
@@ -256743,11 +256753,18 @@ var DYNAMIC_FOOTPRINT_EDGE_SAMPLE_STEPS = 8;
 var MAX_EDGE_SAMPLE_SOURCE_POINTS = 64;
 var dynamicSurfaceFootprintPointCache = /* @__PURE__ */ new WeakMap();
 var dynamicSurfaceFootprintInfoCache = /* @__PURE__ */ new WeakMap();
-function getCollisionInfoFromFootprint(footprint) {
+function resolveFootprintCollision(footprint) {
+  if (!footprint) return null;
+  const metadata = {
+    ...footprint.offset ? { offset: new Vector2(...footprint.offset) } : {},
+    ...footprint.axisAligned ? { isAABB: true } : {},
+    ...footprint.mergeAdjacentGroup ? { mergeAdjacentGroup: footprint.mergeAdjacentGroup } : {}
+  };
   if (footprint.shape === "circle") {
     return {
       shape: "circle",
-      size: footprint.radius
+      size: footprint.radius,
+      ...metadata
     };
   }
   return {
@@ -256755,7 +256772,54 @@ function getCollisionInfoFromFootprint(footprint) {
     size: {
       width: footprint.width,
       depth: footprint.depth
-    }
+    },
+    ...metadata
+  };
+}
+function resolveSpatialProfileCollision(profile, root) {
+  const footprint = profile?.footprint;
+  if (!footprint || !profile) return null;
+  const declared = resolveFootprintCollision(footprint);
+  if (!root || !footprint.projection) return declared;
+  root.updateWorldMatrix(true, false);
+  const bounds = new Box3();
+  if (footprint.projection === "body-world-aabb") {
+    const body = profile.body;
+    if (!body) return declared;
+    const anchor = resolveSpaceAnchor(profile.anchors, body.centerAnchorId);
+    const point = anchor ? resolveSpacePoint(anchor, "body.centerAnchorId") : null;
+    const center2 = point?.origin ?? new Vector3();
+    const node = point?.nodeId ? resolveDynamicFootprintRefNode(root, point.nodeId) : root;
+    if (!node) return declared;
+    node.updateWorldMatrix(true, false);
+    const half = body.shape === "box" ? new Vector3(body.width, body.height, body.depth).multiplyScalar(0.5) : new Vector3(body.radius, body.shape === "sphere" ? body.radius : body.height / 2, body.radius);
+    bounds.set(center2.clone().sub(half), center2.clone().add(half)).applyMatrix4(node.matrixWorld);
+  } else {
+    const excluded = new Set(footprint.excludeNodeIds);
+    const visit = (node) => {
+      if (excluded.has(node.name) || excluded.has(node.userData.capabilityNodeId)) return;
+      node.updateWorldMatrix(false, false);
+      const object = node;
+      if (object.boundingBox !== void 0) {
+        if (!object.boundingBox) object.computeBoundingBox?.();
+        if (object.boundingBox) bounds.union(object.boundingBox.clone().applyMatrix4(node.matrixWorld));
+      } else if (object.geometry) {
+        if (!object.geometry.boundingBox) object.geometry.computeBoundingBox();
+        if (object.geometry.boundingBox) bounds.union(object.geometry.boundingBox.clone().applyMatrix4(node.matrixWorld));
+      }
+      node.children.forEach(visit);
+    };
+    visit(root);
+  }
+  if (bounds.isEmpty()) return null;
+  const size = bounds.getSize(new Vector3());
+  const center = bounds.getCenter(new Vector3()).sub(root.getWorldPosition(new Vector3()));
+  return {
+    shape: "rect",
+    size: { width: Math.max(0, size.x), depth: Math.max(0, size.z) },
+    offset: new Vector2(center.x, center.z),
+    isAABB: true,
+    ...footprint.mergeAdjacentGroup ? { mergeAdjacentGroup: footprint.mergeAdjacentGroup } : {}
   };
 }
 function hasDynamicSurfaceFootprint(plugin) {
@@ -256865,8 +256929,8 @@ function resolveDynamicSurfaceFootprintCollisionInfo(plugin, options = {}) {
   }
   const profile = plugin.getSpatialProfile();
   const footprint = profile.footprint;
-  const refNodeId = footprint.refNodeId;
-  if (!refNodeId) {
+  const refNodeId = footprint?.refNodeId;
+  if (!footprint || !refNodeId) {
     return null;
   }
   const collisionMesh = options.collisionMesh || plugin.getCollisionMesh?.() || plugin.getMesh?.() || plugin.mesh || null;
@@ -256943,6 +257007,7 @@ function resolveDynamicSurfaceFootprintCollisionInfo(plugin, options = {}) {
   return nextInfo;
 }
 function getDefaultDragSurfaceMarginFromFootprint(footprint) {
+  if (!footprint) return 0;
   if (footprint.shape === "circle") {
     return footprint.radius;
   }
@@ -256952,12 +257017,14 @@ function getDefaultDragSurfaceMarginFromFootprint(footprint) {
   };
 }
 function getDefaultInteractionScaleFromFootprint(footprint) {
+  if (!footprint) return 0;
   if (footprint.shape === "circle") {
     return footprint.radius * 2;
   }
   return Math.max(footprint.width, footprint.depth);
 }
 function getDefaultBlockedInsetFromFootprint(footprint) {
+  if (!footprint) return 0;
   if (footprint.shape === "circle") {
     return footprint.radius;
   }
@@ -257037,7 +257104,7 @@ function resolvePrimaryInteractionSizeFromSpatialProfile(profile, fallbackSize =
   }
   return Math.max(
     0,
-    profile.interactionScale ?? getBodyHeightFromBody(profile.body) ?? getDefaultInteractionScaleFromFootprint(profile.footprint) ?? fallbackSize
+    profile.interactionScale ?? getBodyHeightFromBody(profile.body) ?? (profile.footprint ? getDefaultInteractionScaleFromFootprint(profile.footprint) : fallbackSize)
   );
 }
 function resolvePluginDragSurfaceMargin(plugin) {
@@ -257479,6 +257546,7 @@ function resolveSurfaceTiltClampLocalCorners(options) {
   if (!Number.isFinite(bodyHeight) || bodyHeight <= 0) {
     return null;
   }
+  if (!profile.footprint) return null;
   if (profile.footprint.shape === "rect") {
     return createBoxLocalCorners(
       new Vector3(
@@ -257609,6 +257677,7 @@ function getBodyHeight(body) {
   return body.height;
 }
 function getDefaultInteractionScale(footprint) {
+  if (!footprint) return 0;
   if (footprint.shape === "circle") {
     return footprint.radius * 2;
   }
@@ -259233,7 +259302,7 @@ function createSurfaceAnchoredTiltBehavior(options) {
     const horizontalTarget = resolveTarget(plugin, "horizontal") || plugin.mesh || verticalTarget;
     let firstPose = null;
     if (constrainMotion && verticalTarget) {
-      angle = resolveCollisionSafeSurfaceTiltAngle({
+      const safePose = resolveCollisionSafeSurfaceTilt({
         plugin,
         collisionManager: plugin.collisionManager || plugin.context.collisionManager,
         target: verticalTarget,
@@ -259248,6 +259317,8 @@ function createSurfaceAnchoredTiltBehavior(options) {
           anchorPoint
         )
       });
+      angle = safePose.angle;
+      anchorPoint = safePose.anchorPoint;
     }
     if (verticalTarget) {
       firstPose = applyResolvedPose(
@@ -261600,7 +261671,7 @@ var ComposablePluginBase = class {
     const entry = this.collectCapabilityBehaviorDescriptors().find(
       ({ descriptor }) => descriptor.kind === "freeFlight"
     );
-    const motionMode = entry?.descriptor.motionMode;
+    const motionMode = entry ? entry.descriptor.motionMode ?? "air" : null;
     return motionMode === "ground" || motionMode === "air" ? motionMode : null;
   }
   /** 供宿主 capability 运行时把实时 tilt 状态回写到 Worker 插件实例。 */
@@ -261821,13 +261892,6 @@ var ComposablePluginBase = class {
    */
   getSurfaceAttachmentProfile() {
     return { mountAnchorId: DEFAULT_MOUNT_ANCHOR_ID };
-  }
-  /**
-   * 返回插件碰撞体信息。
-   * 默认直接复用 `SpatialProfile.footprint`，绝大多数插件无需再手写样板。
-   */
-  getCollisionInfo() {
-    return getCollisionInfoFromFootprint(this.getSpatialProfile().footprint);
   }
   /**
    * 获取当前活动平面。
@@ -263895,7 +263959,7 @@ function createRollingSphereMotionBehavior(options = {}) {
       return configuredRadius;
     }
     const footprint = plugin.getSpatialProfile().footprint;
-    if (footprint.shape === "circle") {
+    if (footprint?.shape === "circle") {
       return footprint.radius;
     }
     return resolvePluginInteractionScale(plugin) / 2;
@@ -276216,6 +276280,27 @@ function readUnitNumber(value, fallback) {
   return typeof value === "number" && Number.isFinite(value) ? Math.min(1, Math.max(0, value)) : fallback;
 }
 
+// src/components/StarSky/Workbench/staticAssets.ts
+function sanitizePluginStaticAssetPath(assetPath) {
+  if (typeof assetPath !== "string") {
+    return null;
+  }
+  const normalizedPath = assetPath.trim().replace(/^\.?\/*/, "");
+  if (!normalizedPath) {
+    return null;
+  }
+  if (normalizedPath.includes("..")) {
+    return null;
+  }
+  if (/^[a-z][a-z0-9+.-]*:/i.test(normalizedPath)) {
+    return null;
+  }
+  if (!normalizedPath.startsWith("assets/")) {
+    return null;
+  }
+  return normalizedPath;
+}
+
 // src/components/StarSky/host/runtime/sandbox/Capabilities/DescriptorValidator.ts
 var SandboxDescriptorValidationError = class extends Error {
   constructor(message) {
@@ -276955,10 +277040,14 @@ function validateFreeFlightBehavior(behavior, context) {
     ["velocityResponse", behavior.velocityResponse],
     ["inputResponse", behavior.inputResponse],
     ["lateralInputResponse", behavior.lateralInputResponse],
+    ["steeringReturnResponse", behavior.steeringReturnResponse],
+    ["steeringCounterResponse", behavior.steeringCounterResponse],
+    ["steeringReferenceSpeed", behavior.steeringReferenceSpeed],
     ["groundSuspensionSpringRate", behavior.groundSuspensionSpringRate],
     ["groundSuspensionDampingRate", behavior.groundSuspensionDampingRate],
     ["groundCenterOfMassHeight", behavior.groundCenterOfMassHeight],
     ["groundGrip", behavior.groundGrip],
+    ["groundLateralGripMultiplier", behavior.groundLateralGripMultiplier],
     ["groundUphillGripMultiplier", behavior.groundUphillGripMultiplier],
     ["cameraFollowResponse", behavior.cameraFollowResponse],
     ["hoverPositionHold", behavior.hoverPositionHold],
@@ -276999,7 +277088,7 @@ function validateFreeFlightBehavior(behavior, context) {
   positiveFields.forEach(
     ([name, value]) => assertFinitePositiveNumber(value, `freeFlight.${name}`)
   );
-  for (const name of ["groundDynamics", "groundDust"]) {
+  for (const name of ["groundDynamics", "groundDust", "groundFallRecovery", "groundDriftEnabled"]) {
     if (behavior[name] !== void 0 && typeof behavior[name] !== "boolean") {
       throw new SandboxDescriptorValidationError(`freeFlight.${name} \u5FC5\u987B\u4E3A\u5E03\u5C14\u503C`);
     }
@@ -277007,10 +277096,18 @@ function validateFreeFlightBehavior(behavior, context) {
   if (behavior.groundDynamics && (behavior.motionMode !== "ground" || !behavior.groundSprungBodyNodeId || !behavior.groundWheelSuspension?.length)) {
     throw new SandboxDescriptorValidationError("freeFlight.groundDynamics \u5FC5\u987B\u58F0\u660E\u5730\u9762\u6A21\u5F0F\u3001\u7C27\u4E0A\u8F66\u8EAB\u4E0E\u56DB\u8F6E\u60AC\u6302");
   }
+  if (behavior.groundDriftEnabled && !behavior.groundDynamics) {
+    throw new SandboxDescriptorValidationError("freeFlight.groundDriftEnabled \u5FC5\u987B\u542F\u7528 groundDynamics");
+  }
+  if (behavior.groundTireSkidAssetPath !== void 0 && (typeof behavior.groundTireSkidAssetPath !== "string" || sanitizePluginStaticAssetPath(behavior.groundTireSkidAssetPath) !== behavior.groundTireSkidAssetPath)) {
+    throw new SandboxDescriptorValidationError("freeFlight.groundTireSkidAssetPath \u5FC5\u987B\u662F\u63D2\u4EF6 assets/ \u5185\u7684\u76F8\u5BF9\u8D44\u6E90\u952E");
+  }
   if (behavior.groundTerrainMaterial !== void 0 && !["asphalt", "dirt", "gravel"].includes(behavior.groundTerrainMaterial)) {
     throw new SandboxDescriptorValidationError("freeFlight.groundTerrainMaterial \u4E0D\u652F\u6301\u8BE5\u6750\u8D28");
   }
   assertFiniteNonNegativeNumber(behavior.groundAirborneAngularDamping, "freeFlight.groundAirborneAngularDamping");
+  assertFiniteNonNegativeNumber(behavior.groundAntiRollStiffness, "freeFlight.groundAntiRollStiffness");
+  assertFiniteNonNegativeNumber(behavior.groundAntiRollDamping, "freeFlight.groundAntiRollDamping");
   assertFiniteNonNegativeNumber(behavior.cameraShakeScale, "freeFlight.cameraShakeScale");
   assertFiniteUnitNumber(behavior.groundFeedbackVolume, "freeFlight.groundFeedbackVolume");
   assertFiniteUnitNumber(behavior.cameraHorizonStability, "freeFlight.cameraHorizonStability");
@@ -277162,6 +277259,7 @@ function validateFreeFlightBehavior(behavior, context) {
     "freeFlight.highSpeedSteeringScale"
   );
   assertFiniteUnitNumber(behavior.roadEdgeAssist, "freeFlight.roadEdgeAssist");
+  assertFiniteUnitNumber(behavior.groundStabilityAssist, "freeFlight.groundStabilityAssist");
   if (behavior.steeringMode !== void 0 && !["velocity-heading", "edge-yaw-rate"].includes(behavior.steeringMode)) {
     throw new SandboxDescriptorValidationError("freeFlight.steeringMode \u975E\u6CD5");
   }
@@ -281238,7 +281336,6 @@ export {
   getBodyBlockedInsetAtClearance,
   getBodyHeightFromBody,
   getBodyVolume,
-  getCollisionInfoFromFootprint,
   getDefaultBlockedInsetFromFootprint,
   getDefaultDragSurfaceMarginFromFootprint,
   getDefaultInteractionScaleFromFootprint,
@@ -281279,6 +281376,7 @@ export {
   resolveAdjacentMediaStageIndex,
   resolveAttachedWorldMatrix,
   resolveElasticPullCommitDirectionFromOffset,
+  resolveFootprintCollision,
   resolveMediaAssetDisplayName,
   resolveMediaAssetEntries,
   resolveMediaStagePlaneTransforms,
@@ -281308,6 +281406,7 @@ export {
   resolveSpaceFrame,
   resolveSpaceFrameContactDistance,
   resolveSpacePoint,
+  resolveSpatialProfileCollision,
   resolveStandardActionButtonsBehaviorId,
   resolveStandardFreeFlightBehaviorId,
   resolveStandardLocalClipRectBehaviorId,

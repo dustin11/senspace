@@ -11307,8 +11307,8 @@ ${lanes.join("\n")}
               if (!isString(relativeFileName)) return;
               const fileName = getNormalizedAbsolutePath(relativeFileName, dirName);
               const filePath = toCanonicalName(fileName);
-              const callbacks = fileName && fileWatcherCallbacks.get(filePath);
-              if (callbacks) {
+              const callbacks2 = fileName && fileWatcherCallbacks.get(filePath);
+              if (callbacks2) {
                 let currentModifiedTime;
                 let eventKind = 1;
                 if (fileTimestamps) {
@@ -11322,7 +11322,7 @@ ${lanes.join("\n")}
                   if (existingTime === missingFileModifiedTime) eventKind = 0;
                   else if (currentModifiedTime === missingFileModifiedTime) eventKind = 2;
                 }
-                for (const fileCallback of callbacks) {
+                for (const fileCallback of callbacks2) {
                   fileCallback(fileName, eventKind, currentModifiedTime);
                 }
               }
@@ -11498,7 +11498,7 @@ ${lanes.join("\n")}
           } else {
             invokeMap = fileNameOrInvokeMap;
           }
-          callbackCache.forEach((callbacks, rootDirName) => {
+          callbackCache.forEach((callbacks2, rootDirName) => {
             if (invokeMap && invokeMap.get(rootDirName) === true) return;
             if (rootDirName === dirPath || startsWith(dirPath, rootDirName) && dirPath[rootDirName.length] === directorySeparator) {
               if (invokeMap) {
@@ -11513,7 +11513,7 @@ ${lanes.join("\n")}
                   invokeMap.set(rootDirName, true);
                 }
               } else {
-                callbacks.forEach(({ callback }) => callback(fileName));
+                callbacks2.forEach(({ callback }) => callback(fileName));
               }
             }
           });
@@ -11568,10 +11568,10 @@ ${lanes.join("\n")}
             if (!((_a = cache.get(dirPath)) == null ? void 0 : _a.targetWatcher)) invokeCallbacks(dirName, dirPath, invokeMap, hasChanges ? void 0 : fileNames);
           }
           sysLog(`sysLog:: invokingWatchers:: Elapsed:: ${timestamp() - start}ms:: ${cacheToUpdateChildWatches.size}`);
-          callbackCache.forEach((callbacks, rootDirName) => {
+          callbackCache.forEach((callbacks2, rootDirName) => {
             const existing = invokeMap.get(rootDirName);
             if (existing) {
-              callbacks.forEach(({ callback, dirName }) => {
+              callbacks2.forEach(({ callback, dirName }) => {
                 if (isArray(existing)) {
                   existing.forEach(callback);
                 } else {
@@ -50983,7 +50983,7 @@ ${lanes.join("\n")}
         if (resolutionMode === 99 && (3 <= moduleResolution && moduleResolution <= 99)) {
           features |= 32;
         }
-        const conditions = features & 8 ? getConditions(options, resolutionMode) : [];
+        const conditions2 = features & 8 ? getConditions(options, resolutionMode) : [];
         const diagnostics = [];
         const moduleResolutionState = {
           compilerOptions: options,
@@ -50993,7 +50993,7 @@ ${lanes.join("\n")}
           affectingLocations,
           packageJsonInfoCache: cache,
           features,
-          conditions,
+          conditions: conditions2,
           requestContainingDirectory: containingDirectory,
           reportDiagnostic: (diag2) => void diagnostics.push(diag2),
           isConfigLookup: false,
@@ -51159,14 +51159,14 @@ ${lanes.join("\n")}
             return [];
           }
         }
-        const conditions = resolutionMode === 99 ? ["import"] : ["require"];
+        const conditions2 = resolutionMode === 99 ? ["import"] : ["require"];
         if (!options.noDtsResolution) {
-          conditions.push("types");
+          conditions2.push("types");
         }
         if (moduleResolution !== 100) {
-          conditions.push("node");
+          conditions2.push("node");
         }
-        return concatenate(conditions, options.customConditions);
+        return concatenate(conditions2, options.customConditions);
       }
       function resolvePackageNameToPackageJson(packageName, containingDirectory, options, host, cache) {
         const moduleResolutionState = getTemporaryModuleResolutionState(cache == null ? void 0 : cache.getPackageJsonInfoCache(), host, options);
@@ -51769,7 +51769,7 @@ ${lanes.join("\n")}
           resolutionMode
         );
       }
-      function nodeNextModuleNameResolverWorker(features, moduleName, containingFile, compilerOptions, host, cache, redirectedReference, resolutionMode, conditions) {
+      function nodeNextModuleNameResolverWorker(features, moduleName, containingFile, compilerOptions, host, cache, redirectedReference, resolutionMode, conditions2) {
         const containingDirectory = getDirectoryPath(containingFile);
         const esmMode = resolutionMode === 99 ? 32 : 0;
         let extensions2 = compilerOptions.noDtsResolution ? 3 : 1 | 2 | 4;
@@ -51787,7 +51787,7 @@ ${lanes.join("\n")}
           /*isConfigLookup*/
           false,
           redirectedReference,
-          conditions
+          conditions2
         );
       }
       function tryResolveJSModuleWorker(moduleName, initialDir, host) {
@@ -51808,7 +51808,7 @@ ${lanes.join("\n")}
           void 0
         );
       }
-      function bundlerModuleNameResolver(moduleName, containingFile, compilerOptions, host, cache, redirectedReference, conditions) {
+      function bundlerModuleNameResolver(moduleName, containingFile, compilerOptions, host, cache, redirectedReference, conditions2) {
         const containingDirectory = getDirectoryPath(containingFile);
         let extensions2 = compilerOptions.noDtsResolution ? 3 : 1 | 2 | 4;
         if (getResolveJsonModule(compilerOptions)) {
@@ -51825,10 +51825,10 @@ ${lanes.join("\n")}
           /*isConfigLookup*/
           false,
           redirectedReference,
-          conditions
+          conditions2
         );
       }
-      function nodeModuleNameResolver(moduleName, containingFile, compilerOptions, host, cache, redirectedReference, conditions, isConfigLookup) {
+      function nodeModuleNameResolver(moduleName, containingFile, compilerOptions, host, cache, redirectedReference, conditions2, isConfigLookup) {
         let extensions2;
         if (isConfigLookup) {
           extensions2 = 8;
@@ -51838,7 +51838,7 @@ ${lanes.join("\n")}
         } else {
           extensions2 = getResolveJsonModule(compilerOptions) ? 1 | 2 | 4 | 8 : 1 | 2 | 4;
         }
-        return nodeModuleNameResolverWorker(conditions ? 30 : 0, moduleName, getDirectoryPath(containingFile), compilerOptions, host, cache, extensions2, !!isConfigLookup, redirectedReference, conditions);
+        return nodeModuleNameResolverWorker(conditions2 ? 30 : 0, moduleName, getDirectoryPath(containingFile), compilerOptions, host, cache, extensions2, !!isConfigLookup, redirectedReference, conditions2);
       }
       function nodeNextJsonConfigResolver(moduleName, containingFile, host) {
         return nodeModuleNameResolverWorker(
@@ -51861,13 +51861,13 @@ ${lanes.join("\n")}
           void 0
         );
       }
-      function nodeModuleNameResolverWorker(features, moduleName, containingDirectory, compilerOptions, host, cache, extensions2, isConfigLookup, redirectedReference, conditions) {
+      function nodeModuleNameResolverWorker(features, moduleName, containingDirectory, compilerOptions, host, cache, extensions2, isConfigLookup, redirectedReference, conditions2) {
         var _a, _b, _c, _d, _e;
         const traceEnabled = isTraceEnabled(compilerOptions, host);
         const failedLookupLocations = [];
         const affectingLocations = [];
         const moduleResolution = getEmitModuleResolutionKind(compilerOptions);
-        conditions ?? (conditions = getConditions(
+        conditions2 ?? (conditions2 = getConditions(
           compilerOptions,
           moduleResolution === 100 || moduleResolution === 2 ? void 0 : features & 32 ? 99 : 1
           /* CommonJS */
@@ -51881,7 +51881,7 @@ ${lanes.join("\n")}
           affectingLocations,
           packageJsonInfoCache: cache,
           features,
-          conditions: conditions ?? emptyArray,
+          conditions: conditions2 ?? emptyArray,
           requestContainingDirectory: containingDirectory,
           reportDiagnostic: (diag2) => void diagnostics.push(diag2),
           isConfigLookup,
@@ -51902,7 +51902,7 @@ ${lanes.join("\n")}
         let alternateResult;
         if (state.resolvedPackageDirectory && !isConfigLookup && !isExternalModuleNameRelative(moduleName)) {
           const wantedTypesButGotJs = (result == null ? void 0 : result.value) && extensions2 & (1 | 4) && !extensionIsOk(1 | 4, result.value.resolved.extension);
-          if (((_a = result == null ? void 0 : result.value) == null ? void 0 : _a.isExternalLibraryImport) && wantedTypesButGotJs && features & 8 && (conditions == null ? void 0 : conditions.includes("import"))) {
+          if (((_a = result == null ? void 0 : result.value) == null ? void 0 : _a.isExternalLibraryImport) && wantedTypesButGotJs && features & 8 && (conditions2 == null ? void 0 : conditions2.includes("import"))) {
             traceIfEnabled(state, Diagnostics.Resolution_of_non_relative_name_failed_trying_with_modern_Node_resolution_features_disabled_to_see_if_npm_library_needs_configuration_update);
             const diagnosticState = {
               ...state,
@@ -52283,8 +52283,8 @@ ${lanes.join("\n")}
             )],
             arrayIsEqualTo
           );
-          for (const conditions of conditionSets) {
-            const loadPackageJsonExportsState = { ...loadPackageJsonMainState, failedLookupLocations: [], conditions, host };
+          for (const conditions2 of conditionSets) {
+            const loadPackageJsonExportsState = { ...loadPackageJsonMainState, failedLookupLocations: [], conditions: conditions2, host };
             const exportResolutions = loadEntrypointsFromExportMap(
               packageJsonInfo,
               packageJsonInfo.contents.packageJsonContent.exports,
@@ -53007,8 +53007,8 @@ ${lanes.join("\n")}
           }
         }
       }
-      function isApplicableVersionedTypesKey(conditions, key) {
-        if (!conditions.includes("types")) return false;
+      function isApplicableVersionedTypesKey(conditions2, key) {
+        if (!conditions2.includes("types")) return false;
         if (!startsWith(key, "types@")) return false;
         const range = VersionRange.tryParse(key.substring("types@".length));
         if (!range) return false;
@@ -57544,7 +57544,7 @@ ${lanes.join("\n")}
           return ending !== 0 || value === processEnding(relativeToBaseUrl, [ending], compilerOptions, host);
         }
       }
-      function tryGetModuleNameFromExportsOrImports(options, host, targetFilePath, packageDirectory, packageName, exports2, conditions, mode, isImports, preferTsExtension) {
+      function tryGetModuleNameFromExportsOrImports(options, host, targetFilePath, packageDirectory, packageName, exports2, conditions2, mode, isImports, preferTsExtension) {
         if (typeof exports2 === "string") {
           const ignoreCase = !hostUsesCaseSensitiveFileNames(host);
           const getCommonSourceDirectory2 = () => host.getCommonSourceDirectory();
@@ -57651,12 +57651,12 @@ ${lanes.join("\n")}
               break;
           }
         } else if (Array.isArray(exports2)) {
-          return forEach(exports2, (e) => tryGetModuleNameFromExportsOrImports(options, host, targetFilePath, packageDirectory, packageName, e, conditions, mode, isImports, preferTsExtension));
+          return forEach(exports2, (e) => tryGetModuleNameFromExportsOrImports(options, host, targetFilePath, packageDirectory, packageName, e, conditions2, mode, isImports, preferTsExtension));
         } else if (typeof exports2 === "object" && exports2 !== null) {
           for (const key of getOwnKeys(exports2)) {
-            if (key === "default" || conditions.indexOf(key) >= 0 || isApplicableVersionedTypesKey(conditions, key)) {
+            if (key === "default" || conditions2.indexOf(key) >= 0 || isApplicableVersionedTypesKey(conditions2, key)) {
               const subTarget = exports2[key];
-              const result = tryGetModuleNameFromExportsOrImports(options, host, targetFilePath, packageDirectory, packageName, subTarget, conditions, mode, isImports, preferTsExtension);
+              const result = tryGetModuleNameFromExportsOrImports(options, host, targetFilePath, packageDirectory, packageName, subTarget, conditions2, mode, isImports, preferTsExtension);
               if (result) {
                 return result;
               }
@@ -57665,7 +57665,7 @@ ${lanes.join("\n")}
         }
         return void 0;
       }
-      function tryGetModuleNameFromExports(options, host, targetFilePath, packageDirectory, packageName, exports2, conditions) {
+      function tryGetModuleNameFromExports(options, host, targetFilePath, packageDirectory, packageName, exports2, conditions2) {
         if (typeof exports2 === "object" && exports2 !== null && !Array.isArray(exports2) && allKeysStartWithDot(exports2)) {
           return forEach(getOwnKeys(exports2), (k) => {
             const subPackageName = getNormalizedAbsolutePath(
@@ -57681,7 +57681,7 @@ ${lanes.join("\n")}
               packageDirectory,
               subPackageName,
               exports2[k],
-              conditions,
+              conditions2,
               mode,
               /*isImports*/
               false,
@@ -57697,7 +57697,7 @@ ${lanes.join("\n")}
           packageDirectory,
           packageName,
           exports2,
-          conditions,
+          conditions2,
           0,
           /*isImports*/
           false,
@@ -57724,7 +57724,7 @@ ${lanes.join("\n")}
         if (!imports) {
           return void 0;
         }
-        const conditions = getConditions(options, importMode);
+        const conditions2 = getConditions(options, importMode);
         return (_c = forEach(getOwnKeys(imports), (k) => {
           if (!startsWith(k, "#") || k === "#" || startsWith(k, "#/")) return void 0;
           const mode = endsWith(k, "/") ? 1 : k.includes("*") ? 2 : 0;
@@ -57735,7 +57735,7 @@ ${lanes.join("\n")}
             ancestorDirectoryWithPackageJson,
             k,
             imports[k],
-            conditions,
+            conditions2,
             mode,
             /*isImports*/
             true,
@@ -57820,7 +57820,7 @@ ${lanes.join("\n")}
             if (getResolvePackageJsonExports(options)) {
               const nodeModulesDirectoryName2 = packageRootPath.substring(parts.topLevelPackageNameIndex + 1);
               const packageName2 = getPackageNameFromTypesPackageName(nodeModulesDirectoryName2);
-              const conditions = getConditions(options, importMode);
+              const conditions2 = getConditions(options, importMode);
               const fromExports = (packageJsonContent == null ? void 0 : packageJsonContent.exports) ? tryGetModuleNameFromExports(
                 options,
                 host,
@@ -57828,7 +57828,7 @@ ${lanes.join("\n")}
                 packageRootPath,
                 packageName2,
                 packageJsonContent.exports,
-                conditions
+                conditions2
               ) : void 0;
               if (fromExports) {
                 return { ...fromExports, verbatimFromExports: true };
@@ -77423,7 +77423,7 @@ ${lanes.join("\n")}
             if (sourceType && targetType && (sourceType !== targetType || checkMode & 8)) {
               const sourceSig = checkMode & 3 || isInstantiatedGenericParameter(source, i) ? void 0 : getSingleCallSignature(getNonNullableType(sourceType));
               const targetSig = checkMode & 3 || isInstantiatedGenericParameter(target, i) ? void 0 : getSingleCallSignature(getNonNullableType(targetType));
-              const callbacks = sourceSig && targetSig && !getTypePredicateOfSignature(sourceSig) && !getTypePredicateOfSignature(targetSig) && getTypeFacts(
+              const callbacks2 = sourceSig && targetSig && !getTypePredicateOfSignature(sourceSig) && !getTypePredicateOfSignature(targetSig) && getTypeFacts(
                 sourceType,
                 50331648
                 /* IsUndefinedOrNull */
@@ -77432,7 +77432,7 @@ ${lanes.join("\n")}
                 50331648
                 /* IsUndefinedOrNull */
               );
-              let related = callbacks ? compareSignaturesRelated(targetSig, sourceSig, checkMode & 8 | (strictVariance ? 2 : 1), reportErrors2, errorReporter, incompatibleErrorReporter, compareTypes, reportUnreliableMarkers) : !(checkMode & 3) && !strictVariance && compareTypes(
+              let related = callbacks2 ? compareSignaturesRelated(targetSig, sourceSig, checkMode & 8 | (strictVariance ? 2 : 1), reportErrors2, errorReporter, incompatibleErrorReporter, compareTypes, reportUnreliableMarkers) : !(checkMode & 3) && !strictVariance && compareTypes(
                 sourceType,
                 targetType,
                 /*reportErrors*/
@@ -185703,7 +185703,7 @@ ${newComment.split("\n").map((c) => ` * ${c}`).join("\n")}
             return;
           }
           const keys = getOwnKeys(lookupTable);
-          const conditions = getConditions(compilerOptions, mode);
+          const conditions2 = getConditions(compilerOptions, mode);
           addCompletionEntriesFromPathsOrExportsOrImports(
             result,
             isExports,
@@ -185716,7 +185716,7 @@ ${newComment.split("\n").map((c) => ` * ${c}`).join("\n")}
             moduleSpecifierResolutionHost,
             keys,
             (key) => {
-              const pattern = getPatternFromFirstMatchingCondition(lookupTable[key], conditions);
+              const pattern = getPatternFromFirstMatchingCondition(lookupTable[key], conditions2);
               if (pattern === void 0) {
                 return void 0;
               }
@@ -185726,15 +185726,15 @@ ${newComment.split("\n").map((c) => ` * ${c}`).join("\n")}
           );
         }
       }
-      function getPatternFromFirstMatchingCondition(target, conditions) {
+      function getPatternFromFirstMatchingCondition(target, conditions2) {
         if (typeof target === "string") {
           return target;
         }
         if (target && typeof target === "object" && !isArray(target)) {
           for (const condition in target) {
-            if (condition === "default" || conditions.includes(condition) || isApplicableVersionedTypesKey(conditions, condition)) {
+            if (condition === "default" || conditions2.includes(condition) || isApplicableVersionedTypesKey(conditions2, condition)) {
               const pattern = target[condition];
-              return getPatternFromFirstMatchingCondition(pattern, conditions);
+              return getPatternFromFirstMatchingCondition(pattern, conditions2);
             }
           }
         }
@@ -205653,17 +205653,17 @@ ${options.prefix}` : "\n" : options.prefix
           const key = service.toPath(path2);
           let id = pathToId.get(key);
           if (!id) pathToId.set(key, id = ids++);
-          let callbacks = idToCallbacks.get(id);
-          if (!callbacks) {
-            idToCallbacks.set(id, callbacks = /* @__PURE__ */ new Set());
+          let callbacks2 = idToCallbacks.get(id);
+          if (!callbacks2) {
+            idToCallbacks.set(id, callbacks2 = /* @__PURE__ */ new Set());
             service.eventHandler(event(id));
           }
-          callbacks.add(callback);
+          callbacks2.add(callback);
           return {
             close() {
-              const callbacks2 = idToCallbacks.get(id);
-              if (!(callbacks2 == null ? void 0 : callbacks2.delete(callback))) return;
-              if (callbacks2.size) return;
+              const callbacks22 = idToCallbacks.get(id);
+              if (!(callbacks22 == null ? void 0 : callbacks22.delete(callback))) return;
+              if (callbacks22.size) return;
               idToCallbacks.delete(id);
               pathToId.delete(key);
               service.eventHandler({ eventName: CloseFileWatcherEvent, data: { id } });
@@ -223183,7 +223183,7 @@ var Object3D = class _Object3D extends EventDispatcher {
     }
     if (isRootObject) {
       const geometries = extractFromCache(meta.geometries);
-      const materials = extractFromCache(meta.materials);
+      const materials2 = extractFromCache(meta.materials);
       const textures = extractFromCache(meta.textures);
       const images = extractFromCache(meta.images);
       const shapes = extractFromCache(meta.shapes);
@@ -223191,7 +223191,7 @@ var Object3D = class _Object3D extends EventDispatcher {
       const animations = extractFromCache(meta.animations);
       const nodes = extractFromCache(meta.nodes);
       if (geometries.length > 0) output.geometries = geometries;
-      if (materials.length > 0) output.materials = materials;
+      if (materials2.length > 0) output.materials = materials2;
       if (textures.length > 0) output.textures = textures;
       if (images.length > 0) output.images = images;
       if (shapes.length > 0) output.shapes = shapes;
@@ -238137,7 +238137,7 @@ var FileLoader = class extends Loader {
         if (typeof ReadableStream === "undefined" || response.body === void 0 || response.body.getReader === void 0) {
           return response;
         }
-        const callbacks = loading[url];
+        const callbacks2 = loading[url];
         const reader = response.body.getReader();
         const contentLength = response.headers.get("X-File-Size") || response.headers.get("Content-Length");
         const total = contentLength ? parseInt(contentLength) : 0;
@@ -238153,8 +238153,8 @@ var FileLoader = class extends Loader {
                 } else {
                   loaded += value.byteLength;
                   const event = new ProgressEvent("progress", { lengthComputable, loaded, total });
-                  for (let i = 0, il = callbacks.length; i < il; i++) {
-                    const callback = callbacks[i];
+                  for (let i = 0, il = callbacks2.length; i < il; i++) {
+                    const callback = callbacks2[i];
                     if (callback.onProgress) callback.onProgress(event);
                   }
                   controller.enqueue(value);
@@ -238196,21 +238196,21 @@ var FileLoader = class extends Loader {
       }
     }).then((data) => {
       Cache.add(`file:${url}`, data);
-      const callbacks = loading[url];
+      const callbacks2 = loading[url];
       delete loading[url];
-      for (let i = 0, il = callbacks.length; i < il; i++) {
-        const callback = callbacks[i];
+      for (let i = 0, il = callbacks2.length; i < il; i++) {
+        const callback = callbacks2[i];
         if (callback.onLoad) callback.onLoad(data);
       }
     }).catch((err) => {
-      const callbacks = loading[url];
-      if (callbacks === void 0) {
+      const callbacks2 = loading[url];
+      if (callbacks2 === void 0) {
         this.manager.itemError(url);
         throw err;
       }
       delete loading[url];
-      for (let i = 0, il = callbacks.length; i < il; i++) {
-        const callback = callbacks[i];
+      for (let i = 0, il = callbacks2.length; i < il; i++) {
+        const callback = callbacks2[i];
         if (callback.onError) callback.onError(err);
       }
       this.manager.itemError(url);
@@ -238435,9 +238435,9 @@ var ImageLoader = class extends Loader {
     function onImageLoad() {
       removeEventListeners();
       if (onLoad) onLoad(this);
-      const callbacks = _loading.get(this) || [];
-      for (let i = 0; i < callbacks.length; i++) {
-        const callback = callbacks[i];
+      const callbacks2 = _loading.get(this) || [];
+      for (let i = 0; i < callbacks2.length; i++) {
+        const callback = callbacks2[i];
         if (callback.onLoad) callback.onLoad(this);
       }
       _loading.delete(this);
@@ -238447,9 +238447,9 @@ var ImageLoader = class extends Loader {
       removeEventListeners();
       if (onError) onError(event);
       Cache.remove(`image:${url}`);
-      const callbacks = _loading.get(this) || [];
-      for (let i = 0; i < callbacks.length; i++) {
-        const callback = callbacks[i];
+      const callbacks2 = _loading.get(this) || [];
+      for (let i = 0; i < callbacks2.length; i++) {
+        const callback = callbacks2[i];
         if (callback.onError) callback.onError(event);
       }
       _loading.delete(this);
@@ -240060,8 +240060,8 @@ var ObjectLoader = class extends Loader {
       if (onLoad !== void 0) onLoad(object);
     });
     const textures = this.parseTextures(json.textures, images);
-    const materials = this.parseMaterials(json.materials, textures);
-    const object = this.parseObject(json.object, geometries, materials, textures, animations);
+    const materials2 = this.parseMaterials(json.materials, textures);
+    const object = this.parseObject(json.object, geometries, materials2, textures, animations);
     const skeletons = this.parseSkeletons(json.skeletons, object);
     this.bindSkeletons(object, skeletons);
     this.bindLightTargets(object);
@@ -240089,8 +240089,8 @@ var ObjectLoader = class extends Loader {
     const geometries = this.parseGeometries(json.geometries, shapes);
     const images = await this.parseImagesAsync(json.images);
     const textures = this.parseTextures(json.textures, images);
-    const materials = this.parseMaterials(json.materials, textures);
-    const object = this.parseObject(json.object, geometries, materials, textures, animations);
+    const materials2 = this.parseMaterials(json.materials, textures);
+    const object = this.parseObject(json.object, geometries, materials2, textures, animations);
     const skeletons = this.parseSkeletons(json.skeletons, object);
     this.bindSkeletons(object, skeletons);
     this.bindLightTargets(object);
@@ -240150,7 +240150,7 @@ var ObjectLoader = class extends Loader {
   }
   parseMaterials(json, textures) {
     const cache = {};
-    const materials = {};
+    const materials2 = {};
     if (json !== void 0) {
       const loader = new MaterialLoader();
       loader.setTextures(textures);
@@ -240159,10 +240159,10 @@ var ObjectLoader = class extends Loader {
         if (cache[data.uuid] === void 0) {
           cache[data.uuid] = loader.parse(data);
         }
-        materials[data.uuid] = cache[data.uuid];
+        materials2[data.uuid] = cache[data.uuid];
       }
     }
-    return materials;
+    return materials2;
   }
   parseAnimations(json) {
     const animations = {};
@@ -240344,7 +240344,7 @@ var ObjectLoader = class extends Loader {
     }
     return textures;
   }
-  parseObject(data, geometries, materials, textures, animations) {
+  parseObject(data, geometries, materials2, textures, animations) {
     let object;
     function getGeometry(name) {
       if (geometries[name] === void 0) {
@@ -240358,17 +240358,17 @@ var ObjectLoader = class extends Loader {
         const array = [];
         for (let i = 0, l = name.length; i < l; i++) {
           const uuid = name[i];
-          if (materials[uuid] === void 0) {
+          if (materials2[uuid] === void 0) {
             console.warn("THREE.ObjectLoader: Undefined material", uuid);
           }
-          array.push(materials[uuid]);
+          array.push(materials2[uuid]);
         }
         return array;
       }
-      if (materials[name] === void 0) {
+      if (materials2[name] === void 0) {
         console.warn("THREE.ObjectLoader: Undefined material", name);
       }
-      return materials[name];
+      return materials2[name];
     }
     function getTexture(uuid) {
       if (textures[uuid] === void 0) {
@@ -240570,7 +240570,7 @@ var ObjectLoader = class extends Loader {
     if (data.children !== void 0) {
       const children = data.children;
       for (let i = 0; i < children.length; i++) {
-        object.add(this.parseObject(children[i], geometries, materials, textures, animations));
+        object.add(this.parseObject(children[i], geometries, materials2, textures, animations));
       }
     }
     if (data.animations !== void 0) {
@@ -254723,7 +254723,7 @@ var WebGLRenderer = class {
     }
     let extensions2, capabilities, state, info;
     let properties, textures, cubemaps, cubeuvmaps, attributes, geometries, objects;
-    let programCache, materials, renderLists, renderStates, clipping, shadowMap;
+    let programCache, materials2, renderLists, renderStates, clipping, shadowMap;
     let background, morphtargets, bufferRenderer, indexedBufferRenderer;
     let utils, bindingStates, uniformsGroups;
     function initGLContext() {
@@ -254747,7 +254747,7 @@ var WebGLRenderer = class {
       morphtargets = new WebGLMorphtargets(_gl, capabilities, textures);
       clipping = new WebGLClipping(properties);
       programCache = new WebGLPrograms(_this, cubemaps, cubeuvmaps, extensions2, capabilities, bindingStates, clipping);
-      materials = new WebGLMaterials(_this, properties);
+      materials2 = new WebGLMaterials(_this, properties);
       renderLists = new WebGLRenderLists();
       renderStates = new WebGLRenderStates(extensions2);
       background = new WebGLBackground(_this, cubemaps, cubeuvmaps, state, objects, _alpha, premultipliedAlpha);
@@ -255106,7 +255106,7 @@ var WebGLRenderer = class {
         });
       }
       currentRenderState.setupLights();
-      const materials2 = /* @__PURE__ */ new Set();
+      const materials3 = /* @__PURE__ */ new Set();
       scene.traverse(function(object) {
         if (!(object.isMesh || object.isPoints || object.isLine || object.isSprite)) {
           return;
@@ -255117,29 +255117,29 @@ var WebGLRenderer = class {
             for (let i = 0; i < material.length; i++) {
               const material2 = material[i];
               prepareMaterial(material2, targetScene, object);
-              materials2.add(material2);
+              materials3.add(material2);
             }
           } else {
             prepareMaterial(material, targetScene, object);
-            materials2.add(material);
+            materials3.add(material);
           }
         }
       });
       currentRenderState = renderStateStack.pop();
-      return materials2;
+      return materials3;
     };
     this.compileAsync = function(scene, camera, targetScene = null) {
-      const materials2 = this.compile(scene, camera, targetScene);
+      const materials3 = this.compile(scene, camera, targetScene);
       return new Promise((resolve) => {
         function checkMaterialsReady() {
-          materials2.forEach(function(material) {
+          materials3.forEach(function(material) {
             const materialProperties = properties.get(material);
             const program = materialProperties.currentProgram;
             if (program.isReady()) {
-              materials2.delete(material);
+              materials3.delete(material);
             }
           });
-          if (materials2.size === 0) {
+          if (materials3.size === 0) {
             resolve(scene);
             return;
           }
@@ -255689,9 +255689,9 @@ var WebGLRenderer = class {
           markUniformsLightsNeedsUpdate(m_uniforms, refreshLights);
         }
         if (fog && material.fog === true) {
-          materials.refreshFogUniforms(m_uniforms, fog);
+          materials2.refreshFogUniforms(m_uniforms, fog);
         }
-        materials.refreshMaterialUniforms(m_uniforms, material, _pixelRatio, _height, currentRenderState.state.transmissionRenderTarget[camera.id]);
+        materials2.refreshMaterialUniforms(m_uniforms, material, _pixelRatio, _height, currentRenderState.state.transmissionRenderTarget[camera.id]);
         WebGLUniforms.upload(_gl, getUniformList(materialProperties), m_uniforms, textures);
       }
       if (material.isShaderMaterial && material.uniformsNeedUpdate === true) {
@@ -256605,11 +256605,12 @@ function resolveSurfaceHingedTiltPose(options) {
 }
 
 // src/components/StarSky/PluginFramework/utils/spatial/resolveSurfaceTiltCollision.ts
-function resolveCollisionSafeSurfaceTiltAngle(options) {
+function resolveCollisionSafeSurfaceTilt(options) {
   const { plugin, collisionManager, target, previousAngle, poseOptions } = options;
   const delta = poseOptions.angle - previousAngle;
-  if (!collisionManager?.getSafeTiltAngle || Math.abs(delta) < 1e-8)
-    return poseOptions.angle;
+  const anchorPoint = poseOptions.baseSurfacePoint?.clone() || poseOptions.surface.projectWorldPoint(poseOptions.currentWorldPosition).surfacePoint;
+  if (!collisionManager?.getSafeTiltMotion || Math.abs(delta) < 1e-8)
+    return { angle: poseOptions.angle, anchorPoint };
   const raw = { ...poseOptions, surfaceTiltClampLocalCorners: void 0 };
   const rest = resolveSurfaceHingedTiltPose({ ...raw, angle: 0 });
   const opposite = resolveSurfaceHingedTiltPose({ ...raw, angle: Math.PI });
@@ -256622,12 +256623,13 @@ function resolveCollisionSafeSurfaceTiltAngle(options) {
   const pivot = rest.position.clone().add(opposite.position).multiplyScalar(0.5).add(position.clone().sub(previous.position));
   const axis = (poseOptions.rotationAxisLocal || new Vector3(0, 1, 0)).clone().applyQuaternion(rest.quaternion).normalize();
   const corners = poseOptions.surfaceTiltClampLocalCorners;
-  const angle = collisionManager.getSafeTiltAngle(plugin, {
+  const result = collisionManager.getSafeTiltMotion(plugin, {
     target,
     surface: poseOptions.surface,
     pivot,
     axis,
     angle: delta,
+    allowBoundaryRetreat: !poseOptions.supportFrame,
     normalCorrection: corners?.length ? {
       normal: previous.surfaceNormal.clone().normalize(),
       points: corners.map(
@@ -256635,7 +256637,11 @@ function resolveCollisionSafeSurfaceTiltAngle(options) {
       )
     } : void 0
   });
-  return previousAngle + angle;
+  if (result.translation) {
+    const worldAnchor = poseOptions.surface.surfaceToWorld(anchorPoint.clone());
+    anchorPoint.copy(poseOptions.surface.worldToSurface(worldAnchor.add(result.translation)));
+  }
+  return { angle: previousAngle + result.angle, anchorPoint };
 }
 
 // src/components/StarSky/PluginFramework/surfaceAttachmentProfile.ts
@@ -256725,6 +256731,10 @@ function definePluginSpatialProfile(profile) {
     throw new Error(`\u5806\u53E0\u627F\u8F7D\u5FC5\u987B\u5F15\u7528 frame \u7A7A\u95F4\u951A\u70B9: ${stackAnchorId}`);
   }
   for (const body of [profile.body, ...profile.collisionBodies || []]) {
+    if (body?.shape === "mesh") {
+      if (!body.nodeId.trim()) throw new Error("\u78B0\u649E\u7F51\u683C\u5FC5\u987B\u5F15\u7528\u6709\u6548\u8282\u70B9");
+      continue;
+    }
     const bodyCenterAnchorId = body?.centerAnchorId;
     const bodyCenterAnchor = resolveSpaceAnchor(anchors, bodyCenterAnchorId);
     if (bodyCenterAnchorId && bodyCenterAnchor?.kind !== "point") {
@@ -256743,11 +256753,18 @@ var DYNAMIC_FOOTPRINT_EDGE_SAMPLE_STEPS = 8;
 var MAX_EDGE_SAMPLE_SOURCE_POINTS = 64;
 var dynamicSurfaceFootprintPointCache = /* @__PURE__ */ new WeakMap();
 var dynamicSurfaceFootprintInfoCache = /* @__PURE__ */ new WeakMap();
-function getCollisionInfoFromFootprint(footprint) {
+function resolveFootprintCollision(footprint) {
+  if (!footprint) return null;
+  const metadata = {
+    ...footprint.offset ? { offset: new Vector2(...footprint.offset) } : {},
+    ...footprint.axisAligned ? { isAABB: true } : {},
+    ...footprint.mergeAdjacentGroup ? { mergeAdjacentGroup: footprint.mergeAdjacentGroup } : {}
+  };
   if (footprint.shape === "circle") {
     return {
       shape: "circle",
-      size: footprint.radius
+      size: footprint.radius,
+      ...metadata
     };
   }
   return {
@@ -256755,7 +256772,54 @@ function getCollisionInfoFromFootprint(footprint) {
     size: {
       width: footprint.width,
       depth: footprint.depth
-    }
+    },
+    ...metadata
+  };
+}
+function resolveSpatialProfileCollision(profile, root) {
+  const footprint = profile?.footprint;
+  if (!footprint || !profile) return null;
+  const declared = resolveFootprintCollision(footprint);
+  if (!root || !footprint.projection) return declared;
+  root.updateWorldMatrix(true, false);
+  const bounds = new Box3();
+  if (footprint.projection === "body-world-aabb") {
+    const body = profile.body;
+    if (!body) return declared;
+    const anchor = resolveSpaceAnchor(profile.anchors, body.centerAnchorId);
+    const point = anchor ? resolveSpacePoint(anchor, "body.centerAnchorId") : null;
+    const center2 = point?.origin ?? new Vector3();
+    const node = point?.nodeId ? resolveDynamicFootprintRefNode(root, point.nodeId) : root;
+    if (!node) return declared;
+    node.updateWorldMatrix(true, false);
+    const half = body.shape === "box" ? new Vector3(body.width, body.height, body.depth).multiplyScalar(0.5) : new Vector3(body.radius, body.shape === "sphere" ? body.radius : body.height / 2, body.radius);
+    bounds.set(center2.clone().sub(half), center2.clone().add(half)).applyMatrix4(node.matrixWorld);
+  } else {
+    const excluded = new Set(footprint.excludeNodeIds);
+    const visit = (node) => {
+      if (excluded.has(node.name) || excluded.has(node.userData.capabilityNodeId)) return;
+      node.updateWorldMatrix(false, false);
+      const object = node;
+      if (object.boundingBox !== void 0) {
+        if (!object.boundingBox) object.computeBoundingBox?.();
+        if (object.boundingBox) bounds.union(object.boundingBox.clone().applyMatrix4(node.matrixWorld));
+      } else if (object.geometry) {
+        if (!object.geometry.boundingBox) object.geometry.computeBoundingBox();
+        if (object.geometry.boundingBox) bounds.union(object.geometry.boundingBox.clone().applyMatrix4(node.matrixWorld));
+      }
+      node.children.forEach(visit);
+    };
+    visit(root);
+  }
+  if (bounds.isEmpty()) return null;
+  const size = bounds.getSize(new Vector3());
+  const center = bounds.getCenter(new Vector3()).sub(root.getWorldPosition(new Vector3()));
+  return {
+    shape: "rect",
+    size: { width: Math.max(0, size.x), depth: Math.max(0, size.z) },
+    offset: new Vector2(center.x, center.z),
+    isAABB: true,
+    ...footprint.mergeAdjacentGroup ? { mergeAdjacentGroup: footprint.mergeAdjacentGroup } : {}
   };
 }
 function hasDynamicSurfaceFootprint(plugin) {
@@ -256865,8 +256929,8 @@ function resolveDynamicSurfaceFootprintCollisionInfo(plugin, options = {}) {
   }
   const profile = plugin.getSpatialProfile();
   const footprint = profile.footprint;
-  const refNodeId = footprint.refNodeId;
-  if (!refNodeId) {
+  const refNodeId = footprint?.refNodeId;
+  if (!footprint || !refNodeId) {
     return null;
   }
   const collisionMesh = options.collisionMesh || plugin.getCollisionMesh?.() || plugin.getMesh?.() || plugin.mesh || null;
@@ -256943,6 +257007,7 @@ function resolveDynamicSurfaceFootprintCollisionInfo(plugin, options = {}) {
   return nextInfo;
 }
 function getDefaultDragSurfaceMarginFromFootprint(footprint) {
+  if (!footprint) return 0;
   if (footprint.shape === "circle") {
     return footprint.radius;
   }
@@ -256952,12 +257017,14 @@ function getDefaultDragSurfaceMarginFromFootprint(footprint) {
   };
 }
 function getDefaultInteractionScaleFromFootprint(footprint) {
+  if (!footprint) return 0;
   if (footprint.shape === "circle") {
     return footprint.radius * 2;
   }
   return Math.max(footprint.width, footprint.depth);
 }
 function getDefaultBlockedInsetFromFootprint(footprint) {
+  if (!footprint) return 0;
   if (footprint.shape === "circle") {
     return footprint.radius;
   }
@@ -257037,7 +257104,7 @@ function resolvePrimaryInteractionSizeFromSpatialProfile(profile, fallbackSize =
   }
   return Math.max(
     0,
-    profile.interactionScale ?? getBodyHeightFromBody(profile.body) ?? getDefaultInteractionScaleFromFootprint(profile.footprint) ?? fallbackSize
+    profile.interactionScale ?? getBodyHeightFromBody(profile.body) ?? (profile.footprint ? getDefaultInteractionScaleFromFootprint(profile.footprint) : fallbackSize)
   );
 }
 function resolvePluginDragSurfaceMargin(plugin) {
@@ -257411,11 +257478,12 @@ function normalizeDynamicFootprintHalfTurnRotation(rotationY) {
 }
 function resolvePluginFocusState(plugin) {
   const profile = plugin.getSpatialProfile();
-  const focus = profile.focus;
+  const focusProfile = plugin.getSpatialFocusProfile?.() ?? profile;
+  const focus = focusProfile.focus;
   const interactionScale = resolvePluginInteractionScale(plugin);
   const defaultTargetOffsetY = interactionScale / 2;
   const distance = Math.min(1.4, Math.max(0.6, interactionScale * 3.2));
-  const focusAnchor = resolveSpaceAnchor(profile.anchors, focus?.anchorId);
+  const focusAnchor = resolveSpaceAnchor(focusProfile.anchors, focus?.anchorId);
   const focusPoint = focusAnchor ? resolveSpacePoint(focusAnchor, focus?.anchorId).origin : null;
   return {
     distance: focus?.distance ?? distance,
@@ -257479,6 +257547,7 @@ function resolveSurfaceTiltClampLocalCorners(options) {
   if (!Number.isFinite(bodyHeight) || bodyHeight <= 0) {
     return null;
   }
+  if (!profile.footprint) return null;
   if (profile.footprint.shape === "rect") {
     return createBoxLocalCorners(
       new Vector3(
@@ -257609,6 +257678,7 @@ function getBodyHeight(body) {
   return body.height;
 }
 function getDefaultInteractionScale(footprint) {
+  if (!footprint) return 0;
   if (footprint.shape === "circle") {
     return footprint.radius * 2;
   }
@@ -259233,7 +259303,7 @@ function createSurfaceAnchoredTiltBehavior(options) {
     const horizontalTarget = resolveTarget(plugin, "horizontal") || plugin.mesh || verticalTarget;
     let firstPose = null;
     if (constrainMotion && verticalTarget) {
-      angle = resolveCollisionSafeSurfaceTiltAngle({
+      const safePose = resolveCollisionSafeSurfaceTilt({
         plugin,
         collisionManager: plugin.collisionManager || plugin.context.collisionManager,
         target: verticalTarget,
@@ -259248,6 +259318,8 @@ function createSurfaceAnchoredTiltBehavior(options) {
           anchorPoint
         )
       });
+      angle = safePose.angle;
+      anchorPoint = safePose.anchorPoint;
     }
     if (verticalTarget) {
       firstPose = applyResolvedPose(
@@ -261405,6 +261477,110 @@ function applyPluginCurrentSurfaceAnchorPoint(plugin, anchorPoint) {
   return didReapplyByAnchor;
 }
 
+// src/components/StarSky/PluginFramework/spatialProfileSnapshot.ts
+var preparedProfiles = /* @__PURE__ */ new WeakSet();
+function isSpatialVector(value) {
+  return value instanceof Vector3 || typeof value === "function" && value._VirtualClass === "Vector3";
+}
+function copyValue(value) {
+  if (isSpatialVector(value)) return value.clone();
+  if (typeof value === "function") throw new Error("\u7A7A\u95F4\u58F0\u660E\u4E0D\u80FD\u5305\u542B\u51FD\u6570");
+  if (value === null || typeof value !== "object") return value;
+  if (Array.isArray(value)) return value.map(copyValue);
+  const prototype = Object.getPrototypeOf(value);
+  const constructor = prototype && Object.getOwnPropertyDescriptor(prototype, "constructor")?.value;
+  if (prototype !== Object.prototype && prototype !== null && (Object.getPrototypeOf(prototype) !== null || typeof constructor !== "function" || Function.prototype.toString.call(constructor) !== Function.prototype.toString.call(Object))) {
+    throw new Error("\u7A7A\u95F4\u58F0\u660E\u53EA\u80FD\u5305\u542B\u666E\u901A\u6570\u636E\u548C Vector3 \u5C40\u90E8\u89D2\u70B9");
+  }
+  const copy = {};
+  for (const [key, child] of Object.entries(value)) copy[key] = copyValue(child);
+  return copy;
+}
+function freezeValue(value) {
+  if (typeof value === "function") {
+    Object.freeze(value);
+    return;
+  }
+  if (value === null || typeof value !== "object") return;
+  for (const child of Object.values(value)) freezeValue(child);
+  Object.freeze(value);
+}
+function copyPoint(point) {
+  if (Array.isArray(point)) return [point[0], point[1], point[2]];
+  return copyVector(point);
+}
+function copyVector(vector) {
+  return isSpatialVector(vector) ? vector.clone() : { ...vector };
+}
+function copyAnchor(anchor) {
+  const copy = { ...anchor };
+  if (anchor.origin) copy.origin = copyPoint(anchor.origin);
+  if (copy.kind === "axis" && typeof copy.axis !== "string") copy.axis = copyVector(copy.axis);
+  if (copy.kind === "frame") {
+    if (copy.forward && typeof copy.forward !== "string") copy.forward = copyVector(copy.forward);
+    if (copy.up && typeof copy.up !== "string") copy.up = copyVector(copy.up);
+  }
+  return copy;
+}
+function copyBody(body) {
+  const copy = { ...body };
+  if (copy.shape === "box" && copy.convexHull) {
+    copy.convexHull = copy.convexHull.map((point) => [point[0], point[1], point[2]]);
+  }
+  return copy;
+}
+function copyPluginSpatialProfile(profile) {
+  const copy = { ...profile };
+  if (profile.footprint) {
+    copy.footprint = { ...profile.footprint };
+    if (profile.footprint.offset) copy.footprint.offset = [...profile.footprint.offset];
+    if (profile.footprint.excludeNodeIds) copy.footprint.excludeNodeIds = [...profile.footprint.excludeNodeIds];
+  }
+  if (profile.anchors) {
+    const anchors = {};
+    for (const id of Object.keys(profile.anchors)) anchors[id] = copyAnchor(profile.anchors[id]);
+    copy.anchors = Object.freeze(anchors);
+  }
+  if (profile.body) copy.body = copyBody(profile.body);
+  if (profile.collisionBodies) copy.collisionBodies = profile.collisionBodies.map(copyBody);
+  if (profile.focus) copy.focus = { ...profile.focus };
+  if (profile.dragSurfaceMargin && typeof profile.dragSurfaceMargin !== "number") {
+    copy.dragSurfaceMargin = { ...profile.dragSurfaceMargin };
+  }
+  if (profile.containerPlacement) {
+    copy.containerPlacement = {
+      ...profile.containerPlacement,
+      localCorners: profile.containerPlacement.localCorners.map(copyVector)
+    };
+  }
+  if (profile.surfaceTiltClampLocalCorners) {
+    copy.surfaceTiltClampLocalCorners = profile.surfaceTiltClampLocalCorners.map((point) => point.clone());
+  }
+  return copy;
+}
+function freezePluginSpatialProfile(profile) {
+  if (preparedProfiles.has(profile)) return profile;
+  const copy = copyValue(definePluginSpatialProfile(profile));
+  freezeValue(copy);
+  preparedProfiles.add(copy);
+  return copy;
+}
+function createSharedSpatialProfile(create) {
+  let profile;
+  let building = false;
+  return () => {
+    if (profile) return profile;
+    if (building) throw new Error("\u5171\u4EAB\u7A7A\u95F4\u58F0\u660E\u6784\u9020\u671F\u95F4\u4E0D\u80FD\u9012\u5F52\u67E5\u8BE2");
+    building = true;
+    try {
+      profile = freezePluginSpatialProfile(create());
+      return profile;
+    } finally {
+      building = false;
+    }
+  };
+}
+
 // src/components/StarSky/PluginFramework/media/sharedStaticAssetKeys.ts
 var sharedStaticAssetKeys = {
   /** SenseSpace 默认 logo。 */
@@ -261511,6 +261687,12 @@ var ComposablePluginBase = class {
     this.registeredCapabilityBehaviorIds = /* @__PURE__ */ new Set();
     /** 已下发到宿主的 capability 描述摘要，用于跳过重复注册。 */
     this.registeredCapabilityBehaviorSignatureHashes = /* @__PURE__ */ new Map();
+    /** 仅保留当前版本的局部声明，不保存世界姿态或接触结果。 */
+    this.cachedSpatialProfile = null;
+    /** 构造期间发生的失效不能被迟到的缓存提交覆盖。 */
+    this.spatialProfileRevision = 0;
+    /** 防止声明构造间接查询自身形成递归。 */
+    this.buildingSpatialProfile = false;
     this.context = context;
     this.staticAssets = new PluginStaticAssets(context.staticAssetManager);
     this.id = options.id || context.attachment?.pluginId || this.constructor.name;
@@ -261600,7 +261782,7 @@ var ComposablePluginBase = class {
     const entry = this.collectCapabilityBehaviorDescriptors().find(
       ({ descriptor }) => descriptor.kind === "freeFlight"
     );
-    const motionMode = entry?.descriptor.motionMode;
+    const motionMode = entry ? entry.descriptor.motionMode ?? "air" : null;
     return motionMode === "ground" || motionMode === "air" ? motionMode : null;
   }
   /** 供宿主 capability 运行时把实时 tilt 状态回写到 Worker 插件实例。 */
@@ -261812,6 +261994,41 @@ var ComposablePluginBase = class {
   isPersistenceEnabled() {
     return true;
   }
+  /** 返回当前版本的只读局部声明；移动和节点动画不触发重建。 */
+  getSpatialProfile() {
+    return this.resolveCachedSpatialProfile();
+  }
+  /** 构造局部空间声明；固定模板可通过 createSharedSpatialProfile 跨实例共享。 */
+  createSpatialProfile() {
+    throw new Error(`${this.id} \u672A\u5B9E\u73B0 createSpatialProfile \u6216 getSpatialProfile`);
+  }
+  /** 尺寸、等级、局部锚点或绑定节点改变时，下一次查询重新构造。 */
+  invalidateSpatialProfile() {
+    this.spatialProfileRevision++;
+    this.cachedSpatialProfile = null;
+  }
+  /** 仅在调用方需要修改副本时显式获取，不重新构造或校验声明。 */
+  getSpatialProfileSnapshot() {
+    return copyPluginSpatialProfile(this.getSpatialProfile());
+  }
+  /** 动态聚焦只在交互时读取；null 表示使用稳定声明中的聚焦配置。 */
+  getSpatialFocusProfile(_context2) {
+    return null;
+  }
+  /** 首次读取才构造，校验失败不提交，也不沿用失效前的数据。 */
+  resolveCachedSpatialProfile() {
+    if (this.cachedSpatialProfile) return this.cachedSpatialProfile;
+    if (this.buildingSpatialProfile) throw new Error("\u7A7A\u95F4\u58F0\u660E\u6784\u9020\u671F\u95F4\u4E0D\u80FD\u9012\u5F52\u67E5\u8BE2");
+    const revision = this.spatialProfileRevision;
+    this.buildingSpatialProfile = true;
+    try {
+      const profile = freezePluginSpatialProfile(this.createSpatialProfile());
+      if (revision === this.spatialProfileRevision) this.cachedSpatialProfile = profile;
+      return profile;
+    } finally {
+      this.buildingSpatialProfile = false;
+    }
+  }
   /**
    * 返回插件贴附到 surface 时的声明式配置。
    * 默认保持现有兼容语义：
@@ -261821,13 +262038,6 @@ var ComposablePluginBase = class {
    */
   getSurfaceAttachmentProfile() {
     return { mountAnchorId: DEFAULT_MOUNT_ANCHOR_ID };
-  }
-  /**
-   * 返回插件碰撞体信息。
-   * 默认直接复用 `SpatialProfile.footprint`，绝大多数插件无需再手写样板。
-   */
-  getCollisionInfo() {
-    return getCollisionInfoFromFootprint(this.getSpatialProfile().footprint);
   }
   /**
    * 获取当前活动平面。
@@ -262176,16 +262386,25 @@ var ComposablePluginBase = class {
    * 这样普通插件无需再手写 `restoreState()` 样板。
    */
   restoreState() {
-    getPluginBehaviorApi(this, "persistent-position")?.restore();
+    this.invalidateSpatialProfile();
+    try {
+      getPluginBehaviorApi(this, "persistent-position")?.restore();
+    } finally {
+      this.invalidateSpatialProfile();
+    }
   }
   /**
    * 生命周期：释放资源。
    */
   dispose() {
-    this.unregisterCapabilityBehaviorDescriptors();
-    this.emitBehaviorHook("dispose", { plugin: this });
-    if (this.mesh?.parent) {
-      this.mesh.parent.remove(this.mesh);
+    try {
+      this.unregisterCapabilityBehaviorDescriptors();
+      this.emitBehaviorHook("dispose", { plugin: this });
+      if (this.mesh?.parent) {
+        this.mesh.parent.remove(this.mesh);
+      }
+    } finally {
+      this.invalidateSpatialProfile();
     }
   }
   /**
@@ -263895,7 +264114,7 @@ function createRollingSphereMotionBehavior(options = {}) {
       return configuredRadius;
     }
     const footprint = plugin.getSpatialProfile().footprint;
-    if (footprint.shape === "circle") {
+    if (footprint?.shape === "circle") {
       return footprint.radius;
     }
     return resolvePluginInteractionScale(plugin) / 2;
@@ -268563,14 +268782,14 @@ import { createHash } from "node:crypto";
 // src/components/StarSky/shared/performance/builtinGeometryArtifacts.generated.json
 var builtinGeometryArtifacts_generated_default = {
   "00cd2010b5e94f8c0cdeba5cf32306adbedd2ebb258443bca521b234721a17d0": {
-    url: "/plugin-builtins/display-39b4bbb7067a995c2e6f4716d46afc11344bb585f466640e935e3645d75b3ad9.bin",
-    sha256: "39b4bbb7067a995c2e6f4716d46afc11344bb585f466640e935e3645d75b3ad9",
-    bytes: 307213
+    url: "/plugin-builtins/display-6b4b11f924d96a0078856d27655da62a0416806ef9eb7001c4dd468271d78d7a.bin",
+    sha256: "6b4b11f924d96a0078856d27655da62a0416806ef9eb7001c4dd468271d78d7a",
+    bytes: 307218
   },
   "0115f4c3c3cc2b634b9ef15f56ff86dedd41fcb70bb28d5eabd6a81e2038fb09": {
-    url: "/plugin-builtins/display-39b4bbb7067a995c2e6f4716d46afc11344bb585f466640e935e3645d75b3ad9.bin",
-    sha256: "39b4bbb7067a995c2e6f4716d46afc11344bb585f466640e935e3645d75b3ad9",
-    bytes: 307213
+    url: "/plugin-builtins/display-6b4b11f924d96a0078856d27655da62a0416806ef9eb7001c4dd468271d78d7a.bin",
+    sha256: "6b4b11f924d96a0078856d27655da62a0416806ef9eb7001c4dd468271d78d7a",
+    bytes: 307218
   },
   "01d1674464c846facfe140d7a42182c885d002bec6fcf53c1ad98140385d7a6d": {
     url: "/plugin-builtins/display-0f140fe203bef5c1fb0fa3ee70026d367270c6ea9eb1c963a1a805cfd427433f.bin",
@@ -268602,16 +268821,6 @@ var builtinGeometryArtifacts_generated_default = {
     sha256: "0f140fe203bef5c1fb0fa3ee70026d367270c6ea9eb1c963a1a805cfd427433f",
     bytes: 222314
   },
-  "083dd6f18162f4a0d0ddd1e021db515ec9f00179eca1a0366970145d51a7f6c3": {
-    url: "/plugin-builtins/display-39b4bbb7067a995c2e6f4716d46afc11344bb585f466640e935e3645d75b3ad9.bin",
-    sha256: "39b4bbb7067a995c2e6f4716d46afc11344bb585f466640e935e3645d75b3ad9",
-    bytes: 307213
-  },
-  "08bc6c604f07e4f84801c6aa80e9176b3fd5c6ba23171225b5ca8315196a1fc1": {
-    url: "/plugin-builtins/display-f2b759eddbc818b3c225c7dcc4f84105a13ada11915cbb5864112f5f9a3e0ff4.bin",
-    sha256: "f2b759eddbc818b3c225c7dcc4f84105a13ada11915cbb5864112f5f9a3e0ff4",
-    bytes: 1527882
-  },
   "0917c5a95bdc6637e4857e0e3c7a3864a9fc3916745b0e2607cbe968a1b1d9d2": {
     url: "/plugin-builtins/display-6b047d5236f8971bd0781c52b8b41a24bc6d3f118d81b6894d71b1a0963c3478.bin",
     sha256: "6b047d5236f8971bd0781c52b8b41a24bc6d3f118d81b6894d71b1a0963c3478",
@@ -268638,9 +268847,9 @@ var builtinGeometryArtifacts_generated_default = {
     bytes: 210365
   },
   "11652610be3b86a3c140810d44fe6270ab7052a4d67dfacc02a3254e63d10dd7": {
-    url: "/plugin-builtins/display-39b4bbb7067a995c2e6f4716d46afc11344bb585f466640e935e3645d75b3ad9.bin",
-    sha256: "39b4bbb7067a995c2e6f4716d46afc11344bb585f466640e935e3645d75b3ad9",
-    bytes: 307213
+    url: "/plugin-builtins/display-6b4b11f924d96a0078856d27655da62a0416806ef9eb7001c4dd468271d78d7a.bin",
+    sha256: "6b4b11f924d96a0078856d27655da62a0416806ef9eb7001c4dd468271d78d7a",
+    bytes: 307218
   },
   "116ece005b7f3ea59b437d5a09af17df400691a2ea0e9f55bdc6cdc63f3f3b29": {
     url: "/plugin-builtins/display-6b047d5236f8971bd0781c52b8b41a24bc6d3f118d81b6894d71b1a0963c3478.bin",
@@ -268648,9 +268857,14 @@ var builtinGeometryArtifacts_generated_default = {
     bytes: 210365
   },
   "1511248c954f90e086b35d28cb60a331e7a9095ca7b284aeda5159f17ed3ced5": {
-    url: "/plugin-builtins/display-355058f73318ae085d01a9363476623dff8559ea83afdabd234030f08c2f53ff.bin",
-    sha256: "355058f73318ae085d01a9363476623dff8559ea83afdabd234030f08c2f53ff",
+    url: "/plugin-builtins/display-346ee0c2d5ec9943e0ff1c837d6a5bc2e332963af82d4969aaabee76dabdf30a.bin",
+    sha256: "346ee0c2d5ec9943e0ff1c837d6a5bc2e332963af82d4969aaabee76dabdf30a",
     bytes: 905965
+  },
+  "1566a3a9c43a9bf7314828072c3cb37558805306369fb992d851d053b8255435": {
+    url: "/plugin-builtins/display-063fb64fda47687969f1919b1b4db8c47b813b292dfab04d3c1369673dffe5c7.bin",
+    sha256: "063fb64fda47687969f1919b1b4db8c47b813b292dfab04d3c1369673dffe5c7",
+    bytes: 1885893
   },
   "158fe9a8b903a0ea042206efad377533dc1a72eb76414ca57bb56ec33c046cc8": {
     url: "/plugin-builtins/display-6b047d5236f8971bd0781c52b8b41a24bc6d3f118d81b6894d71b1a0963c3478.bin",
@@ -268668,9 +268882,9 @@ var builtinGeometryArtifacts_generated_default = {
     bytes: 210365
   },
   "189101653346188281c1e0a6af1673fe95920a745267a436875764ce743d9d85": {
-    url: "/plugin-builtins/display-39b4bbb7067a995c2e6f4716d46afc11344bb585f466640e935e3645d75b3ad9.bin",
-    sha256: "39b4bbb7067a995c2e6f4716d46afc11344bb585f466640e935e3645d75b3ad9",
-    bytes: 307213
+    url: "/plugin-builtins/display-6b4b11f924d96a0078856d27655da62a0416806ef9eb7001c4dd468271d78d7a.bin",
+    sha256: "6b4b11f924d96a0078856d27655da62a0416806ef9eb7001c4dd468271d78d7a",
+    bytes: 307218
   },
   "1adebe625644480591a7baa5e67b5e81344fb3d722f668b542751583d2f76fe2": {
     url: "/plugin-builtins/display-6b047d5236f8971bd0781c52b8b41a24bc6d3f118d81b6894d71b1a0963c3478.bin",
@@ -268678,14 +268892,19 @@ var builtinGeometryArtifacts_generated_default = {
     bytes: 210365
   },
   "1b446db05b5460c98b7db92ad45795ad44499ae5da33063e7ee30d66bb1800e6": {
-    url: "/plugin-builtins/display-39b4bbb7067a995c2e6f4716d46afc11344bb585f466640e935e3645d75b3ad9.bin",
-    sha256: "39b4bbb7067a995c2e6f4716d46afc11344bb585f466640e935e3645d75b3ad9",
-    bytes: 307213
+    url: "/plugin-builtins/display-6b4b11f924d96a0078856d27655da62a0416806ef9eb7001c4dd468271d78d7a.bin",
+    sha256: "6b4b11f924d96a0078856d27655da62a0416806ef9eb7001c4dd468271d78d7a",
+    bytes: 307218
   },
   "1b813a799c15ae3659d6cb2b3eeeca98067ea89f6bc2531b32991c16714f3ae6": {
     url: "/plugin-builtins/display-7976cbd73167a0fe1fc59071dbb6989d63b49a6ff05c2635e021796606ededa7.bin",
     sha256: "7976cbd73167a0fe1fc59071dbb6989d63b49a6ff05c2635e021796606ededa7",
     bytes: 475164
+  },
+  "1bd6bc3333caa442061a1644a12a97822ce93613beaeb0547417dd9a781b521b": {
+    url: "/plugin-builtins/display-6b4b11f924d96a0078856d27655da62a0416806ef9eb7001c4dd468271d78d7a.bin",
+    sha256: "6b4b11f924d96a0078856d27655da62a0416806ef9eb7001c4dd468271d78d7a",
+    bytes: 307218
   },
   "1bd9bf4c5ff8e17e514ca8f9858fd5905eef67679e12fde51dff628b940f602a": {
     url: "/plugin-builtins/display-6b047d5236f8971bd0781c52b8b41a24bc6d3f118d81b6894d71b1a0963c3478.bin",
@@ -268698,13 +268917,13 @@ var builtinGeometryArtifacts_generated_default = {
     bytes: 210365
   },
   "1ecc84dc79bbf8cd8dc050daf853fc231835a731eed1afa3f4ad52175fd08f0e": {
-    url: "/plugin-builtins/display-39b4bbb7067a995c2e6f4716d46afc11344bb585f466640e935e3645d75b3ad9.bin",
-    sha256: "39b4bbb7067a995c2e6f4716d46afc11344bb585f466640e935e3645d75b3ad9",
-    bytes: 307213
+    url: "/plugin-builtins/display-6b4b11f924d96a0078856d27655da62a0416806ef9eb7001c4dd468271d78d7a.bin",
+    sha256: "6b4b11f924d96a0078856d27655da62a0416806ef9eb7001c4dd468271d78d7a",
+    bytes: 307218
   },
   "2504b76536886a90909368ba9d5e34d84930057c8dc53f630362773ae433c5be": {
-    url: "/plugin-builtins/display-355058f73318ae085d01a9363476623dff8559ea83afdabd234030f08c2f53ff.bin",
-    sha256: "355058f73318ae085d01a9363476623dff8559ea83afdabd234030f08c2f53ff",
+    url: "/plugin-builtins/display-346ee0c2d5ec9943e0ff1c837d6a5bc2e332963af82d4969aaabee76dabdf30a.bin",
+    sha256: "346ee0c2d5ec9943e0ff1c837d6a5bc2e332963af82d4969aaabee76dabdf30a",
     bytes: 905965
   },
   "2636b38aa0ed355161133ff8f7c5390433d177afa433333bdc8b7c99cdd266c7": {
@@ -268738,44 +268957,44 @@ var builtinGeometryArtifacts_generated_default = {
     bytes: 475164
   },
   "2f44e1d82daf9d32ec2a074ea3fdcd9a68fc1dc35180a91708f0e8dd31d29625": {
-    url: "/plugin-builtins/display-39b4bbb7067a995c2e6f4716d46afc11344bb585f466640e935e3645d75b3ad9.bin",
-    sha256: "39b4bbb7067a995c2e6f4716d46afc11344bb585f466640e935e3645d75b3ad9",
-    bytes: 307213
+    url: "/plugin-builtins/display-6b4b11f924d96a0078856d27655da62a0416806ef9eb7001c4dd468271d78d7a.bin",
+    sha256: "6b4b11f924d96a0078856d27655da62a0416806ef9eb7001c4dd468271d78d7a",
+    bytes: 307218
   },
   "301134e875d436bfc8e11b06931022a09f8e8218129a7dd5d6c5f3dda96068ae": {
-    url: "/plugin-builtins/display-39b4bbb7067a995c2e6f4716d46afc11344bb585f466640e935e3645d75b3ad9.bin",
-    sha256: "39b4bbb7067a995c2e6f4716d46afc11344bb585f466640e935e3645d75b3ad9",
-    bytes: 307213
+    url: "/plugin-builtins/display-6b4b11f924d96a0078856d27655da62a0416806ef9eb7001c4dd468271d78d7a.bin",
+    sha256: "6b4b11f924d96a0078856d27655da62a0416806ef9eb7001c4dd468271d78d7a",
+    bytes: 307218
   },
   "31b18ba6da71669500adadae494232fc816b636502bb15bbb520051735f3e9a4": {
-    url: "/plugin-builtins/display-39b4bbb7067a995c2e6f4716d46afc11344bb585f466640e935e3645d75b3ad9.bin",
-    sha256: "39b4bbb7067a995c2e6f4716d46afc11344bb585f466640e935e3645d75b3ad9",
-    bytes: 307213
+    url: "/plugin-builtins/display-6b4b11f924d96a0078856d27655da62a0416806ef9eb7001c4dd468271d78d7a.bin",
+    sha256: "6b4b11f924d96a0078856d27655da62a0416806ef9eb7001c4dd468271d78d7a",
+    bytes: 307218
   },
   "330c54dc53669def61b523452e29245b669f83664ebdf171c497372d686c1a4f": {
-    url: "/plugin-builtins/display-39b4bbb7067a995c2e6f4716d46afc11344bb585f466640e935e3645d75b3ad9.bin",
-    sha256: "39b4bbb7067a995c2e6f4716d46afc11344bb585f466640e935e3645d75b3ad9",
-    bytes: 307213
+    url: "/plugin-builtins/display-6b4b11f924d96a0078856d27655da62a0416806ef9eb7001c4dd468271d78d7a.bin",
+    sha256: "6b4b11f924d96a0078856d27655da62a0416806ef9eb7001c4dd468271d78d7a",
+    bytes: 307218
   },
   "344bb07f45bbd9ba30a3a774126ceda5b1a6022c206994002d3a382bbd5011b2": {
-    url: "/plugin-builtins/display-39b4bbb7067a995c2e6f4716d46afc11344bb585f466640e935e3645d75b3ad9.bin",
-    sha256: "39b4bbb7067a995c2e6f4716d46afc11344bb585f466640e935e3645d75b3ad9",
-    bytes: 307213
+    url: "/plugin-builtins/display-6b4b11f924d96a0078856d27655da62a0416806ef9eb7001c4dd468271d78d7a.bin",
+    sha256: "6b4b11f924d96a0078856d27655da62a0416806ef9eb7001c4dd468271d78d7a",
+    bytes: 307218
   },
   "35f1f2d1aef5bfe247883aeff707d075699f785f3d6f957e3c9ddf9bfb019d22": {
     url: "/plugin-builtins/display-6b047d5236f8971bd0781c52b8b41a24bc6d3f118d81b6894d71b1a0963c3478.bin",
     sha256: "6b047d5236f8971bd0781c52b8b41a24bc6d3f118d81b6894d71b1a0963c3478",
     bytes: 210365
   },
+  "3658c3e19663bdbb607304003b28daff9e971504007a923720cadb59bdfda05a": {
+    url: "/plugin-builtins/display-346ee0c2d5ec9943e0ff1c837d6a5bc2e332963af82d4969aaabee76dabdf30a.bin",
+    sha256: "346ee0c2d5ec9943e0ff1c837d6a5bc2e332963af82d4969aaabee76dabdf30a",
+    bytes: 905965
+  },
   "38ee66d52bd3474fecacca5d829c40e08a3f33ca16f598b57a1c3b63433b6e04": {
     url: "/plugin-builtins/display-0f140fe203bef5c1fb0fa3ee70026d367270c6ea9eb1c963a1a805cfd427433f.bin",
     sha256: "0f140fe203bef5c1fb0fa3ee70026d367270c6ea9eb1c963a1a805cfd427433f",
     bytes: 222314
-  },
-  "3a28c599ed24044543d5fd5d4d764c5e32a977a8fa3ccb37817e83e4723af128": {
-    url: "/plugin-builtins/display-2f96760bdcdaa52e9f3961c4b82dcfe8629827a07b3315b9c5a1ab4c2f592b72.bin",
-    sha256: "2f96760bdcdaa52e9f3961c4b82dcfe8629827a07b3315b9c5a1ab4c2f592b72",
-    bytes: 1885878
   },
   "3b85d76078a04e79fd5a020ce7c715644e20f24ab76d8c77a344aba89c38a758": {
     url: "/plugin-builtins/display-6b047d5236f8971bd0781c52b8b41a24bc6d3f118d81b6894d71b1a0963c3478.bin",
@@ -268788,14 +269007,14 @@ var builtinGeometryArtifacts_generated_default = {
     bytes: 210365
   },
   "3d4ef75480c787a403da299862efcd45fa5b912187ef5fe2ca36025e43e06f9e": {
-    url: "/plugin-builtins/display-b3ffddfc0a3bd45fc6a6cfd208abcfaf34de7d01d4bb87df7fa3fa981515a35f.bin",
-    sha256: "b3ffddfc0a3bd45fc6a6cfd208abcfaf34de7d01d4bb87df7fa3fa981515a35f",
+    url: "/plugin-builtins/display-89b7d5eeab2fd71d937f760f1dc6daa8faef5a3c1cddca6b476b3439325ef546.bin",
+    sha256: "89b7d5eeab2fd71d937f760f1dc6daa8faef5a3c1cddca6b476b3439325ef546",
     bytes: 743960
   },
   "3f0d8e467529d4a27fd2871b1dab47293a66abdd768e874cdf3548853c90d2cb": {
-    url: "/plugin-builtins/display-39b4bbb7067a995c2e6f4716d46afc11344bb585f466640e935e3645d75b3ad9.bin",
-    sha256: "39b4bbb7067a995c2e6f4716d46afc11344bb585f466640e935e3645d75b3ad9",
-    bytes: 307213
+    url: "/plugin-builtins/display-6b4b11f924d96a0078856d27655da62a0416806ef9eb7001c4dd468271d78d7a.bin",
+    sha256: "6b4b11f924d96a0078856d27655da62a0416806ef9eb7001c4dd468271d78d7a",
+    bytes: 307218
   },
   "3f1eb4202d410b5953ce4d96f0199edf14903d1125e90a0c8c452a2dbe36d6d5": {
     url: "/plugin-builtins/display-7976cbd73167a0fe1fc59071dbb6989d63b49a6ff05c2635e021796606ededa7.bin",
@@ -268813,9 +269032,9 @@ var builtinGeometryArtifacts_generated_default = {
     bytes: 210365
   },
   "42f3ed1f7eea8a7c7de45499313ed58769d1d7914d7da764d920f14fe007bf20": {
-    url: "/plugin-builtins/display-39b4bbb7067a995c2e6f4716d46afc11344bb585f466640e935e3645d75b3ad9.bin",
-    sha256: "39b4bbb7067a995c2e6f4716d46afc11344bb585f466640e935e3645d75b3ad9",
-    bytes: 307213
+    url: "/plugin-builtins/display-6b4b11f924d96a0078856d27655da62a0416806ef9eb7001c4dd468271d78d7a.bin",
+    sha256: "6b4b11f924d96a0078856d27655da62a0416806ef9eb7001c4dd468271d78d7a",
+    bytes: 307218
   },
   "4730d25aeae5ed9ba240bdf61dd2f5c9d54e459029d9bdf41d34c7986229c70b": {
     url: "/plugin-builtins/display-0f140fe203bef5c1fb0fa3ee70026d367270c6ea9eb1c963a1a805cfd427433f.bin",
@@ -268827,10 +269046,10 @@ var builtinGeometryArtifacts_generated_default = {
     sha256: "6b047d5236f8971bd0781c52b8b41a24bc6d3f118d81b6894d71b1a0963c3478",
     bytes: 210365
   },
-  "48eeaace016b913094b297e549eb3aed8c5d68db3610f55f6837588a7f23e02b": {
-    url: "/plugin-builtins/display-355058f73318ae085d01a9363476623dff8559ea83afdabd234030f08c2f53ff.bin",
-    sha256: "355058f73318ae085d01a9363476623dff8559ea83afdabd234030f08c2f53ff",
-    bytes: 905965
+  "4aca3c1aa7734ec09da4a54b805b264a754a57ca73a1ad59a4b0888c026b3805": {
+    url: "/plugin-builtins/display-89b7d5eeab2fd71d937f760f1dc6daa8faef5a3c1cddca6b476b3439325ef546.bin",
+    sha256: "89b7d5eeab2fd71d937f760f1dc6daa8faef5a3c1cddca6b476b3439325ef546",
+    bytes: 743960
   },
   "4b0ba0f465d6dc01496c95b2b7d716d80938c3c270e7957516471a83cbf575bf": {
     url: "/plugin-builtins/display-6b047d5236f8971bd0781c52b8b41a24bc6d3f118d81b6894d71b1a0963c3478.bin",
@@ -268838,8 +269057,8 @@ var builtinGeometryArtifacts_generated_default = {
     bytes: 210365
   },
   "4cd4fe30bdaba127b1e72db7becd0ab91b660f7860e196f5daf7186d711804d5": {
-    url: "/plugin-builtins/display-355058f73318ae085d01a9363476623dff8559ea83afdabd234030f08c2f53ff.bin",
-    sha256: "355058f73318ae085d01a9363476623dff8559ea83afdabd234030f08c2f53ff",
+    url: "/plugin-builtins/display-346ee0c2d5ec9943e0ff1c837d6a5bc2e332963af82d4969aaabee76dabdf30a.bin",
+    sha256: "346ee0c2d5ec9943e0ff1c837d6a5bc2e332963af82d4969aaabee76dabdf30a",
     bytes: 905965
   },
   "4d91c3e3666aad91a268d4312a3e79b4dd822042a5307f4db31e2e5ae33d3a4a": {
@@ -268848,9 +269067,9 @@ var builtinGeometryArtifacts_generated_default = {
     bytes: 475164
   },
   "4fd9d88a1d3a2ed2c9efbbfd2866bb0cabdc39474d126d37fa35e5bda4e84afb": {
-    url: "/plugin-builtins/display-39b4bbb7067a995c2e6f4716d46afc11344bb585f466640e935e3645d75b3ad9.bin",
-    sha256: "39b4bbb7067a995c2e6f4716d46afc11344bb585f466640e935e3645d75b3ad9",
-    bytes: 307213
+    url: "/plugin-builtins/display-6b4b11f924d96a0078856d27655da62a0416806ef9eb7001c4dd468271d78d7a.bin",
+    sha256: "6b4b11f924d96a0078856d27655da62a0416806ef9eb7001c4dd468271d78d7a",
+    bytes: 307218
   },
   "50106e78994b94cc1915766e0cab943dfa26fc4058b04a7c852d8c3ebcf6b565": {
     url: "/plugin-builtins/display-6b047d5236f8971bd0781c52b8b41a24bc6d3f118d81b6894d71b1a0963c3478.bin",
@@ -268897,6 +269116,11 @@ var builtinGeometryArtifacts_generated_default = {
     sha256: "6b047d5236f8971bd0781c52b8b41a24bc6d3f118d81b6894d71b1a0963c3478",
     bytes: 210365
   },
+  "644caed1add8ff48a9c886ac6f17a031de20e8022d80ef0745a4f7af1c8576b7": {
+    url: "/plugin-builtins/display-16bee8a1f7ebaf722bd0b75c706331042c69e858c016ce997db87363dcd4ee76.bin",
+    sha256: "16bee8a1f7ebaf722bd0b75c706331042c69e858c016ce997db87363dcd4ee76",
+    bytes: 1527867
+  },
   "64a7268212e08c128d64b90648bdd5c1204cf09ffc7c8bce2f34bb9b93950f37": {
     url: "/plugin-builtins/display-6b047d5236f8971bd0781c52b8b41a24bc6d3f118d81b6894d71b1a0963c3478.bin",
     sha256: "6b047d5236f8971bd0781c52b8b41a24bc6d3f118d81b6894d71b1a0963c3478",
@@ -268913,9 +269137,9 @@ var builtinGeometryArtifacts_generated_default = {
     bytes: 210365
   },
   "729908bb4e9bad4667220ffc91d6a1dbc4372df9f70941ece39685ffeaa479e4": {
-    url: "/plugin-builtins/display-39b4bbb7067a995c2e6f4716d46afc11344bb585f466640e935e3645d75b3ad9.bin",
-    sha256: "39b4bbb7067a995c2e6f4716d46afc11344bb585f466640e935e3645d75b3ad9",
-    bytes: 307213
+    url: "/plugin-builtins/display-6b4b11f924d96a0078856d27655da62a0416806ef9eb7001c4dd468271d78d7a.bin",
+    sha256: "6b4b11f924d96a0078856d27655da62a0416806ef9eb7001c4dd468271d78d7a",
+    bytes: 307218
   },
   "747770e7d03bc22a47462b8277cccd5017e198e4e1033331ea374e3e4e0b8f93": {
     url: "/plugin-builtins/display-6b047d5236f8971bd0781c52b8b41a24bc6d3f118d81b6894d71b1a0963c3478.bin",
@@ -268923,14 +269147,14 @@ var builtinGeometryArtifacts_generated_default = {
     bytes: 210365
   },
   "750952397afc00ee4c5d32bac73dae6bf24823407d6058c1103bfe4ca4bff1d8": {
-    url: "/plugin-builtins/display-39b4bbb7067a995c2e6f4716d46afc11344bb585f466640e935e3645d75b3ad9.bin",
-    sha256: "39b4bbb7067a995c2e6f4716d46afc11344bb585f466640e935e3645d75b3ad9",
-    bytes: 307213
+    url: "/plugin-builtins/display-6b4b11f924d96a0078856d27655da62a0416806ef9eb7001c4dd468271d78d7a.bin",
+    sha256: "6b4b11f924d96a0078856d27655da62a0416806ef9eb7001c4dd468271d78d7a",
+    bytes: 307218
   },
   "759b46c7eb27d7b79a5a93beb9eb4137b5a008ae9e38d457559885b7a721dbbe": {
-    url: "/plugin-builtins/display-39b4bbb7067a995c2e6f4716d46afc11344bb585f466640e935e3645d75b3ad9.bin",
-    sha256: "39b4bbb7067a995c2e6f4716d46afc11344bb585f466640e935e3645d75b3ad9",
-    bytes: 307213
+    url: "/plugin-builtins/display-6b4b11f924d96a0078856d27655da62a0416806ef9eb7001c4dd468271d78d7a.bin",
+    sha256: "6b4b11f924d96a0078856d27655da62a0416806ef9eb7001c4dd468271d78d7a",
+    bytes: 307218
   },
   "785f4c6b7cf238591340fad431829bee0fc89e0cbc732b50d8ec04e27ead30df": {
     url: "/plugin-builtins/display-7976cbd73167a0fe1fc59071dbb6989d63b49a6ff05c2635e021796606ededa7.bin",
@@ -268958,9 +269182,9 @@ var builtinGeometryArtifacts_generated_default = {
     bytes: 222314
   },
   "811fdcdc04d49b54bd71d42307a924ea2c2615728ca7bef3d1c6e79e640ab025": {
-    url: "/plugin-builtins/display-f2b759eddbc818b3c225c7dcc4f84105a13ada11915cbb5864112f5f9a3e0ff4.bin",
-    sha256: "f2b759eddbc818b3c225c7dcc4f84105a13ada11915cbb5864112f5f9a3e0ff4",
-    bytes: 1527882
+    url: "/plugin-builtins/display-16bee8a1f7ebaf722bd0b75c706331042c69e858c016ce997db87363dcd4ee76.bin",
+    sha256: "16bee8a1f7ebaf722bd0b75c706331042c69e858c016ce997db87363dcd4ee76",
+    bytes: 1527867
   },
   "822ec2e6cba7ed32166f940c774974ded527f1b065e9bed10115c404f255be04": {
     url: "/plugin-builtins/display-6b047d5236f8971bd0781c52b8b41a24bc6d3f118d81b6894d71b1a0963c3478.bin",
@@ -268968,14 +269192,9 @@ var builtinGeometryArtifacts_generated_default = {
     bytes: 210365
   },
   "8356dcb03d9aa83bcb4c18027c45dfb14c2c368cdd865884cc505327d86b6ac4": {
-    url: "/plugin-builtins/display-39b4bbb7067a995c2e6f4716d46afc11344bb585f466640e935e3645d75b3ad9.bin",
-    sha256: "39b4bbb7067a995c2e6f4716d46afc11344bb585f466640e935e3645d75b3ad9",
-    bytes: 307213
-  },
-  "835ea0187abb0c829eb2e172542afce15a520d1422b05d1b85462c21bef99073": {
-    url: "/plugin-builtins/display-b3ffddfc0a3bd45fc6a6cfd208abcfaf34de7d01d4bb87df7fa3fa981515a35f.bin",
-    sha256: "b3ffddfc0a3bd45fc6a6cfd208abcfaf34de7d01d4bb87df7fa3fa981515a35f",
-    bytes: 743960
+    url: "/plugin-builtins/display-6b4b11f924d96a0078856d27655da62a0416806ef9eb7001c4dd468271d78d7a.bin",
+    sha256: "6b4b11f924d96a0078856d27655da62a0416806ef9eb7001c4dd468271d78d7a",
+    bytes: 307218
   },
   "84f2a66892a3ea4556c30d50fe36f6054d4975e91b686e18d22fc86383897a24": {
     url: "/plugin-builtins/display-7976cbd73167a0fe1fc59071dbb6989d63b49a6ff05c2635e021796606ededa7.bin",
@@ -268988,9 +269207,9 @@ var builtinGeometryArtifacts_generated_default = {
     bytes: 475164
   },
   "87513360b0e24305d763b0c2f1b96147eadd65bda5d188ea401a91e2fc73435a": {
-    url: "/plugin-builtins/display-39b4bbb7067a995c2e6f4716d46afc11344bb585f466640e935e3645d75b3ad9.bin",
-    sha256: "39b4bbb7067a995c2e6f4716d46afc11344bb585f466640e935e3645d75b3ad9",
-    bytes: 307213
+    url: "/plugin-builtins/display-6b4b11f924d96a0078856d27655da62a0416806ef9eb7001c4dd468271d78d7a.bin",
+    sha256: "6b4b11f924d96a0078856d27655da62a0416806ef9eb7001c4dd468271d78d7a",
+    bytes: 307218
   },
   "888202ec6ebb62691d775800ce34034d1ace45d874a270336d74153291e3693c": {
     url: "/plugin-builtins/display-7976cbd73167a0fe1fc59071dbb6989d63b49a6ff05c2635e021796606ededa7.bin",
@@ -269008,9 +269227,9 @@ var builtinGeometryArtifacts_generated_default = {
     bytes: 210365
   },
   "94095f1ad530b7230065c5a5380a11220bcbeeceded956f14997d3c488013d4d": {
-    url: "/plugin-builtins/display-39b4bbb7067a995c2e6f4716d46afc11344bb585f466640e935e3645d75b3ad9.bin",
-    sha256: "39b4bbb7067a995c2e6f4716d46afc11344bb585f466640e935e3645d75b3ad9",
-    bytes: 307213
+    url: "/plugin-builtins/display-6b4b11f924d96a0078856d27655da62a0416806ef9eb7001c4dd468271d78d7a.bin",
+    sha256: "6b4b11f924d96a0078856d27655da62a0416806ef9eb7001c4dd468271d78d7a",
+    bytes: 307218
   },
   "9424e4f625ae8b45a9f06bae66a9c25488610b7ed49b1194e7abb154bfb69fc8": {
     url: "/plugin-builtins/display-0f140fe203bef5c1fb0fa3ee70026d367270c6ea9eb1c963a1a805cfd427433f.bin",
@@ -269028,9 +269247,9 @@ var builtinGeometryArtifacts_generated_default = {
     bytes: 222314
   },
   "9602d865817238f021df37c28f17bd35eb69ccf95f5bb6a7a23c164d799fdcbe": {
-    url: "/plugin-builtins/display-39b4bbb7067a995c2e6f4716d46afc11344bb585f466640e935e3645d75b3ad9.bin",
-    sha256: "39b4bbb7067a995c2e6f4716d46afc11344bb585f466640e935e3645d75b3ad9",
-    bytes: 307213
+    url: "/plugin-builtins/display-6b4b11f924d96a0078856d27655da62a0416806ef9eb7001c4dd468271d78d7a.bin",
+    sha256: "6b4b11f924d96a0078856d27655da62a0416806ef9eb7001c4dd468271d78d7a",
+    bytes: 307218
   },
   "9828176aed3e4154aa39ed823ac1618b5bdc9ff0535c655eed1b9a883bdd9a08": {
     url: "/plugin-builtins/display-6b047d5236f8971bd0781c52b8b41a24bc6d3f118d81b6894d71b1a0963c3478.bin",
@@ -269043,13 +269262,13 @@ var builtinGeometryArtifacts_generated_default = {
     bytes: 222314
   },
   "9c69d15468beb5cf69a64bc347e66f59b22c8990b1af74eb3e25175b4fe7a63a": {
-    url: "/plugin-builtins/display-39b4bbb7067a995c2e6f4716d46afc11344bb585f466640e935e3645d75b3ad9.bin",
-    sha256: "39b4bbb7067a995c2e6f4716d46afc11344bb585f466640e935e3645d75b3ad9",
-    bytes: 307213
+    url: "/plugin-builtins/display-6b4b11f924d96a0078856d27655da62a0416806ef9eb7001c4dd468271d78d7a.bin",
+    sha256: "6b4b11f924d96a0078856d27655da62a0416806ef9eb7001c4dd468271d78d7a",
+    bytes: 307218
   },
   "9c99edcd02900b15dc4e32e55095f66a2adb0e6bcf159b49a837f0eece7a540d": {
-    url: "/plugin-builtins/display-b3ffddfc0a3bd45fc6a6cfd208abcfaf34de7d01d4bb87df7fa3fa981515a35f.bin",
-    sha256: "b3ffddfc0a3bd45fc6a6cfd208abcfaf34de7d01d4bb87df7fa3fa981515a35f",
+    url: "/plugin-builtins/display-89b7d5eeab2fd71d937f760f1dc6daa8faef5a3c1cddca6b476b3439325ef546.bin",
+    sha256: "89b7d5eeab2fd71d937f760f1dc6daa8faef5a3c1cddca6b476b3439325ef546",
     bytes: 743960
   },
   "9d89db173ef9862143c0cc73104810b0197dc68a76e6128bab4912d7d7725c53": {
@@ -269058,9 +269277,9 @@ var builtinGeometryArtifacts_generated_default = {
     bytes: 210365
   },
   "9e29592477ee7049b4c49445ff05bbed0964ad12da6e78bff341bddeb6e4ff58": {
-    url: "/plugin-builtins/display-39b4bbb7067a995c2e6f4716d46afc11344bb585f466640e935e3645d75b3ad9.bin",
-    sha256: "39b4bbb7067a995c2e6f4716d46afc11344bb585f466640e935e3645d75b3ad9",
-    bytes: 307213
+    url: "/plugin-builtins/display-6b4b11f924d96a0078856d27655da62a0416806ef9eb7001c4dd468271d78d7a.bin",
+    sha256: "6b4b11f924d96a0078856d27655da62a0416806ef9eb7001c4dd468271d78d7a",
+    bytes: 307218
   },
   "9f1e05e77f27c6b3e3e90df5549c80bfb78ced0313303aba80ed9f40a5a3200b": {
     url: "/plugin-builtins/display-7976cbd73167a0fe1fc59071dbb6989d63b49a6ff05c2635e021796606ededa7.bin",
@@ -269078,9 +269297,9 @@ var builtinGeometryArtifacts_generated_default = {
     bytes: 222314
   },
   a34ec1db5a9c2b7ba07bf33b412f3165b81403ef1d82e629b1a8f9da66cf391c: {
-    url: "/plugin-builtins/display-39b4bbb7067a995c2e6f4716d46afc11344bb585f466640e935e3645d75b3ad9.bin",
-    sha256: "39b4bbb7067a995c2e6f4716d46afc11344bb585f466640e935e3645d75b3ad9",
-    bytes: 307213
+    url: "/plugin-builtins/display-6b4b11f924d96a0078856d27655da62a0416806ef9eb7001c4dd468271d78d7a.bin",
+    sha256: "6b4b11f924d96a0078856d27655da62a0416806ef9eb7001c4dd468271d78d7a",
+    bytes: 307218
   },
   a6a2a53c56b02fa39fd246e3fe4a0d9cb76ac07ae59eeea0e4b036b239bbfb67: {
     url: "/plugin-builtins/display-6b047d5236f8971bd0781c52b8b41a24bc6d3f118d81b6894d71b1a0963c3478.bin",
@@ -269088,9 +269307,9 @@ var builtinGeometryArtifacts_generated_default = {
     bytes: 210365
   },
   a6a8c1dce4a67251a9ad20a7e5911e81f3c63631388de5da5798dff2cf8ba48c: {
-    url: "/plugin-builtins/display-39b4bbb7067a995c2e6f4716d46afc11344bb585f466640e935e3645d75b3ad9.bin",
-    sha256: "39b4bbb7067a995c2e6f4716d46afc11344bb585f466640e935e3645d75b3ad9",
-    bytes: 307213
+    url: "/plugin-builtins/display-6b4b11f924d96a0078856d27655da62a0416806ef9eb7001c4dd468271d78d7a.bin",
+    sha256: "6b4b11f924d96a0078856d27655da62a0416806ef9eb7001c4dd468271d78d7a",
+    bytes: 307218
   },
   a6e5bf463b03e2828e4ba22f31fbdc0376032ee649b46686dd5ec0ad62609630: {
     url: "/plugin-builtins/display-7976cbd73167a0fe1fc59071dbb6989d63b49a6ff05c2635e021796606ededa7.bin",
@@ -269111,6 +269330,11 @@ var builtinGeometryArtifacts_generated_default = {
     url: "/plugin-builtins/display-0f140fe203bef5c1fb0fa3ee70026d367270c6ea9eb1c963a1a805cfd427433f.bin",
     sha256: "0f140fe203bef5c1fb0fa3ee70026d367270c6ea9eb1c963a1a805cfd427433f",
     bytes: 222314
+  },
+  a909bffcb9e25b3cac4b042d5c0f9bb163563772c45aceb1134315278b0efdda: {
+    url: "/plugin-builtins/display-16bee8a1f7ebaf722bd0b75c706331042c69e858c016ce997db87363dcd4ee76.bin",
+    sha256: "16bee8a1f7ebaf722bd0b75c706331042c69e858c016ce997db87363dcd4ee76",
+    bytes: 1527867
   },
   a9cc0ea08d3c34e2d67cfc44aa805ca645452105c2ea469c496a03feeb6c9fba: {
     url: "/plugin-builtins/display-6b047d5236f8971bd0781c52b8b41a24bc6d3f118d81b6894d71b1a0963c3478.bin",
@@ -269138,14 +269362,14 @@ var builtinGeometryArtifacts_generated_default = {
     bytes: 475164
   },
   b2bdf4958c195930096ec506936fc3b7013f848a3fac7b5026580acefccca1ca: {
-    url: "/plugin-builtins/display-39b4bbb7067a995c2e6f4716d46afc11344bb585f466640e935e3645d75b3ad9.bin",
-    sha256: "39b4bbb7067a995c2e6f4716d46afc11344bb585f466640e935e3645d75b3ad9",
-    bytes: 307213
+    url: "/plugin-builtins/display-6b4b11f924d96a0078856d27655da62a0416806ef9eb7001c4dd468271d78d7a.bin",
+    sha256: "6b4b11f924d96a0078856d27655da62a0416806ef9eb7001c4dd468271d78d7a",
+    bytes: 307218
   },
   b397d817344416d6cfec391b65f0163d46d4c380c59356397250026bb56c621f: {
-    url: "/plugin-builtins/display-39b4bbb7067a995c2e6f4716d46afc11344bb585f466640e935e3645d75b3ad9.bin",
-    sha256: "39b4bbb7067a995c2e6f4716d46afc11344bb585f466640e935e3645d75b3ad9",
-    bytes: 307213
+    url: "/plugin-builtins/display-6b4b11f924d96a0078856d27655da62a0416806ef9eb7001c4dd468271d78d7a.bin",
+    sha256: "6b4b11f924d96a0078856d27655da62a0416806ef9eb7001c4dd468271d78d7a",
+    bytes: 307218
   },
   b3c2ec301fbe001a9a48c5fb918f1b9da083a2e687f00ac1efdc25f93e30d044: {
     url: "/plugin-builtins/display-6b047d5236f8971bd0781c52b8b41a24bc6d3f118d81b6894d71b1a0963c3478.bin",
@@ -269157,20 +269381,15 @@ var builtinGeometryArtifacts_generated_default = {
     sha256: "0f140fe203bef5c1fb0fa3ee70026d367270c6ea9eb1c963a1a805cfd427433f",
     bytes: 222314
   },
-  b737bd21e065517b919e2a7b3214cd834ed46256b51870771fc4c8218e83f8e3: {
-    url: "/plugin-builtins/display-f2b759eddbc818b3c225c7dcc4f84105a13ada11915cbb5864112f5f9a3e0ff4.bin",
-    sha256: "f2b759eddbc818b3c225c7dcc4f84105a13ada11915cbb5864112f5f9a3e0ff4",
-    bytes: 1527882
-  },
   b868ec0156b3ffa836278756ce6d13f1f3ef59dd3deec7f787a4c7635cdd63c8: {
     url: "/plugin-builtins/display-6b047d5236f8971bd0781c52b8b41a24bc6d3f118d81b6894d71b1a0963c3478.bin",
     sha256: "6b047d5236f8971bd0781c52b8b41a24bc6d3f118d81b6894d71b1a0963c3478",
     bytes: 210365
   },
   b9181fae4f1c3fd751fdbf8dfc02421fcf8424c84c6ddd80734b80738c8544da: {
-    url: "/plugin-builtins/display-39b4bbb7067a995c2e6f4716d46afc11344bb585f466640e935e3645d75b3ad9.bin",
-    sha256: "39b4bbb7067a995c2e6f4716d46afc11344bb585f466640e935e3645d75b3ad9",
-    bytes: 307213
+    url: "/plugin-builtins/display-6b4b11f924d96a0078856d27655da62a0416806ef9eb7001c4dd468271d78d7a.bin",
+    sha256: "6b4b11f924d96a0078856d27655da62a0416806ef9eb7001c4dd468271d78d7a",
+    bytes: 307218
   },
   bb43988c9877d1cae78d0df2192c48addfb75d7693c8b8210c186770605dd3c3: {
     url: "/plugin-builtins/display-6b047d5236f8971bd0781c52b8b41a24bc6d3f118d81b6894d71b1a0963c3478.bin",
@@ -269188,9 +269407,9 @@ var builtinGeometryArtifacts_generated_default = {
     bytes: 210365
   },
   c674f9a19bd98232fe718b86fff31ed480b8654e82f441148699239a3fab05a7: {
-    url: "/plugin-builtins/display-39b4bbb7067a995c2e6f4716d46afc11344bb585f466640e935e3645d75b3ad9.bin",
-    sha256: "39b4bbb7067a995c2e6f4716d46afc11344bb585f466640e935e3645d75b3ad9",
-    bytes: 307213
+    url: "/plugin-builtins/display-6b4b11f924d96a0078856d27655da62a0416806ef9eb7001c4dd468271d78d7a.bin",
+    sha256: "6b4b11f924d96a0078856d27655da62a0416806ef9eb7001c4dd468271d78d7a",
+    bytes: 307218
   },
   c728c3def7b8de5e65bbe56115578414be10113e40af440e7edccf52b5e59f73: {
     url: "/plugin-builtins/display-0f140fe203bef5c1fb0fa3ee70026d367270c6ea9eb1c963a1a805cfd427433f.bin",
@@ -269223,9 +269442,9 @@ var builtinGeometryArtifacts_generated_default = {
     bytes: 475164
   },
   d4778d0bf99fb9be186153c9b3fbf6d1c340d960d6fcc67798cadf3696a228b2: {
-    url: "/plugin-builtins/display-39b4bbb7067a995c2e6f4716d46afc11344bb585f466640e935e3645d75b3ad9.bin",
-    sha256: "39b4bbb7067a995c2e6f4716d46afc11344bb585f466640e935e3645d75b3ad9",
-    bytes: 307213
+    url: "/plugin-builtins/display-6b4b11f924d96a0078856d27655da62a0416806ef9eb7001c4dd468271d78d7a.bin",
+    sha256: "6b4b11f924d96a0078856d27655da62a0416806ef9eb7001c4dd468271d78d7a",
+    bytes: 307218
   },
   d5f05bf3686ecf5e03fa1e22a5647e2aa15ed1d1d416bcdde0890e829d091ade: {
     url: "/plugin-builtins/display-7976cbd73167a0fe1fc59071dbb6989d63b49a6ff05c2635e021796606ededa7.bin",
@@ -269252,25 +269471,25 @@ var builtinGeometryArtifacts_generated_default = {
     sha256: "6b047d5236f8971bd0781c52b8b41a24bc6d3f118d81b6894d71b1a0963c3478",
     bytes: 210365
   },
-  dc63381277ec4d157d7a5370759f7325e355170a580c958ed27f50b35fb35f1c: {
-    url: "/plugin-builtins/display-39b4bbb7067a995c2e6f4716d46afc11344bb585f466640e935e3645d75b3ad9.bin",
-    sha256: "39b4bbb7067a995c2e6f4716d46afc11344bb585f466640e935e3645d75b3ad9",
-    bytes: 307213
-  },
   e0184d9ecf94269d68c536d5c081f0e8b5f32b190b24d88d3f24cb9f2a516b5c: {
-    url: "/plugin-builtins/display-39b4bbb7067a995c2e6f4716d46afc11344bb585f466640e935e3645d75b3ad9.bin",
-    sha256: "39b4bbb7067a995c2e6f4716d46afc11344bb585f466640e935e3645d75b3ad9",
-    bytes: 307213
+    url: "/plugin-builtins/display-6b4b11f924d96a0078856d27655da62a0416806ef9eb7001c4dd468271d78d7a.bin",
+    sha256: "6b4b11f924d96a0078856d27655da62a0416806ef9eb7001c4dd468271d78d7a",
+    bytes: 307218
   },
   e01d29c188333946ae7f461194c84ff96e190d09fbc96039001b910d4f567023: {
-    url: "/plugin-builtins/display-2f96760bdcdaa52e9f3961c4b82dcfe8629827a07b3315b9c5a1ab4c2f592b72.bin",
-    sha256: "2f96760bdcdaa52e9f3961c4b82dcfe8629827a07b3315b9c5a1ab4c2f592b72",
-    bytes: 1885878
+    url: "/plugin-builtins/display-063fb64fda47687969f1919b1b4db8c47b813b292dfab04d3c1369673dffe5c7.bin",
+    sha256: "063fb64fda47687969f1919b1b4db8c47b813b292dfab04d3c1369673dffe5c7",
+    bytes: 1885893
   },
   e03306863d3dde861036d9da6d26bf4b58c50deac392ac8254224cbffa562322: {
-    url: "/plugin-builtins/display-2f96760bdcdaa52e9f3961c4b82dcfe8629827a07b3315b9c5a1ab4c2f592b72.bin",
-    sha256: "2f96760bdcdaa52e9f3961c4b82dcfe8629827a07b3315b9c5a1ab4c2f592b72",
-    bytes: 1885878
+    url: "/plugin-builtins/display-063fb64fda47687969f1919b1b4db8c47b813b292dfab04d3c1369673dffe5c7.bin",
+    sha256: "063fb64fda47687969f1919b1b4db8c47b813b292dfab04d3c1369673dffe5c7",
+    bytes: 1885893
+  },
+  e20108126a0e323a22b865f3f63fac2d36771f418cad4b24449807e40d023b59: {
+    url: "/plugin-builtins/display-6b4b11f924d96a0078856d27655da62a0416806ef9eb7001c4dd468271d78d7a.bin",
+    sha256: "6b4b11f924d96a0078856d27655da62a0416806ef9eb7001c4dd468271d78d7a",
+    bytes: 307218
   },
   e2ed777a053ab301cd0f94355597cd62ed834c9f9233854e9da1c249bdfd1cab: {
     url: "/plugin-builtins/display-7976cbd73167a0fe1fc59071dbb6989d63b49a6ff05c2635e021796606ededa7.bin",
@@ -269298,9 +269517,9 @@ var builtinGeometryArtifacts_generated_default = {
     bytes: 475164
   },
   e7c051d16732a844ceb0372718a081f73af032435c86031b8c4a4e509abba562: {
-    url: "/plugin-builtins/display-39b4bbb7067a995c2e6f4716d46afc11344bb585f466640e935e3645d75b3ad9.bin",
-    sha256: "39b4bbb7067a995c2e6f4716d46afc11344bb585f466640e935e3645d75b3ad9",
-    bytes: 307213
+    url: "/plugin-builtins/display-6b4b11f924d96a0078856d27655da62a0416806ef9eb7001c4dd468271d78d7a.bin",
+    sha256: "6b4b11f924d96a0078856d27655da62a0416806ef9eb7001c4dd468271d78d7a",
+    bytes: 307218
   },
   eabe8e7c22bf1e9635e6d21dc2e655e2d0f1873647eb362044b23e65d24b2331: {
     url: "/plugin-builtins/display-6b047d5236f8971bd0781c52b8b41a24bc6d3f118d81b6894d71b1a0963c3478.bin",
@@ -269308,9 +269527,9 @@ var builtinGeometryArtifacts_generated_default = {
     bytes: 210365
   },
   ec4923758403fb054874c471d5fd7503d46acce2ebb3aafb841240444f419dd5: {
-    url: "/plugin-builtins/display-39b4bbb7067a995c2e6f4716d46afc11344bb585f466640e935e3645d75b3ad9.bin",
-    sha256: "39b4bbb7067a995c2e6f4716d46afc11344bb585f466640e935e3645d75b3ad9",
-    bytes: 307213
+    url: "/plugin-builtins/display-6b4b11f924d96a0078856d27655da62a0416806ef9eb7001c4dd468271d78d7a.bin",
+    sha256: "6b4b11f924d96a0078856d27655da62a0416806ef9eb7001c4dd468271d78d7a",
+    bytes: 307218
   },
   ec6016d0f88ac08a183ce414855cb5a4408f2516f2aebb81391a65611f2a41b0: {
     url: "/plugin-builtins/display-6b047d5236f8971bd0781c52b8b41a24bc6d3f118d81b6894d71b1a0963c3478.bin",
@@ -269343,14 +269562,14 @@ var builtinGeometryArtifacts_generated_default = {
     bytes: 210365
   },
   f31f07dbf8bfaaf88ba9cfed6691bad88d9d8bbd44a9be2c041da5ec575bf9fd: {
-    url: "/plugin-builtins/display-39b4bbb7067a995c2e6f4716d46afc11344bb585f466640e935e3645d75b3ad9.bin",
-    sha256: "39b4bbb7067a995c2e6f4716d46afc11344bb585f466640e935e3645d75b3ad9",
-    bytes: 307213
+    url: "/plugin-builtins/display-6b4b11f924d96a0078856d27655da62a0416806ef9eb7001c4dd468271d78d7a.bin",
+    sha256: "6b4b11f924d96a0078856d27655da62a0416806ef9eb7001c4dd468271d78d7a",
+    bytes: 307218
   },
   f3b3ffb40769420b74acb1100037209c54eca9274e18fc82ebd172268eacc1ab: {
-    url: "/plugin-builtins/display-39b4bbb7067a995c2e6f4716d46afc11344bb585f466640e935e3645d75b3ad9.bin",
-    sha256: "39b4bbb7067a995c2e6f4716d46afc11344bb585f466640e935e3645d75b3ad9",
-    bytes: 307213
+    url: "/plugin-builtins/display-6b4b11f924d96a0078856d27655da62a0416806ef9eb7001c4dd468271d78d7a.bin",
+    sha256: "6b4b11f924d96a0078856d27655da62a0416806ef9eb7001c4dd468271d78d7a",
+    bytes: 307218
   },
   f4a08ba275fbf44fe1d5dbb1a647fa6e3bb1403f938330019f3c047be33f2faa: {
     url: "/plugin-builtins/display-6b047d5236f8971bd0781c52b8b41a24bc6d3f118d81b6894d71b1a0963c3478.bin",
@@ -269378,9 +269597,9 @@ var builtinGeometryArtifacts_generated_default = {
     bytes: 210365
   },
   ff3738a036e001c2326507c7af52c5f4e76f5915845cef20075b091b618722a5: {
-    url: "/plugin-builtins/display-39b4bbb7067a995c2e6f4716d46afc11344bb585f466640e935e3645d75b3ad9.bin",
-    sha256: "39b4bbb7067a995c2e6f4716d46afc11344bb585f466640e935e3645d75b3ad9",
-    bytes: 307213
+    url: "/plugin-builtins/display-6b4b11f924d96a0078856d27655da62a0416806ef9eb7001c4dd468271d78d7a.bin",
+    sha256: "6b4b11f924d96a0078856d27655da62a0416806ef9eb7001c4dd468271d78d7a",
+    bytes: 307218
   },
   ff69900572cb7db2737100c4773eb4da6b0bcec4edc9b80470cc360985773b5e: {
     url: "/plugin-builtins/display-6b047d5236f8971bd0781c52b8b41a24bc6d3f118d81b6894d71b1a0963c3478.bin",
@@ -270004,12 +270223,26 @@ var CompiledGeometryCache = class {
     if (!this.available) return null;
     let timer;
     try {
-      return await Promise.race([this.read(source, artifact), new Promise((resolve) => {
+      const result = await Promise.race([this.read(source, artifact), new Promise((resolve) => {
         timer = setTimeout(() => {
-          this.report(new Error("\u7F16\u8BD1\u7F13\u5B58\u8BFB\u53D6\u8D85\u65F6\uFF0C\u5C06\u4ECE\u6E90\u63CF\u8FF0\u91CD\u5EFA"));
-          resolve(null);
+          this.report(new Error("\u7F16\u8BD1\u7F13\u5B58\u8BFB\u53D6\u8D85\u65F6\uFF0C\u5C1D\u8BD5\u53D1\u5E03\u663E\u793A\u4EA7\u7269"));
+          resolve(void 0);
         }, CACHE_READ_TIMEOUT_MS);
       })]);
+      if (result !== void 0) return result;
+      logBrowserRuntimeDebug("geometry.cache.read-timeout", { source });
+      return await Promise.race([
+        this.digest(source).then((key) => this.readBuiltin(key, artifact), (error) => {
+          this.report(error);
+          return null;
+        }),
+        new Promise((resolve) => {
+          timer = setTimeout(() => {
+            logBrowserRuntimeDebug("geometry.cache.recovery-timeout", { source });
+            resolve(null);
+          }, CACHE_READ_TIMEOUT_MS);
+        })
+      ]);
     } finally {
       clearTimeout(timer);
     }
@@ -270117,16 +270350,17 @@ var CompiledGeometryCache = class {
   async getMany(sources, artifact) {
     return new Map(await Promise.all(sources.map(async (source) => [source, await this.get(source, artifact)])));
   }
-  /** 恢复阶段发现损坏时同时删除产物和目录，删除失败不阻塞源生成。 */
-  async delete(source) {
+  /** 删除损坏记录及目录；仅磁盘副本失效时保留当前发布包的补读资格。 */
+  async delete(source, options = {}) {
     if (!this.available) return;
+    const discardPublished = !options.persistedOnly;
     try {
       const removed = this.pendingWrites.filter((item) => item.source === source);
       this.pendingWrites = this.pendingWrites.filter((item) => item.source !== source);
       removed.forEach((item) => item.resolve(false));
       this.writes = this.writes.then(async () => {
         const key = await this.digest(source);
-        this.builtins.discard(key);
+        if (discardPublished) this.builtins.discard(key);
         this.knownKeys?.delete(key);
         await this.database.runTransaction(["geometry", "metadata"], "readwrite", async (stores) => {
           await Promise.all([requestToPromise(stores.geometry.delete(key)), requestToPromise(stores.metadata.delete(key))]);
@@ -271579,8 +271813,8 @@ function prepareGeometryBuffers(renderer, object, camera, signal, scope, batchLi
   const { signature } = allocation;
   const context = getContext(renderer);
   const mesh = object;
-  const materials = Array.isArray(mesh.material) ? mesh.material : [mesh.material];
-  if (!canSubmit || renderer.getRenderTarget() || screenScene?.overrideMaterial || mesh.isSkinnedMesh || mesh.morphTexture || Object.values(mesh.geometry.morphAttributes).some((attributes) => attributes.length > 0) || materials.some((material) => !material.visible || material.onBeforeRender !== Material.prototype.onBeforeRender)) screenScene = void 0;
+  const materials2 = Array.isArray(mesh.material) ? mesh.material : [mesh.material];
+  if (!canSubmit || renderer.getRenderTarget() || screenScene?.overrideMaterial || mesh.isSkinnedMesh || mesh.morphTexture || Object.values(mesh.geometry.morphAttributes).some((attributes) => attributes.length > 0) || materials2.some((material) => !material.visible || material.onBeforeRender !== Material.prototype.onBeforeRender)) screenScene = void 0;
   const geometry = mesh.geometry;
   if (!hasObjectBuffers(object)) {
     const shared = context.geometries.get(allocation.source);
@@ -272008,8 +272242,8 @@ function submitShaderWarmupPrograms(renderer, objects, camera, scene, mode = "sc
     objects.traverse((object) => {
       const material = object.material;
       if (!material) return;
-      const materials = Array.isArray(material) ? material : [material];
-      if (materials.some((item) => !item.transparent && !(item.transmission > 0))) {
+      const materials2 = Array.isArray(material) ? material : [material];
+      if (materials2.some((item) => !item.transparent && !(item.transmission > 0))) {
         opaqueObjects.push(object);
       }
     });
@@ -272157,6 +272391,29 @@ function compileShaderWarmup(renderer, objects, camera, scene, signal, bufferRoo
 }
 var warmupSequence = 0;
 
+// src/components/StarSky/shared/performance/OcclusionRenderInputs.ts
+var materials = /* @__PURE__ */ new WeakMap();
+var callbacks = /* @__PURE__ */ new WeakSet();
+var conditions = /* @__PURE__ */ new WeakMap();
+function registerOcclusionMaterial(material) {
+  materials.set(material, { compile: material.onBeforeCompile, key: material.customProgramCacheKey });
+}
+function registerOcclusionCallback(callback) {
+  callbacks.add(callback);
+}
+function registerOcclusionCondition(renderer, object, read) {
+  let entries = conditions.get(renderer);
+  if (!entries) {
+    entries = /* @__PURE__ */ new WeakMap();
+    conditions.set(renderer, entries);
+  }
+  const entry = { read };
+  entries.set(object, entry);
+  return () => {
+    if (entries.get(object) === entry) entries.delete(object);
+  };
+}
+
 // src/components/StarSky/shared/performance/RenderSourceMatrixScope.ts
 var automaticMatrixDepth = 0;
 function isAutomaticRenderMatrixUpdate() {
@@ -272253,8 +272510,8 @@ var CapabilityDisplaySource = class extends Object3D {
   elideInvisibleRendering() {
     if (!this.isMesh) return;
     const hidden = () => {
-      const materials = Array.isArray(this.material) ? this.material : [this.material];
-      return materials.length > 0 && materials.every((material) => material.visible === false);
+      const materials2 = Array.isArray(this.material) ? this.material : [this.material];
+      return materials2.length > 0 && materials2.every((material) => material.visible === false);
     };
     if (!hidden()) return;
     const restore = (value) => Object.defineProperty(
@@ -272518,15 +272775,15 @@ function notifyFinalBatchSourceVisibility(mesh) {
   finalBatchSourceChanges.get(mesh)?.forEach((changed) => changed());
 }
 function bindFinalBatchSourceChange(mesh, changed) {
-  let callbacks = finalBatchSourceChanges.get(mesh);
-  if (!callbacks) {
-    callbacks = /* @__PURE__ */ new Set();
-    finalBatchSourceChanges.set(mesh, callbacks);
+  let callbacks2 = finalBatchSourceChanges.get(mesh);
+  if (!callbacks2) {
+    callbacks2 = /* @__PURE__ */ new Set();
+    finalBatchSourceChanges.set(mesh, callbacks2);
   }
-  callbacks.add(changed);
+  callbacks2.add(changed);
   return () => {
-    callbacks.delete(changed);
-    if (!callbacks.size) finalBatchSourceChanges.delete(mesh);
+    callbacks2.delete(changed);
+    if (!callbacks2.size) finalBatchSourceChanges.delete(mesh);
   };
 }
 function getFinalBatchPreparation(mesh) {
@@ -272987,12 +273244,12 @@ function motionRoots(nodes) {
 }
 function segmentFor(nodes, parents, group) {
   const keys = group.slots.map((slot) => stringifyDisplayCacheInput(nodes[slot].material ?? null));
-  const materials = Array.from(new Set(keys)).sort();
+  const materials2 = Array.from(new Set(keys)).sort();
   return {
     version: 1,
     motionRoots: group.slots.map((slot) => parents[slot]),
-    materials,
-    materialSlots: keys.map((key) => materials.indexOf(key)),
+    materials: materials2,
+    materialSlots: keys.map((key) => materials2.indexOf(key)),
     counts: group.slots.map((slot) => nodes[slot].instances?.length ?? 1),
     resources: Array.from(/* @__PURE__ */ new Set([group.snapshotKey, group.layout.geometryKey]))
   };
@@ -273119,6 +273376,8 @@ var CapabilityDrawFilter = class {
   constructor(renderer) {
     this.renderer = renderer;
     this.nodes = /* @__PURE__ */ new Set();
+    /** 遮挡读取与实际过滤共用本帧结果，卸载时同时撤销资格。 */
+    this.occlusionConditions = /* @__PURE__ */ new Map();
     /** 只注销本消费者登记的准备器。 */
     this.preparations = /* @__PURE__ */ new Set();
     this.disposed = false;
@@ -273151,12 +273410,24 @@ var CapabilityDrawFilter = class {
     state.owners += 1;
   }
   /** 注册一个节点的提交条件；清理只影响该节点。 */
-  register(node, predicate) {
+  register(node, predicate, stableBeforeDraw = false) {
     this.nodes.add(node);
-    this.state.predicates.set(node, predicate);
+    this.occlusionConditions.get(node)?.();
+    let frame = -1, camera, result = false;
+    const prepare = (nextCamera) => {
+      result = predicate(nextCamera);
+      frame = this.renderer.info.render.frame;
+      camera = nextCamera;
+      return result;
+    };
+    this.state.predicates.set(node, stableBeforeDraw ? (nextCamera) => camera === nextCamera && frame === this.renderer.info.render.frame ? result : predicate(nextCamera) : predicate);
+    const unregister = registerOcclusionCondition(this.renderer, node, stableBeforeDraw ? prepare : void 0);
+    this.occlusionConditions.set(node, unregister);
     return () => {
       this.nodes.delete(node);
       this.state.predicates.delete(node);
+      unregister();
+      this.occlusionConditions.delete(node);
     };
   }
   /** 准备回调先于 projectObject，不能延迟到 onBeforeRender 才改实例缓冲。 */
@@ -273179,6 +273450,8 @@ var CapabilityDrawFilter = class {
     this.disposed = true;
     this.nodes.forEach((node) => this.state.predicates.delete(node));
     this.nodes.clear();
+    this.occlusionConditions.forEach((unregister) => unregister());
+    this.occlusionConditions.clear();
     this.preparations.forEach((prepare) => this.state.preparations.delete(prepare));
     this.preparations.clear();
     this.state.owners -= 1;
@@ -273665,7 +273938,7 @@ var CapabilityRigidBatchRuntime = class {
     previousDraws += Array.from(sources).filter((source) => !represented.has(source)).length;
     const savedDraws = previousDraws - groups.length;
     if (savedDraws < MATRIX_MIN_SAVED_DRAWS) return;
-    const materials = Array.from(new Set(groups.flatMap((group) => group.map((source) => source.material)))).map(captureMatrixMaterial);
+    const materials2 = Array.from(new Set(groups.flatMap((group) => group.map((source) => source.material)))).map(captureMatrixMaterial);
     const identities = Array.from(sources, (source) => ({ source, geometry: source.geometry, parent: source.parent, material: source.material }));
     const promotion = {
       groups,
@@ -273675,7 +273948,7 @@ var CapabilityRigidBatchRuntime = class {
       complete: false,
       steps: void 0,
       savedDraws,
-      valid: () => !this.disposed && materials.every((state) => state.matches()) && identities.every((identity) => identity.source.geometry === identity.geometry && identity.source.parent === identity.parent && identity.source.material === identity.material && this.eligibleMatrixSource(identity.source) && isPooledGeometryUnchanged(identity.geometry))
+      valid: () => !this.disposed && materials2.every((state) => state.matches()) && identities.every((identity) => identity.source.geometry === identity.geometry && identity.source.parent === identity.parent && identity.source.material === identity.material && this.eligibleMatrixSource(identity.source) && isPooledGeometryUnchanged(identity.geometry))
     };
     promotion.steps = this.prepareMatrixBatches(root, promotion);
     this.promotion = promotion;
@@ -273736,7 +274009,7 @@ var CapabilityRigidBatchRuntime = class {
       this.configureBatch(mesh, sources, true);
       mesh.userData.capabilityMatrixStaging = true;
       if (!batch.sync()) throw new Error("\u53EF\u9009\u77E9\u9635\u8868\u793A\u7684\u6E90\u59FF\u6001\u4E0D\u517C\u5BB9");
-      promotion.cleanup.push(this.drawFilter.register(mesh, () => false));
+      promotion.cleanup.push(this.drawFilter.register(mesh, () => false, true));
       promotion.cleanup.push(bindFinalBatchFailure(mesh, () => this.cancelMatrixPromotion()));
       promotion.cleanup.push(bindCapabilityMatrixPreparationSignal(mesh, promotion.controller.signal));
       root.add(mesh);
@@ -274437,6 +274710,7 @@ var CapabilityRigidBatchRuntime = class {
           let saved = Boolean(cached);
           const suppress = (node, compiled) => {
             const before = node.onBeforeRender;
+            const stableBeforeDraw = before === Object3D.prototype.onBeforeRender && !currentMatrixBatch;
             const unregister = this.drawFilter.register(node, (camera) => {
               const selected3 = valid(this.renderer, camera);
               if (compiled && selected3 && !saved) {
@@ -274445,13 +274719,14 @@ var CapabilityRigidBatchRuntime = class {
               }
               if (compiled && selected3) this.recordFinalGroup(sources, keys[groupIndex], void 0, liveLayout);
               return selected3 === compiled;
-            });
+            }, stableBeforeDraw);
             const wrapped = (...args) => {
               if (compiled) syncMatrices();
               before.apply(node, args);
               warm(args[0], args[1], args[2]);
             };
             node.onBeforeRender = wrapped;
+            if (stableBeforeDraw) registerOcclusionCallback(wrapped);
             if (!compiled) this.sourceRenders.set(node, { before, wrapped });
             restore.push(() => {
               unregister();
@@ -274915,7 +275190,10 @@ ${token}
     }
   };
   material.customProgramCacheKey = () => `${key}:capability-static-vertex-parameters-v7:${nativeShader ? "canonical" : "custom"}`;
-  if (nativeShader) registerCanonicalPBRMaterial(material);
+  if (nativeShader) {
+    registerCanonicalPBRMaterial(material);
+    registerOcclusionMaterial(material);
+  }
   material.needsUpdate = true;
   if (!baked && !vertexColor) registerBatchMaterialExtension(material, "");
 }
@@ -275044,7 +275322,7 @@ async function buildCapabilityRigidRenderGroups(root, nodes, slots, asset, store
     compiler.dispose();
   }
 }
-function restoreCapabilityRigidRenderGroup(group, cached, base, pool, shareOpaqueProgram = false, materials) {
+function restoreCapabilityRigidRenderGroup(group, cached, base, pool, shareOpaqueProgram = false, materials2) {
   const geometry = group.layout.sourceGeometryKey ? restoreCapabilityRigidGeometryRange(group.layout.geometryKey, group.layout.sourceGeometryKey, cached, pool) : pool.acquire(group.layout.geometryKey, () => {
     if (!cached) throw new Error("\u9759\u6001\u673A\u6784\u51E0\u4F55\u7F3A\u5931");
     for (const [name, size] of [["capabilitySurface", 2], ["capabilityEmissive", 3]]) {
@@ -275085,7 +275363,7 @@ function restoreCapabilityRigidRenderGroup(group, cached, base, pool, shareOpaqu
   };
   let material, releaseMaterial;
   try {
-    if (!materials) {
+    if (!materials2) {
       material = createMaterial();
       releaseMaterial = () => material.dispose();
     } else {
@@ -275096,7 +275374,7 @@ function restoreCapabilityRigidRenderGroup(group, cached, base, pool, shareOpaqu
         geometry.attributes.color?.itemSize,
         shareOpaqueProgram
       ]);
-      let variants = materials.get(base), shared = variants?.get(key);
+      let variants = materials2.get(base), shared = variants?.get(key);
       if (!shared || !shared.matches()) {
         const source = base;
         const values = () => [
@@ -275117,7 +275395,7 @@ function restoreCapabilityRigidRenderGroup(group, cached, base, pool, shareOpaqu
         } };
         if (!variants) {
           variants = /* @__PURE__ */ new Map();
-          materials.set(base, variants);
+          materials2.set(base, variants);
         }
         variants.set(key, shared);
       }
@@ -275128,7 +275406,7 @@ function restoreCapabilityRigidRenderGroup(group, cached, base, pool, shareOpaqu
         if (--entry.refs) return;
         entry.material.dispose();
         if (entries.get(key) === entry) entries.delete(key);
-        if (!entries.size && materials.get(base) === entries) materials.delete(base);
+        if (!entries.size && materials2.get(base) === entries) materials2.delete(base);
       };
     }
   } catch (error) {
@@ -276216,6 +276494,27 @@ function readUnitNumber(value, fallback) {
   return typeof value === "number" && Number.isFinite(value) ? Math.min(1, Math.max(0, value)) : fallback;
 }
 
+// src/components/StarSky/Workbench/staticAssets.ts
+function sanitizePluginStaticAssetPath(assetPath) {
+  if (typeof assetPath !== "string") {
+    return null;
+  }
+  const normalizedPath = assetPath.trim().replace(/^\.?\/*/, "");
+  if (!normalizedPath) {
+    return null;
+  }
+  if (normalizedPath.includes("..")) {
+    return null;
+  }
+  if (/^[a-z][a-z0-9+.-]*:/i.test(normalizedPath)) {
+    return null;
+  }
+  if (!normalizedPath.startsWith("assets/")) {
+    return null;
+  }
+  return normalizedPath;
+}
+
 // src/components/StarSky/host/runtime/sandbox/Capabilities/DescriptorValidator.ts
 var SandboxDescriptorValidationError = class extends Error {
   constructor(message) {
@@ -276955,10 +277254,14 @@ function validateFreeFlightBehavior(behavior, context) {
     ["velocityResponse", behavior.velocityResponse],
     ["inputResponse", behavior.inputResponse],
     ["lateralInputResponse", behavior.lateralInputResponse],
+    ["steeringReturnResponse", behavior.steeringReturnResponse],
+    ["steeringCounterResponse", behavior.steeringCounterResponse],
+    ["steeringReferenceSpeed", behavior.steeringReferenceSpeed],
     ["groundSuspensionSpringRate", behavior.groundSuspensionSpringRate],
     ["groundSuspensionDampingRate", behavior.groundSuspensionDampingRate],
     ["groundCenterOfMassHeight", behavior.groundCenterOfMassHeight],
     ["groundGrip", behavior.groundGrip],
+    ["groundLateralGripMultiplier", behavior.groundLateralGripMultiplier],
     ["groundUphillGripMultiplier", behavior.groundUphillGripMultiplier],
     ["cameraFollowResponse", behavior.cameraFollowResponse],
     ["hoverPositionHold", behavior.hoverPositionHold],
@@ -276999,7 +277302,7 @@ function validateFreeFlightBehavior(behavior, context) {
   positiveFields.forEach(
     ([name, value]) => assertFinitePositiveNumber(value, `freeFlight.${name}`)
   );
-  for (const name of ["groundDynamics", "groundDust"]) {
+  for (const name of ["groundDynamics", "groundDust", "groundFallRecovery", "groundDriftEnabled"]) {
     if (behavior[name] !== void 0 && typeof behavior[name] !== "boolean") {
       throw new SandboxDescriptorValidationError(`freeFlight.${name} \u5FC5\u987B\u4E3A\u5E03\u5C14\u503C`);
     }
@@ -277007,10 +277310,18 @@ function validateFreeFlightBehavior(behavior, context) {
   if (behavior.groundDynamics && (behavior.motionMode !== "ground" || !behavior.groundSprungBodyNodeId || !behavior.groundWheelSuspension?.length)) {
     throw new SandboxDescriptorValidationError("freeFlight.groundDynamics \u5FC5\u987B\u58F0\u660E\u5730\u9762\u6A21\u5F0F\u3001\u7C27\u4E0A\u8F66\u8EAB\u4E0E\u56DB\u8F6E\u60AC\u6302");
   }
+  if (behavior.groundDriftEnabled && !behavior.groundDynamics) {
+    throw new SandboxDescriptorValidationError("freeFlight.groundDriftEnabled \u5FC5\u987B\u542F\u7528 groundDynamics");
+  }
+  if (behavior.groundTireSkidAssetPath !== void 0 && (typeof behavior.groundTireSkidAssetPath !== "string" || sanitizePluginStaticAssetPath(behavior.groundTireSkidAssetPath) !== behavior.groundTireSkidAssetPath)) {
+    throw new SandboxDescriptorValidationError("freeFlight.groundTireSkidAssetPath \u5FC5\u987B\u662F\u63D2\u4EF6 assets/ \u5185\u7684\u76F8\u5BF9\u8D44\u6E90\u952E");
+  }
   if (behavior.groundTerrainMaterial !== void 0 && !["asphalt", "dirt", "gravel"].includes(behavior.groundTerrainMaterial)) {
     throw new SandboxDescriptorValidationError("freeFlight.groundTerrainMaterial \u4E0D\u652F\u6301\u8BE5\u6750\u8D28");
   }
   assertFiniteNonNegativeNumber(behavior.groundAirborneAngularDamping, "freeFlight.groundAirborneAngularDamping");
+  assertFiniteNonNegativeNumber(behavior.groundAntiRollStiffness, "freeFlight.groundAntiRollStiffness");
+  assertFiniteNonNegativeNumber(behavior.groundAntiRollDamping, "freeFlight.groundAntiRollDamping");
   assertFiniteNonNegativeNumber(behavior.cameraShakeScale, "freeFlight.cameraShakeScale");
   assertFiniteUnitNumber(behavior.groundFeedbackVolume, "freeFlight.groundFeedbackVolume");
   assertFiniteUnitNumber(behavior.cameraHorizonStability, "freeFlight.cameraHorizonStability");
@@ -277162,6 +277473,7 @@ function validateFreeFlightBehavior(behavior, context) {
     "freeFlight.highSpeedSteeringScale"
   );
   assertFiniteUnitNumber(behavior.roadEdgeAssist, "freeFlight.roadEdgeAssist");
+  assertFiniteUnitNumber(behavior.groundStabilityAssist, "freeFlight.groundStabilityAssist");
   if (behavior.steeringMode !== void 0 && !["velocity-heading", "edge-yaw-rate"].includes(behavior.steeringMode)) {
     throw new SandboxDescriptorValidationError("freeFlight.steeringMode \u975E\u6CD5");
   }
@@ -278028,6 +278340,12 @@ var CapabilityRenderRevisionJournal = class {
   }
 };
 
+// src/components/StarSky/shared/performance/WorldMatrixBatch.ts
+var batchedWorldUpdates = /* @__PURE__ */ new WeakSet();
+function registerBatchedWorldMatrixUpdate(update) {
+  batchedWorldUpdates.add(update);
+}
+
 // src/components/StarSky/host/runtime/sandbox/Capabilities/CapabilityRenderAssetRuntime.ts
 var CapabilityRenderAssetRuntime = class {
   constructor(port) {
@@ -278262,7 +278580,11 @@ var CapabilityRenderAssetRuntime = class {
     });
     const geometries = keys.length ? await terrainCompiledGeometryCache.getMany(keys) : /* @__PURE__ */ new Map();
     if (this.controller.signal.aborted || this.failed) return false;
-    if (keys.some((key) => !geometries.get(key))) throw new Error("\u5B8C\u6574\u6E32\u67D3\u8D44\u4EA7\u663E\u793A\u8D44\u6E90\u7F3A\u5931");
+    const missing = keys.filter((key) => !geometries.get(key));
+    if (missing.length) {
+      logBrowserRuntimeDebug("plugin.render-asset.resources-missing", { pluginId: this.port.pluginId, keys: missing });
+      throw new Error("\u5B8C\u6574\u6E32\u67D3\u8D44\u4EA7\u663E\u793A\u8D44\u6E90\u7F3A\u5931");
+    }
     sidecars.forEach((source) => {
       const geometry = geometries.get(source.node.geometryKey);
       if (geometry) this.sourceGeometries.set(source.node.geometryKey, geometry);
@@ -278359,10 +278681,11 @@ var CapabilityRenderAssetRuntime = class {
         before.apply(mesh, args);
         if (!isGeometryPreparationPass(this.port.renderer)) this.displayGroupPrepared(group);
       };
+      if (before === Object3D.prototype.onBeforeRender) registerOcclusionCallback(mesh.onBeforeRender);
       this.displayPreparationCleanup.push(() => {
         mesh.onBeforeRender = before;
       });
-      group.cleanup.push(this.filter.register(mesh, () => group.valid && (isGeometryPreparationPass(this.port.renderer) || this.ready(group, true))));
+      group.cleanup.push(this.filter.register(mesh, () => group.valid && (isGeometryPreparationPass(this.port.renderer) || this.ready(group, true)), true));
       group.cleanup.push(bindFinalBatchFailure(mesh, () => this.fallback()));
     });
   }
@@ -278797,7 +279120,7 @@ var CapabilityRenderAssetRuntime = class {
       mesh.userData.capabilityRenderAsset = true;
       mesh.userData.capabilityFinalManifestHit = true;
       mesh.userData.capabilityBatchSources ??= [mesh];
-      group.cleanup.push(this.filter.register(mesh, () => group.valid && (isGeometryPreparationPass(this.port.renderer) || this.ready(group, true) && group.valid && (!group.rigid?.syncVisibility || mesh.geometry.drawRange.count > 0))));
+      group.cleanup.push(this.filter.register(mesh, () => group.valid && (isGeometryPreparationPass(this.port.renderer) || this.ready(group, true) && group.valid && (!group.rigid?.syncVisibility || mesh.geometry.drawRange.count > 0)), true));
       group.cleanup.push(bindFinalBatchFailure(mesh, () => this.fallback()));
     });
     if (group.batch || group.rigid) group.cleanup.push(bindFinalBatchDisplay(
@@ -279253,9 +279576,11 @@ var CapabilityRenderAssetRuntime = class {
           return;
         }
         if (updateParents) node.parent?.updateWorldMatrix(true, false);
-        if (node.matrixAutoUpdate) node.updateMatrix();
-        if (parent !== node.parent || !local.equals(node.matrix) || !world.equals(node.matrixWorld) || node.parent && !parentWorld.equals(node.parent.matrixWorld)) {
-          worldUpdate.call(node, false, false);
+        const localUnchanged = (!node.matrixAutoUpdate || !dirty) && local.equals(node.matrix);
+        if (node.matrixAutoUpdate && !localUnchanged) node.updateMatrix();
+        if (parent !== node.parent || !localUnchanged || !world.equals(node.matrixWorld) || node.parent && !parentWorld.equals(node.parent.matrixWorld)) {
+          if (node.parent) node.matrixWorld.multiplyMatrices(node.parent.matrixWorld, node.matrix);
+          else node.matrixWorld.copy(node.matrix);
           parent = node.parent;
           local.copy(node.matrix);
           world.copy(node.matrixWorld);
@@ -279265,6 +279590,7 @@ var CapabilityRenderAssetRuntime = class {
         if (updateChildren) node.children.forEach((child) => child.updateWorldMatrix(false, true));
       };
       node.updateWorldMatrix = updateWorldIfChanged;
+      registerBatchedWorldMatrixUpdate(updateWorldIfChanged);
       this.resourceCleanup.push(() => {
         if (node.updateWorldMatrix !== updateWorldIfChanged) return;
         if (worldDescriptor) Object.defineProperty(node, "updateWorldMatrix", worldDescriptor);
@@ -279333,7 +279659,7 @@ var CapabilityRenderAssetRuntime = class {
 
 // src/components/StarSky/host/runtime/sandbox/Capabilities/CapabilityFaceMaterialDisplay.ts
 var CapabilityFaceMaterialDisplay = class _CapabilityFaceMaterialDisplay {
-  constructor(renderer, source, materials, states) {
+  constructor(renderer, source, materials2, states) {
     this.source = source;
     /** 恢复源节点及注销资源监听。 */
     this.cleanup = [];
@@ -279350,18 +279676,18 @@ var CapabilityFaceMaterialDisplay = class _CapabilityFaceMaterialDisplay {
     const geometry = source.geometry, index = geometry.index, indexVersion = index.version;
     const attributes = Object.entries(geometry.attributes);
     const versions = attributes.map(([, attribute]) => "version" in attribute ? attribute.version : attribute.data.version);
-    const groups = geometry.groups.map((group) => ({ ...group })), colors = materials.map((material2) => material2.color.clone());
-    const bindings2 = materials.slice(), indexCount = index.count, distinctStates = Array.from(new Set(states));
-    const base = materials[0], roughness = base.roughness, metalness = base.metalness;
+    const groups = geometry.groups.map((group) => ({ ...group })), colors = materials2.map((material2) => material2.color.clone());
+    const bindings2 = materials2.slice(), indexCount = index.count, distinctStates = Array.from(new Set(states));
+    const base = materials2[0], roughness = base.roughness, metalness = base.metalness;
     const emissive = base.emissive.clone(), intensity = base.emissiveIntensity;
-    this.matches = () => source.geometry === geometry && source.material === materials && !source.morphTargetInfluences && !source.customDepthMaterial && !source.customDistanceMaterial && Object.keys(geometry.morphAttributes).length === 0 && geometry.index === index && index.count === indexCount && index.version === indexVersion && geometry.drawRange.start === 0 && geometry.drawRange.count >= index.count && Object.keys(geometry.attributes).length === attributes.length && attributes.every(([name, attribute], slot) => geometry.attributes[name] === attribute && ("version" in attribute ? attribute.version : attribute.data.version) === versions[slot]) && geometry.groups.length === groups.length && groups.every((group, slot) => {
+    this.matches = () => source.geometry === geometry && source.material === materials2 && !source.morphTargetInfluences && !source.customDepthMaterial && !source.customDistanceMaterial && Object.keys(geometry.morphAttributes).length === 0 && geometry.index === index && index.count === indexCount && index.version === indexVersion && geometry.drawRange.start === 0 && geometry.drawRange.count >= index.count && Object.keys(geometry.attributes).length === attributes.length && attributes.every(([name, attribute], slot) => geometry.attributes[name] === attribute && ("version" in attribute ? attribute.version : attribute.data.version) === versions[slot]) && geometry.groups.length === groups.length && groups.every((group, slot) => {
       const current = geometry.groups[slot];
       return current.start === group.start && current.count === group.count && current.materialIndex === group.materialIndex;
-    }) && distinctStates.every((state) => state.matches()) && materials.length === states.length && materials.every((material2, slot) => material2 === bindings2[slot] && material2.onBeforeRender === Material.prototype.onBeforeRender && material2.color.equals(colors[slot]) && material2.roughness === roughness && material2.metalness === metalness && material2.emissiveIntensity === intensity && material2.emissive.equals(emissive));
+    }) && distinctStates.every((state) => state.matches()) && materials2.length === states.length && materials2.every((material2, slot) => material2 === bindings2[slot] && material2.onBeforeRender === Material.prototype.onBeforeRender && material2.color.equals(colors[slot]) && material2.roughness === roughness && material2.metalness === metalness && material2.emissiveIntensity === intensity && material2.emissive.equals(emissive));
     const createGeometry = () => {
       const result = geometry.toNonIndexed(), values = new Float32Array(index.count * 3);
       for (const group of groups) for (let vertex2 = group.start; vertex2 < group.start + group.count; vertex2++)
-        materials[group.materialIndex].color.toArray(values, vertex2 * 3);
+        materials2[group.materialIndex].color.toArray(values, vertex2 * 3);
       result.setAttribute("color", new BufferAttribute(values, 3));
       result.clearGroups();
       return result;
@@ -279381,8 +279707,8 @@ var CapabilityFaceMaterialDisplay = class _CapabilityFaceMaterialDisplay {
     Object.assign(this.mesh.userData, { capabilityRigidBatch: true, capabilityBatchSources: [source] });
     this.filter = new CapabilityDrawFilter(renderer);
     this.filter.beforeRender((scene) => this.sync(scene));
-    this.filter.register(this.mesh, (camera) => isGeometryPreparationPass(renderer) || this.isPrepared() && this.mesh.layers.test(camera.layers));
-    this.filter.register(source, (camera) => isGeometryPreparationPass(renderer) || !this.isPrepared() || !this.mesh.layers.test(camera.layers));
+    this.filter.register(this.mesh, (camera) => isGeometryPreparationPass(renderer) || this.isPrepared() && this.mesh.layers.test(camera.layers), true);
+    this.filter.register(source, (camera) => isGeometryPreparationPass(renderer) || !this.isPrepared() || !this.mesh.layers.test(camera.layers), true);
     this.cleanup.push(bindFinalBatchDisplay([source], () => this.isPrepared()));
     const descriptor = Object.getOwnPropertyDescriptor(source, "isMesh");
     if (descriptor?.configurable && descriptor.value === true) {
@@ -279392,29 +279718,29 @@ var CapabilityFaceMaterialDisplay = class _CapabilityFaceMaterialDisplay {
         if (Object.getOwnPropertyDescriptor(source, "isMesh")?.get === renderable) Object.defineProperty(source, "isMesh", descriptor);
       });
     }
-    [geometry, ...Array.from(new Set(materials))].forEach((resource) => {
+    [geometry, ...Array.from(new Set(materials2))].forEach((resource) => {
       resource.addEventListener("dispose", this.invalidate);
       this.cleanup.push(() => resource.removeEventListener("dispose", this.invalidate));
     });
   }
   /** 检查完整面覆盖及统一 PBR 配置，不合格仍使用原材质数组。 */
   static create(renderer, source) {
-    const materials = source.material, geometry = source.geometry;
-    if (!Array.isArray(materials) || materials.length < 2 || materials.length > 32 || source.isInstancedMesh || source.isSkinnedMesh || !source.isMesh || source.morphTargetInfluences || source.customDepthMaterial || source.customDistanceMaterial || source.onBeforeRender !== Object3D.prototype.onBeforeRender || source.onAfterRender !== Object3D.prototype.onAfterRender || source.onBeforeShadow !== Object3D.prototype.onBeforeShadow || source.onAfterShadow !== Object3D.prototype.onAfterShadow || !geometry.index || geometry.index.count > 6144 || geometry.drawRange.start !== 0 || geometry.drawRange.count < geometry.index.count || geometry.groups.length < 2 || !canCompileStaticGeometry(geometry)) return;
-    if (!materials.every((material) => material instanceof MeshStandardMaterial && material.visible && !material.transparent && !material.vertexColors && material.depthTest && material.depthWrite && material.alphaTest === 0 && !material.alphaHash && !material.transmission && material.onBeforeRender === Material.prototype.onBeforeRender && batchMaterialExtensionScope(material) === "")) return;
-    const base = materials[0], statesByMaterial = /* @__PURE__ */ new Map();
-    materials.forEach((material) => {
+    const materials2 = source.material, geometry = source.geometry;
+    if (!Array.isArray(materials2) || materials2.length < 2 || materials2.length > 32 || source.isInstancedMesh || source.isSkinnedMesh || !source.isMesh || source.morphTargetInfluences || source.customDepthMaterial || source.customDistanceMaterial || source.onBeforeRender !== Object3D.prototype.onBeforeRender || source.onAfterRender !== Object3D.prototype.onAfterRender || source.onBeforeShadow !== Object3D.prototype.onBeforeShadow || source.onAfterShadow !== Object3D.prototype.onAfterShadow || !geometry.index || geometry.index.count > 6144 || geometry.drawRange.start !== 0 || geometry.drawRange.count < geometry.index.count || geometry.groups.length < 2 || !canCompileStaticGeometry(geometry)) return;
+    if (!materials2.every((material) => material instanceof MeshStandardMaterial && material.visible && !material.transparent && !material.vertexColors && material.depthTest && material.depthWrite && material.alphaTest === 0 && !material.alphaHash && !material.transmission && material.onBeforeRender === Material.prototype.onBeforeRender && batchMaterialExtensionScope(material) === "")) return;
+    const base = materials2[0], statesByMaterial = /* @__PURE__ */ new Map();
+    materials2.forEach((material) => {
       if (!statesByMaterial.has(material)) statesByMaterial.set(material, captureMatrixMaterial(material));
     });
-    const states = materials.map((material) => statesByMaterial.get(material));
-    if (states.some((state) => state.key !== states[0].key) || materials.some((material) => material.roughness !== base.roughness || material.metalness !== base.metalness || material.emissiveIntensity !== base.emissiveIntensity || !material.emissive.equals(base.emissive))) return;
+    const states = materials2.map((material) => statesByMaterial.get(material));
+    if (states.some((state) => state.key !== states[0].key) || materials2.some((material) => material.roughness !== base.roughness || material.metalness !== base.metalness || material.emissiveIntensity !== base.emissiveIntensity || !material.emissive.equals(base.emissive))) return;
     let end = 0;
     for (const group of geometry.groups) {
-      if (group.start !== end || !Number.isInteger(group.count) || group.count <= 0 || group.count % 3 || !Number.isInteger(group.materialIndex) || !materials[group.materialIndex]) return;
+      if (group.start !== end || !Number.isInteger(group.count) || group.count <= 0 || group.count % 3 || !Number.isInteger(group.materialIndex) || !materials2[group.materialIndex]) return;
       end += group.count;
     }
     if (end !== geometry.index.count) return;
-    return new _CapabilityFaceMaterialDisplay(renderer, source, materials, states);
+    return new _CapabilityFaceMaterialDisplay(renderer, source, materials2, states);
   }
   /** 只同步本节点局部位姿；父级移动继续由原有世界矩阵链处理。 */
   sync(scene) {
@@ -279652,14 +279978,14 @@ var CapabilityDisplaySnapshot = class {
         }
         geometries.set(key, geometry);
       }
-      const materials = (Array.isArray(mesh.material) ? mesh.material : [mesh.material]).map((material, index) => {
+      const materials2 = (Array.isArray(mesh.material) ? mesh.material : [mesh.material]).map((material, index) => {
         if ((command.material?.faceMaterials?.[index] ?? command.material)?.textureUrl || !(material instanceof MeshBasicMaterial || material instanceof MeshStandardMaterial) || material.onBeforeCompile !== Material.prototype.onBeforeCompile || Object.values(material).some((value) => value instanceof Texture)) return null;
         const { uuid: _uuid, ...serialized } = material.toJSON();
         return { ...serialized, ...material instanceof MeshPhysicalMaterial ? { ior: material.ior } : {} };
       });
       nodes.push({
         geometryKey: key,
-        materials,
+        materials: materials2,
         matrices: mesh instanceof InstancedMesh ? Array.from(mesh.instanceMatrix.array).slice(0, mesh.count * 16) : null
       });
     } catch (error) {
@@ -280431,8 +280757,8 @@ var CapabilitySceneRuntime = class {
   }
   /** 释放 mesh 材质。 */
   disposeMeshMaterial(mesh) {
-    const materials = Array.isArray(mesh.material) ? mesh.material : [mesh.material];
-    materials.forEach((material) => this.port.releaseMaterial(material));
+    const materials2 = Array.isArray(mesh.material) ? mesh.material : [mesh.material];
+    materials2.forEach((material) => this.port.releaseMaterial(material));
   }
   /** 同步声明式材质引用的贴图资源。 */
   syncNodeMaterialTextures(nodeId) {
@@ -280727,14 +281053,14 @@ async function buildRenderAsset(root, batches, sourceStore, store, rigid = false
 // src/components/StarSky/host/runtime/sandbox/Capabilities/buildDisplayArtifact.ts
 async function buildDisplayArtifact(batches, store, finalStores = {}, experimentalMaterialSlots = false, experimentalFinalAssets = experimentalMaterialSlots, behaviors) {
   const renderPlan = finalStores.rigidAsset ? planCapabilityRenderAsset(batches.flat(), behaviors) : void 0;
-  const root = new Group(), geometries = new GeometryRegistry(), materials = new MaterialRegistry();
+  const root = new Group(), geometries = new GeometryRegistry(), materials2 = new MaterialRegistry();
   const scene = new CapabilitySceneRuntime({
     root,
     pluginId: "builtin-display-build",
     acquireGeometry: (descriptor, restore) => geometries.acquire(descriptor, restore),
     releaseGeometry: (geometry) => geometries.release(geometry),
-    acquireMaterial: (descriptor, restore) => materials.acquire(descriptor, restore),
-    releaseMaterial: (material) => materials.release(material),
+    acquireMaterial: (descriptor, restore) => materials2.acquire(descriptor, restore),
+    releaseMaterial: (material) => materials2.release(material),
     acquireTexture: () => void 0,
     releaseTexture: () => void 0,
     getTexture: () => null,
@@ -280840,7 +281166,7 @@ async function buildDisplayArtifact(batches, store, finalStores = {}, experiment
     scene.disposeNodeResources(root);
     scene.clear();
     geometries.dispose();
-    materials.dispose();
+    materials2.dispose();
     compiler.dispose();
     matrixPool.dispose();
     root.clear();
@@ -281196,6 +281522,7 @@ export {
   createSceneBuilder,
   createSceneReconciler,
   createSegmentTransform,
+  createSharedSpatialProfile,
   createSingleDragStartState,
   createSingleSurfaceDragBehavior,
   createStandardActionButtonsBehavior,
@@ -281238,7 +281565,6 @@ export {
   getBodyBlockedInsetAtClearance,
   getBodyHeightFromBody,
   getBodyVolume,
-  getCollisionInfoFromFootprint,
   getDefaultBlockedInsetFromFootprint,
   getDefaultDragSurfaceMarginFromFootprint,
   getDefaultInteractionScaleFromFootprint,
@@ -281279,6 +281605,7 @@ export {
   resolveAdjacentMediaStageIndex,
   resolveAttachedWorldMatrix,
   resolveElasticPullCommitDirectionFromOffset,
+  resolveFootprintCollision,
   resolveMediaAssetDisplayName,
   resolveMediaAssetEntries,
   resolveMediaStagePlaneTransforms,
@@ -281308,6 +281635,7 @@ export {
   resolveSpaceFrame,
   resolveSpaceFrameContactDistance,
   resolveSpacePoint,
+  resolveSpatialProfileCollision,
   resolveStandardActionButtonsBehaviorId,
   resolveStandardFreeFlightBehaviorId,
   resolveStandardLocalClipRectBehaviorId,

@@ -10,6 +10,8 @@ func TestIsMaterialID(t *testing.T) {
 		"yellow-pebble",
 		"jade",
 		"rockscape",
+		"warm-rockscape",
+		"warm-marble",
 		"marble",
 		"asphalt",
 		"brick",

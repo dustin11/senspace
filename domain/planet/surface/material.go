@@ -2,16 +2,18 @@
 package surface
 
 var materialIDs = map[string]struct{}{
-	"grass":         {},
-	"pebble":        {},
-	"yellow-pebble": {},
-	"jade":          {},
-	"rockscape":     {},
-	"marble":        {},
-	"asphalt":       {},
-	"brick":         {},
-	"wood":          {},
-	"steel":         {},
+	"grass":          {},
+	"pebble":         {},
+	"yellow-pebble":  {},
+	"jade":           {},
+	"rockscape":      {},
+	"warm-rockscape": {},
+	"warm-marble":    {},
+	"marble":         {},
+	"asphalt":        {},
+	"brick":          {},
+	"wood":           {},
+	"steel":          {},
 }
 
 // IsMaterialID 判断纹理是否为地形和道路都允许持久化的表面纹理。

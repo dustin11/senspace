@@ -11,6 +11,25 @@ import (
 
 // 覆盖 JSON 压缩、非法输入和记录上限。
 func TestValidateState(t *testing.T) {
+	t.Run("preserves reference mountain parts and material", func(t *testing.T) {
+		for _, presetID := range []string{"rock-jointed-pillar", "mountain-canopy", "mountain-pine", "mountain-tree"} {
+			source := strings.ReplaceAll(`{"platforms":[],"objects":[{"id":"rock","kind":"object","presetId":"PRESET","variantSeed":10788,"transform":{"position":[1,2,3],"rotation":[0,0.3,0],"scale":[3,8,4]}}],"prefabs":[{"id":"mountain","kind":"prefab","name":"云栈秋山","parts":[{"presetId":"PRESET","variantSeed":10788,"transform":{"position":[1,2,3],"rotation":[0,0.3,0],"scale":[3,8,4]}}]}]}`, "PRESET", presetID)
+			state, err := validateState(json.RawMessage(source))
+			if err != nil {
+				t.Fatalf("validate %s: %v", presetID, err)
+			}
+			if strings.Count(string(state), `"presetId":"`+presetID+`"`) != 2 {
+				t.Fatalf("lost rock part: %s", state)
+			}
+			if presetID == "rock-jointed-pillar" {
+				source = strings.ReplaceAll(source, `"variantSeed":10788`, `"materialId":"warm-rockscape","variantSeed":10788`)
+				state, err = validateState(json.RawMessage(source))
+				if err != nil || strings.Count(string(state), `"materialId":"warm-rockscape"`) != 2 {
+					t.Fatalf("lost warm stone material: %s, %v", state, err)
+				}
+			}
+		}
+	})
 	t.Run("compacts a valid state", func(t *testing.T) {
 		state, err := validateState(json.RawMessage(`{
 			"platforms": [{

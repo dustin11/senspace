@@ -268827,9 +268827,9 @@ var builtinGeometryArtifacts_generated_default = {
     bytes: 307213
   },
   "08bc6c604f07e4f84801c6aa80e9176b3fd5c6ba23171225b5ca8315196a1fc1": {
-    url: "/plugin-builtins/display-f2b759eddbc818b3c225c7dcc4f84105a13ada11915cbb5864112f5f9a3e0ff4.bin",
-    sha256: "f2b759eddbc818b3c225c7dcc4f84105a13ada11915cbb5864112f5f9a3e0ff4",
-    bytes: 1527882
+    url: "/plugin-builtins/display-c36abf9532a085f57fec2f500e848979a5439b6ba5c9eb484ef016793fb36270.bin",
+    sha256: "c36abf9532a085f57fec2f500e848979a5439b6ba5c9eb484ef016793fb36270",
+    bytes: 1528518
   },
   "0917c5a95bdc6637e4857e0e3c7a3864a9fc3916745b0e2607cbe968a1b1d9d2": {
     url: "/plugin-builtins/display-6b047d5236f8971bd0781c52b8b41a24bc6d3f118d81b6894d71b1a0963c3478.bin",
@@ -269176,11 +269176,6 @@ var builtinGeometryArtifacts_generated_default = {
     sha256: "0f140fe203bef5c1fb0fa3ee70026d367270c6ea9eb1c963a1a805cfd427433f",
     bytes: 222314
   },
-  "811fdcdc04d49b54bd71d42307a924ea2c2615728ca7bef3d1c6e79e640ab025": {
-    url: "/plugin-builtins/display-f2b759eddbc818b3c225c7dcc4f84105a13ada11915cbb5864112f5f9a3e0ff4.bin",
-    sha256: "f2b759eddbc818b3c225c7dcc4f84105a13ada11915cbb5864112f5f9a3e0ff4",
-    bytes: 1527882
-  },
   "822ec2e6cba7ed32166f940c774974ded527f1b065e9bed10115c404f255be04": {
     url: "/plugin-builtins/display-6b047d5236f8971bd0781c52b8b41a24bc6d3f118d81b6894d71b1a0963c3478.bin",
     sha256: "6b047d5236f8971bd0781c52b8b41a24bc6d3f118d81b6894d71b1a0963c3478",
@@ -269220,6 +269215,11 @@ var builtinGeometryArtifacts_generated_default = {
     url: "/plugin-builtins/display-6b047d5236f8971bd0781c52b8b41a24bc6d3f118d81b6894d71b1a0963c3478.bin",
     sha256: "6b047d5236f8971bd0781c52b8b41a24bc6d3f118d81b6894d71b1a0963c3478",
     bytes: 210365
+  },
+  "8de8986579f96c8b9b1db00042a8910d17d1c3998ec193aa9a47abbc6028f19a": {
+    url: "/plugin-builtins/display-c36abf9532a085f57fec2f500e848979a5439b6ba5c9eb484ef016793fb36270.bin",
+    sha256: "c36abf9532a085f57fec2f500e848979a5439b6ba5c9eb484ef016793fb36270",
+    bytes: 1528518
   },
   "90adbea1ed1ecaba257c501a8145b70eb755b3cd5528c9a801f11883370608a9": {
     url: "/plugin-builtins/display-6b047d5236f8971bd0781c52b8b41a24bc6d3f118d81b6894d71b1a0963c3478.bin",
@@ -269377,9 +269377,9 @@ var builtinGeometryArtifacts_generated_default = {
     bytes: 222314
   },
   b737bd21e065517b919e2a7b3214cd834ed46256b51870771fc4c8218e83f8e3: {
-    url: "/plugin-builtins/display-f2b759eddbc818b3c225c7dcc4f84105a13ada11915cbb5864112f5f9a3e0ff4.bin",
-    sha256: "f2b759eddbc818b3c225c7dcc4f84105a13ada11915cbb5864112f5f9a3e0ff4",
-    bytes: 1527882
+    url: "/plugin-builtins/display-c36abf9532a085f57fec2f500e848979a5439b6ba5c9eb484ef016793fb36270.bin",
+    sha256: "c36abf9532a085f57fec2f500e848979a5439b6ba5c9eb484ef016793fb36270",
+    bytes: 1528518
   },
   b868ec0156b3ffa836278756ce6d13f1f3ef59dd3deec7f787a4c7635cdd63c8: {
     url: "/plugin-builtins/display-6b047d5236f8971bd0781c52b8b41a24bc6d3f118d81b6894d71b1a0963c3478.bin",

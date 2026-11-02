@@ -23,6 +23,9 @@ profile.cov
 runtime/
 *.log
 
+# 插件镜像构建时从前端源码生成，本地调试文件不纳入版本管理。
+/docker/plugin-builder/display-prebuilder.mjs
+
 # Dependency directories (remove the comment below to include it)
 # vendor/
 

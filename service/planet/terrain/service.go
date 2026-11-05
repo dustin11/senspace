@@ -75,9 +75,17 @@ var terrainObjectPresetIds = map[string]struct{}{
 	"mountain-tree":       {},
 	"shrub":               {},
 	"grass-clump":         {},
+	"meadow-grass":        {},
+	"blue-fescue":         {},
+	"fountain-grass":      {},
 	"daisy-patch":         {},
 	"tulip-patch":         {},
 	"trumpet-flower":      {},
+	"wood-sorrel":         {},
+	"bluebell":            {},
+	"red-campion":         {},
+	"buttercup":           {},
+	"wood-anemone":        {},
 	"fern":                {},
 	"moss-patch":          {},
 	"lichen-patch":        {},
@@ -120,16 +128,19 @@ var terrainPlantPresetIds = map[string]struct{}{
 	"mountain-pine":   {},
 	"mountain-tree":   {},
 	"cypress":         {}, "shrub": {}, "grass-clump": {}, "daisy-patch": {},
+	"meadow-grass": {}, "blue-fescue": {}, "fountain-grass": {}, "wood-sorrel": {},
+	"bluebell": {}, "red-campion": {}, "buttercup": {}, "wood-anemone": {},
 	"tulip-patch": {}, "trumpet-flower": {}, "fern": {}, "moss-patch": {},
 	"lichen-patch": {}, "fallen-leaf-clump": {}, "twig-clump": {}, "lotus-cluster": {},
 }
 
 // 分类到几何资源的唯一归属；覆盖分类不包含模型。
 var terrainVegetationCategoryPresetIds = map[string]map[string]struct{}{
-	"moss-coverage": {}, "lichen-coverage": {}, "fallen-leaves-coverage": {},
-	"grass":                {"grass-clump": {}},
+	"moss-coverage": {}, "mud-coverage": {}, "sand-coverage": {}, "lichen-coverage": {}, "fallen-leaves-coverage": {},
+	"grass":                {"grass-clump": {}, "meadow-grass": {}, "blue-fescue": {}, "fountain-grass": {}},
+	"herbs":                {"wood-sorrel": {}},
 	"fern":                 {"fern": {}},
-	"flowers":              {"daisy-patch": {}, "tulip-patch": {}, "trumpet-flower": {}},
+	"flowers":              {"daisy-patch": {}, "tulip-patch": {}, "trumpet-flower": {}, "bluebell": {}, "red-campion": {}, "buttercup": {}, "wood-anemone": {}},
 	"moss-accent":          {"moss-patch": {}},
 	"lichen-accent":        {"lichen-patch": {}},
 	"fallen-leaves-accent": {"fallen-leaf-clump": {}},
@@ -312,11 +323,13 @@ type terrainVegetationPatch struct {
 // terrainVegetationCoverageTile 是固定容量 RGBA8 稀疏遮罩块。
 type terrainVegetationCoverageTile struct {
 	ProjectionAxis string `json:"projectionAxis"`
-	TileX          int    `json:"tileX"`
-	TileY          int    `json:"tileY"`
-	Resolution     int    `json:"resolution"`
-	Encoding       string `json:"encoding"`
-	Data           string `json:"data"`
+	// 网格投影朝向；缺省沿用正面。
+	ProjectionFacing *int   `json:"projectionFacing,omitempty"`
+	TileX            int    `json:"tileX"`
+	TileY            int    `json:"tileY"`
+	Resolution       int    `json:"resolution"`
+	Encoding         string `json:"encoding"`
+	Data             string `json:"data"`
 }
 
 // terrainVegetationCoverageLayer 保存一个宿主上的一种覆盖材质。
@@ -521,7 +534,7 @@ func validateState(state json.RawMessage) (json.RawMessage, error) {
 	decoder := json.NewDecoder(bytes.NewReader(state))
 	decoder.DisallowUnknownFields()
 	if err := decoder.Decode(&envelope); err != nil {
-		return nil, bizerr.Parameter("地形状态结构无效")
+		return nil, bizerr.Parameter(fmt.Sprintf("地形状态结构无效：%v", err))
 	}
 	if err := ensureJsonEnd(decoder); err != nil {
 		return nil, bizerr.Parameter("地形状态必须是对象")
@@ -829,8 +842,7 @@ func validateTerrainPrefabVegetationCoverage(
 	if _, isPlant := terrainPlantPresetIds[parts[layer.SurfaceHostPartIndex].PresetId]; isPlant {
 		return bizerr.Parameter("植物不能承载预制体覆盖")
 	}
-	if layer.CategoryId != "moss-coverage" && layer.CategoryId != "lichen-coverage" &&
-		layer.CategoryId != "fallen-leaves-coverage" {
+	if !validTerrainCoverageCategory(layer.CategoryId) {
 		return bizerr.Parameter("地形预制体覆盖分类无效")
 	}
 	if layer.Seed < 0 || layer.Seed > maxTerrainVariantSeed || len(layer.Tiles) == 0 {
@@ -839,12 +851,13 @@ func validateTerrainPrefabVegetationCoverage(
 	usedTiles := make(map[string]struct{}, len(layer.Tiles))
 	for _, tile := range layer.Tiles {
 		if tile.Encoding != "predict-rle-base64" ||
+			(tile.ProjectionFacing != nil && *tile.ProjectionFacing != -1 && *tile.ProjectionFacing != 1) ||
 			(tile.Resolution != 128 && tile.Resolution != 256) ||
 			tile.TileX < -32768 || tile.TileX > 32768 || tile.TileY < -32768 || tile.TileY > 32768 ||
 			(tile.ProjectionAxis != "xz" && tile.ProjectionAxis != "xy" && tile.ProjectionAxis != "yz") {
 			return bizerr.Parameter("地形预制体覆盖块参数无效")
 		}
-		key := fmt.Sprintf("%s:%d:%d", tile.ProjectionAxis, tile.TileX, tile.TileY)
+		key := terrainCoverageTileKey(tile)
 		if _, exists := usedTiles[key]; exists {
 			return bizerr.Parameter("地形预制体覆盖块重复")
 		}
@@ -1039,8 +1052,7 @@ func validateTerrainVegetationCoverageLayer(
 	if err := validateTerrainRecordId(layer.Id, usedIds); err != nil {
 		return err
 	}
-	if layer.CategoryId != "moss-coverage" && layer.CategoryId != "lichen-coverage" &&
-		layer.CategoryId != "fallen-leaves-coverage" {
+	if !validTerrainCoverageCategory(layer.CategoryId) {
 		return bizerr.Parameter("植被覆盖分类无效")
 	}
 	if layer.Seed < 0 || layer.Seed > maxTerrainVariantSeed || len(layer.Tiles) == 0 {
@@ -1059,13 +1071,14 @@ func validateTerrainVegetationCoverageLayer(
 	usedTiles := make(map[string]struct{}, len(layer.Tiles))
 	for _, tile := range layer.Tiles {
 		if tile.Encoding != "predict-rle-base64" ||
+			(tile.ProjectionFacing != nil && *tile.ProjectionFacing != -1 && *tile.ProjectionFacing != 1) ||
 			(tile.Resolution != 128 && tile.Resolution != 256) ||
 			tile.TileX < -32768 || tile.TileX > 32768 || tile.TileY < -32768 || tile.TileY > 32768 ||
 			(tile.ProjectionAxis != "xz" && tile.ProjectionAxis != "xy" && tile.ProjectionAxis != "yz") ||
 			(layer.Surface.Kind == "terrain" && tile.ProjectionAxis != "xz") {
 			return bizerr.Parameter("植被覆盖块参数无效")
 		}
-		key := fmt.Sprintf("%s:%d:%d", tile.ProjectionAxis, tile.TileX, tile.TileY)
+		key := terrainCoverageTileKey(tile)
 		if _, exists := usedTiles[key]; exists {
 			return bizerr.Parameter("植被覆盖块坐标重复")
 		}
@@ -1079,6 +1092,25 @@ func validateTerrainVegetationCoverageLayer(
 		}
 	}
 	return nil
+}
+
+// 覆盖分类与前端可保存的材质层保持一致。
+func validTerrainCoverageCategory(categoryId string) bool {
+	switch categoryId {
+	case "moss-coverage", "mud-coverage", "sand-coverage", "lichen-coverage", "fallen-leaves-coverage":
+		return true
+	default:
+		return false
+	}
+}
+
+// 同一投影坐标的正反面是独立遮罩，缺省朝向与显式正面共用键。
+func terrainCoverageTileKey(tile terrainVegetationCoverageTile) string {
+	facing := 1
+	if tile.ProjectionFacing != nil {
+		facing = *tile.ProjectionFacing
+	}
+	return fmt.Sprintf("%s:%d:%d:%d", tile.ProjectionAxis, facing, tile.TileX, tile.TileY)
 }
 
 // validateTerrainVegetationCoverageData 严格解码固定长度字节 RLE，防止解码炸弹。

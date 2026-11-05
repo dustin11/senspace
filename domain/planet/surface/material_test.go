@@ -5,7 +5,11 @@ import "testing"
 // 覆盖地形与道路共用纹理的服务端白名单。
 func TestIsMaterialID(t *testing.T) {
 	for _, id := range []string{
+		"plain",
 		"grass",
+		"mud",
+		"sand",
+		"moss",
 		"pebble",
 		"yellow-pebble",
 		"jade",

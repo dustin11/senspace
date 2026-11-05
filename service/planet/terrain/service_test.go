@@ -414,6 +414,104 @@ func TestValidateVegetationState(t *testing.T) {
 		t.Fatalf("validate vegetation state: %v", err)
 	}
 
+	t.Run("preserves mesh coverage facing", func(t *testing.T) {
+		withFacing := strings.Replace(string(valid), `"projectionAxis":"xz"`, `"projectionAxis":"xz","projectionFacing":-1`, 1)
+		normalized, err := validateState(json.RawMessage(withFacing))
+		if err != nil {
+			t.Fatalf("validate mesh coverage facing: %v", err)
+		}
+		if !strings.Contains(string(normalized), `"projectionFacing":-1`) {
+			t.Fatal("mesh coverage facing was lost during save")
+		}
+	})
+
+	t.Run("validates facing and tile identity for scene and prefab coverage", func(t *testing.T) {
+		var source terrainState
+		if err := json.Unmarshal(valid, &source); err != nil {
+			t.Fatal(err)
+		}
+		positive, negative, invalid := 1, -1, 0
+		for _, test := range []struct {
+			name      string
+			facings   []*int
+			wantError bool
+		}{
+			{"opposite sides", []*int{&positive, &negative}, false},
+			{"legacy positive side", []*int{nil}, false},
+			{"duplicate side", []*int{&negative, &negative}, true},
+			{"implicit and explicit positive side", []*int{nil, &positive}, true},
+			{"invalid facing", []*int{&invalid}, true},
+		} {
+			t.Run(test.name, func(t *testing.T) {
+				layer := source.VegetationCoverageLayers[0]
+				tile := layer.Tiles[0]
+				layer.Tiles = nil
+				for _, facing := range test.facings {
+					tile.ProjectionFacing = facing
+					layer.Tiles = append(layer.Tiles, tile)
+				}
+				for _, prefab := range []bool{false, true} {
+					state := source
+					state.VegetationCoverageLayers = []terrainVegetationCoverageLayer{layer}
+					if prefab {
+						state.VegetationCoverageLayers = nil
+						state.Prefabs = []terrainPrefab{{
+							Id: "prefab-1", Kind: "prefab", Name: "双面覆盖",
+							Parts: []terrainPrefabPart{{PresetId: "box", Transform: source.Objects[0].Transform}},
+							VegetationCoverageLayers: []terrainPrefabVegetationCoverage{{
+								SurfaceHostPartIndex: 0, CategoryId: layer.CategoryId, Seed: layer.Seed, Tiles: layer.Tiles,
+							}},
+						}}
+					}
+					data, err := json.Marshal(state)
+					if err != nil {
+						t.Fatal(err)
+					}
+					_, err = validateState(data)
+					if (err != nil) != test.wantError || (err != nil && !bizerr.IsKind(err, bizerr.KindParameter)) {
+						t.Fatalf("prefab=%t, wantError=%t, got %v", prefab, test.wantError, err)
+					}
+				}
+			})
+		}
+	})
+
+	t.Run("accepts current brush plants and surface coverage", func(t *testing.T) {
+		for category, presets := range map[string][]string{
+			"grass":   {"meadow-grass", "blue-fescue", "fountain-grass"},
+			"herbs":   {"wood-sorrel"},
+			"flowers": {"bluebell", "red-campion", "buttercup", "wood-anemone"},
+		} {
+			for _, preset := range presets {
+				state := strings.ReplaceAll(string(valid), `"presetId":"moss-patch"`, `"presetId":"`+preset+`"`)
+				state = strings.ReplaceAll(state, `"categoryId":"moss-accent"`, `"categoryId":"`+category+`"`)
+				if _, err := validateState(json.RawMessage(state)); err != nil {
+					t.Fatalf("validate %s brush: %v", preset, err)
+				}
+				if _, exists := terrainObjectPresetIds[preset]; !exists {
+					t.Fatalf("%s cannot be saved as an object", preset)
+				}
+				if _, exists := terrainPlantPresetIds[preset]; !exists {
+					t.Fatalf("%s must not host surface attachments", preset)
+				}
+			}
+		}
+		for _, category := range []string{"mud-coverage", "sand-coverage"} {
+			state := strings.ReplaceAll(string(valid), `"categoryId":"moss-coverage"`, `"categoryId":"`+category+`"`)
+			if _, err := validateState(json.RawMessage(state)); err != nil {
+				t.Fatalf("validate %s: %v", category, err)
+			}
+		}
+	})
+
+	t.Run("reports unknown fields", func(t *testing.T) {
+		invalid := strings.Replace(string(valid), `"projectionAxis":"xz"`, `"projectionAxis":"xz","unknownField":1`, 1)
+		_, err := validateState(json.RawMessage(invalid))
+		if !bizerr.IsKind(err, bizerr.KindParameter) || !strings.Contains(err.Error(), `unknown field "unknownField"`) {
+			t.Fatalf("expected unknown field detail, got %v", err)
+		}
+	})
+
 	t.Run("rejects category preset mismatch", func(t *testing.T) {
 		invalid := strings.Replace(string(valid), `"categoryId":"moss-accent"`, `"categoryId":"flowers"`, 1)
 		if _, err := validateState(json.RawMessage(invalid)); !bizerr.IsKind(err, bizerr.KindParameter) {

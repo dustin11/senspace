@@ -2,7 +2,11 @@
 package surface
 
 var materialIDs = map[string]struct{}{
+	"plain":          {},
 	"grass":          {},
+	"mud":            {},
+	"sand":           {},
+	"moss":           {},
 	"pebble":         {},
 	"yellow-pebble":  {},
 	"jade":           {},

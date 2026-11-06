@@ -15,11 +15,11 @@ RUN node -e "const fs=require('fs'); const pkg=require('./package.json'); const 
 
 COPY senspace-web/src ./src
 # 只复制生成器及其直接依赖，不引入其余前端脚本。
-COPY senspace-web/scripts/prepare-display-prebuilder.mjs \
-     senspace-web/scripts/builtin-artifact-build-plugin.mjs \
-     senspace-web/scripts/plugin-prebuild-source.mjs \
-     senspace-web/scripts/plugin-artifact-compression.mjs \
-     ./scripts/
+COPY senspace-web/scripts/build/prepare-display-prebuilder.mjs \
+     senspace-web/scripts/build/builtin-artifact-build-plugin.mjs \
+     senspace-web/scripts/build/plugin-prebuild-source.mjs \
+     senspace-web/scripts/build/plugin-artifact-compression.mjs \
+     ./scripts/build/
 COPY senspace-web/tsconfig.json ./
 RUN mkdir -p ../senspace/docker/plugin-builder \
     && yarn prepare:display-prebuilder

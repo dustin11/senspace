@@ -28,7 +28,7 @@ import (
 
 const (
 	// 当前支持的地形状态结构版本。
-	currentSchemaVersion = 9
+	currentSchemaVersion = 10
 	// 单个地形状态允许的最大字节数。
 	maxStateBytes = 2 * 1024 * 1024
 	// 单个星球允许的平台记录上限。
@@ -185,6 +185,8 @@ type terrainPlatform struct {
 	Transform   terrainTransform   `json:"transform"`
 	HeightField terrainHeightField `json:"heightField"`
 	Fence       *terrainFence      `json:"fence,omitempty"`
+	// 非破坏式山地定义。
+	Mountains []terrainMountain `json:"mountains,omitempty"`
 }
 
 // terrainObjectInteraction 保存静态构件的有限动态自由度。
@@ -591,6 +593,9 @@ func validateState(state json.RawMessage) (json.RawMessage, error) {
 			return nil, bizerr.Parameter("地形平台变换无效")
 		}
 		if err := validateTerrainHeightField(platform.HeightField); err != nil {
+			return nil, err
+		}
+		if err := validateTerrainMountains(platform.Mountains); err != nil {
 			return nil, err
 		}
 		if err := validateFence(platform.Fence); err != nil {

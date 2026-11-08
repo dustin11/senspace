@@ -110,6 +110,48 @@ func TestShapeStateRoundTrip(t *testing.T) {
 	}
 }
 
+// 场景物件和预制体均保留棱面采样及中景细分，重存后不丢失可选字段。
+func TestShapeSamplingAndMiddleSegments(t *testing.T) {
+	const shape = `{"version":1,"sampling":"SAMPLING","lod":{"middleSegments":SEGMENTS},"parameters":{"radius":1,"height":1,"topRadius":0.5,"sides":6},"style":{"color":"#ffffff","roughness":0.5,"metalness":0,"opacity":1,"emissive":"#000000"}}`
+	const source = `{"platforms":[],"objects":[{"id":"prism","kind":"object","presetId":"shape-prism","variantSeed":0,"transform":{"position":[0,0,0],"rotation":[0,0,0],"scale":[1,1,1]},"shape":SHAPE}],"prefabs":[{"id":"prefab","kind":"prefab","name":"棱台","parts":[{"presetId":"shape-prism","variantSeed":0,"transform":{"position":[0,0,0],"rotation":[0,0,0],"scale":[1,1,1]},"shape":SHAPE}],"vegetationPatches":[],"vegetationCoverageLayers":[]}]}`
+	for _, sampling := range []string{"faceted", "smooth"} {
+		for _, segments := range []string{"16", "24"} {
+			t.Run(sampling+segments, func(t *testing.T) {
+				shapeJSON := strings.NewReplacer("SAMPLING", sampling, "SEGMENTS", segments).Replace(shape)
+				state := json.RawMessage(strings.ReplaceAll(source, "SHAPE", shapeJSON))
+				normalized, err := validateState(state)
+				if err != nil {
+					t.Fatal(err)
+				}
+				if strings.Count(string(normalized), `"sampling":"`+sampling+`"`) != 2 ||
+					strings.Count(string(normalized), `"middleSegments":`+segments) != 2 {
+					t.Fatalf("场景或预制体字段丢失: %s", normalized)
+				}
+				if _, err := validateState(normalized); err != nil {
+					t.Fatalf("无法重新保存: %v", err)
+				}
+			})
+		}
+	}
+	for _, test := range []struct {
+		name     string
+		sampling string
+		segments string
+	}{
+		{"invalid sampling", "rounded", "16"},
+		{"invalid segments", "smooth", "8"},
+		{"fractional segments", "smooth", "16.5"},
+		{"zero segments", "smooth", "0"},
+	} {
+		t.Run(test.name, func(t *testing.T) {
+			shapeJSON := strings.NewReplacer("SAMPLING", test.sampling, "SEGMENTS", test.segments).Replace(shape)
+			if _, err := validateState(json.RawMessage(strings.ReplaceAll(source, "SHAPE", shapeJSON))); err == nil {
+				t.Fatal("非法采样参数通过校验")
+			}
+		})
+	}
+}
+
 // 网格校验阻止越界索引；轮廓点数量和数值受预算限制。
 func TestShapeMeshAndBudget(t *testing.T) {
 	valid := &terrainShapeMesh{Positions: []float64{0, 0, 0, 1, 0, 0, 0, 1, 0}, Indices: []int{0, 1, 2}}

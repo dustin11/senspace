@@ -54,13 +54,6 @@ var fenceModelIds = map[string]struct{}{
 	"brick-wall":        {},
 }
 
-// 允许发布的围栏纹理。
-var fenceMaterialIds = map[string]struct{}{
-	"brick": {},
-	"wood":  {},
-	"steel": {},
-}
-
 // roadAnchor 保存节点相对活动面、连接口或稳定标架的位置。
 type roadAnchor struct {
 	Kind         string    `json:"kind"`
@@ -443,7 +436,7 @@ func validateFence(fence *roadFence) error {
 	if _, exists := fenceModelIds[fence.ModelId]; !exists {
 		return bizerr.Parameter("道路围栏模型无效")
 	}
-	if _, exists := fenceMaterialIds[fence.MaterialId]; !exists {
+	if !planet_surface.IsFenceMaterialID(fence.MaterialId) {
 		return bizerr.Parameter("道路围栏纹理无效")
 	}
 	return nil

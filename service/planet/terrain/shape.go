@@ -65,19 +65,23 @@ type terrainShape struct {
 	Version      int                    `json:"version"`
 	Name         string                 `json:"name,omitempty"`
 	Parameters   map[string]float64     `json:"parameters"`
-	Profile      [][]float64            `json:"profile,omitempty"`
-	Holes        [][][]float64          `json:"holes,omitempty"`
-	Path         [][]float64            `json:"path,omitempty"`
-	Sections     []terrainShapeSection  `json:"sections,omitempty"`
-	Style        terrainShapeStyle      `json:"style"`
-	Decorative   bool                   `json:"decorative,omitempty"`
-	Mesh         *terrainShapeMesh      `json:"mesh,omitempty"`
+	// 棱台保持棱面或采用圆滑采样。
+	Sampling   string                `json:"sampling,omitempty"`
+	Profile    [][]float64           `json:"profile,omitempty"`
+	Holes      [][][]float64         `json:"holes,omitempty"`
+	Path       [][]float64           `json:"path,omitempty"`
+	Sections   []terrainShapeSection `json:"sections,omitempty"`
+	Style      terrainShapeStyle     `json:"style"`
+	Decorative bool                  `json:"decorative,omitempty"`
+	Mesh       *terrainShapeMesh     `json:"mesh,omitempty"`
 }
 
 // 用户确认的细节约束；重要部件优先于固定档位，开口始终保留。
 type terrainShapeLOD struct {
 	Important bool `json:"important,omitempty"`
 	Fixed     *int `json:"fixed,omitempty"`
+	// 中景曲面采样段数，缺省沿用生成器默认值。
+	MiddleSegments *int `json:"middleSegments,omitempty"`
 }
 
 // 形状的基础 PBR 外观。
@@ -155,6 +159,9 @@ func validateTerrainShapeDepth(id string, shape *terrainShape, depth int) error 
 	if shape == nil || shape.Version != 1 || len([]rune(shape.Name)) > 80 {
 		return bizerr.Parameter("形状描述或版本无效")
 	}
+	if shape.Sampling != "" && (id != "shape-prism" || (shape.Sampling != "faceted" && shape.Sampling != "smooth")) {
+		return bizerr.Parameter("只有棱台可声明棱面或圆滑采样")
+	}
 	if shape.RoomID != "" && !roomIDPattern.MatchString(shape.RoomID) {
 		return bizerr.Parameter("所属房间名称无效")
 	}
@@ -163,6 +170,9 @@ func validateTerrainShapeDepth(id string, shape *terrainShape, depth int) error 
 	}
 	if shape.LOD != nil && shape.LOD.Fixed != nil && (*shape.LOD.Fixed < 0 || *shape.LOD.Fixed > 2) {
 		return bizerr.Parameter("LOD 档位只能为 0、1、2")
+	}
+	if shape.LOD != nil && shape.LOD.MiddleSegments != nil && *shape.LOD.MiddleSegments != 16 && *shape.LOD.MiddleSegments != 24 {
+		return bizerr.Parameter("LOD 中景曲面段数只能为 16 或 24")
 	}
 	if shape.Rig != nil {
 		if err := validateShapeRig(shape.Rig); err != nil {

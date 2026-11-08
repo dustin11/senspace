@@ -367,8 +367,10 @@ func TestValidateState(t *testing.T) {
 
 // 围栏配置必须同时命中模型和纹理白名单。
 func TestValidateFence(t *testing.T) {
-	if err := validateFence(&terrainFence{ModelId: "brick-curb", MaterialId: "brick"}); err != nil {
-		t.Fatalf("validate fence: %v", err)
+	for _, material := range []string{"brick", "rockscape", "grass"} {
+		if err := validateFence(&terrainFence{ModelId: "brick-curb", MaterialId: material}); err != nil {
+			t.Fatalf("validate fence %s: %v", material, err)
+		}
 	}
 	for name, fence := range map[string]*terrainFence{
 		"model":    {ModelId: "scripted", MaterialId: "brick"},

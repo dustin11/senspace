@@ -157,13 +157,6 @@ var fenceModelIds = map[string]struct{}{
 	"brick-wall":        {},
 }
 
-// 允许发布的围栏纹理。
-var fenceMaterialIds = map[string]struct{}{
-	"brick": {},
-	"wood":  {},
-	"steel": {},
-}
-
 // 服务端校验后的独立位置、旋转与缩放。
 type terrainTransform struct {
 	Position []float64 `json:"position"`
@@ -536,7 +529,17 @@ func validateState(state json.RawMessage) (json.RawMessage, error) {
 	decoder := json.NewDecoder(bytes.NewReader(state))
 	decoder.DisallowUnknownFields()
 	if err := decoder.Decode(&envelope); err != nil {
-		return nil, bizerr.Parameter(fmt.Sprintf("地形状态结构无效：%v", err))
+		message := fmt.Sprintf("地形状态结构无效：%v", err)
+		if strings.HasPrefix(err.Error(), "json: unknown field ") {
+			paths, pathErr := unknownTerrainStateFields(state)
+			if pathErr != nil {
+				return nil, bizerr.Parameter(fmt.Sprintf("地形状态结构无效：%v", pathErr))
+			}
+			if len(paths) > 0 {
+				message += " · 未知字段位置：" + strings.Join(paths, "、")
+			}
+		}
+		return nil, bizerr.Parameter(message)
 	}
 	if err := ensureJsonEnd(decoder); err != nil {
 		return nil, bizerr.Parameter("地形状态必须是对象")
@@ -1177,7 +1180,7 @@ func validateFence(fence *terrainFence) error {
 	if _, exists := fenceModelIds[fence.ModelId]; !exists {
 		return bizerr.Parameter("地形围栏模型无效")
 	}
-	if _, exists := fenceMaterialIds[fence.MaterialId]; !exists {
+	if !planet_surface.IsFenceMaterialID(fence.MaterialId) {
 		return bizerr.Parameter("地形围栏纹理无效")
 	}
 	return nil

@@ -24,6 +24,21 @@ type terrainMountainBranch struct {
 	InnerSteepness float64               `json:"innerSteepness"`
 }
 
+// 雕入山体的局部岩台，位置和大小相对山半径，高程相对山高。
+type terrainMountainLedge struct {
+	// 稳定身份与山局部中心。
+	Id string  `json:"id"`
+	X  float64 `json:"x"`
+	Z  float64 `json:"z"`
+	// 顶面高度、长轴半径、短长轴比例及朝向。
+	Height   float64 `json:"height"`
+	Radius   float64 `json:"radius"`
+	Aspect   float64 `json:"aspect"`
+	Rotation float64 `json:"rotation"`
+	// 可选草量，缺省时不写入记录，显式零值仍须保留。
+	Grass *float64 `json:"grass,omitempty"`
+}
+
 // 平台上的可重建山体，不保存派生网格或纹理。
 type terrainMountain struct {
 	// 稳定身份和算法版本。
@@ -37,6 +52,8 @@ type terrainMountain struct {
 	// 稳定随机源与侧峰定义。
 	Seed     int64                   `json:"seed"`
 	Branches []terrainMountainBranch `json:"branches"`
+	// 没有雕刻时省略岩台定义。
+	Ledges []terrainMountainLedge `json:"ledges,omitempty"`
 	// 同次地形的地表强度。
 	Sediment float64 `json:"sediment"`
 	Grass    float64 `json:"grass"`
@@ -61,7 +78,20 @@ func validateTerrainMountains(mountains []terrainMountain) error {
 			!valid(m.Sediment, 0, 2) || !valid(m.Grass, 0, 2) || !valid(m.Gravel, 0, 2) || !valid(m.Erosion, 0, 2) || len(m.Branches) > 6 {
 			return bizerr.Parameter("山地参数无效")
 		}
+		if len(m.Ledges) > 12 {
+			return bizerr.Parameter("每座山最多雕刻 12 处平台")
+		}
 		nodes := make(map[string]struct{})
+		for _, ledge := range m.Ledges {
+			if err := validateTerrainRecordId(ledge.Id, nodes); err != nil {
+				return err
+			}
+			if !valid(ledge.X, -4, 4) || !valid(ledge.Z, -4, 4) || !valid(ledge.Height, .01, 1.25) ||
+				!valid(ledge.Radius, .04, .65) || !valid(ledge.Aspect, .4, 1) || !valid(ledge.Rotation, -math.Pi*8, math.Pi*8) ||
+				(ledge.Grass != nil && !valid(*ledge.Grass, 0, 2)) {
+				return bizerr.Parameter("山体平台参数无效")
+			}
+		}
 		for _, branch := range m.Branches {
 			if err := validateTerrainRecordId(branch.Id, nodes); err != nil {
 				return err

@@ -1,0 +1,90 @@
+[
+  {
+    "id": "cypress",
+    "categoryId": "trees"
+  },
+  {
+    "id": "mountain-pine",
+    "categoryId": "trees"
+  },
+  {
+    "id": "mountain-tree",
+    "categoryId": "trees"
+  },
+  {
+    "id": "shrub",
+    "categoryId": "shrubs"
+  },
+  {
+    "id": "grass-clump",
+    "categoryId": "grass"
+  },
+  {
+    "id": "meadow-grass",
+    "categoryId": "grass"
+  },
+  {
+    "id": "blue-fescue",
+    "categoryId": "grass"
+  },
+  {
+    "id": "fountain-grass",
+    "categoryId": "grass"
+  },
+  {
+    "id": "fern",
+    "categoryId": "fern"
+  },
+  {
+    "id": "wood-sorrel",
+    "categoryId": "herbs"
+  },
+  {
+    "id": "daisy-patch",
+    "categoryId": "flowers"
+  },
+  {
+    "id": "tulip-patch",
+    "categoryId": "flowers"
+  },
+  {
+    "id": "trumpet-flower",
+    "categoryId": "flowers"
+  },
+  {
+    "id": "bluebell",
+    "categoryId": "flowers"
+  },
+  {
+    "id": "red-campion",
+    "categoryId": "flowers"
+  },
+  {
+    "id": "buttercup",
+    "categoryId": "flowers"
+  },
+  {
+    "id": "wood-anemone",
+    "categoryId": "flowers"
+  },
+  {
+    "id": "lotus-cluster",
+    "categoryId": "aquatic"
+  },
+  {
+    "id": "mountain-canopy",
+    "categoryId": "canopy"
+  },
+  {
+    "id": "lichen-patch",
+    "categoryId": "lichen-accent"
+  },
+  {
+    "id": "fallen-leaf-clump",
+    "categoryId": "fallen-leaves-accent"
+  },
+  {
+    "id": "twig-clump",
+    "categoryId": "twigs"
+  }
+]

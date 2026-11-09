@@ -1,0 +1,22 @@
+# API 使用工作区上下文，只发送后端代码和目录生成需要的两个前端文件。
+**
+!senspace/**
+senspace/.git
+senspace/.gitignore
+senspace/.vscode
+senspace/.codex
+senspace/.ai
+senspace/.env
+senspace/bin/out
+senspace/build/out
+senspace/build/plugin-builder
+senspace/main
+senspace/mysql_data
+senspace/runtime
+senspace/tmp
+senspace/.tmp
+senspace/.ldev-gocache
+senspace/.ldev-go-cache
+senspace/**/*.log
+!senspace-web/scripts/build/sync-terrain-plant-catalog.mjs
+!senspace-web/src/components/StarSky/terrain/domain/schema/TerrainPlantCatalog.data.json

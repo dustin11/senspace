@@ -20,6 +20,7 @@ else
 fi
 
 cd "$WORKSPACE_DIR"
+sh deploy/scripts/prepare-terrain-catalog.sh
 
 echo "开始复制项目到服务器 $SERVICE"
 ssh root@"$SERVICE" "mkdir -p $PROJECT_PATH /var/log/$PROJECT_NAME"

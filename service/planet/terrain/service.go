@@ -69,29 +69,7 @@ const (
 // 允许发布的地形物件预设。
 var terrainObjectPresetIds = map[string]struct{}{
 	"shape-box": {}, "shape-wedge": {}, "shape-corner": {}, "shape-frustum": {}, "shape-prism": {}, "shape-pipe": {}, "shape-arc": {}, "shape-dome": {}, "shape-capsule": {}, "shape-extrude": {}, "shape-sweep": {}, "shape-lathe": {}, "shape-loft": {}, "shape-roof": {}, "shape-mesh": {},
-	"cypress":             {},
-	"mountain-canopy":     {},
-	"mountain-pine":       {},
-	"mountain-tree":       {},
-	"shrub":               {},
-	"grass-clump":         {},
-	"meadow-grass":        {},
-	"blue-fescue":         {},
-	"fountain-grass":      {},
-	"daisy-patch":         {},
-	"tulip-patch":         {},
-	"trumpet-flower":      {},
-	"wood-sorrel":         {},
-	"bluebell":            {},
-	"red-campion":         {},
-	"buttercup":           {},
-	"wood-anemone":        {},
-	"fern":                {},
-	"moss-patch":          {},
-	"lichen-patch":        {},
-	"fallen-leaf-clump":   {},
-	"twig-clump":          {},
-	"lotus-cluster":       {},
+	"moss-patch":          {}, // 保留已发布的旧地衣资源。
 	"rock":                {},
 	"rock-pillar":         {},
 	"rock-slab":           {},
@@ -122,29 +100,13 @@ var terrainObjectPresetIds = map[string]struct{}{
 	"stone-stool":         {},
 }
 
-// 植物不能成为精确贴附宿主。
-var terrainPlantPresetIds = map[string]struct{}{
-	"mountain-canopy": {},
-	"mountain-pine":   {},
-	"mountain-tree":   {},
-	"cypress":         {}, "shrub": {}, "grass-clump": {}, "daisy-patch": {},
-	"meadow-grass": {}, "blue-fescue": {}, "fountain-grass": {}, "wood-sorrel": {},
-	"bluebell": {}, "red-campion": {}, "buttercup": {}, "wood-anemone": {},
-	"tulip-patch": {}, "trumpet-flower": {}, "fern": {}, "moss-patch": {},
-	"lichen-patch": {}, "fallen-leaf-clump": {}, "twig-clump": {}, "lotus-cluster": {},
-}
+// 植物资源身份；仅木本资源可按枝叶规则承载贴附。
+var terrainPlantPresetIds = map[string]struct{}{"moss-patch": {}}
 
-// 分类到几何资源的唯一归属；覆盖分类不包含模型。
+// 覆盖分类无实体模型；植物分类由生成目录初始化。
 var terrainVegetationCategoryPresetIds = map[string]map[string]struct{}{
 	"moss-coverage": {}, "mud-coverage": {}, "sand-coverage": {}, "lichen-coverage": {}, "fallen-leaves-coverage": {},
-	"grass":                {"grass-clump": {}, "meadow-grass": {}, "blue-fescue": {}, "fountain-grass": {}},
-	"herbs":                {"wood-sorrel": {}},
-	"fern":                 {"fern": {}},
-	"flowers":              {"daisy-patch": {}, "tulip-patch": {}, "trumpet-flower": {}, "bluebell": {}, "red-campion": {}, "buttercup": {}, "wood-anemone": {}},
-	"moss-accent":          {"moss-patch": {}},
-	"lichen-accent":        {"lichen-patch": {}},
-	"fallen-leaves-accent": {"fallen-leaf-clump": {}},
-	"twigs":                {"twig-clump": {}},
+	"moss-accent": {"moss-patch": {}},
 }
 
 // 允许发布的围栏模型。
@@ -791,7 +753,7 @@ func validateTerrainPrefabPart(part terrainPrefabPart, partCount int, parts []te
 			*part.SurfaceHostPartIndex >= len(parts) {
 			return bizerr.Parameter("地形预制体贴附宿主无效")
 		}
-		if _, isPlant := terrainPlantPresetIds[parts[*part.SurfaceHostPartIndex].PresetId]; isPlant {
+		if _, isPlant := terrainPlantPresetIds[parts[*part.SurfaceHostPartIndex].PresetId]; isPlant && !validTerrainPlantAttachment(part.PresetId, parts[*part.SurfaceHostPartIndex].PresetId) {
 			return bizerr.Parameter("植物不能承载预制体贴附")
 		}
 		if !validTerrainTransform(*part.SurfaceLocalTransform) {
@@ -809,7 +771,7 @@ func validateTerrainPrefabVegetationPatch(
 	if patch.SurfaceHostPartIndex < 0 || patch.SurfaceHostPartIndex >= len(parts) {
 		return bizerr.Parameter("地形预制体植被宿主无效")
 	}
-	if _, isPlant := terrainPlantPresetIds[parts[patch.SurfaceHostPartIndex].PresetId]; isPlant {
+	if _, isPlant := terrainPlantPresetIds[parts[patch.SurfaceHostPartIndex].PresetId]; isPlant && !validTerrainCanopyHost(patch.CategoryId, parts[patch.SurfaceHostPartIndex].PresetId) {
 		return bizerr.Parameter("植物不能承载预制体笔刷植被")
 	}
 	presets, exists := terrainVegetationCategoryPresetIds[patch.CategoryId]
@@ -913,7 +875,7 @@ func validateTerrainSurfaceAnchor(
 	if _, exists := objectIds[anchor.HostObjectId]; !exists {
 		return bizerr.Parameter("地形贴附宿主不存在")
 	}
-	if _, isPlant := terrainPlantPresetIds[objectPresetById[anchor.HostObjectId]]; isPlant {
+	if _, isPlant := terrainPlantPresetIds[objectPresetById[anchor.HostObjectId]]; isPlant && !validTerrainPlantAttachment(objectPresetById[ownerId], objectPresetById[anchor.HostObjectId]) {
 		return bizerr.Parameter("植物不能承载植被")
 	}
 	switch anchor.Kind {
@@ -965,6 +927,7 @@ func validateTerrainVegetationSurface(
 	platformIds map[string]struct{},
 	objectIds map[string]struct{},
 	objectPresetById map[string]string,
+	categoryID string,
 ) error {
 	switch surface.Kind {
 	case "terrain":
@@ -981,7 +944,7 @@ func validateTerrainVegetationSurface(
 		if _, exists := objectIds[surface.HostObjectId]; !exists {
 			return bizerr.Parameter("植被物件宿主不存在")
 		}
-		if _, isPlant := terrainPlantPresetIds[objectPresetById[surface.HostObjectId]]; isPlant {
+		if _, isPlant := terrainPlantPresetIds[objectPresetById[surface.HostObjectId]]; isPlant && !validTerrainCanopyHost(categoryID, objectPresetById[surface.HostObjectId]) {
 			return bizerr.Parameter("植物不能承载笔刷植被")
 		}
 	default:
@@ -1015,7 +978,7 @@ func validateTerrainVegetationPatch(
 		len(patch.Instances) == 0 || len(patch.Instances) > maxVegetationInstancesPerPatch {
 		return bizerr.Parameter("植被批次种子或数量无效")
 	}
-	if err := validateTerrainVegetationSurface(patch.Surface, platformIds, objectIds, objectPresetById); err != nil {
+	if err := validateTerrainVegetationSurface(patch.Surface, platformIds, objectIds, objectPresetById, patch.CategoryId); err != nil {
 		return err
 	}
 	expectedKind := "mesh"
@@ -1066,7 +1029,7 @@ func validateTerrainVegetationCoverageLayer(
 	if layer.Seed < 0 || layer.Seed > maxTerrainVariantSeed || len(layer.Tiles) == 0 {
 		return bizerr.Parameter("植被覆盖层种子或块数量无效")
 	}
-	if err := validateTerrainVegetationSurface(layer.Surface, platformIds, objectIds, objectPresetById); err != nil {
+	if err := validateTerrainVegetationSurface(layer.Surface, platformIds, objectIds, objectPresetById, ""); err != nil {
 		return err
 	}
 	expectedProjection := "local-triplanar"

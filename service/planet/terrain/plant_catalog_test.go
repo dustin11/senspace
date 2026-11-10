@@ -65,14 +65,14 @@ func TestPlantCanopyHost(t *testing.T) {
 	objectIDs := map[string]struct{}{"tree": {}, "grass": {}, "canopy": {}}
 	presets := map[string]string{"tree": "cypress", "grass": "grass-clump", "canopy": "mountain-canopy"}
 	surface := terrainVegetationPatchSurface{Kind: "object", HostObjectId: "tree"}
-	if err := validateTerrainVegetationSurface(surface, nil, objectIDs, presets, "canopy"); err != nil {
+	if err := validateTerrainVegetationSurface(surface, nil, objectIDs, presets, "canopy", false); err != nil {
 		t.Fatal(err)
 	}
-	if err := validateTerrainVegetationSurface(surface, nil, objectIDs, presets, "flowers"); err == nil {
+	if err := validateTerrainVegetationSurface(surface, nil, objectIDs, presets, "flowers", false); err == nil {
 		t.Fatal("草花不能挂在树上")
 	}
 	surface.HostObjectId = "grass"
-	if err := validateTerrainVegetationSurface(surface, nil, objectIDs, presets, "canopy"); err == nil {
+	if err := validateTerrainVegetationSurface(surface, nil, objectIDs, presets, "canopy", false); err == nil {
 		t.Fatal("草不能承载枝叶")
 	}
 	anchor := &terrainSurfaceAnchor{Kind: "simple", HostObjectId: "tree", LocalTransform: &terrainTransform{

@@ -9,6 +9,42 @@ import (
 	"senspace/pkg/bizerr"
 )
 
+// 紧凑植株与普通物件使用同一身份引用，发布不能丢失编辑姿态或组合成员。
+func TestUnifiedVegetationState(t *testing.T) {
+	source := `{
+	 "platforms":[{"id":"ground","kind":"platform","materialId":"grass","heightField":{"version":2,"enabled":false,"baseHeight":0.006,"cellSize":0.5,"samplesPerChunk":64,"heightUnit":0.005,"zeroCode":32768,"chunks":[]},"transform":{"position":[0,0,0],"rotation":[0,0,0],"scale":[64,1,64]}}],
+	 "objects":[{"id":"single","kind":"object","presetId":"mountain-pine","variantSeed":42,"transform":{"position":[1,0,0],"rotation":[0,0,0],"scale":[1,1,1]}}],
+	 "assemblies":[{"id":"pair","kind":"assembly","name":"树组","memberIds":["single","pines#8"],"transform":{"position":[0,0,0],"rotation":[0,0,0],"scale":[1,1,1]}}],
+	 "vegetationPatches":[{"id":"pines","kind":"vegetation-patch","presetId":"mountain-pine","categoryId":"trees","seed":7,"surface":{"kind":"terrain","platformId":"ground"},
+	 "instances":[{"key":8,"kind":"terrain","localXZ":[0,0],"tangentRotation":0,"normalOffset":0,"scale":[1,1,1],"variantSeed":42,
+	 "transform":{"position":[2,0,0],"rotation":[0,0.3,0],"scale":[1,1,1]},"platformId":null,"matrix":[1,0,0,0,0.3,1,0,0,0,0,1,0,2,0,0,1]}]}]}`
+	normalized, err := validateState(json.RawMessage(source))
+	if err != nil {
+		t.Fatalf("validate mixed plants: %v", err)
+	}
+	var state terrainState
+	if err := json.Unmarshal(normalized, &state); err != nil {
+		t.Fatal(err)
+	}
+	instance := state.VegetationPatches[0].Instances[0]
+	if instance.Key == nil || *instance.Key != 8 || instance.Transform == nil || instance.Transform.Position[0] != 2 ||
+		len(instance.Matrix) != 16 || instance.Matrix[4] != 0.3 || string(instance.PlatformId) != "null" || len(state.Assemblies[0].MemberIds) != 2 {
+		t.Fatalf("edited compact identity was changed: %s", normalized)
+	}
+	for name, invalid := range map[string]string{
+		"negative key":      strings.Replace(source, `"key":8`, `"key":-1`, 1),
+		"invalid affine":    strings.Replace(source, `0,2,0,0,1]`, `0,2,0,0,2]`, 1),
+		"missing transform": strings.Replace(source, `"transform":{"position":[2,0,0],"rotation":[0,0.3,0],"scale":[1,1,1]},`, "", 1),
+		"missing platform":  strings.Replace(source, `"platformId":null`, `"platformId":"missing"`, 1),
+	} {
+		t.Run(name, func(t *testing.T) {
+			if _, err := validateState(json.RawMessage(invalid)); err == nil {
+				t.Fatal("invalid compact edit accepted")
+			}
+		})
+	}
+}
+
 // 覆盖 JSON 压缩、非法输入和记录上限。
 func TestValidateState(t *testing.T) {
 	t.Run("preserves reference mountain parts and material", func(t *testing.T) {

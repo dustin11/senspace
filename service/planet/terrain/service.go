@@ -255,19 +255,29 @@ type terrainVegetationPatchSurface struct {
 
 // terrainVegetationPatchInstance 是无需独立物件记录的紧凑实例。
 type terrainVegetationPatchInstance struct {
-	Kind               string    `json:"kind"`
-	LocalXZ            []float64 `json:"localXZ,omitempty"`
-	TriangleIndex      *int      `json:"triangleIndex,omitempty"`
-	Barycentric        []float64 `json:"barycentric,omitempty"`
-	FallbackLocalPoint []float64 `json:"fallbackLocalPoint,omitempty"`
-	TangentRotation    float64   `json:"tangentRotation"`
-	NormalOffset       float64   `json:"normalOffset"`
-	Scale              []float64 `json:"scale"`
-	VariantSeed        int64     `json:"variantSeed"`
+	// 补丁内稳定编号，删除其它实例后保持身份。
+	Key *int64 `json:"key,omitempty"`
+	// 用户编辑后的姿态与可选仿射形变，未编辑实例继续使用原锚点。
+	Transform *terrainTransform `json:"transform,omitempty"`
+	Matrix    []float64         `json:"matrix,omitempty"`
+	// 归属允许显式 null，区别于沿用原补丁宿主。
+	PlatformId         json.RawMessage       `json:"platformId,omitempty"`
+	SurfaceAttachment  *terrainSurfaceAnchor `json:"surfaceAttachment,omitempty"`
+	Kind               string                `json:"kind"`
+	LocalXZ            []float64             `json:"localXZ,omitempty"`
+	TriangleIndex      *int                  `json:"triangleIndex,omitempty"`
+	Barycentric        []float64             `json:"barycentric,omitempty"`
+	FallbackLocalPoint []float64             `json:"fallbackLocalPoint,omitempty"`
+	TangentRotation    float64               `json:"tangentRotation"`
+	NormalOffset       float64               `json:"normalOffset"`
+	Scale              []float64             `json:"scale"`
+	VariantSeed        int64                 `json:"variantSeed"`
 }
 
 // terrainVegetationPatch 按宿主、分类和品种保存紧凑实例。
 type terrainVegetationPatch struct {
+	// 单调编号保留已删除身份，避免迟到的旧批次命中新植株。
+	NextKey    *int64                           `json:"nextKey,omitempty"`
 	Id         string                           `json:"id"`
 	Kind       string                           `json:"kind"`
 	PresetId   string                           `json:"presetId"`
@@ -606,12 +616,32 @@ func validateState(state json.RawMessage) (json.RawMessage, error) {
 	for _, object := range envelope.Objects {
 		objectPresetById[object.Id] = object.PresetId
 	}
+	vegetationInstances := 0
+	for _, patch := range envelope.VegetationPatches {
+		if err := validateTerrainVegetationPatch(patch, usedIds, platformIds, objectIds, objectPresetById); err != nil {
+			return nil, err
+		}
+		vegetationInstances += len(patch.Instances)
+		if vegetationInstances > maxVegetationInstances {
+			return nil, bizerr.Parameter("植被实例总数超过上限")
+		}
+	}
 	for _, object := range envelope.Objects {
 		if err := validateTerrainSurfaceAnchor(object.Id, object.SurfaceAttachment, objectIds, objectPresetById); err != nil {
 			return nil, err
 		}
 	}
-	if err := validateTerrainSurfaceAttachmentCycles(envelope.Objects); err != nil {
+	attachmentObjects := append([]terrainObject(nil), envelope.Objects...)
+	for _, patch := range envelope.VegetationPatches {
+		for index, instance := range patch.Instances {
+			anchor := instance.SurfaceAttachment
+			if instance.Transform == nil && patch.Surface.Kind == "object" {
+				anchor = &terrainSurfaceAnchor{HostObjectId: patch.Surface.HostObjectId}
+			}
+			attachmentObjects = append(attachmentObjects, terrainObject{Id: fmt.Sprintf("%s#%d", patch.Id, terrainVegetationKey(instance, index)), SurfaceAttachment: anchor})
+		}
+	}
+	if err := validateTerrainSurfaceAttachmentCycles(attachmentObjects); err != nil {
 		return nil, err
 	}
 	groupedObjectIds := make(map[string]struct{})
@@ -696,16 +726,6 @@ func validateState(state json.RawMessage) (json.RawMessage, error) {
 			}
 		}
 	}
-	vegetationInstances := 0
-	for _, patch := range envelope.VegetationPatches {
-		if err := validateTerrainVegetationPatch(patch, usedIds, platformIds, objectIds, objectPresetById); err != nil {
-			return nil, err
-		}
-		vegetationInstances += len(patch.Instances)
-		if vegetationInstances > maxVegetationInstances {
-			return nil, bizerr.Parameter("植被实例总数超过上限")
-		}
-	}
 	coverageTiles := 0
 	for _, layer := range envelope.VegetationCoverageLayers {
 		if err := validateTerrainVegetationCoverageLayer(layer, usedIds, platformIds, objectIds, objectPresetById); err != nil {
@@ -785,7 +805,13 @@ func validateTerrainPrefabVegetationPatch(
 		len(patch.Instances) == 0 || len(patch.Instances) > maxVegetationInstancesPerPatch {
 		return bizerr.Parameter("地形预制体植被种子或数量无效")
 	}
+	if err := validateTerrainVegetationKeys(patch.Instances); err != nil {
+		return err
+	}
 	for _, instance := range patch.Instances {
+		if err := validateTerrainVegetationEdit(instance); err != nil {
+			return err
+		}
 		if instance.Kind != "mesh" || len(instance.LocalXZ) != 0 ||
 			instance.TriangleIndex == nil || *instance.TriangleIndex < 0 ||
 			*instance.TriangleIndex > 100_000_000 ||
@@ -928,20 +954,21 @@ func validateTerrainVegetationSurface(
 	objectIds map[string]struct{},
 	objectPresetById map[string]string,
 	categoryID string,
+	allowDetached bool,
 ) error {
 	switch surface.Kind {
 	case "terrain":
 		if surface.HostObjectId != "" {
 			return bizerr.Parameter("植被地形宿主字段无效")
 		}
-		if _, exists := platformIds[surface.PlatformId]; !exists {
+		if _, exists := platformIds[surface.PlatformId]; !exists && !allowDetached {
 			return bizerr.Parameter("植被地形宿主不存在")
 		}
 	case "object":
-		if surface.PlatformId != "" {
+		if surface.PlatformId != "" || surface.HostObjectId == "" {
 			return bizerr.Parameter("植被物件宿主字段无效")
 		}
-		if _, exists := objectIds[surface.HostObjectId]; !exists {
+		if _, exists := objectIds[surface.HostObjectId]; !exists && !allowDetached {
 			return bizerr.Parameter("植被物件宿主不存在")
 		}
 		if _, isPlant := terrainPlantPresetIds[objectPresetById[surface.HostObjectId]]; isPlant && !validTerrainCanopyHost(categoryID, objectPresetById[surface.HostObjectId]) {
@@ -949,6 +976,55 @@ func validateTerrainVegetationSurface(
 		}
 	default:
 		return bizerr.Parameter("植被宿主类型无效")
+	}
+	return nil
+}
+
+// terrainVegetationKey 不改写缺少编号的旧实例，编辑后再显式保存稳定编号。
+func terrainVegetationKey(instance terrainVegetationPatchInstance, index int) int64 {
+	if instance.Key != nil {
+		return *instance.Key
+	}
+	return int64(index)
+}
+
+// validateTerrainVegetationKeys 校验稳定编号，旧实例沿用原始槽号且不扩张存档。
+func validateTerrainVegetationKeys(instances []terrainVegetationPatchInstance) error {
+	used := make(map[int64]struct{}, len(instances))
+	for index := range instances {
+		key := terrainVegetationKey(instances[index], index)
+		if key < 0 || key > 9_007_199_254_740_991 {
+			return bizerr.Parameter("植被实例编号无效")
+		}
+		if _, exists := used[key]; exists {
+			return bizerr.Parameter("植被实例编号重复")
+		}
+		used[key] = struct{}{}
+	}
+	return nil
+}
+
+// validateTerrainVegetationEdit 校验自由编辑姿态和保留真实形变的可选矩阵。
+func validateTerrainVegetationEdit(instance terrainVegetationPatchInstance) error {
+	if instance.Transform == nil {
+		if len(instance.Matrix) != 0 || len(instance.PlatformId) != 0 || instance.SurfaceAttachment != nil {
+			return bizerr.Parameter("植被编辑字段缺少姿态")
+		}
+		return nil
+	}
+	if !validTerrainTransform(*instance.Transform) {
+		return bizerr.Parameter("植被编辑姿态无效")
+	}
+	if len(instance.Matrix) == 0 {
+		return nil
+	}
+	if len(instance.Matrix) != 16 || instance.Matrix[3] != 0 || instance.Matrix[7] != 0 || instance.Matrix[11] != 0 || instance.Matrix[15] != 1 {
+		return bizerr.Parameter("植被仿射矩阵无效")
+	}
+	for _, value := range instance.Matrix {
+		if !validFinite(value, maxTransformComponent) {
+			return bizerr.Parameter("植被仿射矩阵超出范围")
+		}
 	}
 	return nil
 }
@@ -978,14 +1054,40 @@ func validateTerrainVegetationPatch(
 		len(patch.Instances) == 0 || len(patch.Instances) > maxVegetationInstancesPerPatch {
 		return bizerr.Parameter("植被批次种子或数量无效")
 	}
-	if err := validateTerrainVegetationSurface(patch.Surface, platformIds, objectIds, objectPresetById, patch.CategoryId); err != nil {
+	if patch.NextKey != nil && (*patch.NextKey < 0 || *patch.NextKey > 9_007_199_254_740_991) {
+		return bizerr.Parameter("植被编号游标无效")
+	}
+	detached := true
+	for _, instance := range patch.Instances {
+		detached = detached && instance.Transform != nil
+	}
+	if err := validateTerrainVegetationSurface(patch.Surface, platformIds, objectIds, objectPresetById, patch.CategoryId, detached); err != nil {
 		return err
 	}
 	expectedKind := "mesh"
 	if patch.Surface.Kind == "terrain" {
 		expectedKind = "terrain"
 	}
-	for _, instance := range patch.Instances {
+	if err := validateTerrainVegetationKeys(patch.Instances); err != nil {
+		return err
+	}
+	for index, instance := range patch.Instances {
+		if patch.NextKey != nil && terrainVegetationKey(instance, index) >= *patch.NextKey {
+			return bizerr.Parameter("植被编号游标未超过现有实例")
+		}
+		if err := validateTerrainVegetationEdit(instance); err != nil {
+			return err
+		}
+		if len(instance.PlatformId) > 0 && string(instance.PlatformId) != "null" {
+			var platformId string
+			if err := json.Unmarshal(instance.PlatformId, &platformId); err != nil {
+				return bizerr.Parameter("植被实例平台无效")
+			}
+			if _, exists := platformIds[platformId]; !exists {
+				return bizerr.Parameter("植被实例平台不存在")
+			}
+		}
+
 		if instance.Kind != expectedKind ||
 			!validFinite(instance.TangentRotation, maxTransformComponent) ||
 			!validFinite(instance.NormalOffset, 1) ||
@@ -1005,6 +1107,17 @@ func validateTerrainVegetationPatch(
 			!validTerrainVector(instance.FallbackLocalPoint, false, maxTransformComponent) {
 			return bizerr.Parameter("网格植被实例无效")
 		}
+		instanceId := fmt.Sprintf("%s#%d", patch.Id, terrainVegetationKey(instance, index))
+		if _, exists := usedIds[instanceId]; exists {
+			return bizerr.Parameter("植被实例身份重复")
+		}
+		usedIds[instanceId] = struct{}{}
+		objectIds[instanceId] = struct{}{}
+		objectPresetById[instanceId] = patch.PresetId
+		if err := validateTerrainSurfaceAnchor(instanceId, instance.SurfaceAttachment, objectIds, objectPresetById); err != nil {
+			return err
+		}
+
 	}
 	return nil
 }
@@ -1029,7 +1142,7 @@ func validateTerrainVegetationCoverageLayer(
 	if layer.Seed < 0 || layer.Seed > maxTerrainVariantSeed || len(layer.Tiles) == 0 {
 		return bizerr.Parameter("植被覆盖层种子或块数量无效")
 	}
-	if err := validateTerrainVegetationSurface(layer.Surface, platformIds, objectIds, objectPresetById, ""); err != nil {
+	if err := validateTerrainVegetationSurface(layer.Surface, platformIds, objectIds, objectPresetById, "", false); err != nil {
 		return err
 	}
 	expectedProjection := "local-triplanar"

@@ -6,6 +6,9 @@ import "testing"
 func TestIsMaterialID(t *testing.T) {
 	for _, id := range []string{
 		"plain",
+		"limestone",
+		"mountain",
+		"loess",
 		"grass",
 		"alpine-grass",
 		"muddy-grass",
@@ -33,14 +36,14 @@ func TestIsMaterialID(t *testing.T) {
 	}
 }
 
-// 围栏可保存菜单中的纹理，仍拒绝未开放的地表材质。
+// 各表面共用纹理身份，围栏不能再使用另一份白名单。
 func TestIsFenceMaterialID(t *testing.T) {
-	for _, id := range []string{"grass", "pebble", "yellow-pebble", "jade", "rockscape", "marble", "asphalt", "brick", "wood", "steel"} {
+	for id := range materialIDs {
 		if !IsFenceMaterialID(id) {
 			t.Fatalf("围栏纹理 %q 未被支持", id)
 		}
 	}
-	for _, id := range []string{"plastic", "plain", "mud"} {
+	for _, id := range []string{"plastic", "stone", "missing"} {
 		if IsFenceMaterialID(id) {
 			t.Fatalf("接受了非法围栏纹理 %q", id)
 		}

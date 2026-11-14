@@ -107,3 +107,120 @@ func TestMountainLedgeState(t *testing.T) {
 		})
 	}
 }
+
+// 洞室与既有岩台一起保存，严格校验容量、有限参数和跨部位身份。
+func TestMountainCaveState(t *testing.T) {
+	cave := terrainMountainCave{Id: "cave", X: .4, Z: -.3, Height: .45, Radius: .18, Aspect: .8, Depth: .5, Rotation: .7, Pitch: .25, Texture: "mountain", FloorTexture: "loess"}
+	mountain := terrainMountain{Id: "mountain", Version: 1, Center: []float64{0, 0}, Height: 8, Radius: 8, Seed: 1867,
+		Branches: []terrainMountainBranch{}, Caves: []terrainMountainCave{cave},
+		Ledges:   []terrainMountainLedge{{Id: "ledge", X: .4, Z: -.3, Height: .45, Radius: .25, Aspect: .8}},
+		Sediment: 1, Grass: 1, Gravel: .4, Erosion: 1}
+	data, err := json.Marshal(mountain)
+	if err != nil {
+		t.Fatal(err)
+	}
+	source := `{"platforms":[{"id":"p1","kind":"platform","materialId":"grass","transform":{"position":[0,0,0],"rotation":[0,0,0],"scale":[64,1,64]},"heightField":{"version":2,"enabled":false,"baseHeight":0.006,"cellSize":0.5,"samplesPerChunk":64,"heightUnit":0.005,"zeroCode":32768,"chunks":[]},"mountains":[MOUNTAIN]}],"objects":[]}`
+	normalized, err := validateState(json.RawMessage(strings.Replace(source, "MOUNTAIN", string(data), 1)))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !strings.Contains(string(normalized), `"caves":[`) || !strings.Contains(string(normalized), `"ledges":[`) {
+		t.Fatalf("洞室或原岩台参数丢失: %s", normalized)
+	}
+	if _, err := validateState(normalized); err != nil {
+		t.Fatalf("山洞无法重新读取: %v", err)
+	}
+	if !strings.Contains(string(normalized), `"texture":"mountain"`) || !strings.Contains(string(normalized), `"floorTexture":"loess"`) {
+		t.Fatalf("山洞纹理设置丢失: %s", normalized)
+	}
+	for _, texture := range []string{"plain", "limestone", "mountain", "loess", "grass", "wood", "steel", "marble"} {
+		state := strings.Replace(string(normalized), `"texture":"mountain"`, `"texture":"`+texture+`"`, 1)
+		state = strings.Replace(state, `"floorTexture":"loess"`, `"floorTexture":"`+texture+`"`, 1)
+		result, err := validateState(json.RawMessage(state))
+		if err != nil || !strings.Contains(string(result), `"texture":"`+texture+`"`) || !strings.Contains(string(result), `"floorTexture":"`+texture+`"`) {
+			t.Fatalf("公共纹理 %q 无法在洞壁和洞底往返: %v", texture, err)
+		}
+	}
+	for name, change := range map[string]func(*terrainMountainCave){
+		"empty id":      func(c *terrainMountainCave) { c.Id = "" },
+		"ledge id":      func(c *terrainMountainCave) { c.Id = "ledge" },
+		"nonfinite":     func(c *terrainMountainCave) { c.Radius = math.NaN() },
+		"small radius":  func(c *terrainMountainCave) { c.Radius = .03 },
+		"large aspect":  func(c *terrainMountainCave) { c.Aspect = 1.6 },
+		"depth":         func(c *terrainMountainCave) { c.Depth = 0 },
+		"pitch":         func(c *terrainMountainCave) { c.Pitch = math.Pi },
+		"position":      func(c *terrainMountainCave) { c.X = 4.1 },
+		"wall texture":  func(c *terrainMountainCave) { c.Texture = "missing" },
+		"floor texture": func(c *terrainMountainCave) { c.FloorTexture = "missing" },
+	} {
+		t.Run(name, func(t *testing.T) {
+			invalid := cave
+			change(&invalid)
+			copy := mountain
+			copy.Caves = []terrainMountainCave{invalid}
+			if err := validateTerrainMountains([]terrainMountain{copy}); !bizerr.IsKind(err, bizerr.KindParameter) {
+				t.Fatalf("应拒绝损坏洞室，得到 %v", err)
+			}
+		})
+	}
+	mountain.Caves = make([]terrainMountainCave, 9)
+	for i := range mountain.Caves {
+		mountain.Caves[i] = cave
+		mountain.Caves[i].Id = fmt.Sprintf("cave-%d", i)
+	}
+	if validateTerrainMountains([]terrainMountain{mountain}) == nil {
+		t.Fatal("接受超出容量的洞室")
+	}
+}
+
+// 三维截面可折返、可独立改宽，严格往返后保持路径与总长，拒绝超量或损坏节点。
+func TestMountainCavePathState(t *testing.T) {
+	path := []terrainMountainCaveNode{{Id: "a", Z: .2, Width: 1}, {Id: "b", X: .2, Y: .1, Z: .4, Width: .6}, {Id: "c", X: .5, Y: .2, Z: .3, Width: 2}}
+	height := .9
+	path[1].Height = &height
+	length, previous := 0.0, terrainMountainCaveNode{}
+	for _, p := range path {
+		length += math.Sqrt(math.Pow(p.X-previous.X, 2) + math.Pow(p.Y-previous.Y, 2) + math.Pow(p.Z-previous.Z, 2))
+		previous = p
+	}
+	cave := terrainMountainCave{Id: "cave", Height: .5, Radius: .1, Aspect: .8, Depth: length, Path: path}
+	mountain := terrainMountain{Id: "mountain", Version: 1, Center: []float64{0, 0}, Height: 8, Radius: 8, Seed: 1867,
+		Branches: []terrainMountainBranch{}, Caves: []terrainMountainCave{cave}, Sediment: 1, Grass: 1, Gravel: .4, Erosion: 1}
+	data, err := json.Marshal(mountain)
+	if err != nil {
+		t.Fatal(err)
+	}
+	source := `{"platforms":[{"id":"p1","kind":"platform","materialId":"grass","transform":{"position":[0,0,0],"rotation":[0,0,0],"scale":[64,1,64]},"heightField":{"version":2,"enabled":false,"baseHeight":0.006,"cellSize":0.5,"samplesPerChunk":64,"heightUnit":0.005,"zeroCode":32768,"chunks":[]},"mountains":[MOUNTAIN]}],"objects":[]}`
+	normalized, err := validateState(json.RawMessage(strings.Replace(source, "MOUNTAIN", string(data), 1)))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !strings.Contains(string(normalized), `"path":[`) || !strings.Contains(string(normalized), `"width":2`) {
+		t.Fatalf("通道截面丢失: %s", normalized)
+	}
+	if _, err := validateState(normalized); err != nil {
+		t.Fatalf("无法重新读取通道: %v", err)
+	}
+	for name, change := range map[string]func(*terrainMountainCave){
+		"empty":      func(c *terrainMountainCave) { c.Path = []terrainMountainCaveNode{} },
+		"too many":   func(c *terrainMountainCave) { c.Path = append(c.Path, append(c.Path, c.Path...)...) },
+		"width":      func(c *terrainMountainCave) { c.Path[1].Width = 0 },
+		"height":     func(c *terrainMountainCave) { invalid := 0.0; c.Path[1].Height = &invalid },
+		"position":   func(c *terrainMountainCave) { c.Path[1].Y = 4.1 },
+		"nonfinite":  func(c *terrainMountainCave) { c.Path[1].X = math.NaN() },
+		"duplicate":  func(c *terrainMountainCave) { c.Path[1].Id = c.Path[0].Id },
+		"coincident": func(c *terrainMountainCave) { c.Path[1] = c.Path[0]; c.Path[1].Id = "other" },
+		"depth":      func(c *terrainMountainCave) { c.Depth = .1 },
+	} {
+		t.Run(name, func(t *testing.T) {
+			invalid := cave
+			invalid.Path = append([]terrainMountainCaveNode{}, cave.Path...)
+			change(&invalid)
+			copy := mountain
+			copy.Caves = []terrainMountainCave{invalid}
+			if err := validateTerrainMountains([]terrainMountain{copy}); !bizerr.IsKind(err, bizerr.KindParameter) {
+				t.Fatalf("应拒绝损坏路径，得到 %v", err)
+			}
+		})
+	}
+}

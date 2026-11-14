@@ -142,6 +142,8 @@ type terrainPlatform struct {
 	Fence       *terrainFence      `json:"fence,omitempty"`
 	// 非破坏式山地定义。
 	Mountains []terrainMountain `json:"mountains,omitempty"`
+	// 正式道路通行截面，首载先恢复洞形，再由道路源校准。
+	RoadTunnels []terrainRoadTunnel `json:"roadTunnels,omitempty"`
 }
 
 // terrainObjectInteraction 保存静态构件的有限动态自由度。
@@ -571,6 +573,9 @@ func validateState(state json.RawMessage) (json.RawMessage, error) {
 			return nil, err
 		}
 		if err := validateTerrainMountains(platform.Mountains); err != nil {
+			return nil, err
+		}
+		if err := validateTerrainRoadTunnels(platform.RoadTunnels); err != nil {
 			return nil, err
 		}
 		if err := validateFence(platform.Fence); err != nil {

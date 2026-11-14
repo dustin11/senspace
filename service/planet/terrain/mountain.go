@@ -2,6 +2,7 @@ package terrain
 
 import (
 	"math"
+	planet_surface "senspace/domain/planet/surface"
 	"senspace/pkg/bizerr"
 )
 
@@ -39,6 +40,39 @@ type terrainMountainLedge struct {
 	Grass *float64 `json:"grass,omitempty"`
 }
 
+// 洞口右、上、向内标架中的通道截面，与山脊二维节点分开校验。
+type terrainMountainCaveNode struct {
+	// 稳定身份、相对山半径的三维坐标及相对洞口的宽度。
+	Id    string  `json:"id"`
+	X     float64 `json:"x"`
+	Y     float64 `json:"y"`
+	Z     float64 `json:"z"`
+	Width float64 `json:"width"`
+	// 保留岩棚净高，缺省时随宽度等比变化。
+	Height *float64 `json:"height,omitempty"`
+}
+
+// 独立体积洞室，尺寸相对山半径，高程相对山高。
+type terrainMountainCave struct {
+	// 稳定身份与洞口中心。
+	Id     string  `json:"id"`
+	X      float64 `json:"x"`
+	Z      float64 `json:"z"`
+	Height float64 `json:"height"`
+	// 半宽、高宽比与向内深度。
+	Radius float64 `json:"radius"`
+	Aspect float64 `json:"aspect"`
+	Depth  float64 `json:"depth"`
+	// 洞口外法线的朝向和仰角。
+	Rotation float64 `json:"rotation"`
+	Pitch    float64 `json:"pitch"`
+	// 有序通道截面，缺省时保留自然岩棚；末点为可自由拖动的洞底。
+	Path []terrainMountainCaveNode `json:"path,omitempty"`
+	// 洞壁与洞底纹理独立保存，空值分别使用层岩与黄土。
+	Texture      string `json:"texture,omitempty"`
+	FloorTexture string `json:"floorTexture,omitempty"`
+}
+
 // 平台上的可重建山体，不保存派生网格或纹理。
 type terrainMountain struct {
 	// 稳定身份和算法版本。
@@ -54,6 +88,8 @@ type terrainMountain struct {
 	Branches []terrainMountainBranch `json:"branches"`
 	// 没有雕刻时省略岩台定义。
 	Ledges []terrainMountainLedge `json:"ledges,omitempty"`
+	// 没有开洞的山体省略体积雕刻。
+	Caves []terrainMountainCave `json:"caves,omitempty"`
 	// 同次地形的地表强度。
 	Sediment float64 `json:"sediment"`
 	Grass    float64 `json:"grass"`
@@ -82,6 +118,45 @@ func validateTerrainMountains(mountains []terrainMountain) error {
 			return bizerr.Parameter("每座山最多雕刻 12 处平台")
 		}
 		nodes := make(map[string]struct{})
+		if len(m.Caves) > 8 {
+			return bizerr.Parameter("每座山最多雕刻 8 处山洞")
+		}
+		for _, cave := range m.Caves {
+			if err := validateTerrainRecordId(cave.Id, nodes); err != nil {
+				return err
+			}
+			minimumDepth, maximumDepth := .08, 2.0
+			if cave.Path != nil {
+				minimumDepth, maximumDepth = .02, 8
+				if len(cave.Path) < 1 || len(cave.Path) > 8 {
+					return bizerr.Parameter("山洞通道截面数量无效")
+				}
+				previous := terrainMountainCaveNode{}
+				length := 0.0
+				for _, point := range cave.Path {
+					if err := validateTerrainRecordId(point.Id, nodes); err != nil {
+						return err
+					}
+					distance := math.Sqrt(math.Pow(point.X-previous.X, 2) + math.Pow(point.Y-previous.Y, 2) + math.Pow(point.Z-previous.Z, 2))
+					if !valid(point.X, -4, 4) || !valid(point.Y, -4, 4) || !valid(point.Z, -4, 4) || !valid(point.Width, .15, 3) ||
+						(point.Height != nil && !valid(*point.Height, .15, 3)) || distance < .01 {
+						return bizerr.Parameter("山洞截面无效或相邻截面过近")
+					}
+					length += distance
+					previous = point
+				}
+				if !valid(length, .02, 8) || math.Abs(length-cave.Depth) > 1e-6 {
+					return bizerr.Parameter("山洞路径长度无效")
+				}
+			}
+			if !valid(cave.X, -4, 4) || !valid(cave.Z, -4, 4) || !valid(cave.Height, .01, 1.25) ||
+				!valid(cave.Radius, .04, .65) || !valid(cave.Aspect, .35, 1.5) || !valid(cave.Depth, minimumDepth, maximumDepth) ||
+				!valid(cave.Rotation, -math.Pi*8, math.Pi*8) || !valid(cave.Pitch, -math.Pi/2, math.Pi/2) ||
+				(cave.Texture != "" && !planet_surface.IsMaterialID(cave.Texture)) ||
+				(cave.FloorTexture != "" && cave.FloorTexture != "rock" && !planet_surface.IsMaterialID(cave.FloorTexture)) {
+				return bizerr.Parameter("山洞参数无效")
+			}
+		}
 		for _, ledge := range m.Ledges {
 			if err := validateTerrainRecordId(ledge.Id, nodes); err != nil {
 				return err

@@ -271,3 +271,60 @@ func TestLoftDiamondArc(t *testing.T) {
 		t.Fatal(err)
 	}
 }
+
+func TestTerrainPrimitiveVariantsRoundTrip(t *testing.T) {
+	cases := []struct {
+		id, field string
+		shape     terrainShape
+	}{
+		{"shape-box", `"openBottom":1`, terrainShape{
+			Parameters: map[string]float64{"width": 1, "height": 2, "depth": 3, "bevel": 0, "smooth": 2, "openBottom": 1},
+		}},
+		{"shape-pipe", `"openEnds":1`, terrainShape{
+			Parameters: map[string]float64{"radius": .25, "height": 1, "sides": 8, "wall": 0, "square": 0, "openEnds": 1},
+		}},
+		{"shape-sweep", `"polyline":1`, terrainShape{
+			Parameters: map[string]float64{"radius": .08, "wall": 0, "square": 0, "aspect": 1, "polyline": 1, "sides": 8},
+			Path:       [][]float64{{0, 0, 0}, {0, 1, 0}, {1, 1, 0}},
+		}},
+		{"shape-lathe", `"openProfile":1`, terrainShape{
+			Parameters: map[string]float64{"arc": 180, "start": 0, "aspect": 1, "sides": 24, "openProfile": 1},
+			Profile:    [][]float64{{.2, -.5}, {.5, 0}, {.2, .5}},
+		}},
+		{"shape-loft", `"loftPoints":[[[0,0,0],[0,1,0]],[[1,0,0],[1,1,1]]]`, terrainShape{
+			Parameters: map[string]float64{"sides": 16, "roundness": 2, "arc": 360, "start": 0, "smooth": 1, "mirror": 0},
+			LoftPoints: [][][]float64{{{0, 0, 0}, {0, 1, 0}}, {{1, 0, 0}, {1, 1, 1}}},
+		}},
+	}
+	for _, tc := range cases {
+		t.Run(tc.id, func(t *testing.T) {
+			tc.shape.Version = 1
+			tc.shape.Style = terrainShapeStyle{Color: "#ffffff", Emissive: "#000000", Opacity: 1}
+			encoded, err := json.Marshal(tc.shape)
+			if err != nil {
+				t.Fatal(err)
+			}
+			document := `{"platforms":[],"objects":[{"id":"variant","kind":"object","presetId":"` + tc.id +
+				`","variantSeed":0,"transform":{"position":[0,0,0],"rotation":[0,0,0],"scale":[1,1,1]},"shape":` + string(encoded) + `}]}`
+			saved, err := validateState(json.RawMessage(document))
+			if err != nil {
+				t.Fatal(err)
+			}
+			if !strings.Contains(string(saved), tc.field) {
+				t.Fatalf("保存后缺少字段 %s", tc.field)
+			}
+		})
+	}
+	sweep, loft := cases[2].shape, cases[4].shape
+	sweep.Version, loft.Version = 1, 1
+	sweep.Style = terrainShapeStyle{Color: "#ffffff", Emissive: "#000000", Opacity: 1}
+	loft.Style = sweep.Style
+	sweep.Path = append(sweep.Path, []float64{1, 1, 1})
+	if validateTerrainShape("shape-sweep", &sweep) == nil {
+		t.Fatal("非共面折线通过校验")
+	}
+	loft.LoftPoints[1] = append(loft.LoftPoints[1], []float64{2, 1, 0})
+	if validateTerrainShape("shape-loft", &loft) == nil {
+		t.Fatal("逐点放样各层点数不等通过校验")
+	}
+}

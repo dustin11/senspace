@@ -71,6 +71,7 @@ type terrainShape struct {
 	Holes      [][][]float64         `json:"holes,omitempty"`
 	Path       [][]float64           `json:"path,omitempty"`
 	Sections   []terrainShapeSection `json:"sections,omitempty"`
+	LoftPoints [][][]float64         `json:"loftPoints,omitempty"`
 	Style      terrainShapeStyle     `json:"style"`
 	Decorative bool                  `json:"decorative,omitempty"`
 	Mesh       *terrainShapeMesh     `json:"mesh,omitempty"`
@@ -106,6 +107,7 @@ var shapeColorPattern = regexp.MustCompile(`^#[0-9a-fA-F]{6}$`)
 // 参数范围与前端生成器一致；未列出的字段拒绝进入存档。
 var shapeParameterRanges = map[string][2]float64{
 	"ridge": {0, 10}, "roundness": {1, 4}, "mirror": {0, 1},
+	"openBottom": {0, 1}, "openEnds": {0, 1}, "polyline": {0, 1}, "openProfile": {0, 1},
 	"width": {.005, 100}, "height": {.005, 100}, "depth": {.005, 100}, "radius": {.005, 100},
 	"topWidth": {.005, 100}, "topDepth": {.005, 100}, "topRadius": {0, 50}, "offset": {-20, 20},
 	"bevel": {0, 10}, "smooth": {1, 5}, "top": {0, 1}, "sides": {3, 64}, "wall": {0, 10},
@@ -120,6 +122,9 @@ var shapeParameterKeys = map[string]string{
 	"shape-dome": "radius cut wall sides", "shape-capsule": "radius height sides", "shape-extrude": "depth bevel ridge mirror",
 	"shape-loft":  "sides roundness arc start smooth mirror",
 	"shape-sweep": "radius wall square aspect", "shape-lathe": "arc start aspect sides", "shape-roof": "width depth height eave corner thickness curve", "shape-mesh": "",
+}
+var shapeOptionalParameterKeys = map[string]string{
+	"shape-box": "openBottom", "shape-pipe": "openEnds", "shape-sweep": "polyline sides", "shape-lathe": "openProfile",
 }
 
 // 检查固定维度控制点，不允许 NaN、越界和无限细分。
@@ -233,6 +238,11 @@ func validateTerrainShapeDepth(id string, shape *terrainShape, depth int) error 
 		}
 	}
 	allowed := strings.Fields(keys)
+	for _, key := range strings.Fields(shapeOptionalParameterKeys[id]) {
+		if _, ok := shape.Parameters[key]; ok {
+			allowed = append(allowed, key)
+		}
+	}
 	if len(shape.Parameters) != len(allowed) {
 		return bizerr.Parameter("形状参数不完整")
 	}
@@ -247,7 +257,8 @@ func validateTerrainShapeDepth(id string, shape *terrainShape, depth int) error 
 				bounds = [2]float64{0, 1}
 			}
 		}
-		if !ok || math.IsNaN(value) || math.IsInf(value, 0) || value < bounds[0] || value > bounds[1] || ((key == "sides" || key == "smooth" || key == "mirror") && math.Trunc(value) != value) {
+		integer := key == "sides" || key == "smooth" || key == "mirror" || key == "polyline" || strings.HasPrefix(key, "open")
+		if !ok || math.IsNaN(value) || math.IsInf(value, 0) || value < bounds[0] || value > bounds[1] || (integer && math.Trunc(value) != value) {
 			return bizerr.Parameter("形状参数超出范围: " + key)
 		}
 	}
@@ -272,10 +283,10 @@ func validateTerrainShapeDepth(id string, shape *terrainShape, depth int) error 
 		}
 	}
 	p := shape.Parameters
-	if (id == "shape-box" && p["bevel"] > math.Min(p["width"], math.Min(p["height"], p["depth"]))/2) ||
-		(id == "shape-pipe" && (p["wall"] < .005 || p["wall"] >= p["radius"])) ||
+	if (id == "shape-box" && p["openBottom"] != 1 && p["bevel"] > math.Min(p["width"], math.Min(p["height"], p["depth"]))/2) ||
+		(id == "shape-pipe" && (p["wall"] >= p["radius"] || (p["wall"] < .005 && !(p["openEnds"] == 1 && p["wall"] == 0)))) ||
 		(id == "shape-arc" && (p["tube"] >= p["radius"] || p["wall"] >= p["tube"])) ||
-		((id == "shape-dome" || id == "shape-sweep") && p["wall"] >= p["radius"]) ||
+		((id == "shape-dome" || (id == "shape-sweep" && p["polyline"] != 1)) && p["wall"] >= p["radius"]) ||
 		(id == "shape-extrude" && p["bevel"] > 1) || (id == "shape-sweep" && p["wall"] > 5) {
 		return bizerr.Parameter("形状壁厚、倒角或半径无效")
 	}
@@ -285,11 +296,22 @@ func validateTerrainShapeDepth(id string, shape *terrainShape, depth int) error 
 	if (id == "shape-sweep" || shape.Path != nil) && !validShapePoints(shape.Path, 3, 2) {
 		return bizerr.Parameter("形状路径无效")
 	}
-	if id == "shape-loft" && p["roundness"] == 1 &&
+	if id == "shape-loft" && shape.LoftPoints == nil && p["roundness"] == 1 &&
 		(math.Floor(p["start"]/90)+1)*90 >= p["start"]+p["arc"] {
 		return bizerr.Parameter("菱形截面弧段须跨过至少一个角点，不能退化为直线")
 	}
-	if id == "shape-loft" || shape.Sections != nil {
+	if shape.LoftPoints != nil {
+		if id != "shape-loft" || len(shape.LoftPoints) < 2 || len(shape.LoftPoints) > 64 {
+			return bizerr.Parameter("逐点三维放样需要2–64层")
+		}
+		columns := len(shape.LoftPoints[0])
+		for _, row := range shape.LoftPoints {
+			if columns > 64 || len(row) != columns || !validShapePoints(row, 3, 2) {
+				return bizerr.Parameter("逐点三维放样各层需要相同数量的有效点（2–64点）")
+			}
+		}
+		shape.Sections = nil
+	} else if id == "shape-loft" || shape.Sections != nil {
 		if err := validateShapeSections(shape.Sections); err != nil {
 			return err
 		}
@@ -323,12 +345,22 @@ func validateTerrainShapeDepth(id string, shape *terrainShape, depth int) error 
 		if err := validateShapePath(shape.Path); err != nil {
 			return err
 		}
+		if p["polyline"] == 1 {
+			if err := validatePlanarShapePath(shape.Path); err != nil {
+				return err
+			}
+		}
 	}
 	if id == "shape-lathe" {
+		hasRadius := false
 		for _, point := range shape.Profile {
 			if point[0] < 0 {
 				return bizerr.Parameter("旋转体半径不能为负")
 			}
+			hasRadius = hasRadius || point[0] > 0
+		}
+		if p["openProfile"] == 1 && !hasRadius {
+			return bizerr.Parameter("旋转剖面至少需要一个正半径")
 		}
 	}
 	style := shape.Style

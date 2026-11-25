@@ -96,29 +96,3 @@ func validateShapePath(path [][]float64) error {
 	}
 	return nil
 }
-
-// 折线弯管使用同一弯曲平面。
-func validatePlanarShapePath(path [][]float64) error {
-	tangents := make([][3]float64, len(path)-1)
-	for i := range tangents {
-		x, y, z := path[i+1][0]-path[i][0], path[i+1][1]-path[i][1], path[i+1][2]-path[i][2]
-		length := math.Sqrt(x*x + y*y + z*z)
-		tangents[i] = [3]float64{x / length, y / length, z / length}
-	}
-	for i := 1; i < len(tangents); i++ {
-		a, b := tangents[i-1], tangents[i]
-		x, y, z := a[1]*b[2]-a[2]*b[1], a[2]*b[0]-a[0]*b[2], a[0]*b[1]-a[1]*b[0]
-		length := math.Sqrt(x*x + y*y + z*z)
-		if length <= 1e-8 {
-			continue
-		}
-		for _, direction := range tangents {
-			dot := x*direction[0] + y*direction[1] + z*direction[2]
-			if math.Abs(dot) > length*1e-6 {
-				return bizerr.Parameter("折线弯管的路径点须共面")
-			}
-		}
-		break
-	}
-	return nil
-}

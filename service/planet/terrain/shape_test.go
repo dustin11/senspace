@@ -283,9 +283,9 @@ func TestTerrainPrimitiveVariantsRoundTrip(t *testing.T) {
 		{"shape-pipe", `"openEnds":1`, terrainShape{
 			Parameters: map[string]float64{"radius": .25, "height": 1, "sides": 8, "wall": 0, "square": 0, "openEnds": 1},
 		}},
-		{"shape-sweep", `"polyline":1`, terrainShape{
+		{"shape-sweep", `"path":[[0,0,0],[0,1,0],[1,1,0],[1,1,1]]`, terrainShape{
 			Parameters: map[string]float64{"radius": .08, "wall": 0, "square": 0, "aspect": 1, "polyline": 1, "sides": 8},
-			Path:       [][]float64{{0, 0, 0}, {0, 1, 0}, {1, 1, 0}},
+			Path:       [][]float64{{0, 0, 0}, {0, 1, 0}, {1, 1, 0}, {1, 1, 1}},
 		}},
 		{"shape-lathe", `"openProfile":1`, terrainShape{
 			Parameters: map[string]float64{"arc": 180, "start": 0, "aspect": 1, "sides": 24, "openProfile": 1},
@@ -319,9 +319,9 @@ func TestTerrainPrimitiveVariantsRoundTrip(t *testing.T) {
 	sweep.Version, loft.Version = 1, 1
 	sweep.Style = terrainShapeStyle{Color: "#ffffff", Emissive: "#000000", Opacity: 1}
 	loft.Style = sweep.Style
-	sweep.Path = append(sweep.Path, []float64{1, 1, 1})
+	sweep.Path = append(sweep.Path, []float64{1, 1, 0})
 	if validateTerrainShape("shape-sweep", &sweep) == nil {
-		t.Fatal("非共面折线通过校验")
+		t.Fatal("原地折返的空间折线通过校验")
 	}
 	loft.LoftPoints[1] = append(loft.LoftPoints[1], []float64{2, 1, 0})
 	if validateTerrainShape("shape-loft", &loft) == nil {

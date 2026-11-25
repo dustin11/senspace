@@ -345,11 +345,6 @@ func validateTerrainShapeDepth(id string, shape *terrainShape, depth int) error 
 		if err := validateShapePath(shape.Path); err != nil {
 			return err
 		}
-		if p["polyline"] == 1 {
-			if err := validatePlanarShapePath(shape.Path); err != nil {
-				return err
-			}
-		}
 	}
 	if id == "shape-lathe" {
 		hasRadius := false

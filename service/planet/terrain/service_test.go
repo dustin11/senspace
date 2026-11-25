@@ -242,12 +242,12 @@ func TestValidateState(t *testing.T) {
 		}
 	})
 
-	t.Run("accepts textures on basic shapes and detailed building parts", func(t *testing.T) {
+	t.Run("accepts textures on basic shapes and the standalone arch", func(t *testing.T) {
 		_, err := validateState(json.RawMessage(`{
 			"platforms":[],
 			"objects":[
 				{"id":"shape","kind":"object","presetId":"frustum","materialId":"wood","variantSeed":1,"transform":{"position":[0,0,0],"rotation":[0,0,0],"scale":[1,1,1]}},
-				{"id":"detail","kind":"object","presetId":"pavilion-railing","materialId":"steel","variantSeed":2,"transform":{"position":[0,0,0],"rotation":[0,0,0],"scale":[1,1,1]}}
+				{"id":"detail","kind":"object","presetId":"arch","materialId":"steel","variantSeed":2,"transform":{"position":[0,0,0],"rotation":[0,0,0],"scale":[1,1,1]}}
 			]
 		}`))
 		if err != nil {
@@ -357,7 +357,7 @@ func TestValidateState(t *testing.T) {
 				{"id":"b","kind":"object","presetId":"cylinder","variantSeed":2,"transform":{"position":[1,0,0],"rotation":[0,0,0],"scale":[1,1,1]}}
 			],
 			"assemblies":[{"id":"assembly-1","kind":"assembly","name":"凉亭","transform":{"position":[0.5,0,0],"rotation":[0,0,0],"scale":[1,1,1]},"memberIds":["a","b"]}],
-			"prefabs":[{"id":"prefab-1","kind":"prefab","name":"凉亭","parts":[{"presetId":"pavilion-column","materialId":"jade","variantSeed":1,"transform":{"position":[0,0,0],"rotation":[0,0,0],"scale":[1,1,1]}}]}]
+			"prefabs":[{"id":"prefab-1","kind":"prefab","name":"凉亭","parts":[{"presetId":"frustum","materialId":"jade","variantSeed":1,"transform":{"position":[0,0,0],"rotation":[0,0,0],"scale":[1,1,1]}}]}]
 		}`))
 		if err != nil {
 			t.Fatalf("validate assembly state: %v", err)
@@ -662,5 +662,50 @@ func TestFindRemovedPlatformIds(t *testing.T) {
 	}
 	if _, exists := removed["p1"]; !exists {
 		t.Fatalf("expected p1 to be removed, got %v", removed)
+	}
+}
+
+// 发布态迁移移除整栋旧建筑与闲置构件，混合预制体仍能保存。
+func TestMapRetiredBuildingDocument(t *testing.T) {
+	transform := `{"position":[0,0,0],"rotation":[0,0,0],"scale":[1,1,1]}`
+	state := `{"platforms":[],"objects":[
+		{"id":"old-door","kind":"object","presetId":"house-door","interaction":{"hingeAngle":0.8},"variantSeed":1,"transform":` + transform + `},
+		{"id":"old-roof","kind":"object","presetId":"house-roof","variantSeed":1,"transform":` + transform + `},
+		{"id":"old-base","kind":"object","presetId":"box","variantSeed":1,"transform":` + transform + `},
+		{"id":"arch","kind":"object","presetId":"arch","variantSeed":1,"transform":` + transform + `},
+		{"id":"cypress","kind":"object","presetId":"cypress","variantSeed":1,"transform":` + transform + `,
+			"surfaceAttachment":{"kind":"simple","hostObjectId":"old-base","localTransform":` + transform + `}}
+	],"assemblies":[
+		{"id":"old-house","kind":"assembly","name":"模块房屋","memberIds":["old-roof","old-base"],"transform":` + transform + `},
+		{"id":"custom","kind":"assembly","name":"模块房屋","memberIds":["arch","cypress"],"transform":` + transform + `}
+	],"prefabs":[{"id":"mixed","kind":"prefab","name":"自建围廊","parts":[
+		{"presetId":"pavilion-column","variantSeed":1,"transform":` + transform + `},
+		{"presetId":"arch","variantSeed":1,"transform":` + transform + `},
+		{"presetId":"cypress","variantSeed":1,"transform":` + transform + `,"surfaceHostPartIndex":1,"surfaceLocalTransform":` + transform + `}
+	]}]}`
+	response := mapDocument(terrain_domain.Document{
+		SchemaVersion: currentSchemaVersion, Revision: 7, ContentHash: "old", StateJson: state,
+	})
+	if response.ContentHash == "old" || response.Revision != 7 {
+		t.Fatalf("迁移摘要或修订号错误：%+v", response)
+	}
+	normalized, err := validateState(response.State)
+	if err != nil {
+		t.Fatal(err)
+	}
+	var migrated terrainState
+	if err := json.Unmarshal(normalized, &migrated); err != nil {
+		t.Fatal(err)
+	}
+	if len(migrated.Objects) != 2 || migrated.Objects[0].PresetId != "arch" ||
+		migrated.Objects[1].SurfaceAttachment != nil ||
+		len(migrated.Assemblies) != 1 || migrated.Assemblies[0].Id != "custom" ||
+		len(migrated.Prefabs) != 1 || len(migrated.Prefabs[0].Parts) != 2 ||
+		migrated.Prefabs[0].Parts[1].SurfaceHostPartIndex == nil ||
+		*migrated.Prefabs[0].Parts[1].SurfaceHostPartIndex != 0 {
+		t.Fatalf("撤销旧部件后保留的记录不正确：%s", normalized)
+	}
+	if _, changed := migrateRetiredTerrainBuildings(response.State); changed {
+		t.Fatal("重复读取触发了迁移")
 	}
 }

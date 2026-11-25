@@ -86,18 +86,6 @@ var terrainObjectPresetIds = map[string]struct{}{
 	"torus":               {},
 	"pyramid":             {},
 	"arch":                {},
-	"wall-door":           {},
-	"wall-window":         {},
-	"house-door":          {},
-	"house-window":        {},
-	"house-gable":         {},
-	"house-roof":          {},
-	"house-lamp":          {},
-	"pavilion-roof":       {},
-	"pavilion-column":     {},
-	"pavilion-railing":    {},
-	"stone-table":         {},
-	"stone-stool":         {},
 }
 
 // 植物资源身份；仅木本资源可按枝叶规则承载贴附。
@@ -146,11 +134,6 @@ type terrainPlatform struct {
 	RoadTunnels []terrainRoadTunnel `json:"roadTunnels,omitempty"`
 }
 
-// terrainObjectInteraction 保存静态构件的有限动态自由度。
-type terrainObjectInteraction struct {
-	HingeAngle *float64 `json:"hingeAngle,omitempty"`
-}
-
 // terrainSurfaceAnchor 表示简单局部挂点或稳定 LOD0 三角形锚点。
 type terrainSurfaceAnchor struct {
 	Kind               string            `json:"kind"`
@@ -165,15 +148,14 @@ type terrainSurfaceAnchor struct {
 
 // 允许发布的实例物件记录。
 type terrainObject struct {
-	Id                string                    `json:"id"`
-	Kind              string                    `json:"kind"`
-	PlatformId        string                    `json:"platformId,omitempty"`
-	PresetId          string                    `json:"presetId"`
-	MaterialId        string                    `json:"materialId,omitempty"`
-	Transform         terrainTransform          `json:"transform"`
-	VariantSeed       int64                     `json:"variantSeed"`
-	Interaction       *terrainObjectInteraction `json:"interaction,omitempty"`
-	SurfaceAttachment *terrainSurfaceAnchor     `json:"surfaceAttachment,omitempty"`
+	Id                string                `json:"id"`
+	Kind              string                `json:"kind"`
+	PlatformId        string                `json:"platformId,omitempty"`
+	PresetId          string                `json:"presetId"`
+	MaterialId        string                `json:"materialId,omitempty"`
+	Transform         terrainTransform      `json:"transform"`
+	VariantSeed       int64                 `json:"variantSeed"`
+	SurfaceAttachment *terrainSurfaceAnchor `json:"surfaceAttachment,omitempty"`
 	// 参数化形状源数据，随预制体一起保存。
 	Shape *terrainShape `json:"shape,omitempty"`
 }
@@ -189,13 +171,12 @@ type terrainAssembly struct {
 
 // terrainPrefabPart 保存相对预制体枢轴的一个部件。
 type terrainPrefabPart struct {
-	PresetId              string                    `json:"presetId"`
-	MaterialId            string                    `json:"materialId,omitempty"`
-	Transform             terrainTransform          `json:"transform"`
-	VariantSeed           int64                     `json:"variantSeed"`
-	Interaction           *terrainObjectInteraction `json:"interaction,omitempty"`
-	SurfaceHostPartIndex  *int                      `json:"surfaceHostPartIndex,omitempty"`
-	SurfaceLocalTransform *terrainTransform         `json:"surfaceLocalTransform,omitempty"`
+	PresetId              string            `json:"presetId"`
+	MaterialId            string            `json:"materialId,omitempty"`
+	Transform             terrainTransform  `json:"transform"`
+	VariantSeed           int64             `json:"variantSeed"`
+	SurfaceHostPartIndex  *int              `json:"surfaceHostPartIndex,omitempty"`
+	SurfaceLocalTransform *terrainTransform `json:"surfaceLocalTransform,omitempty"`
 	// 参数化形状源数据，随预制体一起保存。
 	Shape *terrainShape `json:"shape,omitempty"`
 }
@@ -246,6 +227,7 @@ type terrainHeightField struct {
 	HeightUnit      float64              `json:"heightUnit"`
 	ZeroCode        int                  `json:"zeroCode"`
 	Chunks          []terrainHeightChunk `json:"chunks"`
+	Lakes           []terrainLake        `json:"lakes,omitempty"`
 }
 
 // terrainVegetationPatchSurface 绑定具体平台或实际命中的组合成员。
@@ -330,35 +312,41 @@ func GetPublished(planetId int) (*DocumentResponse, error) {
 	if domain.Db == nil {
 		return nil, fmt.Errorf("planet terrain db not initialized")
 	}
-	var document terrain_domain.Document
-	err := domain.Db.First(&document, "planet_id = ?", planetId).Error
-	if errors.Is(err, gorm.ErrRecordNotFound) {
-		hash := sha256.Sum256(emptyState)
-		return &DocumentResponse{
-			SchemaVersion: currentSchemaVersion,
-			Revision:      0,
-			UpdatedAt:     time.Unix(0, 0).UTC().Format(time.RFC3339Nano),
-			ContentHash:   hex.EncodeToString(hash[:]),
-			State:         append(json.RawMessage(nil), emptyState...),
-		}, nil
-	}
-	if err != nil {
-		return nil, err
-	}
-	response := mapDocument(document)
-	if response.SchemaVersion != document.SchemaVersion ||
-		string(response.State) != document.StateJson {
-		if err := domain.Db.Model(&terrain_domain.Document{}).
-			Where("planet_id = ?", planetId).
+	for {
+		var document terrain_domain.Document
+		err := domain.Db.First(&document, "planet_id = ?", planetId).Error
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			hash := sha256.Sum256(emptyState)
+			return &DocumentResponse{
+				SchemaVersion: currentSchemaVersion,
+				Revision:      0,
+				UpdatedAt:     time.Unix(0, 0).UTC().Format(time.RFC3339Nano),
+				ContentHash:   hex.EncodeToString(hash[:]),
+				State:         append(json.RawMessage(nil), emptyState...),
+			}, nil
+		}
+		if err != nil {
+			return nil, err
+		}
+		response := mapDocument(document)
+		if response.SchemaVersion == document.SchemaVersion &&
+			string(response.State) == document.StateJson {
+			return response, nil
+		}
+		result := domain.Db.Model(&terrain_domain.Document{}).
+			Where("planet_id = ? AND revision = ? AND content_hash = ?", planetId, document.Revision, document.ContentHash).
 			UpdateColumns(map[string]interface{}{
 				"schema_version": response.SchemaVersion,
 				"state_json":     string(response.State),
 				"content_hash":   response.ContentHash,
-			}).Error; err != nil {
-			return nil, fmt.Errorf("clean automatic terrain data: %w", err)
+			})
+		if result.Error != nil {
+			return nil, fmt.Errorf("clean automatic terrain data: %w", result.Error)
+		}
+		if result.RowsAffected != 0 {
+			return response, nil
 		}
 	}
-	return response, nil
 }
 
 // 校验星球真实归属并以乐观锁保存地形。
@@ -612,9 +600,6 @@ func validateState(state json.RawMessage) (json.RawMessage, error) {
 		if err := validateTerrainShape(object.PresetId, object.Shape); err != nil {
 			return nil, err
 		}
-		if err := validateTerrainObjectInteraction(object.PresetId, object.Interaction); err != nil {
-			return nil, err
-		}
 		objectIds[object.Id] = struct{}{}
 	}
 	objectPresetById := make(map[string]string, len(envelope.Objects))
@@ -767,9 +752,6 @@ func validateTerrainPrefabPart(part terrainPrefabPart, partCount int, parts []te
 	if err := validateTerrainShape(part.PresetId, part.Shape); err != nil {
 		return err
 	}
-	if err := validateTerrainObjectInteraction(part.PresetId, part.Interaction); err != nil {
-		return err
-	}
 	if (part.SurfaceHostPartIndex == nil) != (part.SurfaceLocalTransform == nil) {
 		return bizerr.Parameter("地形预制体贴附字段不完整")
 	}
@@ -873,19 +855,6 @@ func validateTerrainPrefabVegetationCoverage(
 		if !hasCoverage {
 			return bizerr.Parameter("地形预制体覆盖块不能空白")
 		}
-	}
-	return nil
-}
-
-// validateTerrainObjectInteraction 限制通用状态只能用于声明过的静态门。
-func validateTerrainObjectInteraction(presetId string, interaction *terrainObjectInteraction) error {
-	if interaction == nil {
-		return nil
-	}
-	if presetId != "house-door" || interaction.HingeAngle == nil ||
-		!validFinite(*interaction.HingeAngle, math.Pi*2) ||
-		*interaction.HingeAngle < 0 || *interaction.HingeAngle > 1.78 {
-		return bizerr.Parameter("地形物件交互状态无效")
 	}
 	return nil
 }
@@ -1283,6 +1252,9 @@ func validateTerrainHeightField(field terrainHeightField) error {
 	if field.Enabled != (len(field.Chunks) > 0) {
 		return bizerr.Parameter("地形高度场启用状态无效")
 	}
+	if err := validateTerrainLakes(field.Lakes); err != nil {
+		return err
+	}
 	usedKeys := make(map[string]struct{}, len(field.Chunks))
 	for _, chunk := range field.Chunks {
 		if chunk.X < -32768 || chunk.X > 32768 ||
@@ -1508,6 +1480,13 @@ func mapDocument(document terrain_domain.Document) *DocumentResponse {
 				hash := sha256.Sum256(state)
 				document.ContentHash = hex.EncodeToString(hash[:])
 			}
+		}
+	}
+	if schemaVersion == currentSchemaVersion {
+		if migrated, changed := migrateRetiredTerrainBuildings(state); changed {
+			state = migrated
+			hash := sha256.Sum256(state)
+			document.ContentHash = hex.EncodeToString(hash[:])
 		}
 	}
 	return &DocumentResponse{

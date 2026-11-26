@@ -13,7 +13,10 @@ func TestLakeStateRoundTrip(t *testing.T) {
 	const defaultPoint = `,{"radiusScale":1,"steepness":1,"shelfRatio":0}`
 	const customPoint = `{"radiusScale":1.24,"steepness":0.7,"shelfRatio":0.35}`
 	shoreline := `,"shoreline":[` + customPoint + strings.Repeat(defaultPoint, 7) + `]`
-	for _, params := range []string{`"geology":"sediment"`, `"geology":"bedrock","innerRatio":0.72` + shoreline} {
+	const ledge = `{"id":"ledge","x":0.1,"z":-0.1,"height":0.6,"radius":0.2,"aspect":0.8,"rotation":0.3,"grass":0}`
+	const cave = `{"id":"cave","x":0.2,"z":0,"height":0.5,"radius":0.12,"aspect":0.65,"depth":0.5,"rotation":0,"pitch":0.2,"path":[{"id":"end","x":0,"y":0,"z":0.5,"width":0.8,"height":0.7}],"texture":"limestone","floorTexture":"mud"}`
+	const sculpt = `,"ledges":[` + ledge + `],"caves":[` + cave + `],"sculptBase":0`
+	for _, params := range []string{`"geology":"sediment"`, `"geology":"bedrock","innerRatio":0.72` + shoreline, `"geology":"bedrock"` + sculpt} {
 		data := []byte(strings.Replace(source, `"geology":"sediment"`, params, 1))
 		normalized, err := validateState(data)
 		if err != nil {
@@ -35,6 +38,11 @@ func TestLakeStateRoundTrip(t *testing.T) {
 		if strings.Contains(params, `"shoreline"`) != strings.Contains(string(normalized), shoreline) {
 			t.Fatal("发布时应保留岸线控制点及其缺省状态")
 		}
+		for _, field := range []string{`"ledges"`, `"caves"`, `"sculptBase"`} {
+			if strings.Contains(params, field) != strings.Contains(string(normalized), field) {
+				t.Fatalf("发布时应保留雕刻字段 %s 及其缺省状态", field)
+			}
+		}
 		if _, err := validateState(normalized); err != nil {
 			t.Fatal(err)
 		}
@@ -46,6 +54,11 @@ func TestLakeStateRoundTrip(t *testing.T) {
 		{`"depth":1.5`, `"depth":1.5` + strings.Replace(shoreline, `"radiusScale":1.24`, `"radiusScale":1.56`, 1)},
 		{`"depth":1.5`, `"depth":1.5` + strings.Replace(shoreline, `"steepness":0.7`, `"steepness":0.64`, 1)},
 		{`"depth":1.5`, `"depth":1.5` + strings.Replace(shoreline, `"shelfRatio":0.35`, `"shelfRatio":0.46`, 1)},
+		{`"depth":1.5`, `"depth":1.5` + strings.Replace(sculpt, `"sculptBase":0`, `"sculptBase":10001`, 1)},
+		{`"depth":1.5`, `"depth":1.5` + strings.Replace(sculpt, `"aspect":0.8`, `"aspect":0.3`, 1)},
+		{`"depth":1.5`, `"depth":1.5` + strings.Replace(sculpt, `"depth":0.5`, `"depth":0.4`, 1)},
+		{`"depth":1.5`, `"depth":1.5` + strings.Replace(sculpt, `"id":"end"`, `"id":"ledge"`, 1)},
+		{`"depth":1.5`, `"depth":1.5` + strings.Replace(sculpt, `"id":"ledge"`, `"id":"ledge","unexpected":true`, 1)},
 	} {
 		if _, err := validateState([]byte(strings.Replace(source, pair[0], pair[1], 1))); err == nil {
 			t.Fatal("应拒绝无效湖盆", pair)

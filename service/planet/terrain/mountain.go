@@ -114,58 +114,9 @@ func validateTerrainMountains(mountains []terrainMountain) error {
 			!valid(m.Sediment, 0, 2) || !valid(m.Grass, 0, 2) || !valid(m.Gravel, 0, 2) || !valid(m.Erosion, 0, 2) || len(m.Branches) > 6 {
 			return bizerr.Parameter("山地参数无效")
 		}
-		if len(m.Ledges) > 12 {
-			return bizerr.Parameter("每座山最多雕刻 12 处平台")
-		}
 		nodes := make(map[string]struct{})
-		if len(m.Caves) > 8 {
-			return bizerr.Parameter("每座山最多雕刻 8 处山洞")
-		}
-		for _, cave := range m.Caves {
-			if err := validateTerrainRecordId(cave.Id, nodes); err != nil {
-				return err
-			}
-			minimumDepth, maximumDepth := .08, 2.0
-			if cave.Path != nil {
-				minimumDepth, maximumDepth = .02, 8
-				if len(cave.Path) < 1 || len(cave.Path) > 8 {
-					return bizerr.Parameter("山洞通道截面数量无效")
-				}
-				previous := terrainMountainCaveNode{}
-				length := 0.0
-				for _, point := range cave.Path {
-					if err := validateTerrainRecordId(point.Id, nodes); err != nil {
-						return err
-					}
-					distance := math.Sqrt(math.Pow(point.X-previous.X, 2) + math.Pow(point.Y-previous.Y, 2) + math.Pow(point.Z-previous.Z, 2))
-					if !valid(point.X, -4, 4) || !valid(point.Y, -4, 4) || !valid(point.Z, -4, 4) || !valid(point.Width, .15, 3) ||
-						(point.Height != nil && !valid(*point.Height, .15, 3)) || distance < .01 {
-						return bizerr.Parameter("山洞截面无效或相邻截面过近")
-					}
-					length += distance
-					previous = point
-				}
-				if !valid(length, .02, 8) || math.Abs(length-cave.Depth) > 1e-6 {
-					return bizerr.Parameter("山洞路径长度无效")
-				}
-			}
-			if !valid(cave.X, -4, 4) || !valid(cave.Z, -4, 4) || !valid(cave.Height, .01, 1.25) ||
-				!valid(cave.Radius, .04, .65) || !valid(cave.Aspect, .35, 1.5) || !valid(cave.Depth, minimumDepth, maximumDepth) ||
-				!valid(cave.Rotation, -math.Pi*8, math.Pi*8) || !valid(cave.Pitch, -math.Pi/2, math.Pi/2) ||
-				(cave.Texture != "" && !planet_surface.IsMaterialID(cave.Texture)) ||
-				(cave.FloorTexture != "" && cave.FloorTexture != "rock" && !planet_surface.IsMaterialID(cave.FloorTexture)) {
-				return bizerr.Parameter("山洞参数无效")
-			}
-		}
-		for _, ledge := range m.Ledges {
-			if err := validateTerrainRecordId(ledge.Id, nodes); err != nil {
-				return err
-			}
-			if !valid(ledge.X, -4, 4) || !valid(ledge.Z, -4, 4) || !valid(ledge.Height, .01, 1.25) ||
-				!valid(ledge.Radius, .04, .65) || !valid(ledge.Aspect, .4, 1) || !valid(ledge.Rotation, -math.Pi*8, math.Pi*8) ||
-				(ledge.Grass != nil && !valid(*ledge.Grass, 0, 2)) {
-				return bizerr.Parameter("山体平台参数无效")
-			}
+		if err := validateTerrainSculpt(m.Ledges, m.Caves, nodes); err != nil {
+			return err
 		}
 		for _, branch := range m.Branches {
 			if err := validateTerrainRecordId(branch.Id, nodes); err != nil {
@@ -185,6 +136,64 @@ func validateTerrainMountains(mountains []terrainMountain) error {
 			if err := validateMountainRidgePath(branch.Points); err != nil {
 				return err
 			}
+		}
+	}
+	return nil
+}
+
+// 山体与湖盆共用岩台、洞穴和通道截面的尺寸及身份约束。
+func validateTerrainSculpt(ledges []terrainMountainLedge, caves []terrainMountainCave, ids map[string]struct{}) error {
+	if len(ledges) > 12 {
+		return bizerr.Parameter("每个地形部位最多雕刻 12 处平台")
+	}
+	if len(caves) > 8 {
+		return bizerr.Parameter("每个地形部位最多雕刻 8 处洞穴")
+	}
+	valid := func(value, min, max float64) bool { return value >= min && value <= max }
+	for _, cave := range caves {
+		if err := validateTerrainRecordId(cave.Id, ids); err != nil {
+			return err
+		}
+		minimumDepth, maximumDepth := .08, 2.0
+		if cave.Path != nil {
+			minimumDepth, maximumDepth = .02, 8
+			if len(cave.Path) < 1 || len(cave.Path) > 8 {
+				return bizerr.Parameter("洞穴通道截面数量无效")
+			}
+			previous := terrainMountainCaveNode{}
+			length := 0.0
+			for _, point := range cave.Path {
+				if err := validateTerrainRecordId(point.Id, ids); err != nil {
+					return err
+				}
+				distance := math.Sqrt(math.Pow(point.X-previous.X, 2) + math.Pow(point.Y-previous.Y, 2) + math.Pow(point.Z-previous.Z, 2))
+				if !valid(point.X, -4, 4) || !valid(point.Y, -4, 4) || !valid(point.Z, -4, 4) || !valid(point.Width, .15, 3) ||
+					(point.Height != nil && !valid(*point.Height, .15, 3)) || distance < .01 {
+					return bizerr.Parameter("洞穴截面无效或相邻截面过近")
+				}
+				length += distance
+				previous = point
+			}
+			if !valid(length, .02, 8) || math.Abs(length-cave.Depth) > 1e-6 {
+				return bizerr.Parameter("洞穴路径长度无效")
+			}
+		}
+		if !valid(cave.X, -4, 4) || !valid(cave.Z, -4, 4) || !valid(cave.Height, .01, 1.25) ||
+			!valid(cave.Radius, .04, .65) || !valid(cave.Aspect, .35, 1.5) || !valid(cave.Depth, minimumDepth, maximumDepth) ||
+			!valid(cave.Rotation, -math.Pi*8, math.Pi*8) || !valid(cave.Pitch, -math.Pi/2, math.Pi/2) ||
+			(cave.Texture != "" && !planet_surface.IsMaterialID(cave.Texture)) ||
+			(cave.FloorTexture != "" && cave.FloorTexture != "rock" && !planet_surface.IsMaterialID(cave.FloorTexture)) {
+			return bizerr.Parameter("洞穴参数无效")
+		}
+	}
+	for _, ledge := range ledges {
+		if err := validateTerrainRecordId(ledge.Id, ids); err != nil {
+			return err
+		}
+		if !valid(ledge.X, -4, 4) || !valid(ledge.Z, -4, 4) || !valid(ledge.Height, .01, 1.25) ||
+			!valid(ledge.Radius, .04, .65) || !valid(ledge.Aspect, .4, 1) || !valid(ledge.Rotation, -math.Pi*8, math.Pi*8) ||
+			(ledge.Grass != nil && !valid(*ledge.Grass, 0, 2)) {
+			return bizerr.Parameter("雕刻平台参数无效")
 		}
 	}
 	return nil

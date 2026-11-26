@@ -19,8 +19,12 @@ type terrainLake struct {
 	InnerRatio *float64 `json:"innerRatio,omitempty"`
 	// 岸线控制点按角度排列；缺省时使用种子岸线。
 	Shoreline []terrainLakeShorePoint `json:"shoreline,omitempty"`
-	Seed      int64                   `json:"seed"`
-	Geology   string                  `json:"geology"`
+	// 岩台、洞穴和首次雕刻时中心未开挖地面的高度。
+	Ledges     []terrainMountainLedge `json:"ledges,omitempty"`
+	Caves      []terrainMountainCave  `json:"caves,omitempty"`
+	SculptBase *float64               `json:"sculptBase,omitempty"`
+	Seed       int64                  `json:"seed"`
+	Geology    string                 `json:"geology"`
 }
 
 // 岸线半径、坡度和浅滩宽度以湖盆局部比例保存。
@@ -44,6 +48,7 @@ func validateTerrainLakes(lakes []terrainLake) error {
 			!within(lake.Center[1], -10000, 10000) || !within(lake.Rotation, -math.Pi, math.Pi) ||
 			!within(lake.Radius, .8, 64) || !within(lake.Width, .8, 64) || !within(lake.Depth, .15, 24) ||
 			(lake.InnerRatio != nil && !within(*lake.InnerRatio, .15, .85)) ||
+			(lake.SculptBase != nil && !within(*lake.SculptBase, -10000, 10000)) ||
 			lake.Seed < 0 || lake.Seed > 2147483647 || (lake.Geology != "sediment" && lake.Geology != "bedrock") {
 			return bizerr.Parameter("湖盆地质或形态参数无效")
 		}
@@ -54,6 +59,9 @@ func validateTerrainLakes(lakes []terrainLake) error {
 			if !within(point.RadiusScale, .5, 1.55) || !within(point.Steepness, .65, 1.6) || !within(point.ShelfRatio, 0, .45) {
 				return bizerr.Parameter("湖盆岸线控制点参数无效")
 			}
+		}
+		if err := validateTerrainSculpt(lake.Ledges, lake.Caves, make(map[string]struct{})); err != nil {
+			return err
 		}
 	}
 	return nil
